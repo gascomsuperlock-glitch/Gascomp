@@ -49,6 +49,7 @@ export function ProductHelpPage({ slug }: { slug: string }) {
   const activeVideo = product.videos.find((video) => video.id === activeVideoId) ?? product.videos[0];
   const activeImage = product.images.find((image) => image.id === activeImageId) ?? getPrimaryProductImage(product);
   const embedUrl = activeVideo ? getYoutubeEmbedUrl(activeVideo.youtubeUrl) : null;
+  const warrantyUrl = `/klaim-garansi?${new URLSearchParams({ sku: product.sku, product: product.name }).toString()}`;
 
   return (
     <div className="min-h-screen w-full min-w-0 overflow-x-hidden bg-[#f8f6f0] pb-20 text-[#2c3038] sm:pb-0">
@@ -207,6 +208,23 @@ export function ProductHelpPage({ slug }: { slug: string }) {
               <div><h2 className="text-xl font-extrabold">Belum menemukan jawaban?</h2><p className="mt-1 text-xs leading-5 text-white/55">Ceritakan kendalamu kepada admin. Nama produk akan otomatis disertakan.</p></div>
             </div>
             <a href={getWhatsappUrl(content.whatsappNumber, product.name)} target="_blank" rel="noreferrer" className="mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#2da45e] px-5 text-sm font-extrabold shadow-lg sm:mt-0 sm:w-auto"><MessageCircle className="size-4" /> Chat admin</a>
+          </div>
+        </section>
+        <section id="klaim-garansi" aria-labelledby="warranty-heading" className="px-5 pb-16 sm:px-8 sm:pb-20">
+          <div className="mx-auto max-w-6xl rounded-[28px] border border-[#0035b9]/15 bg-white p-6 sm:p-9">
+            <div className="flex items-start gap-4">
+              <span className="grid size-11 shrink-0 place-items-center rounded-full bg-[#edf4ff] text-[#0035b9]"><ShieldCheck className="size-5" /></span>
+              <div className="min-w-0">
+                <h2 id="warranty-heading" className="text-xl font-extrabold">Ajukan klaim garansi</h2>
+                <p className="mt-2 break-words text-sm font-semibold">{product.name}</p>
+                <p className="mt-1 break-all text-xs font-bold text-[#0035b9]">SKU: {product.sku}</p>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-[#6a757b]">Siapkan bukti pembelian, nomor pesanan, harga pembelian, serta foto dan video kendala. Nama produk dan SKU akan terisi pada formulir klaim.</p>
+                <p className="mt-2 text-xs leading-5 text-[#6a757b]">Pengajuan akan diperiksa sesuai syarat dan ketentuan garansi Gascomp.</p>
+              </div>
+            </div>
+            <Link href={warrantyUrl} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] px-5 py-3 text-center text-sm font-extrabold text-white transition hover:bg-[#002b96] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0035b9] sm:w-auto">
+              <ShieldCheck className="size-4 shrink-0" /> Ajukan Tiket Klaim Garansi
+            </Link>
           </div>
         </section>
       </main>

@@ -379,6 +379,14 @@ Status: keterhubungan panel admin, website pelanggan, produk, dan tiket telah di
 
 ## 20. Klaim garansi
 
+### Pengajuan dari halaman produk
+
+- Setiap halaman produk di website pelanggan menyediakan bagian **Ajukan klaim garansi** di bagian bawah halaman, dengan tombol **Ajukan Tiket Klaim Garansi**.
+- Bagian tersebut menampilkan nama produk dan SKU sesuai halaman yang sedang dibuka.
+- Tombol membuka `/klaim-garansi` dengan nama produk dan SKU terisi otomatis sesuai produk terkait; pelanggan tidak perlu masuk ke panel admin.
+- Nomor tiket dibuat setelah formulir dan lampiran berhasil disimpan, bukan saat tombol diklik. Pengajuan selanjutnya tampil pada panel admin untuk pemeriksaan.
+
+
 ### Isi pengajuan yang wajib tersedia
 
 | Data atau lampiran | Keterangan |
