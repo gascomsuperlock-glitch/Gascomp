@@ -43,13 +43,15 @@ test("unsupported protocols, spoofed providers and malformed video URLs are reje
   for (const url of ["", "javascript:alert(1)", "data:video/mp4;base64,AA==", "http://example.com/video.mp4", "https://youtube.com.evil.example/watch?v=dQw4w9WgXcQ", "https://notyoutu.be/dQw4w9WgXcQ", "https://youtube.com/watch?v=bad", "https://drive.google.com/drive/folders/test", "https://tiktok.com/@example", "https://user:password@example.com/video.mp4", "https://example.com:8443/video.mp4", "https://example.com/page"]) assert.equal(parseVideoSource(url), null, url);
 });
 
-test("manual uploads enforce MIME types, nonempty files and the inclusive 150 MB limit", () => {
-  assert.equal(MAX_VIDEO_BYTES, 157286400);
+test("manual uploads enforce MIME types, nonempty files and the inclusive 50 MB limit", () => {
+  assert.equal(MAX_VIDEO_BYTES, 52428800);
   for (const type of ["video/mp4", "video/webm"]) {
-    for (const size of [1, 50 * 1024 * 1024 + 1, 100 * 1024 * 1024, 157286400]) {
+    for (const size of [1, 25 * 1024 * 1024, 52428800]) {
       assert.equal(videoFileError({ type, size }), null);
     }
-    assert.equal(videoFileError({ type, size: 157286401 }), "The video must be between 1 byte and 150 MB.");
+    for (const size of [52428801, 100 * 1024 * 1024, 150 * 1024 * 1024]) {
+      assert.equal(videoFileError({ type, size }), "The video must be between 1 byte and 50 MB.");
+    }
   }
   for (const file of [{ type: "video/mp4", size: 0 }, { type: "video/mp4", size: MAX_VIDEO_BYTES + 1 }, { type: "video/quicktime", size: 100 }, { type: "text/html", size: 100 }, { type: "video/mp4", size: "100" }, { type: "video/mp4", size: NaN }]) assert.ok(videoFileError(file));
 });

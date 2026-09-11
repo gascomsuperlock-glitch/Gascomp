@@ -5,7 +5,7 @@ export type VideoSource = {
   playbackUrl: string;
 };
 
-export const MAX_VIDEO_MB = 150;
+export const MAX_VIDEO_MB = 50;
 export const MAX_VIDEO_BYTES = MAX_VIDEO_MB * 1024 * 1024;
 export const VIDEO_MIME_TYPES = ["video/mp4", "video/webm"] as const;
 

@@ -7,7 +7,7 @@ Supabase PostgreSQL is the primary shared database; Supabase Storage holds produ
 | Requirement | Store |
 | --- | --- |
 | Products, variations, help content, publication state | PostgreSQL |
-| Tutorial video files | Public `product-videos` bucket; signed admin uploads, MP4/WebM up to 150 MB |
+| Tutorial video files | Public `product-videos` bucket; signed admin uploads, MP4/WebM up to 50 MB |
 | Product image files | Public `product-images` bucket |
 | Image metadata and product/variation relationships | PostgreSQL |
 | Warranty tickets and evidence metadata | Private PostgreSQL tables |
@@ -69,17 +69,9 @@ the deployed application can use the existing catalog schema.
 
 ### Tutorial upload limit increase
 
-`202609110003_tutorial_video_upload_limit.sql` raises the existing `product-videos`
-bucket limit to 157,286,400 bytes (150 MB), preserving visibility, MIME types,
-objects, and policies. Apply it after the tutorial video source migration, or to
-an existing `product-videos` bucket. Browser and server validation share the same
-inclusive limit. The equivalent production bucket update was attempted through
-Storage's bucket API on September 11, 2026 and rejected with HTTP 413:
-`The object exceeded the maximum allowed size`. The bucket remains at
-52,428,800 bytes; the migration has not been applied. Raising the project-wide
-limit (and changing the plan if needed) remains a prerequisite for uploads above
-50 MB, even after deploying the application change.
-
-The project-wide Storage file size limit must also be at least 157,286,400 bytes.
-Supabase Free projects cannot exceed 50 MB; the project needs a plan that supports
-the larger limit. See [Supabase file limits](https://supabase.com/docs/guides/storage/uploads/file-limits).
+The attempted 150 MB increase on September 11, 2026 was rejected by Supabase
+with HTTP 413. The user subsequently chose to retain 50 MB. Application labels,
+browser validation, server validation, and the production `product-videos`
+bucket now use the same inclusive 52,428,800-byte limit. The unapplied
+`202609110003_tutorial_video_upload_limit.sql` migration was withdrawn; no
+Storage or plan change is required.
