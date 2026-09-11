@@ -16,7 +16,8 @@ const ALLOWED_VIDEO_TYPES: Record<string, string> = {
 export const MAX_INVOICE_SIZE = 4 * 1024 * 1024;
 export const MAX_PHOTO_SIZE = 4 * 1024 * 1024;
 export const MAX_PHOTO_COUNT = 4;
-export const MAX_VIDEO_SIZE = 12 * 1024 * 1024;
+export const MAX_VIDEO_MB = 50;
+export const MAX_VIDEO_SIZE = MAX_VIDEO_MB * 1024 * 1024;
 
 export function validateEvidenceFile(file: File, kind: WarrantyEvidenceKind): string | null {
   const allowedTypes = kind === "invoice" ? ALLOWED_INVOICE_TYPES : kind === "photo" ? ALLOWED_IMAGE_TYPES : ALLOWED_VIDEO_TYPES;
@@ -30,7 +31,7 @@ export function validateEvidenceFile(file: File, kind: WarrantyEvidenceKind): st
   if (file.size > maxSize) {
     if (kind === "invoice") return "Proof of purchase must be no larger than 4 MB.";
     if (kind === "photo") return "Each photo must be no larger than 4 MB.";
-    return "The issue video must be no larger than 12 MB.";
+    return `The issue video must be no larger than ${MAX_VIDEO_MB} MB.`;
   }
   return null;
 }

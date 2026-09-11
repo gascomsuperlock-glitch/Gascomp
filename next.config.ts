@@ -17,7 +17,8 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: "40mb",
+      // Allow a 50 MB video, a 4 MB invoice, four 4 MB photos, and multipart overhead.
+      bodySizeLimit: "72mb",
     },
   },
 };

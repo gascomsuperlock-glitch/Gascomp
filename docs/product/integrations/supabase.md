@@ -11,7 +11,7 @@ Supabase PostgreSQL is the primary shared database; Supabase Storage holds produ
 | Product image files | Public `product-images` bucket |
 | Image metadata and product/variation relationships | PostgreSQL |
 | Warranty tickets and evidence metadata | Private PostgreSQL tables |
-| Warranty evidence files | Private `warranty-evidence` bucket |
+| Warranty evidence files | Private `warranty-evidence` bucket; video files up to 50 MB |
 | Duoke source identity and import history | PostgreSQL |
 | Product/knowledge graph notes | Project Obsidian vault |
 
@@ -75,3 +75,17 @@ browser validation, server validation, and the production `product-videos`
 bucket now use the same inclusive 52,428,800-byte limit. The unapplied
 `202609110003_tutorial_video_upload_limit.sql` migration was withdrawn; no
 Storage or plan change is required.
+
+## Warranty video upload limit
+
+`202609110004_warranty_video_upload_limit.sql` raises the private
+`warranty-evidence` bucket's per-file limit to 52,428,800 bytes (50 MB), matching
+warranty video validation. It preserves visibility, allowed MIME types, objects,
+and policies. Invoice and photo uploads remain limited to 4 MB by the application.
+The Server Action request limit is 72 MB to accommodate all permitted evidence
+in one submission. No new public access or upload policy is introduced.
+
+On September 11, 2026, the equivalent production bucket update was applied
+through the Storage API and verified: `warranty-evidence` now allows 52,428,800
+bytes, remains private, and retains its existing MIME allowlist. No ticket,
+evidence object, or access policy was changed.

@@ -59,3 +59,13 @@ test("legacy local tickets and current evidence lists remain readable", () => {
   assert.equal(normalized.evidence[0].kind, "video");
   assert.deepEqual(normalizeLocalTicket({ ...legacy, evidence: normalized.evidence }).evidence, normalized.evidence);
 });
+
+test("warranty videos accept 1 MB and 23 MB through the inclusive 50 MB limit", () => {
+  assert.equal(MAX_VIDEO_SIZE, 52428800);
+  for (const type of ["video/mp4", "video/webm", "video/quicktime"]) {
+    for (const size of [1, 1024 * 1024, 23 * 1024 * 1024, 52428800]) {
+      assert.equal(validateEvidenceSelection([{ type, size }], "video"), null);
+    }
+    assert.equal(validateEvidenceSelection([{ type, size: 52428801 }], "video"), "The issue video must be no larger than 50 MB.");
+  }
+});
