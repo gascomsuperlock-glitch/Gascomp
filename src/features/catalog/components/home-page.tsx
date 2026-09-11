@@ -3,19 +3,15 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
-  ArrowRight,
   BookOpenCheck,
-  CheckCircle2,
   ChevronRight,
   CircleHelp,
   Clock3,
   MessageCircle,
   Play,
   Search,
-  ShieldCheck,
-  Smartphone,
-  Sparkles,
 } from "lucide-react";
+import { HomeHero } from "@/features/catalog/components/home-hero";
 import { useContent } from "@/features/catalog/hooks/use-content";
 import { ProductVisual } from "@/features/catalog/components/product-visual";
 import { SiteHeader } from "@/shared/components/site-header";
@@ -40,85 +36,7 @@ export function HomePage() {
       <SiteHeader />
 
       <main>
-        <section className="relative border-b border-[#2c3038]/8 bg-[#f8fafc]">
-          <div className="pointer-events-none absolute -left-48 top-0 size-[430px] rounded-full bg-[#dbe8ff]/70 blur-3xl" />
-          <div className="relative mx-auto grid max-w-7xl gap-14 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:py-24">
-            <div className="animate-rise">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#0035b9]/15 bg-[#eef4ff] px-3 py-1.5 text-xs font-bold tracking-wide text-[#0035b9]">
-                <Sparkles className="size-3.5" />
-                OFFICIAL GASCOMP PRODUCT GUIDES
-              </div>
-              <h1 className="max-w-3xl text-[clamp(2.5rem,5vw,4.5rem)] font-extrabold leading-[1.12] tracking-[-0.04em] text-[#2c3038]">
-                Use your product
-                <span className="block text-[#0035b9]">with confidence.</span>
-              </h1>
-              <p className="mt-7 max-w-xl text-base leading-7 text-[#5f696f] sm:text-lg sm:leading-8">
-                Find tutorial videos, troubleshooting steps, and quick answers for your Gascomp product.
-              </p>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="#produk"
-                  className="group inline-flex h-13 items-center justify-center gap-2 rounded-full bg-[#0035b9] px-6 text-sm font-extrabold text-white shadow-[0_14px_35px_rgba(13,79,215,0.24)] transition hover:-translate-y-0.5 hover:bg-[#002b96]"
-                >
-                  Choose my product
-                  <ArrowRight className="size-4 transition group-hover:translate-x-1" />
-                </a>
-                <a
-                  href={getWhatsappUrl(content.whatsappNumber)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-13 items-center justify-center gap-2 rounded-full border border-[#2c3038]/12 bg-white px-6 text-sm font-extrabold text-[#2c3038] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <MessageCircle className="size-4 text-[#2d9f5b]" />
-                  Ask support
-                </a>
-              </div>
-
-              <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold text-[#657077]">
-                <span className="inline-flex items-center gap-2"><CheckCircle2 className="size-4 text-[#4f8967]" /> No login required</span>
-                <span className="inline-flex items-center gap-2"><CheckCircle2 className="size-4 text-[#4f8967]" /> Step-by-step guidance</span>
-              </div>
-            </div>
-
-            <div className="relative mx-auto w-full max-w-[540px] animate-rise-delayed lg:justify-self-end">
-              <div className="absolute -right-8 -top-9 hidden rounded-2xl border border-[#2c3038]/8 bg-white px-4 py-3 shadow-xl sm:flex sm:items-center sm:gap-3">
-                <span className="grid size-9 place-items-center rounded-full bg-[#e9f5ed] text-[#43815b]"><ShieldCheck className="size-4" /></span>
-                <span><strong className="block text-xs">Trusted guidance</strong><small className="text-[10px] text-[#7b858a]">From the Gascomp team</small></span>
-              </div>
-              <div className="rounded-[32px] border border-[#2c3038]/10 bg-white p-3 shadow-[0_35px_80px_rgba(35,56,71,0.16)] sm:p-4">
-                <div className="overflow-hidden rounded-[24px] bg-[#eef3fb]">
-                  <div className="flex items-center justify-between border-b border-[#2c3038]/8 px-5 py-4">
-                    <div>
-                      <span className="text-[10px] font-extrabold tracking-[0.16em] text-[#0035b9]">STEP 01</span>
-                      <p className="mt-1 text-sm font-extrabold">Identify your product</p>
-                    </div>
-                    <span className="grid size-10 place-items-center rounded-full bg-white text-[#0035b9] shadow-sm"><Play className="size-4 fill-current" /></span>
-                  </div>
-                  <ProductVisual tone="orange" className="h-[270px] sm:h-[315px]" />
-                  <div className="grid grid-cols-3 gap-px bg-[#2c3038]/8">
-                    {[
-                      [BookOpenCheck, "Tutorial"],
-                      [CircleHelp, "Solutions"],
-                      [MessageCircle, "Support"],
-                    ].map(([Icon, label]) => {
-                      const ItemIcon = Icon as typeof BookOpenCheck;
-                      return (
-                        <div key={label as string} className="flex items-center justify-center gap-2 bg-white px-2 py-4 text-[11px] font-bold text-[#59656b]">
-                          <ItemIcon className="size-4 text-[#0035b9]" /> {label as string}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-              <div className="absolute -bottom-7 -left-5 hidden items-center gap-3 rounded-2xl border border-[#2c3038]/8 bg-[#2c3038] px-4 py-3 text-white shadow-xl sm:flex">
-                <span className="grid size-9 place-items-center rounded-full bg-white/10"><Smartphone className="size-4" /></span>
-                <span><strong className="block text-xs">Scan. View. Done.</strong><small className="text-[10px] text-white/60">Directly from the packaging</small></span>
-              </div>
-            </div>
-          </div>
-        </section>
+        <HomeHero whatsappNumber={content.whatsappNumber} />
 
         <section id="produk" className="scroll-mt-20 px-5 py-20 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-7xl">
