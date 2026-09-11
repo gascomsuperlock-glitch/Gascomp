@@ -13,7 +13,7 @@
 
 If SQL returns `42P07: relation "products" already exists`, do not delete the table or rerun the initial migration blindly. Inspect which migrations already exist and apply only the missing later migrations.
 
-The `product-images` and `product-videos` buckets are public and must contain only customer-visible product photos and tutorials. Video uploads support MP4/WebM up to 50 MB, using signed upload URLs issued by the admin endpoint. Apply the tutorial video migration before deploying the new editor; Save checks the video schema before any writes. The `warranty-evidence` bucket is private. Product draft metadata is protected by row-level security, but a known URL in a public bucket remains accessible.
+The `product-images` and `product-videos` buckets are public and must contain only customer-visible product photos and tutorials. Video uploads support MP4/WebM up to 50 MB, using signed upload URLs issued by the admin endpoint. The tutorial video migration is optional for existing catalogs: Save detects the schema and supports the legacy URL column. The `product-videos` bucket must exist with the documented size and MIME limits before uploading videos. The `warranty-evidence` bucket is private. Product draft metadata is protected by row-level security, but a known URL in a public bucket remains accessible.
 
 Run the read-only connection check after configuration:
 

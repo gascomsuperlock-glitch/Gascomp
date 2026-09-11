@@ -4,6 +4,7 @@ import type { SiteContent } from "@/features/catalog/model/types";
 import { createAdminSupabaseClient, createPublicSupabaseClient, isSupabaseConfigured } from "@/shared/integrations/supabase/server";
 import { type Row, text, statusFromProduct, mapProduct } from "@/features/catalog/model/product-mappers";
 
+import { videoRecords } from "@/features/catalog/model/video-records";
 import { getVideoUrl, parseVideoSource } from "@/features/catalog/model/video-source";
 
 import { uploadNewImages } from "@/features/catalog/server/product-images";
@@ -111,9 +112,10 @@ export async function persistSiteContent(input: SiteContent): Promise<SiteConten
   const client = createAdminSupabaseClient();
   if (!client) throw new Error("Supabase is not configured.");
 
-  // Fail before uploads or writes when the tutorial source migration is missing.
+  // Support deployment before or after the optional video metadata migration.
   const videoSchema = await client.from("tutorial_videos").select("video_url, storage_path").limit(0);
-  throwOnError(videoSchema);
+  if (videoSchema.error && !["42703", "PGRST204"].includes(videoSchema.error.code)) throw videoSchema.error;
+  const extendedVideoSchema = !videoSchema.error;
 
   const existingProductsResult = await client.from("products").select("id, ever_published");
   const existingImagesResult = await client.from("product_images").select("storage_path");
@@ -164,7 +166,7 @@ export async function persistSiteContent(input: SiteContent): Promise<SiteConten
 
   const variationRows = content.products.flatMap((product) => product.variations.map((item, position) => ({ id: item.id, product_id: product.id, name: item.name, sku: item.sku, source_variation_id: item.sourceId ?? null, attributes: item.attributes ?? [], position })));
   const imageRows = content.products.flatMap((product) => product.images.map((item, position) => ({ id: item.id, product_id: product.id, variation_id: item.variationId ?? null, name: item.name, storage_path: item.storagePath, public_url: item.url, alt: item.alt, is_primary: item.isPrimary, position })));
-  const videoRows = content.products.flatMap((product) => product.videos.map((item, position) => ({ id: item.id, product_id: product.id, title: item.title, description: item.description, youtube_url: parseVideoSource(getVideoUrl(item))?.provider === "youtube" ? getVideoUrl(item) : "", video_url: getVideoUrl(item), storage_path: item.storagePath ?? null, duration: item.duration, position })));
+  const videoRows = videoRecords(content.products, extendedVideoSchema);
   const issueRows = content.products.flatMap((product) => product.issues.map((item, position) => ({ id: item.id, product_id: product.id, title: item.title, summary: item.summary, steps: item.steps, warning: item.warning ?? null, position })));
   const faqRows = content.products.flatMap((product) => product.faqs.map((item, position) => ({ id: item.id, product_id: product.id, question: item.question, answer: item.answer, position })));
 

@@ -55,7 +55,14 @@ verification report are stored in `.data/image-recovery/`.
 `202609110002_tutorial_video_sources.sql` adds nullable `video_url` and
 `storage_path` columns to `tutorial_videos`, backfills legacy YouTube links, and
 creates the public `product-videos` bucket with a 50 MB limit and MP4/WebM MIME
-allowlist. Apply it before deploying the multi-source video editor. The existing
-`youtube_url` column remains available for compatibility. No anonymous Storage
-write policy is introduced. The migration is prepared locally and has not been
-applied to production.
+allowlist. The application also supports the existing schema: it stores all video
+source URLs in the legacy `youtube_url` column and derives uploaded file paths
+from Storage URLs. When the optional columns exist, saves populate both URL
+columns and `storage_path`. This permits rolling deployment without interrupting
+Save. No anonymous Storage write policy is introduced. The SQL migration is
+prepared locally and has not been applied to production.
+
+On September 11, 2026, the production `product-videos` bucket was created and
+verified as public with a 52,428,800-byte limit and only `video/mp4` and
+`video/webm` accepted. The metadata SQL migration remains optional and unapplied;
+the deployed application can use the existing catalog schema.

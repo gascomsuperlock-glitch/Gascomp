@@ -73,7 +73,7 @@ export function mapProduct(
         description: text(item.description),
         youtubeUrl: text(item.youtube_url),
         videoUrl: text(item.video_url) || text(item.youtube_url),
-        storagePath: text(item.storage_path) || undefined,
+        storagePath: text(item.storage_path) || /^https:\/\/[^/]+\/storage\/v1\/object\/public\/product-videos\/(products\/[\w-]+\/[\w-]+\.(?:mp4|webm))$/.exec(text(item.video_url) || text(item.youtube_url))?.[1],
         duration: text(item.duration),
       })),
     issues: issues
