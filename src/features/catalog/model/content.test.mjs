@@ -86,3 +86,17 @@ test("database mapping scopes and orders related records and retains archived id
   assert.equal(statusFromProduct(product({ published: true })), "published");
   assert.equal(statusFromProduct(product({ archived: true })), "draft");
 });
+
+
+test("tutorial mapping preserves legacy YouTube and generic video storage metadata", () => {
+  const mapped = mapProduct(
+    { id: "product", status: "published" }, [], [],
+    [
+      { id: "legacy", product_id: "product", youtube_url: "https://youtu.be/dQw4w9WgXcQ", position: 0 },
+      { id: "uploaded", product_id: "product", youtube_url: "", video_url: "https://storage.example.com/tutorial.mp4", storage_path: "products/product/tutorial.mp4", position: 1 },
+    ], [], [],
+  );
+  assert.equal(mapped.videos[0].videoUrl, "https://youtu.be/dQw4w9WgXcQ");
+  assert.equal(mapped.videos[1].videoUrl, "https://storage.example.com/tutorial.mp4");
+  assert.equal(mapped.videos[1].storagePath, "products/product/tutorial.mp4");
+});

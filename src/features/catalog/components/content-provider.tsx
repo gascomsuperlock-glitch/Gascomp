@@ -6,7 +6,7 @@ import { migrateContent } from "@/features/catalog/model/migrate-content";
 import { startTransition, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { DEFAULT_CONTENT } from "@/features/catalog/model/default-content";
 import type { SiteContent } from "@/features/catalog/model/types";
-import { saveAdminContentAction } from "@/features/catalog/server/actions";
+import { requestContentSave } from "@/features/catalog/model/save-request";
 
 const STORAGE_KEY = "gascomp-help-content-v1";
 
@@ -47,7 +47,7 @@ export function ContentProvider({
     setSaveError(undefined);
 
     try {
-      const result = await saveAdminContentAction(contentToSave);
+      const result = await requestContentSave(contentToSave);
       if (!result.success) {
         setSaveState("error");
         setSaveError(result.error);
@@ -63,7 +63,7 @@ export function ContentProvider({
       return true;
     } catch {
       setSaveState("error");
-      setSaveError("The save request could not reach the server. Check the connection and try again.");
+      setSaveError("The save result could not be processed. Keep this tab open to preserve your edits and retry Save.");
       return false;
     }
   }, []);

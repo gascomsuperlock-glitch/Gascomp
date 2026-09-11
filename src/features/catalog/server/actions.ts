@@ -17,6 +17,8 @@ export async function saveAdminContentAction(content: SiteContent): Promise<
     return { success: true, content: savedContent };
   } catch (error) {
     console.error("Admin content save failed", error);
+    const code = error && typeof error === "object" && "code" in error ? error.code : undefined;
+    if (code === "42703" || code === "PGRST204") return { success: false, error: "The database needs the tutorial video migration before changes can be saved." };
     return { success: false, error: "Changes were not saved to Supabase. Check the connection and try again." };
   }
 }

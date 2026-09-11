@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, ChevronRight, CircleHelp, Gauge, MonitorPlay, PackagePlus, TicketCheck } from "lucide-react";
+import { BarChart3, ChevronRight, CircleHelp, Gauge, MonitorPlay, PackagePlus, QrCode, TicketCheck } from "lucide-react";
 import { ProductVisual } from "@/features/catalog/components/product-visual";
 import { getPrimaryProductImage } from "@/features/catalog/model/product-utils";
 import type { Product } from "@/features/catalog/model/types";
@@ -34,6 +34,7 @@ export function Overview({ products, publishedCount, totalVideos, totalFaqs, tic
               <ProductVisual tone={product.tone} image={getPrimaryProductImage(product)} alt={product.name} className="h-14 w-14 shrink-0 rounded-xl" />
               <div className="min-w-0 flex-1"><strong className="block truncate text-xs sm:text-sm">{product.name}</strong><p className="mt-1 truncate text-[10px] text-[#8c9498]">{product.sku} · {product.videos.length} video · {product.faqs.length} FAQ</p></div>
               <span className={`hidden rounded-full px-2.5 py-1 text-[9px] font-extrabold sm:block ${product.archived ? "bg-[#edf0f2] text-[#68757e]" : product.published ? "bg-[#e9f5ed] text-[#427a56]" : "bg-[#f2eee7] text-[#8d7456]"}`}>{product.archived ? "ARCHIVED" : product.published ? "PUBLISHED" : "DRAFT"}</span>
+              <button type="button" onClick={() => onOpen(product.id, "qr")} className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full border border-[#0035b9]/20 px-3 text-xs font-extrabold text-[#0035b9] transition hover:bg-[#edf4ff]" aria-label={`Product QR for ${product.name}, SKU ${product.sku}`}><QrCode className="size-4" /><span className="hidden sm:inline">Product QR</span></button>
               <button type="button" onClick={() => onOpen(product.id)} className="grid size-9 place-items-center rounded-full border border-[#2c3038]/9 text-[#6d787e] transition hover:border-[#0035b9]/30 hover:text-[#0035b9]" aria-label={`Manage ${product.name}`}><ChevronRight className="size-4" /></button>
             </div>
           ))}

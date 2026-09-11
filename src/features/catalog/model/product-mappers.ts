@@ -72,6 +72,8 @@ export function mapProduct(
         title: text(item.title),
         description: text(item.description),
         youtubeUrl: text(item.youtube_url),
+        videoUrl: text(item.video_url) || text(item.youtube_url),
+        storagePath: text(item.storage_path) || undefined,
         duration: text(item.duration),
       })),
     issues: issues

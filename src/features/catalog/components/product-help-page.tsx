@@ -20,7 +20,8 @@ import { useContent } from "@/features/catalog/hooks/use-content";
 import { ProductVisual } from "@/features/catalog/components/product-visual";
 import { getPrimaryProductImage, getProductImageSource } from "@/features/catalog/model/product-utils";
 import { getWhatsappUrl } from "@/shared/lib/whatsapp";
-import { getYoutubeEmbedUrl } from "@/shared/lib/youtube";
+import { getVideoUrl } from "@/features/catalog/model/video-source";
+import { TutorialPlayer } from "@/features/catalog/components/tutorial-player";
 
 export function ProductHelpPage({ slug }: { slug: string }) {
   const { content, hydrated } = useContent();
@@ -50,7 +51,6 @@ export function ProductHelpPage({ slug }: { slug: string }) {
 
   const activeVideo = product.videos.find((video) => video.id === activeVideoId) ?? product.videos[0];
   const activeImage = product.images.find((image) => image.id === activeImageId) ?? getPrimaryProductImage(product);
-  const embedUrl = activeVideo ? getYoutubeEmbedUrl(activeVideo.youtubeUrl) : null;
   const warrantyUrl = `/klaim-garansi?${new URLSearchParams({ sku: product.sku, product: product.name }).toString()}`;
 
   return (
@@ -104,25 +104,7 @@ export function ProductHelpPage({ slug }: { slug: string }) {
             {activeVideo ? (
               <div className="mt-8 grid gap-5 lg:grid-cols-[1.55fr_0.75fr]">
                 <div className="overflow-hidden rounded-[26px] border border-[#2c3038]/8 bg-[#2c3038] shadow-lg">
-                  <div className="aspect-video">
-                    {embedUrl ? (
-                      <iframe
-                        className="size-full"
-                        src={embedUrl}
-                        title={activeVideo.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <div className="grid size-full place-items-center px-6 text-center text-white">
-                        <div>
-                          <span className="mx-auto grid size-16 place-items-center rounded-full bg-white/10 text-[#73d4f4]"><Play className="size-6 fill-current" /></span>
-                          <p className="mt-5 text-lg font-extrabold">Video coming soon</p>
-                          <p className="mt-2 max-w-sm text-xs leading-5 text-white/55">An administrator can add a YouTube link from the dashboard. The video will play directly on this page.</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <TutorialPlayer url={getVideoUrl(activeVideo)} title={activeVideo.title} />
                   <div className="border-t border-white/10 p-5 text-white">
                     <div className="flex items-start justify-between gap-4">
                       <div><p className="text-base font-extrabold">{activeVideo.title}</p><p className="mt-1 text-xs leading-5 text-white/55">{activeVideo.description}</p></div>

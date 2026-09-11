@@ -16,7 +16,7 @@ If a product or tutorial is unavailable, the page presents a clear empty state a
 | --- | --- |
 | Product identity | Primary image, gallery, name, model, and SKU |
 | Primary actions | Tutorial and troubleshooting shortcuts |
-| Usage tutorials | One or more embedded YouTube videos |
+| Usage tutorials | YouTube, Google Drive, TikTok, or uploaded video files |
 | Issue-based help | Model-specific issue summaries, steps, and warnings |
 | FAQs | Common questions and verified answers |
 | Support | WhatsApp, Warranty Claim, Gascomp Care, and Service Center |
@@ -31,10 +31,15 @@ Priority issue families include products that do not turn on, flame adjustment, 
 
 ## Tutorial videos
 
-- Administrators add YouTube URLs; the application does not host tutorial video files.
-- One product may have multiple tutorials.
-- Videos play in an embedded YouTube player on the Gascomp page.
-- YouTube still owns the player and may display its standard branding and links.
-- Admin preview allows the selected link and content to be checked before publication.
+- Administrators add HTTPS YouTube, Google Drive, TikTok, or direct MP4/WebM URLs, or upload MP4/WebM files up to 50 MB each.
+- One product may have multiple tutorials. Existing YouTube tutorials remain compatible.
+- YouTube, Google Drive, and full TikTok video links use embedded players; direct and uploaded files use native browser controls with inline mobile playback. Players do not autoplay.
+- Google Drive files must allow anyone with the link to view them; resource keys are preserved. Providers may restrict playback or require third-party cookies. Every recognized source includes an **Open original video** fallback.
+- TikTok short share links open the provider page. Use the full `/@user/video/` link for an embedded preview.
+- Admin preview uses the same player as the public product page, including loading, invalid-source, and native playback error states.
+- Manual uploads go directly to the public `product-videos` bucket using a signed upload URL issued after checking the admin session and request origin. New products must be saved before upload. Only the completed file URL is staged in the editor; select **Save** to attach it to the product. Cancelling or removing a tutorial does not delete its stored video; unused-file cleanup is an administrative operation.
+- Local-only mode supports video links; file uploads require Supabase. Uploaded tutorial files are public, including before their product is published.
+
+Provider references: [TikTok embed player](https://developers.tiktok.com/docs/en/embed-player), [Google Drive sharing](https://support.google.com/drive/answer/2494822?hl=en), and [Supabase signed uploads](https://supabase.com/docs/reference/javascript/file-buckets-uploadtosignedurl).
 
 Status: the catalog, search, product pages, image gallery, tutorials, issue guides, FAQs, and support actions are implemented.

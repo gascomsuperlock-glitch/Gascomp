@@ -15,7 +15,7 @@ The public home page header includes an **Admin login** link on desktop and mobi
 | Product | Manage SKU, name, model, description, status, and source metadata |
 | Variation | Add, edit, and remove names and SKUs per product |
 | Image | Upload, preview, replace, link to a variation, set primary, and delete |
-| Tutorial | Manage embedded YouTube links, titles, descriptions, and duration |
+| Tutorial | Manage YouTube, Google Drive, TikTok, direct video links, file uploads, titles, descriptions, and duration |
 | Issue guide | Manage issue titles, summaries, ordered steps, and warnings |
 | FAQ | Add, edit, reorder, and remove questions and answers |
 | Settings | Manage the WhatsApp destination and support hours |
@@ -24,6 +24,8 @@ The public home page header includes an **Admin login** link on desktop and mobi
 Images accept JPG, PNG, or WebP up to 8 MB each and six images per product. The browser compresses them to WebP before upload. Admin-managed images and content are preserved when Duoke or warehouse data is imported again.
 
 The dashboard header provides a visible **Save** button. Edits remain staged in the admin form and do not affect the customer website until the administrator selects Save. The button then persists the current product and settings content and reports saving, success, or failure. There is no automatic content save.
+
+Save uses the stable `POST /admin/content` JSON endpoint, which verifies the request origin and admin session before reading up to 40 MB and invoking catalog persistence. This avoids tying the browser save request to a build-specific Server Action identifier. Save failures retain edits in the current tab and distinguish expired sessions, rejected origins, unavailable deployments, oversized uploads, and hosting timeouts. A lost response does not prove that the server failed to save; check the product before retrying.
 
 The dashboard can download one QR code per product when `GASCOMP_PUBLIC_BASE_URL` is configured with a production HTTPS origin. It also exposes Warranty Claim, Gascomp Care, and Service Center actions with the current product and SKU context.
 

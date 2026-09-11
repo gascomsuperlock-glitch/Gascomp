@@ -128,7 +128,7 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
           <div className="mx-auto max-w-[1220px]">
             <div className={`mb-6 flex items-start gap-3 rounded-2xl border p-4 text-xs leading-5 ${backendError || saveError ? "border-[#d65d50]/30 bg-[#fff0ef] text-[#a23f36]" : storageMode === "supabase" ? "border-[#79ab8a]/35 bg-[#edf8f0] text-[#3e7652]" : "border-[#e5b895]/40 bg-[#fff5ec] text-[#8c4a2d]"}`}>
               <MonitorPlay className="mt-0.5 size-4 shrink-0" />
-              <p>{backendError || saveError ? <><strong>Storage connection issue.</strong> {backendError || saveError}</> : storageMode === "supabase" ? <><strong>Supabase connected.</strong> Changes remain in the editor until you select Save.</> : <><strong>Local mode.</strong> Changes remain in this browser and are committed only when you select Save.</>}</p>
+              <p>{backendError || saveError ? <><strong>{saveError ? "Save failed." : "Storage connection issue."}</strong> {saveError || backendError}</> : storageMode === "supabase" ? <><strong>Supabase connected.</strong> Changes remain in the editor until you select Save.</> : <><strong>Local mode.</strong> Changes remain in this browser and are committed only when you select Save.</>}</p>
             </div>
 
             {view === "overview" && (
@@ -160,7 +160,7 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
                 </aside>
 
                 {selectedProduct ? (
-                  <section className="overflow-hidden rounded-[22px] border border-[#2c3038]/8 bg-white shadow-sm">
+                  <section className="min-w-0 overflow-hidden rounded-[22px] border border-[#2c3038]/8 bg-white shadow-sm">
                     <div className="flex flex-col gap-4 border-b border-[#2c3038]/8 p-5 sm:flex-row sm:items-center sm:justify-between">
                       <div className="min-w-0"><p className="truncate text-lg font-extrabold tracking-[-0.025em]">{selectedProduct.name}</p><p className="mt-1 truncate text-[10px] font-semibold text-[#8a9297]">/produk/{selectedProduct.slug}</p></div>
                       <label className="flex shrink-0 items-center gap-2 text-xs font-extrabold text-[#657178]"><span className={`size-2 rounded-full ${selectedProduct.archived ? "bg-[#71808a]" : selectedProduct.published ? "bg-[#42a265]" : "bg-[#c7aa7b]"}`} /><span>Status</span><select value={selectedProduct.archived ? "archived" : selectedProduct.published ? "published" : "draft"} onChange={(event) => updateProduct(selectedProduct.id, (product) => ({ ...product, published: event.target.value === "published", archived: event.target.value === "archived" && product.everPublished, everPublished: product.everPublished || event.target.value === "published" }))} className="h-9 rounded-full border border-[#2c3038]/10 bg-white px-3 text-[11px] font-extrabold outline-none"><option value="draft">Draft</option><option value="published">Published</option><option value="archived" disabled={!selectedProduct.everPublished}>Archived · QR remains active</option></select></label>
@@ -186,7 +186,7 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
                       {editorTab === "images" && <ProductImageEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
                       {editorTab === "videos" && <VideosEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
                       {editorTab === "faqs" && <FaqEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
-                      {editorTab === "qr" && <QrCodeCard slug={selectedProduct.slug} name={selectedProduct.name} publicBaseUrl={publicBaseUrl} />}
+                      {editorTab === "qr" && <QrCodeCard key={`${selectedProduct.id}:${selectedProduct.slug}:${publicBaseUrl}`} slug={selectedProduct.slug} name={selectedProduct.name} sku={selectedProduct.sku} published={selectedProduct.published} archived={selectedProduct.archived} publicBaseUrl={publicBaseUrl} />}
                       {editorTab === "warranty" && <TicketServiceCard product={selectedProduct} service="warranty" />}
                       {editorTab === "care" && <TicketServiceCard product={selectedProduct} service="care" />}
                       {editorTab === "service-center" && <TicketServiceCard product={selectedProduct} service="service-center" />}
