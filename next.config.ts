@@ -1,9 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["ffmpeg-static"],
+  serverExternalPackages: ["@ffmpeg/core"],
   outputFileTracingIncludes: {
-    "/klaim-garansi": ["./node_modules/ffmpeg-static/ffmpeg*"],
+    "/klaim-garansi": [
+      "./src/features/warranty/server/video-inspection-worker.mjs",
+      "./node_modules/@ffmpeg/core/dist/umd/*",
+      "./node_modules/@ffmpeg/core/package.json",
+    ],
   },
   redirects() {
     return [

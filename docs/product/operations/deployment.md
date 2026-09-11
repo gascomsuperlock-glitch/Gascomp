@@ -87,15 +87,19 @@ failure; subsequent changes to Cloudflare proxying require a separate check.
 
 ## Warranty video verification runtime
 
-Warranty submissions require the executable supplied by the `ffmpeg-static`
-dependency. Install dependencies on the deployment host with `npm ci` and allow
-that package's installation script to download the binary for the host's OS and
-architecture. Do not upload a macOS `node_modules` directory to Linux hosting.
-Next.js keeps this package external and includes its executable in the warranty
-route's file trace. The runtime must allow child processes and private temporary
-files. Verify a valid short video and a damaged video after deployment; if the
-decoder is missing or cannot execute, submission returns a field error and no
-ticket is saved.
+Warranty submissions decode videos using the single-threaded WebAssembly build
+in `@ffmpeg/core`, inside a Node.js worker thread. This replaces `ffmpeg-static`:
+native executable verification returned an unavailable error in production.
+No executable download, child process, or writable temporary directory is needed.
+`npm ci` installs the JavaScript and WASM assets with the dependency itself.
+
+Next.js keeps the package external and explicitly traces its UMD JavaScript,
+WASM file, package manifest, and the unbundled worker entrypoint. Start the app
+from its project root, as with `npm run start`, so the worker path resolves in
+both regular and standalone deployments. The runtime must support Node worker
+threads and WebAssembly. Each check owns an in-memory filesystem and its worker
+is terminated after completion, failure, or a 30-second timeout. Verify actual
+valid and damaged submissions after deployment, not only metadata validation.
 
 ## Legacy links
 
