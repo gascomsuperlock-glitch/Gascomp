@@ -5,12 +5,13 @@ export type VideoSource = {
   playbackUrl: string;
 };
 
-export const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+export const MAX_VIDEO_MB = 150;
+export const MAX_VIDEO_BYTES = MAX_VIDEO_MB * 1024 * 1024;
 export const VIDEO_MIME_TYPES = ["video/mp4", "video/webm"] as const;
 
 export function videoFileError(file: { size: number; type: string }) {
   if (!VIDEO_MIME_TYPES.some((type) => type === file.type)) return "Choose an MP4 or WebM video.";
-  if (!Number.isSafeInteger(file.size) || file.size <= 0 || file.size > MAX_VIDEO_BYTES) return "The video must be between 1 byte and 50 MB.";
+  if (!Number.isSafeInteger(file.size) || file.size <= 0 || file.size > MAX_VIDEO_BYTES) return `The video must be between 1 byte and ${MAX_VIDEO_MB} MB.`;
   return null;
 }
 

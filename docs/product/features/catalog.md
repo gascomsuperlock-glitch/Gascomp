@@ -31,7 +31,7 @@ Priority issue families include products that do not turn on, flame adjustment, 
 
 ## Tutorial videos
 
-- Administrators add HTTPS YouTube, Google Drive, TikTok, or direct MP4/WebM URLs, or upload MP4/WebM files up to 50 MB each.
+- Administrators add HTTPS YouTube, Google Drive, TikTok, or direct MP4/WebM URLs, or upload MP4/WebM files up to 150 MB each (157,286,400 bytes).
 - One product may have multiple tutorials. Existing YouTube tutorials remain compatible.
 - YouTube, Google Drive, and full TikTok video links use embedded players; direct and uploaded files use native browser controls with inline mobile playback. Players do not autoplay.
 - Google Drive files must allow anyone with the link to view them; resource keys are preserved. Providers may restrict playback or require third-party cookies. Every recognized source includes an **Open original video** fallback.

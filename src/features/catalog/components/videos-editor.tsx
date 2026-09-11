@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { MonitorPlay, Plus, Trash2, Upload } from "lucide-react";
 import { createId } from "@/shared/lib/create-id";
 import type { Product, TutorialVideo } from "@/features/catalog/model/types";
-import { getVideoUrl, parseVideoSource, videoFileError } from "@/features/catalog/model/video-source";
+import { getVideoUrl, MAX_VIDEO_MB, parseVideoSource, videoFileError } from "@/features/catalog/model/video-source";
 import { uploadVideo } from "@/features/catalog/model/upload-video";
 import { TutorialPlayer } from "@/features/catalog/components/tutorial-player";
 import { useContent } from "@/features/catalog/hooks/use-content";
@@ -73,7 +73,7 @@ function VideoEditor({ video, index, productId, uploadsEnabled, update, remove }
             {source?.provider === "google-drive" && <p className="mt-2 text-xs leading-5 text-[#69747b]">In Google Drive, set General access to Anyone with the link so customers can watch without signing in.</p>}
             {source?.provider === "tiktok" && <p className="mt-2 text-xs leading-5 text-[#69747b]">Use a public TikTok video. Short share links open on TikTok; paste the full /@user/video/ link for an embedded preview.</p>}
           </Field> : <div>
-            <label className="block text-xs font-bold text-[#69747b]">Video file (MP4 or WebM, up to 50 MB)<input type="file" accept="video/mp4,video/webm,.mp4,.webm" disabled={!uploadsEnabled || progress !== null} onChange={(event) => { void selectFile(event.target.files?.[0]); event.target.value = ""; }} className="mt-2 block w-full min-w-0 text-xs file:mr-3 file:rounded-full file:border-0 file:bg-[#edf4ff] file:px-4 file:py-2 file:font-bold file:text-[#0035b9] disabled:opacity-50" /></label>
+            <label className="block text-xs font-bold text-[#69747b]">Video file (MP4 or WebM, up to {MAX_VIDEO_MB} MB)<input type="file" accept="video/mp4,video/webm,.mp4,.webm" disabled={!uploadsEnabled || progress !== null} onChange={(event) => { void selectFile(event.target.files?.[0]); event.target.value = ""; }} className="mt-2 block w-full min-w-0 text-xs file:mr-3 file:rounded-full file:border-0 file:bg-[#edf4ff] file:px-4 file:py-2 file:font-bold file:text-[#0035b9] disabled:opacity-50" /></label>
             {!uploadsEnabled && <p className="mt-2 text-xs text-[#bd5236]">Connect Supabase to upload video files. Video links remain available.</p>}
             {progress !== null && <div role="status" className="mt-3 space-y-2 text-xs"><p className="flex items-center gap-2"><Upload className="size-3" />{progress === 100 ? "Finishing upload..." : `Uploading ${progress}%`}</p><progress max="100" value={progress} className="h-2 w-full" /><button type="button" onClick={() => upload.current?.abort()} className="font-bold underline">Cancel upload</button></div>}
             {video.storagePath && progress === null && <p className="mt-2 text-xs text-[#3e7652]">Video uploaded. Select Save to attach it to this product.</p>}
