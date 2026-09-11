@@ -118,3 +118,72 @@ and the latest application deployment still require verification.
 
 - [Hostinger: Connect a custom domain to a Node.js application](https://www.hostinger.com/support/how-to-connect-a-custom-domain-to-a-node-js-application/)
 - [Cloudflare: Create subdomain records](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-subdomain/)
+
+## Tutorial video limit deployment on September 11, 2026
+
+Commit `6e89c7f949a3ae2ae546ba88c2b41be9f7f62482` was pushed to `main`
+and verified live at `https://support.gascompsuperlock.com` at 09:28 UTC.
+The production admin displays the 150 MB tutorial upload limit; desktop browser
+checks reported no JavaScript errors and the mobile layout had no horizontal
+overflow. An authenticated upload authorization request for 157,286,401 bytes
+returned HTTP 400 with the new 150 MB validation message. The isolated release
+passed lint, typecheck, all 31 Node tests, and the production build.
+
+Storage is still blocked separately: Supabase rejected the bucket-limit increase
+with HTTP 413, and a subsequent read confirmed the existing 52,428,800-byte limit.
+Uploads above 50 MB remain unavailable until the project-wide Storage limit and
+bucket limit can be raised. See [Supabase storage](../integrations/supabase.md#tutorial-upload-limit-increase).
+The verification report is stored locally at
+`.data/video-limit-deployment/production-verification.json`.
+
+### Restore the supported 50 MB limit
+
+At the user's request, commit `0830ac5` restores the tutorial upload limit to
+50 MB (52,428,800 bytes) and removes the unapplied bucket-limit increase migration.
+It passed lint, typecheck, all 33 Node tests, and the production build before
+being pushed to `main`. The production upload endpoint was verified to reject
+52,428,801 bytes with HTTP 400 and the 50 MB validation message. Supabase's
+`product-videos` bucket was independently verified at 52,428,800 bytes.
+This supersedes the earlier 150 MB application rollout; no Storage increase
+or plan upgrade is needed.
+
+## Hero release and duplicate deployment targets on September 11, 2026
+
+The intended automatic release path is GitHub repository
+`gascomsuperlock-glitch/Gascomp`, branch `main`, to
+`support.gascompsuperlock.com`.
+
+Commit `38660e4ee07a47833bec4b123d994f3d0eeac547` contains the brand-guideline
+hero redesign. The push triggered Git builds for both support hostnames at
+09:42:14 UTC. The `bantuan` build completed, while the `support` build failed
+after four seconds and returned no build log. Hostinger reports that both
+Node.js website records share the document root `public_html/bantuan`.
+The shared directory and duplicate triggers are confirmed; the API results
+do not establish the exact cause of the failed Git build.
+
+A source archive from the same commit was explicitly deployed to `support`.
+Build `01a08fdb-1a04-71ec-be8f-a3fb349aaf50` completed at 09:46:13 UTC.
+This manual release does not repair the GitHub auto-deployment mapping.
+
+The website-level GitHub connection must be reviewed in hPanel so that only
+`support` receives releases from this repository. The available Hostinger
+hosting API exposes builds and build settings, but no operation to change
+or disconnect a website's GitHub repository. Do not delete either website
+as a connection-reset workaround: both records currently share application
+files. Preserve the legacy hostname's redirect and existing public paths.
+
+## Warranty video limit deployment on September 11, 2026
+
+Commit `7e6c99d` was deployed and verified on the production claim form.
+Warranty videos now allow up to 50 MB, matching the private `warranty-evidence`
+bucket. Videos of 1 MB and 23 MB are accepted; nonempty smaller videos remain
+allowed. The request limit is 72 MB to cover all evidence and multipart overhead.
+
+Complete local claims passed with playable synthetic 1 MB, 23 MB, and 50 MB
+videos, including a 70 MB combined-evidence request. Production transport and
+size validation passed for the same sizes using an intentionally invalid name
+to prevent ticket creation. A synthetic 23 MB video was also uploaded to private
+production Storage, its recorded size checked, and the test object removed.
+Desktop/mobile checks had no JavaScript errors or horizontal overflow. Lint,
+typecheck, all 34 Node tests, and the production build passed. Verification is
+recorded locally in `.data/warranty-video-limit/production-verification.json`.
