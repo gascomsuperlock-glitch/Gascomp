@@ -85,6 +85,18 @@ failure; subsequent changes to Cloudflare proxying require a separate check.
    warranty submission, and private evidence access. Regenerate support
    knowledge exports if they contain localhost or old-hostname links.
 
+## Warranty video verification runtime
+
+Warranty submissions require the executable supplied by the `ffmpeg-static`
+dependency. Install dependencies on the deployment host with `npm ci` and allow
+that package's installation script to download the binary for the host's OS and
+architecture. Do not upload a macOS `node_modules` directory to Linux hosting.
+Next.js keeps this package external and includes its executable in the warranty
+route's file trace. The runtime must allow child processes and private temporary
+files. Verify a valid short video and a damaged video after deployment; if the
+decoder is missing or cannot execute, submission returns a field error and no
+ticket is saved.
+
 ## Legacy links
 
 `next.config.ts` issues HTTP 308 redirects from the exact

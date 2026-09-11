@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import { saveWarrantyTicket } from "@/features/warranty/server/ticket-service";
 import { validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyTicketInput } from "@/features/warranty/model/input";
+import { UNREADABLE_VIDEO_ERROR } from "@/features/warranty/model/video-evidence";
+import { inspectVideo } from "./video-inspection";
 
 export type WarrantyClaimState = {
   error?: string;
@@ -82,6 +84,18 @@ export async function createWarrantyClaim(
 
   if (Object.keys(fieldErrors).length > 0 || !invoice) {
     return { error: "Review the submission details.", fieldErrors };
+  }
+
+  if (damageVideo) {
+    const result = await inspectVideo(damageVideo);
+    if (result !== "valid") {
+      const error = result === "unavailable"
+        ? "Video verification is temporarily unavailable. Please try again."
+        : result === "timeout"
+          ? "Video verification took too long. Please upload a shorter copy."
+          : UNREADABLE_VIDEO_ERROR;
+      return { error: "Review the supporting evidence.", fieldErrors: { damageVideo: error } };
+    }
   }
 
   const input: WarrantyTicketInput = { ...values, purchasePrice, invoice, damagePhotos, damageVideo };

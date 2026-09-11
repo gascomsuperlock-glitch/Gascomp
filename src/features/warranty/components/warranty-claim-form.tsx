@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useActionState, useState, type FormEvent } from "react";
+import { startTransition, useActionState, useRef, useState, type FormEvent } from "react";
 import { validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyEvidenceKind } from "@/features/warranty/model/types";
+import { validateVideoPlayback } from "./video-validation";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -29,6 +30,7 @@ export function WarrantyClaimForm({
   defaultProduct: string;
   defaultSku: string;
 }) {
+  const [checkingVideo, setCheckingVideo] = useState(false);
   const [state, action, pending] = useActionState(async (previousState: WarrantyClaimState, formData: FormData) => {
     try {
       return await createWarrantyClaim(previousState, formData);
@@ -40,7 +42,7 @@ export function WarrantyClaimForm({
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Dispatch manually so a failed action does not reset text or file inputs.
     event.preventDefault();
-    if (pending) return;
+    if (pending || checkingVideo) return;
     const formData = new FormData(event.currentTarget);
     startTransition(() => action(formData));
   }
@@ -88,9 +90,9 @@ export function WarrantyClaimForm({
       <div className="mt-7 border-t border-[#2c3038]/8 pt-6">
         <div className="flex items-center gap-2"><FileCheck2 className="size-4 text-[#0035b9]" /><h3 className="text-sm font-extrabold">Supporting evidence</h3></div>
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
-          <EvidenceField name="invoice" kind="invoice" label="Invoice or proof of purchase" hint="Required · JPG, PNG, WebP, or PDF · up to 4 MB" accept="image/jpeg,image/png,image/webp,application/pdf" serverError={state.fieldErrors?.invoice} />
-          <EvidenceField name="damagePhotos" kind="photo" label="Product condition photos" hint="Required · 1–4 JPG, PNG, or WebP photos · up to 4 MB each" accept="image/jpeg,image/png,image/webp" serverError={state.fieldErrors?.damagePhotos} />
-          <div className="sm:col-span-2"><EvidenceField name="damageVideo" kind="video" label="Product issue video" hint="Required · MP4, WebM, or MOV · up to 12 MB" accept="video/mp4,video/webm,video/quicktime" serverError={state.fieldErrors?.damageVideo} /></div>
+          <EvidenceField name="invoice" kind="invoice" label="Invoice or proof of purchase" hint="Required · JPG, PNG, WebP, or PDF · up to 4 MB" accept="image/jpeg,image/png,image/webp,application/pdf" serverErrors={state.fieldErrors} disabled={pending} />
+          <EvidenceField name="damagePhotos" kind="photo" label="Product condition photos" hint="Required · 1–4 JPG, PNG, or WebP photos · up to 4 MB each" accept="image/jpeg,image/png,image/webp" serverErrors={state.fieldErrors} disabled={pending} />
+          <div className="sm:col-span-2"><EvidenceField name="damageVideo" kind="video" label="Product issue video" hint="Required · MP4, WebM, or MOV · up to 12 MB · must be playable" accept="video/mp4,video/webm,video/quicktime" serverErrors={state.fieldErrors} disabled={pending} onCheckingChange={setCheckingVideo} /></div>
         </div>
       </div>
 
@@ -100,38 +102,64 @@ export function WarrantyClaimForm({
       </label>
       {state.fieldErrors?.agreement && <p className="mt-2 text-[10px] font-semibold text-[#b33b31]">{state.fieldErrors.agreement}</p>}
 
-      <button type="submit" disabled={pending} className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(0,53,185,0.22)] transition hover:bg-[#002b96] disabled:cursor-not-allowed disabled:opacity-60">
-        {pending ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}
-        {pending ? "Submitting claim..." : "Submit claim ticket"}
+      <button type="submit" disabled={pending || checkingVideo} className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(0,53,185,0.22)] transition hover:bg-[#002b96] disabled:cursor-not-allowed disabled:opacity-60">
+        {pending || checkingVideo ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}
+        {pending ? "Submitting claim..." : checkingVideo ? "Checking video..." : "Submit claim ticket"}
       </button>
       <p className="mt-3 text-center text-[10px] leading-4 text-[#92999d]"><Upload className="mr-1 inline size-3" /> Evidence is stored privately and can only be opened from the admin dashboard.</p>
     </form>
   );
 }
 
-function EvidenceField({ name, kind, label, hint, accept, serverError }: {
-  name: string;
+function EvidenceField({ name, kind, label, hint, accept, serverErrors, disabled, onCheckingChange }: {
+  name: "invoice" | "damagePhotos" | "damageVideo";
   kind: WarrantyEvidenceKind;
   label: string;
   hint: string;
   accept: string;
-  serverError?: string;
+  serverErrors: WarrantyClaimState["fieldErrors"];
+  disabled: boolean;
+  onCheckingChange?: (checking: boolean) => void;
 }) {
-  const [clientError, setClientError] = useState<string | null>();
-  const error = clientError === undefined ? serverError : clientError ?? undefined;
+  const validationId = useRef(0);
+  const [validation, setValidation] = useState<{ error: string | null; serverErrors: WarrantyClaimState["fieldErrors"] }>();
+  const [checking, setChecking] = useState(false);
+  const error = validation && validation.serverErrors === serverErrors ? validation.error ?? undefined : serverErrors?.[name];
   const errorId = `${name}-error`;
 
-  function validate(input: HTMLInputElement) {
-    const nextError = validateEvidenceSelection(Array.from(input.files ?? []), kind);
+  async function validate(input: HTMLInputElement) {
+    const id = ++validationId.current;
+    const files = Array.from(input.files ?? []);
+    let nextError = validateEvidenceSelection(files, kind);
+    const needsPlaybackCheck = !nextError && kind === "video";
+    setChecking(needsPlaybackCheck);
+    onCheckingChange?.(needsPlaybackCheck);
+    setValidation({ error: nextError, serverErrors });
+    input.setCustomValidity(nextError ?? (needsPlaybackCheck ? "Please wait while the video is checked." : ""));
+    if (needsPlaybackCheck) {
+      nextError = await validateVideoPlayback(files[0]);
+      if (id !== validationId.current) return;
+    }
     input.setCustomValidity(nextError ?? "");
-    setClientError(nextError);
+    setValidation({ error: nextError, serverErrors });
+    setChecking(false);
+    onCheckingChange?.(false);
   }
 
   return (
     <ClaimField label={label} hint={hint} error={error} errorId={errorId}>
-      <input name={name} required multiple={kind === "photo"} type="file" accept={accept} className={fileClass}
-        aria-invalid={Boolean(error)} aria-describedby={error ? errorId : undefined}
-        onChange={(event) => validate(event.currentTarget)} onInvalid={(event) => validate(event.currentTarget)} />
+      <input name={name} required multiple={kind === "photo"} type="file" accept={accept} className={fileClass} disabled={disabled}
+        aria-invalid={Boolean(error)} aria-busy={checking} aria-describedby={error ? errorId : undefined}
+        onChange={(event) => void validate(event.currentTarget)}
+        onInvalid={(event) => { if (!event.currentTarget.files?.length) void validate(event.currentTarget); }}
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={(event) => {
+          event.preventDefault();
+          if (disabled) return;
+          event.currentTarget.files = event.dataTransfer.files;
+          void validate(event.currentTarget);
+        }} />
+      {checking && <span role="status" className="mt-1.5 block text-[10px] text-[#69747b]">Checking video playback...</span>}
     </ClaimField>
   );
 }
