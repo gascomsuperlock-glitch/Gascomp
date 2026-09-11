@@ -1,0 +1,16 @@
+{
+  "source": "gascomp-2026-brochure",
+  "sourceFile": "Brosur A5 Baru Update 2026 + Pricelist.pdf",
+  "sourceSha256": "8d338f0c4d64daba63ec55dc19fe637d819debf591b4b3b2076949dd02c9c969",
+  "generatedAt": "2026-09-11T04:42:16.287Z",
+  "mode": "dry-run",
+  "brochurePages": 26,
+  "brochureSkuCount": 59,
+  "descriptionRecords": 21,
+  "matchedProducts": 21,
+  "updatedProducts": 0,
+  "pendingUpdates": 0,
+  "unchangedProducts": 21,
+  "missingProducts": [],
+  "updates": []
+}

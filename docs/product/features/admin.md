@@ -8,6 +8,8 @@ The Gascomp team can create, view, update, archive, and delete product content. 
 
 One administrator role is sufficient for the initial release. `/admin` is protected on the server and redirects visitors without a valid session to `/admin/login`. Credentials come from environment variables; the signed HTTP-only session cookie expires after eight hours.
 
+The public home page header includes an **Admin login** link on desktop and mobile. It opens `/admin/login`; an administrator with a valid session is redirected to `/admin` by the existing login route.
+
 | Object | Supported operations |
 | --- | --- |
 | Product | Manage SKU, name, model, description, status, and source metadata |
@@ -20,6 +22,8 @@ One administrator role is sufficient for the initial release. `/admin` is protec
 | Warranty ticket | Review private submissions and update status |
 
 Images accept JPG, PNG, or WebP up to 8 MB each and six images per product. The browser compresses them to WebP before upload. Admin-managed images and content are preserved when Duoke or warehouse data is imported again.
+
+The dashboard header provides a visible **Save** button. Edits remain staged in the admin form and do not affect the customer website until the administrator selects Save. The button then persists the current product and settings content and reports saving, success, or failure. There is no automatic content save.
 
 The dashboard can download one QR code per product when `GASCOMP_PUBLIC_BASE_URL` is configured with a production HTTPS origin. It also exposes Warranty Claim, Gascomp Care, and Service Center actions with the current product and SKU context.
 

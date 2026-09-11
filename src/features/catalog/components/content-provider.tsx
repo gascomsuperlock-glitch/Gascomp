@@ -21,10 +21,9 @@ export function ContentProvider({
 }) {
   const [content, setContent] = useState<SiteContent>(initialContent);
   const [hydrated, setHydrated] = useState(storageMode !== "local");
-  const [revision, setRevision] = useState(0);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveError, setSaveError] = useState<string>();
-  const lastScheduledRevision = useRef(0);
   const latestRevision = useRef(0);
 
   useEffect(() => {
@@ -43,60 +42,81 @@ export function ContentProvider({
     });
   }, [storageMode]);
 
-  useEffect(() => {
-    if (storageMode !== "supabase" || revision === 0 || revision === lastScheduledRevision.current) return;
-    const scheduledRevision = revision;
-    lastScheduledRevision.current = scheduledRevision;
+  const persistContent = useCallback(async (contentToSave: SiteContent, savingRevision: number) => {
     setSaveState("saving");
     setSaveError(undefined);
 
-    const timeout = window.setTimeout(() => {
-      startTransition(async () => {
-        const result = await saveAdminContentAction(content);
-        if (!result.success) {
-          setSaveState("error");
-          setSaveError(result.error);
-          return;
-        }
-        if (latestRevision.current === scheduledRevision) {
-          setContent(result.content);
-          setSaveState("saved");
-        }
-      });
-    }, 650);
-
-    return () => window.clearTimeout(timeout);
-  }, [content, revision, storageMode]);
+    try {
+      const result = await saveAdminContentAction(contentToSave);
+      if (!result.success) {
+        setSaveState("error");
+        setSaveError(result.error);
+        return false;
+      }
+      if (latestRevision.current === savingRevision) {
+        setContent(result.content);
+        setHasUnsavedChanges(false);
+        setSaveState("saved");
+      } else {
+        setSaveState("idle");
+      }
+      return true;
+    } catch {
+      setSaveState("error");
+      setSaveError("The save request could not reach the server. Check the connection and try again.");
+      return false;
+    }
+  }, []);
 
   const updateContent = useCallback(
     (updater: (current: SiteContent) => SiteContent) => {
-      setContent((current) => {
-        const next = updater(current);
-        if (storageMode === "local") window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        return next;
-      });
-      if (storageMode === "supabase") {
-        latestRevision.current += 1;
-        setRevision(latestRevision.current);
-      }
+      setContent(updater);
+      setSaveState((current) => current === "saving" ? current : "idle");
+      setSaveError(undefined);
+      setHasUnsavedChanges(true);
+      latestRevision.current += 1;
     },
-    [storageMode],
+    [],
   );
 
-  const resetContent = useCallback(() => {
-    window.localStorage.removeItem(STORAGE_KEY);
-    setContent(DEFAULT_CONTENT);
-    if (storageMode === "supabase") {
-      latestRevision.current += 1;
-      setRevision(latestRevision.current);
+  const saveContent = useCallback(async () => {
+    if (!hasUnsavedChanges) return true;
+    const savingRevision = latestRevision.current;
+
+    if (storageMode !== "supabase") {
+      setSaveState("saving");
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
+        if (latestRevision.current === savingRevision) {
+          setHasUnsavedChanges(false);
+          setSaveError(undefined);
+          setSaveState("saved");
+        } else {
+          setSaveState("idle");
+        }
+        return true;
+      } catch {
+        setSaveState("error");
+        setSaveError("Changes could not be saved in this browser. Check available storage and try again.");
+        return false;
+      }
     }
-  }, [storageMode]);
+
+    return persistContent(content, savingRevision);
+  }, [content, hasUnsavedChanges, persistContent, storageMode]);
+
+  const resetContent = useCallback(() => {
+    setContent(DEFAULT_CONTENT);
+    setSaveState("idle");
+    setSaveError(undefined);
+    setHasUnsavedChanges(true);
+    latestRevision.current += 1;
+  }, []);
 
   const value = useMemo(
-    () => ({ content, hydrated, storageMode, saveState, saveError, updateContent, resetContent }),
-    [content, hydrated, resetContent, saveError, saveState, storageMode, updateContent],
+    () => ({ content, hydrated, storageMode, saveState, hasUnsavedChanges, saveError, updateContent, saveContent, resetContent }),
+    [content, hasUnsavedChanges, hydrated, resetContent, saveContent, saveError, saveState, storageMode, updateContent],
   );
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;
 }
-

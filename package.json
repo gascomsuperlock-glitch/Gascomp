@@ -24,6 +24,8 @@
     "warehouse:normalize": "scraping/.venv/bin/python -m scraping.warehouse.normalize_warehouse_xlsx",
     "warehouse:preview": "node scripts/warehouse/import-warehouse-to-supabase.mjs --dry-run",
     "warehouse:push": "node scripts/warehouse/import-warehouse-to-supabase.mjs",
+    "brochure:preview": "node scripts/catalog/import-brochure-descriptions.mjs",
+    "brochure:push": "node scripts/catalog/import-brochure-descriptions.mjs --apply",
     "supabase:check": "node scripts/supabase/check-supabase-connection.mjs",
     "test": "node --test \"src/**/*.test.mjs\" \"scripts/**/*.test.mjs\"",
     "typecheck": "next typegen && tsc --noEmit"

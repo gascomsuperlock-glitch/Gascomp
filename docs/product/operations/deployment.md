@@ -9,7 +9,7 @@
 - Preserve existing website and email services. Limit DNS changes to records required by the chosen hostname.
 - Keep product help paths stable because printed QR codes depend on them.
 
-Open decisions: available hosting services, application deployment target, deployment access, and Cloudflare DNS access.
+Open items: hosting dashboard access, production environment verification, and Cloudflare DNS access.
 
 ## DNS diagnosis on September 11, 2026
 
@@ -20,6 +20,47 @@ Neither hostname exists in the active DNS zone at the time of the check.
 Creating a subdomain in Hostinger alone does not publish it in this
 Cloudflare-managed zone. DNS failure prevents checking hosting and HTTPS;
 their state is still unknown.
+
+## Follow-up TLS diagnosis on September 11, 2026
+
+At 06:31 UTC, `support.gascompsuperlock.com` resolved to Cloudflare proxy
+addresses and a live HTTPS request returned HTTP 525. The earlier NXDOMAIN
+observation no longer describes this hostname. Cloudflare is reachable, but
+its TLS handshake with the configured origin fails. The origin address,
+hostname binding, and certificate still require verification; the response
+alone does not identify which origin setting is wrong.
+
+Check the `support` DNS record against the application's hosting target,
+confirm the custom hostname is attached to that application, and verify that
+the origin serves HTTPS for this exact hostname. Do not change unrelated DNS
+records or weaken the zone's SSL mode as a workaround.
+
+At 06:34 UTC, a direct request to the user-supplied origin `145.223.108.57`
+with the `support.gascompsuperlock.com` Host header returned HTTP 200 and the
+Gascomp Help Center page over HTTP. The response identified Hostinger and
+LiteSpeed. A direct HTTPS request with the same hostname/SNI reached port 443
+but failed with `tlsv1 alert internal error`. This reproduces the TLS failure
+without Cloudflare; HTTP routing reaches the expected application, while
+origin HTTPS remains broken. Certificate provisioning or the hostname's TLS
+configuration must be checked in Hostinger.
+
+Hostinger recommends temporarily setting the affected A record to **DNS only**
+while completing SSL installation. Keep `145.223.108.57` as the target, inspect
+the SSL status for the exact support hostname, and retry a failed installation
+if offered. Verify direct HTTPS before restoring proxying. Switching to DNS
+only alone does not repair the origin's TLS failure.
+
+Reference: [Hostinger failed Lifetime SSL installation](https://www.hostinger.com/support/5613445-how-to-fix-a-failed-lifetime-ssl-installation-in-hostinger/).
+
+Reference: [Cloudflare error 525](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-525/).
+
+## HTTPS verification on September 11, 2026
+
+At 07:13 UTC, direct origin HTTPS and the public hostname both returned HTTP
+200 with certificate verification enabled. The certificate matched
+`support.gascompsuperlock.com` and was issued by Google Trust Services. DNS
+resolved directly to `145.223.108.57`. This supersedes the earlier origin TLS
+failure; subsequent changes to Cloudflare proxying require a separate check.
 
 ## Connection procedure
 
@@ -56,8 +97,10 @@ equivalent after both hostnames are connected.
 
 The environment example, application redirect, and deployment instructions are
 prepared locally. No production environment, DNS, hosting, or certificate
-settings were changed. Hosting target details and account access are needed to
-complete deployment and verify the live site.
+settings were changed by the agent. The user-supplied Hostinger origin serves
+the expected home page and passed HTTPS verification. The live admin login
+page reports that authentication is not configured; production credentials
+and the latest application deployment still require verification.
 
 ## Provider references
 

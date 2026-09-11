@@ -56,3 +56,6 @@ __pycache__/
 
 # Generated read-only preview; the actual warehouse import report remains tracked
 /data/reports/warehouse-import-preview.json
+
+# Accidental project-local home directory containing personal tool configuration
+/~/

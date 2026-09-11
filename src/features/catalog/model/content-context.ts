@@ -8,8 +8,10 @@ export type ContentContextValue = {
   hydrated: boolean;
   storageMode: "local" | "supabase" | "static";
   saveState: "idle" | "saving" | "saved" | "error";
+  hasUnsavedChanges: boolean;
   saveError?: string;
   updateContent: (updater: (current: SiteContent) => SiteContent) => void;
+  saveContent: () => Promise<boolean>;
   resetContent: () => void;
 };
 

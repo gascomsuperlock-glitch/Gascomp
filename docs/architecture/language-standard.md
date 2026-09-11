@@ -2,6 +2,10 @@
 
 English is the canonical language for all project-owned writing and identifiers.
 
+## Agent conversation
+
+Use Indonesian when conversing with the project owner, including progress updates, questions, and final explanations, unless they request another language. This conversation preference does not change the English requirement for project-owned artifacts below.
+
 ## Required English content
 
 - User interface copy, accessibility labels, metadata, default values, and prefilled messages.

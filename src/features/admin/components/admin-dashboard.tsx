@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { BadgeCheck, Check, ChevronRight, CircleHelp, ExternalLink, FileText, HeartHandshake, ImageIcon, LogOut, Menu, MapPin, MonitorPlay, Play, Plus, QrCode, Save, Search } from "lucide-react";
+import { BadgeCheck, Check, ChevronRight, CircleHelp, ExternalLink, FileText, HeartHandshake, ImageIcon, LoaderCircle, LogOut, Menu, MapPin, MonitorPlay, Play, Plus, QrCode, Save, Search } from "lucide-react";
 import { logoutAction } from "@/features/auth/server/actions";
 import { useContent } from "@/features/catalog/hooks/use-content";
 import { ProductVisual } from "@/features/catalog/components/product-visual";
@@ -24,13 +24,12 @@ import { FaqEditor } from "@/features/catalog/components/faq-editor";
 import { SettingsEditor } from "@/features/catalog/components/settings-editor";
 
 export function AdminDashboard({ initialTickets = [], backendError, ticketError, publicBaseUrl }: { initialTickets?: WarrantyTicket[]; backendError?: string; ticketError?: string; publicBaseUrl?: string }) {
-  const { content, updateContent, resetContent, storageMode, saveState, saveError } = useContent();
+  const { content, updateContent, saveContent, resetContent, storageMode, saveState, hasUnsavedChanges, saveError } = useContent();
   const [tickets, setTickets] = useState(initialTickets);
   const [view, setView] = useState<MainView>("overview");
   const [editorTab, setEditorTab] = useState<EditorTab>("details");
   const [selectedId, setSelectedId] = useState(content.products[0]?.id ?? "");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [search, setSearch] = useState("");
 
   const selectedProduct = content.products.find((product) => product.id === selectedId) ?? content.products[0];
@@ -44,17 +43,11 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
     return content.products.filter((product) => `${product.name} ${product.model} ${product.sku}`.toLowerCase().includes(value));
   }, [content.products, search]);
 
-  function flashSaved() {
-    setSaved(true);
-    window.setTimeout(() => setSaved(false), 1500);
-  }
-
   function updateProduct(productId: string, updater: (product: Product) => Product) {
     updateContent((current) => ({
       ...current,
       products: current.products.map((product) => product.id === productId ? updater(product) : product),
     }));
-    flashSaved();
   }
 
   function addProduct() {
@@ -101,7 +94,6 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
     updateContent((current) => ({ ...current, products: current.products.filter((item) => item.id !== product.id) }));
     setSelectedId(remaining[0]?.id ?? "");
     setEditorTab("details");
-    flashSaved();
   }
 
   return (
@@ -118,7 +110,11 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className={`hidden items-center gap-1.5 text-[10px] font-bold transition sm:flex ${saveState === "error" ? "text-[#b33b31]" : saved || saveState === "saved" ? "text-[#3f8759]" : "text-[#90979b]"}`}>{saved || saveState === "saved" ? <Check className="size-3.5" /> : <Save className="size-3.5" />}{saveState === "saving" ? "Saving to Supabase..." : saveState === "error" ? "Save failed" : saved || saveState === "saved" ? "Changes saved" : storageMode === "supabase" ? "Supabase active" : "Saved automatically"}</span>
+            <span aria-live="polite" className={`hidden items-center gap-1.5 text-[10px] font-bold transition sm:flex ${saveState === "error" ? "text-[#b33b31]" : hasUnsavedChanges ? "text-[#9a6a2f]" : saveState === "saved" ? "text-[#3f8759]" : "text-[#90979b]"}`}>{!hasUnsavedChanges && saveState === "saved" ? <Check className="size-3.5" /> : <Save className="size-3.5" />}{saveState === "saving" ? "Saving changes..." : saveState === "error" ? "Save failed" : hasUnsavedChanges ? "Unsaved changes" : saveState === "saved" ? "Changes saved" : storageMode === "supabase" ? "Supabase active" : "Local storage ready"}</span>
+            <button type="button" onClick={() => void saveContent()} disabled={saveState === "saving" || !hasUnsavedChanges} className="inline-flex h-9 items-center gap-2 rounded-full bg-[#0035b9] px-4 text-xs font-extrabold text-white transition hover:bg-[#002c98] disabled:cursor-not-allowed disabled:opacity-50">
+              {saveState === "saving" ? <LoaderCircle className="size-3.5 animate-spin" /> : !hasUnsavedChanges && saveState === "saved" ? <Check className="size-3.5" /> : <Save className="size-3.5" />}
+              <span>{saveState === "saving" ? "Saving..." : saveState === "error" ? "Retry save" : !hasUnsavedChanges && saveState === "saved" ? "Saved" : "Save"}</span>
+            </button>
             <Link href="/" target="_blank" className="inline-flex h-9 items-center gap-2 rounded-full bg-[#2c3038] px-4 text-xs font-extrabold text-white"><ExternalLink className="size-3.5" /> <span className="hidden sm:inline">View website</span></Link>
             <form action={logoutAction}>
               <button type="submit" className="grid size-9 place-items-center rounded-full border border-[#2c3038]/10 bg-white text-[#69747b] transition hover:border-[#b63c35]/20 hover:bg-[#fff3f1] hover:text-[#b63c35]" aria-label="Sign out of dashboard">
@@ -132,7 +128,7 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
           <div className="mx-auto max-w-[1220px]">
             <div className={`mb-6 flex items-start gap-3 rounded-2xl border p-4 text-xs leading-5 ${backendError || saveError ? "border-[#d65d50]/30 bg-[#fff0ef] text-[#a23f36]" : storageMode === "supabase" ? "border-[#79ab8a]/35 bg-[#edf8f0] text-[#3e7652]" : "border-[#e5b895]/40 bg-[#fff5ec] text-[#8c4a2d]"}`}>
               <MonitorPlay className="mt-0.5 size-4 shrink-0" />
-              <p>{backendError || saveError ? <><strong>Storage connection issue.</strong> {backendError || saveError}</> : storageMode === "supabase" ? <><strong>Supabase connected.</strong> Products are shared across devices and images are uploaded to Storage.</> : <><strong>Local mode.</strong> Configure Supabase credentials to share products and tickets across devices.</>}</p>
+              <p>{backendError || saveError ? <><strong>Storage connection issue.</strong> {backendError || saveError}</> : storageMode === "supabase" ? <><strong>Supabase connected.</strong> Changes remain in the editor until you select Save.</> : <><strong>Local mode.</strong> Changes remain in this browser and are committed only when you select Save.</>}</p>
             </div>
 
             {view === "overview" && (
@@ -209,7 +205,6 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
                 hours={content.supportHours}
                 update={(whatsappNumber, supportHours) => {
                   updateContent((current) => ({ ...current, whatsappNumber, supportHours }));
-                  flashSaved();
                 }}
                 reset={resetContent}
               />
