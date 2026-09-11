@@ -200,11 +200,15 @@ name = "gascomp-duoke-sync"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "playwright" },
     { name = "scrapling", extra = ["fetchers"] },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "scrapling", extras = ["fetchers"], specifier = ">=0.4.8,<0.5" }]
+requires-dist = [
+    { name = "playwright", specifier = ">=1.55,<2" },
+    { name = "scrapling", extras = ["fetchers"], specifier = ">=0.4.8,<0.5" },
+]
 
 [[package]]
 name = "greenlet"

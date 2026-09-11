@@ -1,15 +1,21 @@
-# Menyiapkan Supabase Gascomp
+# Set up Gascomp Supabase
 
-Pemeriksaan terbaru: konfigurasi server berhasil membaca ketujuh tabel katalog (products, product_variations, product_images, site_settings, tutorial_videos, product_issues, faq_items). Semuanya masih kosong. Bucket product-images sudah tersedia dengan batas 5 MiB. Pemeriksaan ini bersifat read-only; CRUD dan kebijakan akses masih perlu diuji.
+1. Open the target Supabase project and inspect existing objects in the Table Editor.
+2. For a new project, run these files in order in the SQL Editor:
+   - `supabase/migrations/202609100001_catalog.sql`
+   - `supabase/migrations/202609100002_warranty.sql`
+   - `supabase/migrations/202609110001_english_system_defaults.sql`
+3. Copy the project URL, publishable key, and secret key into `.env.local`. Keep the secret server-only and never give it a `NEXT_PUBLIC_` prefix. The code also accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` name when required.
+4. Restart the development server after changing environment variables.
+5. Create a draft product, upload an image, and publish it. Confirm that public visitors cannot read drafts and another browser can read the published product.
+6. Submit a warranty claim and confirm that only an authenticated administrator can query the ticket or download evidence.
 
-Jika SQL menghasilkan `42P07: relation "products" already exists`, jangan hapus tabel atau jalankan ulang migrasi awal. Pada proyek yang telah diperiksa, objek katalog sudah tersedia sehingga langkah pembuatan tabel dapat dilewati.
+If SQL returns `42P07: relation "products" already exists`, do not delete the table or rerun the initial migration blindly. Inspect which migrations already exist and apply only the missing later migrations.
 
-1. Buka proyek Supabase yang dipakai. Periksa tabel yang sudah ada melalui Table Editor.
-2. Hanya untuk proyek yang belum memiliki tabel katalog: buka SQL Editor dan jalankan isi `supabase/migrations/202609100001_catalog.sql`. Skrip membuat tabel katalog, kebijakan akses baca publik, dan bucket gambar. Skrip berjalan dalam transaksi dan berhenti jika nama tabel atau bucket sudah digunakan. Jangan menghapus tabel lama untuk mengatasi konflik.
-3. Dari pengaturan API Keys proyek, salin secret key ke `.env.local` sebagai `SUPABASE_SECRET_KEY=...`. Jangan menggunakan awalan `NEXT_PUBLIC_` untuk kunci ini. Kode juga mendukung kunci legacy melalui `SUPABASE_SERVICE_ROLE_KEY` jika diperlukan. Jangan kirim nilai kunci melalui chat.
-4. Jalankan ulang server development setelah perubahan environment.
-5. Uji produk draft dari admin, unggah gambar, lalu publikasi. Pastikan draft tidak terbaca oleh pengunjung dan produk terbit bisa dilihat dari browser lain.
+The `product-images` bucket is public and must contain only customer-visible product photos. The `warranty-evidence` bucket is private. Product draft metadata is protected by row-level security, but a known URL in a public bucket remains accessible.
 
-Migrasi ini belum memindahkan katalog lokal, membuat tabel tiket, atau menjalankan impor Duoke. Jangan menganggap integrasi selesai sebelum CRUD dan hak akses diuji dengan secret key yang tersedia.
+Run the read-only connection check after configuration:
 
-Bucket `product-images` bersifat publik; hanya untuk foto produk yang boleh diakses publik. Bukti klaim garansi memerlukan bucket privat terpisah. Metadata produk draft dilindungi RLS, tetapi file dalam bucket publik tetap dapat diakses jika URL-nya diketahui.
+```bash
+npm run supabase:check
+```

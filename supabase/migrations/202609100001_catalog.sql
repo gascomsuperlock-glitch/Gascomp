@@ -148,6 +148,6 @@ values ('product-images', 'product-images', true, 5242880,
 on conflict (id) do update set public = excluded.public, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
 
 insert into public.site_settings (id, whatsapp_number, support_hours)
-values (true, '6281234567890', 'Senin–Sabtu, 08.00–17.00 WIB');
+values (true, '6281234567890', 'Monday–Saturday, 08:00–17:00 WIB');
 
 commit;

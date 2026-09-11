@@ -1,0 +1,881 @@
+{
+  "schemaVersion": 1,
+  "source": "warehouse-xlsx",
+  "sourceFile": "SKU_Gudang20260910092615404.xlsx",
+  "sourceSha256": "0e4f20ecf8863cecf89be6111ee78ca9f7b4b008c779ea8ab7b70b3052f5c51c",
+  "syncedAt": "2026-09-10T09:47:10.075500Z",
+  "products": [
+    {
+      "sourceProductId": "88000062",
+      "slug": "ghs-03-5d23c2d",
+      "sku": "GHS-03",
+      "name": "GHS-03",
+      "model": "Selang Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/177403_1756132085596.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000055",
+      "slug": "grt-924e-18320f8",
+      "sku": "GRT-924E",
+      "name": "GRT-924E",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/985772_1756131101988.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000173",
+      "slug": "ghs-03-pro-10m-df73403",
+      "sku": "GHS-03 PRO/10M",
+      "name": "GHS-03 PRO/10M",
+      "model": "",
+      "imageUrl": "https://cf.shopee.co.id/file/id-11134207-822wj-mprf38x4z8y4c5"
+    },
+    {
+      "sourceProductId": "88000175",
+      "slug": "st-02-high-glass-d-classic-4b3822c",
+      "sku": "ST-02 High Glass D-Classic",
+      "name": "ST-02 High Glass D-Classic",
+      "model": "",
+      "imageUrl": "https://cf.shopee.co.id/file/sg-11134201-824gh-mpt5lwbq3ax72c"
+    },
+    {
+      "sourceProductId": "88000176",
+      "slug": "bcs01-abu-c76679d",
+      "sku": "BCS01-Abu",
+      "name": "BCS01-Abu",
+      "model": "",
+      "imageUrl": "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/792917ab0dfe41028c582e682f07a554~tplv-aphluv4xwc-origin-jpeg.jpeg?dr=15568&from=520841845&idc=my&ps=933b5bde&shcp=2c1af732&shp=1f0b6a75&t=555f072d"
+    },
+    {
+      "sourceProductId": "88000063",
+      "slug": "grt-2d-6d5b4dc",
+      "sku": "GRT-2D",
+      "name": "GRT-2D",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/981185_1756131101665.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000053",
+      "slug": "grp-4e-03569d2",
+      "sku": "GRP-4E",
+      "name": "GRP-4E",
+      "model": "Selang Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/949569_1756131887658.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000057",
+      "slug": "ghc-4e-72b9174",
+      "sku": "GHC-4E",
+      "name": "GHC-4E",
+      "model": "Selang Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/058720_1756131468269.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000060",
+      "slug": "grs-01-15e7a17",
+      "sku": "GRS-01",
+      "name": "GRS-01",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/099134_1756131293938.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000085",
+      "slug": "grs-915f-d218061",
+      "sku": "GRS-915F",
+      "name": "GRS-915F",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/287129_1756131294167.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000066",
+      "slug": "eh-01-41c2470",
+      "sku": "EH-01",
+      "name": "EH-01",
+      "model": "Cooker Hood",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/292648_1756131991612.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000133",
+      "slug": "st-02-tanam-double-tornado-ce7ada5",
+      "sku": "ST-02 Tanam Double Tornado",
+      "name": "ST-02 Tanam Double Tornado",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/606844_1760089665009.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000075",
+      "slug": "8jet-8298d2e",
+      "sku": "8JET",
+      "name": "8JET",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/023988_1756131647048.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000102",
+      "slug": "st01-meja-8j-cb61ce9",
+      "sku": "ST01-Meja 8J",
+      "name": "ST01-Meja 8J",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/746198_1756131647377.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000078",
+      "slug": "st01-ir-ab04846",
+      "sku": "ST01-IR",
+      "name": "ST01-IR",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/916426_1756132085813.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000177",
+      "slug": "gho-50-hp-8e0b2b4",
+      "sku": "GHO 50 HP",
+      "name": "GHO 50 HP",
+      "model": "",
+      "imageUrl": ""
+    },
+    {
+      "sourceProductId": "88000174",
+      "slug": "st-02-meja-slim-double-classic-82bbe0f",
+      "sku": "ST-02 Meja Slim Double Classic",
+      "name": "ST-02 Meja Slim Double Classic",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/854585_1787981723543.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000170",
+      "slug": "double-classic-st-04-3b7455d",
+      "sku": "Double Classic ST-04",
+      "name": "Double Classic ST-04",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/432222_1787980706630.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000127",
+      "slug": "ehj-01-0de8c58",
+      "sku": "EHJ-01",
+      "name": "EHJ-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/118939_1756131647221.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000081",
+      "slug": "ekep-03-b2d74ee",
+      "sku": "EKEP-03",
+      "name": "EKEP-03",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/550358_1756131772371.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000067",
+      "slug": "ebsj-02-f801267",
+      "sku": "EBSJ-02",
+      "name": "EBSJ-02",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/931255_1756131647339.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000064",
+      "slug": "grs-01pro-b56dd2b",
+      "sku": "GRS-01PRO",
+      "name": "GRS-01PRO",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/183919_1756131772542.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000165",
+      "slug": "st-02-meja-high-double-classic-56dfc80",
+      "sku": "ST-02 Meja High Double Classic",
+      "name": "ST-02 Meja High Double Classic",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/909007_1772010790182.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000088",
+      "slug": "grs-925f-93200e1",
+      "sku": "GRS-925F",
+      "name": "GRS-925F",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/342319_1756131101584.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000061",
+      "slug": "grs-925-d2a7488",
+      "sku": "GRS-925",
+      "name": "GRS-925",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/354010_1756131887353.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000168",
+      "slug": "grp-934e-b2c4ed5",
+      "sku": "GRP-934E",
+      "name": "GRP-934E",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/465097_1779107934301.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000169",
+      "slug": "gascomp-care-145d7d2",
+      "sku": "GASCOMP-CARE",
+      "name": "GASCOMP-CARE",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/130975_1782142490171.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000058",
+      "slug": "grs-915-6d8b0c5",
+      "sku": "GRS-915",
+      "name": "GRS-915",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/408481_1756131991687.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000071",
+      "slug": "ebsj-01-84725a2",
+      "sku": "EBSJ-01",
+      "name": "EBSJ-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/183305_1756131101626.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000068",
+      "slug": "ebfp-01-da58e7e",
+      "sku": "EBFP-01",
+      "name": "EBFP-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/113845_1756131293992.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000059",
+      "slug": "grs915f-pro-8049cac",
+      "sku": "GRS915F-PRO",
+      "name": "GRS915F-PRO",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/522965_1756131647062.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000072",
+      "slug": "ebt01-orange-f9586d8",
+      "sku": "EBT01-ORANGE",
+      "name": "EBT01-ORANGE",
+      "model": "Troli Bag",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/560797_1756131772574.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000083",
+      "slug": "eks-01-02cceb2",
+      "sku": "EKS-01",
+      "name": "EKS-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/791019_1756131992034.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000082",
+      "slug": "bcs01-hijau-43d75d4",
+      "sku": "BCS01-Hijau",
+      "name": "BCS01-Hijau",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/261642_1756131468402.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000077",
+      "slug": "grs-915-pro-f3e876a",
+      "sku": "GRS-915-PRO",
+      "name": "GRS-915-PRO",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/608756_1756131887673.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000080",
+      "slug": "ekep-01-4ee62d6",
+      "sku": "EKEP-01",
+      "name": "EKEP-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/568866_1756131772576.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000171",
+      "slug": "grt-3d-3626c8a",
+      "sku": "GRT-3D",
+      "name": "GRT-3D",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/284865_1782142798834.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000151",
+      "slug": "bcs-03-81f470e",
+      "sku": "BCS-03",
+      "name": "BCS-03",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/384886_1766418994346.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000129",
+      "slug": "grs-05-7df65ea",
+      "sku": "GRS-05",
+      "name": "GRS-05",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/356183_1757514150215.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000128",
+      "slug": "ehc-01-e1726f6",
+      "sku": "EHC-01",
+      "name": "EHC-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/369164_1756131294281.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000144",
+      "slug": "grs-03-b87e4bf",
+      "sku": "GRS-03",
+      "name": "GRS-03",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/838509_1763037896686.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000130",
+      "slug": "grs02-pro-a373b8e",
+      "sku": "GRS02-PRO",
+      "name": "GRS02-PRO",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/033334_1757588514909.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000137",
+      "slug": "ekef-01-ffda2ea",
+      "sku": "EKEF-01",
+      "name": "EKEF-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/630773_1761055068338.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000052",
+      "slug": "grs-02-aa13593",
+      "sku": "GRS-02",
+      "name": "GRS-02",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/745340_1756131294211.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000172",
+      "slug": "ghs-03-pro-5m-373d98f",
+      "sku": "GHS-03 PRO/5M",
+      "name": "GHS-03 PRO/5M",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/283150_1782303987422.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000166",
+      "slug": "tanam-double-sun-5d532b7",
+      "sku": "TANAM- DOUBLE SUN",
+      "name": "TANAM- DOUBLE SUN",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/339394_1772708750486.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000086",
+      "slug": "9jet-a719833",
+      "sku": "9JET",
+      "name": "9JET",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/235806_1756131888916.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000122",
+      "slug": "paket-dapur-pintar-49c6928",
+      "sku": "PAKET-DAPUR-PINTAR",
+      "name": "PAKET-DAPUR-PINTAR",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/273184_1756131101686.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000121",
+      "slug": "paket-dapur-mewah-aa8caa8",
+      "sku": "PAKET-DAPUR-MEWAH",
+      "name": "PAKET-DAPUR-MEWAH",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/784689_1756132085605.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000135",
+      "slug": "ekk-02-a3cf088",
+      "sku": "EKK-02",
+      "name": "EKK-02",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/094275_1760089665036.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000054",
+      "slug": "grp-2d-af4333a",
+      "sku": "GRP-2D",
+      "name": "GRP-2D",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/289482_1756132085574.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000056",
+      "slug": "grp-924e-a7ba1d5",
+      "sku": "GRP-924E",
+      "name": "GRP-924E",
+      "model": "Regulator Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/380447_1756131772602.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000114",
+      "slug": "st-02-meja-classic-8j-836d5df",
+      "sku": "ST-02 Meja Classic + 8J",
+      "name": "ST-02 Meja Classic + 8J",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/924619_1753771713459.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000084",
+      "slug": "bcs-02-b3b2469",
+      "sku": "BCS-02",
+      "name": "BCS-02",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/469643_1756131647186.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000074",
+      "slug": "bubble-wrap-95c823c",
+      "sku": "BUBBLE-WRAP",
+      "name": "BUBBLE-WRAP",
+      "model": "Tambahan Packging",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/194603_1756131991638.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000162",
+      "slug": "tanam-9jet-4235f40",
+      "sku": "TANAM-9JET",
+      "name": "TANAM-9JET",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/573097_1770300676428.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000140",
+      "slug": "emrc-01-titanium-a98fc5d",
+      "sku": "EMRC-01-TITANIUM",
+      "name": "EMRC-01-TITANIUM",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/502040_1762350733581.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000167",
+      "slug": "grs-925pro-219f1a1",
+      "sku": "GRS-925PRO",
+      "name": "GRS-925PRO",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/598010_1772709714575.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000132",
+      "slug": "emrc-01-stainless-tebal-3e3163f",
+      "sku": "EMRC-01-STAINLESS TEBAL",
+      "name": "EMRC-01-STAINLESS TEBAL",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/105430_1772680664006.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000163",
+      "slug": "hanyapeti-khususeh01-075b207",
+      "sku": "HANYAPETI-KHUSUSEH01",
+      "name": "HANYAPETI-KHUSUSEH01",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/781471_1770300097486.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000164",
+      "slug": "hanyapeti-khususeh02-020f1fd",
+      "sku": "HANYAPETI-KHUSUSEH02",
+      "name": "HANYAPETI-KHUSUSEH02",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/242295_1769675105588.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000161",
+      "slug": "st-02-meja-8j-tornado-8b10c21",
+      "sku": "ST-02 Meja 8J+Tornado",
+      "name": "ST-02 Meja 8J+Tornado",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/303693_1768461297411.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000124",
+      "slug": "dapur-idaman-53dff2f",
+      "sku": "DAPUR-IDAMAN",
+      "name": "DAPUR-IDAMAN",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/567961_1756131772524.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000120",
+      "slug": "paket-ergonomis-gascomp-150d328",
+      "sku": "PAKET-ERGONOMIS GASCOMP",
+      "name": "PAKET-ERGONOMIS",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/343858_1756131887186.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000152",
+      "slug": "inner-pot-titanium-9f5999f",
+      "sku": "INNER POT-TITANIUM",
+      "name": "INNER POT-TITANIUM",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/392096_1766419003853.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000154",
+      "slug": "grs-935-4a4d1ad",
+      "sku": "GRS-935",
+      "name": "GRS-935",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/808156_1766419003694.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000156",
+      "slug": "ekk-01-f-c542810",
+      "sku": "EKK-01+F",
+      "name": "EKK-01+F",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/575870_1766419000255.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000155",
+      "slug": "paket-ricecooker-1382b32",
+      "sku": "PAKET-RICECOOKER",
+      "name": "PAKET-RICECOOKER",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/681403_1766418998988.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000153",
+      "slug": "burner-tornado-1a613fe",
+      "sku": "BURNER-TORNADO",
+      "name": "BURNER-TORNADO",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/803890_1766418995426.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000073",
+      "slug": "ekk-01-cf36e6c",
+      "sku": "EKK-01",
+      "name": "EKK-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/238353_1756131468238.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000141",
+      "slug": "inner-pot-stainless-steel-ede4d79",
+      "sku": "INNER POT-STAINLESS STEEL",
+      "name": "INNER POT-STAINLESS STEEL",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/049716_1762350734737.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000093",
+      "slug": "filter-01-67a714f",
+      "sku": "FILTER-01",
+      "name": "FILTER-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/891828_1756131647349.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000095",
+      "slug": "bcs01-hitam-f18e997",
+      "sku": "BCS01-Hitam",
+      "name": "BCS01-Hitam",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/271760_1756131888084.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000150",
+      "slug": "selangair-15meter-2a92893",
+      "sku": "SelangAir-15Meter",
+      "name": "SelangAir-15Meter",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/817350_1765803691263.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000149",
+      "slug": "selangair-7m-4f966eb",
+      "sku": "SelangAir-7M",
+      "name": "SelangAir-7M",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/401501_1765803663123.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000146",
+      "slug": "8jet-grt-924e-f0c21e7",
+      "sku": "8JET+GRT-924E",
+      "name": "8JET+GRT-924E",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/807820_1764253375943.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000147",
+      "slug": "burner-classic-cbb1b57",
+      "sku": "BURNER-CLASSIC",
+      "name": "BURNER-CLASSIC",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/038608_1764253375807.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000145",
+      "slug": "8jet-tornex-1f02063",
+      "sku": "8JET+TORNEX",
+      "name": "8JET+TORNEX",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/806429_1764253375798.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000138",
+      "slug": "st-02-meja-8j-inferno-9f90d97",
+      "sku": "ST-02 Meja 8J+Inferno",
+      "name": "ST-02 Meja 8J+Inferno",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/489272_1761055068317.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000134",
+      "slug": "burner-8jet-7a5d43a",
+      "sku": "BURNER-8JET",
+      "name": "BURNER-8JET",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/716759_1760089665602.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000136",
+      "slug": "gcn-2d-grey-918cd47",
+      "sku": "GCN-2D GREY",
+      "name": "GCN-2D GREY",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/004662_1760089664982.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000131",
+      "slug": "st-02-meja-classic-inferno-1856139",
+      "sku": "ST-02 Meja Classic + Inferno",
+      "name": "ST-02 Meja Classic + Inferno",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/158955_1757589133105.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000108",
+      "slug": "panci-soup-pot-8c44a1d",
+      "sku": "PANCI-SOUP-POT",
+      "name": "PANCI-SOUP-POT",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/971105_1756132085772.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000070",
+      "slug": "eh-02-f8f732d",
+      "sku": "EH-02",
+      "name": "EH-02",
+      "model": "Cooker Hood",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/943708_1756132085571.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000096",
+      "slug": "eket-01-c0bead8",
+      "sku": "EKET-01",
+      "name": "EKET-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/004629_1756132085727.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000087",
+      "slug": "sc01-c47c0fc",
+      "sku": "SC01",
+      "name": "SC01",
+      "model": "Perlengkapan Dapur",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/697238_1756132085592.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000104",
+      "slug": "pisau-6set-c075fc1",
+      "sku": "PISAU-6SET",
+      "name": "PISAU-6SET",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/255100_1756131991662.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000126",
+      "slug": "8jet-bara-9867ef2",
+      "sku": "8JET+BARA",
+      "name": "8JET+BARA",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/193520_1756131991632.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000101",
+      "slug": "st-02-meja-bara-8jet-2093d1c",
+      "sku": "ST-02 Meja Bara + 8Jet",
+      "name": "ST-02 Meja Bara + 8Jet",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/677529_1756131991670.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000091",
+      "slug": "eh-03-6d87dd9",
+      "sku": "EH-03",
+      "name": "EH-03",
+      "model": "Cooker Hood",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/563568_1756131991899.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000112",
+      "slug": "seal-1-pasang-7e75538",
+      "sku": "Seal-1 Pasang",
+      "name": "Seal-1 Pasang",
+      "model": "Karet Seal Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/835260_1756131992041.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000107",
+      "slug": "termos-pinguin-9f8d3bd",
+      "sku": "TERMOS--PINGUIN",
+      "name": "TERMOS--PINGUIN",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/133696_1756131887292.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000110",
+      "slug": "grill-pan-49809be",
+      "sku": "GRILL PAN",
+      "name": "GRILL PAN",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/074752_1756131772340.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000089",
+      "slug": "eh-04-bc08bec",
+      "sku": "EH-04",
+      "name": "EH-04",
+      "model": "Cooker Hood",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/018335_1756131772521.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000099",
+      "slug": "st-02-classic-inferno-tanam-9b74ffe",
+      "sku": "ST-02 Classic + Inferno Tanam",
+      "name": "ST-02 Classic + Inferno Tanam",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/648305_1756131772597.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000105",
+      "slug": "kipas-infico-779076b",
+      "sku": "KIPAS-INFICO",
+      "name": "KIPAS-INFICO",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/560580_1756131647394.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000113",
+      "slug": "seal-10-pasang-87f0be3",
+      "sku": "Seal-10 Pasang",
+      "name": "Seal-10 Pasang",
+      "model": "Karet Seal Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/697832_1756131647039.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000111",
+      "slug": "ebt01-hitam-7ec7779",
+      "sku": "EBT01-HITAM",
+      "name": "EBT01-HITAM",
+      "model": "Troli Bag",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/961999_1756131468237.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000065",
+      "slug": "ekep-02-9dc17e4",
+      "sku": "EKEP-02",
+      "name": "EKEP-02",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/103898_1756131468384.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000103",
+      "slug": "st01-meja-classic-4c85726",
+      "sku": "ST01-Meja Classic",
+      "name": "ST01-Meja Classic",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/580636_1756131468267.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000125",
+      "slug": "8jet-inferno-07d25c0",
+      "sku": "8JET+INFERNO",
+      "name": "8JET+INFERNO",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/406754_1756131468239.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000090",
+      "slug": "tup-5c69342",
+      "sku": "TUP",
+      "name": "TUP",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/107389_1756131468254.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000100",
+      "slug": "st-02-classic-tornado-tanam-0095211",
+      "sku": "ST-02 Classic + Tornado Tanam",
+      "name": "ST-02 Classic + Tornado Tanam",
+      "model": "Kompor Gas",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/421717_1756131468279.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000106",
+      "slug": "termos-qme-8186819",
+      "sku": "TERMOS-QME",
+      "name": "TERMOS-QME",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/024493_1756131293961.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000076",
+      "slug": "ebaf-01-faab427",
+      "sku": "EBAF-01",
+      "name": "EBAF-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/731074_1756131294726.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000119",
+      "slug": "paket-reseller-5jt-e237b79",
+      "sku": "Paket-Reseller-5JT",
+      "name": "Paket Bisnis Rumahan 5 Juta – Mulai Usaha Tanpa Stok & Dibimbing Sampai Bisa",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/216866_1756131294394.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000109",
+      "slug": "panci-yke-657a814",
+      "sku": "PANCI-YKE",
+      "name": "PANCI-YKE",
+      "model": "",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/998315_1756131101582.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000079",
+      "slug": "ekpm-01-44ff285",
+      "sku": "EKPM-01",
+      "name": "EKPM-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/985463_1756131101603.jpg?imageView2/1/w/300/h/300"
+    },
+    {
+      "sourceProductId": "88000097",
+      "slug": "eksm-01-6f24756",
+      "sku": "EKSM-01",
+      "name": "EKSM-01",
+      "model": "Elektronik",
+      "imageUrl": "https://res.bigseller.pro/sku/images/merchantsku/1184688/638463_1756131101669.jpg?imageView2/1/w/300/h/300"
+    }
+  ]
+}

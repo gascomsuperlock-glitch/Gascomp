@@ -1,38 +1,42 @@
 # Gascomp Product Help
 
-Website bantuan purnajual Gascomp. Pelanggan dapat membuka panduan produk melalui QR, menonton video YouTube langsung di website, membaca solusi kendala dan FAQ, lalu menghubungi admin melalui WhatsApp.
+Gascomp after-sales support website. Customers can open product guides from a QR code, watch embedded YouTube tutorials, review troubleshooting steps and FAQs, submit a warranty claim, and contact support through WhatsApp.
 
-## Halaman
+## Pages
 
-- `/` — katalog produk dan pintasan bantuan.
-- `/produk/[slug]` — tutorial, panduan kendala, FAQ, dan WhatsApp per SKU.
-- `/klaim-garansi` — formulir tiket klaim garansi internal dengan nomor tiket.
-- `/admin` — CRUD produk, variasi dan gambar, pengelolaan tautan YouTube, FAQ, QR, serta pemeriksaan tiket klaim garansi.
+- `/` — product catalog and support shortcuts.
+- `/produk/[slug]` — tutorials, troubleshooting, FAQs, warranty access, and WhatsApp support for one SKU.
+- `/klaim-garansi` — internal warranty claim form that returns a ticket number.
+- `/admin` — product, variation, image, tutorial, FAQ, QR, settings, and warranty-ticket management.
 
-Supabase menjadi penyimpanan utama saat environment variable-nya tersedia. Produk, variasi, konten bantuan, dan metadata gambar disimpan di PostgreSQL; gambar produk disimpan di bucket publik `product-images`; tiket serta lampiran klaim disimpan di tabel privat dan bucket privat `warranty-evidence`. Tanpa konfigurasi Supabase, localhost tetap berjalan dalam mode lokal agar pengembangan UI tidak terhenti.
+The Indonesian route segments are stable public contracts. They remain unchanged so existing links and printed QR codes continue to work. Application copy, code comments, generated system content, documentation, and database identifiers/defaults use English. Product names, SKUs, warehouse headings, and customer-message samples retain their source language when exact matching is required.
 
-Gambar produk menerima JPG, PNG, atau WebP hingga 8 MB per file dan maksimal enam gambar per produk. Browser mengompres gambar ke WebP sebelum mengunggahnya. Produk yang pernah dipublikasikan dapat diarsipkan agar URL dari QR tetap aktif; penghapusan permanen tersedia untuk draft atau entri keliru.
+## Storage and authentication
 
-Formulir klaim menerima nomor pesanan, harga, invoice, satu sampai empat foto, serta video kendala. Pelanggan menerima nomor `GWC-YYYYMMDD-XXXXXX`; tiket yang sama tampil di menu **Tiket garansi** pada admin. Saat Supabase belum dikonfigurasi, data localhost disimpan di `.data/warranty-tickets/` yang diabaikan Git.
+Supabase is the primary store when its environment variables are configured. PostgreSQL stores products, help content, image metadata, tickets, and evidence metadata. Supabase Storage uses the public `product-images` bucket and the private `warranty-evidence` bucket. Without Supabase, local development uses browser storage for catalog content and `.data/warranty-tickets/` for warranty tickets.
 
-Untuk mengaktifkan Supabase, isi variabel pada `.env.example` ke `.env.local`, lalu jalankan migrasi berikut secara berurutan melalui Supabase SQL Editor:
-
-1. `supabase/migrations/202609100001_catalog.sql` untuk katalog dan riwayat impor Duoke (lewati jika sudah dijalankan).
-2. `supabase/migrations/202609100002_warranty.sql` untuk tiket garansi dan bucket privat lampiran.
-
-Error `PGRST205` pada tiket berarti tabel garansi belum tersedia di schema cache. Jalankan migrasi garansi, lalu muat ulang `/admin`. Dashboard tetap dapat dibuka saat tiket gagal dimuat dan menampilkan pemberitahuan.
-
-Dashboard admin dilindungi dengan login server dan cookie HTTP-only bertanda tangan. Salin konfigurasi dari `.env.example` ke `.env.local`, lalu isi kredensial yang kuat:
+The admin route uses server-side authentication and an HTTP-only signed cookie. Copy `.env.example` to `.env.local` and replace every example credential before deployment:
 
 ```bash
 GASCOMP_ADMIN_USERNAME=admin
-GASCOMP_ADMIN_PASSWORD=password-kuat-minimal-12-karakter
-GASCOMP_AUTH_SECRET=random-secret-minimal-32-karakter
+GASCOMP_ADMIN_PASSWORD=replace-with-a-strong-password-at-least-12-characters
+GASCOMP_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters
 ```
 
-Kredensial lokal proyek ini sudah tersedia di `.env.local` yang diabaikan Git. Ganti seluruh nilainya sebelum deployment.
+Set the public production origin used in QR codes:
 
-Gunakan konfigurasi berikut untuk Supabase. Secret key hanya dibaca oleh modul server dan tidak boleh memakai awalan `NEXT_PUBLIC_`.
+```bash
+GASCOMP_PUBLIC_BASE_URL=https://support.gascompsuperlock.com
+```
+
+QR generation is disabled when that value is missing or points to localhost.
+
+Follow the [deployment guide](docs/product/operations/deployment.md) to connect
+hosting, Cloudflare DNS, and HTTPS before printing QR codes. Requests on the old
+`bantuan.gascompsuperlock.com` hostname redirect to `support.gascompsuperlock.com`
+once the old hostname's DNS, hosting binding, and HTTPS are also configured.
+
+Configure Supabase with server credentials. The secret key must never use a `NEXT_PUBLIC_` prefix:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=https://project-ref.supabase.co
@@ -40,25 +44,99 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 SUPABASE_SECRET_KEY=sb_secret_...
 ```
 
-Setelah hasil Duoke dinormalisasi, kirim produk dan variasi ke Supabase tanpa menimpa video, FAQ, atau panduan yang dikelola admin:
+Run these migrations in order through the Supabase SQL Editor:
+
+1. `supabase/migrations/202609100001_catalog.sql`
+2. `supabase/migrations/202609100002_warranty.sql`
+3. `supabase/migrations/202609110001_english_system_defaults.sql`
+
+`PGRST205` for warranty tickets means the warranty migration is missing from the schema cache. Run the migration and reload `/admin`.
+
+## Catalog imports
+
+Capture and normalize Duoke products, then push products and variations without overwriting admin-managed tutorials, FAQs, issues, or images:
 
 ```bash
 npm run duoke:import
 npm run duoke:push
 ```
 
-## Menjalankan proyek
+Normalize a warehouse XLSX export and import it into Supabase:
+
+```bash
+npm run warehouse:normalize -- "/path/SKU_Gudang.xlsx"
+npm run warehouse:push
+```
+
+The warehouse pipeline reads only the required source columns for SKU, title, category, image URL, and product code. New products remain drafts. Existing SKU content is preserved. Valid source images are copied to `product-images`.
+
+## Duoke support automation
+
+Build the runtime knowledge base from published and reviewed content:
+
+```bash
+npm run duoke:knowledge:export
+npm run duoke:knowledge:query -- "customer question and SKU"
+```
+
+The runtime index is stored in `data/knowledge/duoke-knowledge.json`; related notes are written to `obsidian/`. Only entries with `approval: approved` can become active answers.
+
+The Duoke browser session is stored in `scraping/.private/browser-profile/` and ignored by Git. Refresh and inspect the session with:
+
+```bash
+npm run duoke:login
+npm run duoke:inspect
+```
+
+Use the private inspection report to configure the `DUOKE_*` selectors in `.env.local`, then run one read-only pass:
+
+```bash
+npm run duoke:reply:dry-run
+```
+
+Capture approved historical conversations and build anonymized review candidates with:
+
+```bash
+npm run duoke:chat:capture
+npm run duoke:knowledge:build
+```
+
+Raw captures remain in `scraping/.private/chat-captures/`. Candidates stay pending until a reviewer supplies anonymized, verified English content:
+
+```bash
+scraping/.venv/bin/python -m scraping.duoke.knowledge.approve_duoke_knowledge \
+  --candidate history-xxxxxxxxxxxxxxxx \
+  --product-id product-id \
+  --question-file /path/anonymized-question.txt \
+  --answer-file /path/approved-answer.txt \
+  --reviewer reviewer-id
+npm run duoke:knowledge:export
+```
+
+Real delivery requires both `--send` and `DUOKE_AUTOREPLY_ENABLED=true`. The knowledge base must use a non-localhost HTTPS origin. Stop and resume watch mode with:
+
+```bash
+npm run duoke:stop
+npm run duoke:resume
+```
+
+## Development
+
+The application follows feature-based architecture in `src/app`, `src/features`, and `src/shared`. Python automation lives in `scraping`, operational Node scripts in `scripts`, and persistent files in `data`. Read the [project structure](docs/architecture/project-structure.md), [language standard](docs/architecture/language-standard.md), and the grouped [specification index](docs/product/spec.md).
 
 ```bash
 npm install
 npm run dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000) di browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Pemeriksaan
+## Verification
 
 ```bash
 npm run lint
+npm run typecheck
+npm run test
+npm run duoke:test
 npm run build
 ```

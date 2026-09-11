@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "source": "gascomp-approved-content",
+  "generatedAt": "2026-09-10T09:16:57.436Z",
+  "baseUrl": "http://localhost:3000",
+  "entries": [
+    {
+      "id": "admin-tutorial-video-1789027754007-fbb4s",
+      "kind": "tutorial",
+      "approval": "approved",
+      "title": "New tutorial",
+      "question": "How do I use GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium?",
+      "answer": "Watch the tutorial directly on the Gascomp page: http://localhost:3000/produk/produk-baru-v8lp35#tutorial",
+      "triggers": [
+        "New tutorial",
+        "How do I use GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium?",
+        "GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium",
+        "GRS-915",
+        "tutorial",
+        "video",
+        "how to use",
+        "usage instructions"
+      ],
+      "product": {
+        "id": "product-1789027198529-gwix6",
+        "slug": "produk-baru-v8lp35",
+        "sku": "GRS-915",
+        "name": "GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium",
+        "model": "Regulator",
+        "variationSkus": []
+      },
+      "sourceRef": "tutorial:video-1789027754007-fbb4s",
+      "sourceUrl": "http://localhost:3000/produk/produk-baru-v8lp35#tutorial",
+      "reviewedBy": "gascomp-admin-published-content"
+    }
+  ],
+  "skippedSources": [
+    {
+      "sourceRef": "faq:faq-1789027787646-imiwo",
+      "reason": "The question or answer is too short or incomplete."
+    }
+  ]
+}

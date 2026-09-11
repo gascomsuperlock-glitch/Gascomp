@@ -1,0 +1,33 @@
+import "server-only";
+import { randomBytes } from "node:crypto";
+import { isSupabaseConfigured } from "@/shared/integrations/supabase/server";
+import type { WarrantyTicketInput } from "../model/input";
+import type { WarrantyTicketStatus } from "../model/types";
+import { saveLocalTicket, listLocalTickets, updateLocalTicketStatus, readLocalEvidence } from "./local-ticket-store";
+import { saveSupabaseTicket, listSupabaseTickets, updateSupabaseTicketStatus, readSupabaseEvidence } from "./supabase-ticket-store";
+
+function createTicketId() {
+  const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+  return `GWC-${date}-${randomBytes(3).toString("hex").toUpperCase()}`;
+}
+
+export async function saveWarrantyTicket(input: WarrantyTicketInput) {
+  const ticketId = createTicketId();
+  const submittedAt = new Date().toISOString();
+  const ticket = isSupabaseConfigured()
+    ? await saveSupabaseTicket(input, ticketId, submittedAt)
+    : await saveLocalTicket(input, ticketId, submittedAt);
+  return { ticketId: ticket.ticketId, submittedAt: ticket.submittedAt };
+}
+
+export async function listWarrantyTickets() {
+  return isSupabaseConfigured() ? listSupabaseTickets() : listLocalTickets();
+}
+
+export async function updateWarrantyTicketStatus(ticketId: string, status: WarrantyTicketStatus) {
+  return isSupabaseConfigured() ? updateSupabaseTicketStatus(ticketId, status) : updateLocalTicketStatus(ticketId, status);
+}
+
+export async function readWarrantyEvidence(ticketId: string, evidenceId: string) {
+  return isSupabaseConfigured() ? readSupabaseEvidence(ticketId, evidenceId) : readLocalEvidence(ticketId, evidenceId);
+}

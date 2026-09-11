@@ -1,0 +1,25 @@
+{
+  "source": "warehouse-xlsx",
+  "sourceFile": "SKU_Gudang20260910092615404.xlsx",
+  "sourceSha256": "0e4f20ecf8863cecf89be6111ee78ca9f7b4b008c779ea8ab7b70b3052f5c51c",
+  "generatedAt": "2026-09-10T09:47:10.075500Z",
+  "rowsRead": 109,
+  "validProducts": 109,
+  "reviewItems": [
+    {
+      "row": "17",
+      "sku": "GHO 50 HP",
+      "reason": "The product has no image link."
+    }
+  ],
+  "excludedColumns": [
+    "price/cost",
+    "stock",
+    "GTIN",
+    "weight/dimensions",
+    "date",
+    "warehouse notes",
+    "brand/material/use/tags",
+    "combination SKU details"
+  ]
+}
