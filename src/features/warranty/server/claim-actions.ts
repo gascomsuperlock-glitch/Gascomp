@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { saveWarrantyTicket } from "@/features/warranty/server/ticket-service";
-import { MAX_PHOTO_COUNT, validateEvidenceFile } from "@/features/warranty/model/evidence";
+import { validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyTicketInput } from "@/features/warranty/model/input";
 
 export type WarrantyClaimState = {
@@ -18,13 +18,8 @@ function readText(formData: FormData, name: string, maxLength: number) {
   return String(formData.get(name) ?? "").trim().slice(0, maxLength);
 }
 
-function getFile(formData: FormData, name: string) {
-  const value = formData.get(name);
-  return value instanceof File && value.size > 0 ? value : undefined;
-}
-
 function getFiles(formData: FormData, name: string) {
-  return formData.getAll(name).filter((value): value is File => value instanceof File && value.size > 0);
+  return formData.getAll(name).filter((value): value is File => value instanceof File && (value.name !== "" || value.size > 0));
 }
 
 export async function createWarrantyClaim(
@@ -56,9 +51,11 @@ export async function createWarrantyClaim(
   };
   const purchasePriceText = readText(formData, "purchasePrice", 16).replace(/\D/g, "");
   const purchasePrice = Number(purchasePriceText);
-  const invoice = getFile(formData, "invoice");
+  const invoices = getFiles(formData, "invoice");
+  const invoice = invoices[0];
   const damagePhotos = getFiles(formData, "damagePhotos");
-  const damageVideo = getFile(formData, "damageVideo");
+  const damageVideos = getFiles(formData, "damageVideo");
+  const damageVideo = damageVideos[0];
   const agreement = formData.get("agreement") === "yes";
   const fieldErrors: WarrantyClaimState["fieldErrors"] = {};
 
@@ -72,26 +69,15 @@ export async function createWarrantyClaim(
   if (!values.orderNumber) fieldErrors.orderNumber = "Enter the order number.";
   if (!Number.isSafeInteger(purchasePrice) || purchasePrice <= 0) fieldErrors.purchasePrice = "Enter the purchase price in Indonesian Rupiah.";
   if (values.problem.length < 15) fieldErrors.problem = "Describe the product issue in at least 15 characters.";
-  if (!invoice) fieldErrors.invoice = "Upload an invoice or proof of purchase.";
-  if (damagePhotos.length === 0) fieldErrors.damagePhotos = "Upload at least one photo of the product condition.";
-  if (damagePhotos.length > MAX_PHOTO_COUNT) fieldErrors.damagePhotos = `Upload no more than ${MAX_PHOTO_COUNT} photos.`;
-  if (!damageVideo) fieldErrors.damageVideo = "Upload a video showing the product issue.";
   if (!agreement) fieldErrors.agreement = "Consent is required to submit a claim.";
 
-  if (invoice) {
-    const invoiceError = validateEvidenceFile(invoice, "invoice");
-    if (invoiceError) fieldErrors.invoice = invoiceError;
-  }
-  if (damageVideo) {
-    const videoError = validateEvidenceFile(damageVideo, "video");
-    if (videoError) fieldErrors.damageVideo = videoError;
-  }
-  for (const photo of damagePhotos) {
-    const photoError = validateEvidenceFile(photo, "photo");
-    if (photoError) {
-      fieldErrors.damagePhotos = photoError;
-      break;
-    }
+  for (const [field, files, kind] of [
+    ["invoice", invoices, "invoice"],
+    ["damagePhotos", damagePhotos, "photo"],
+    ["damageVideo", damageVideos, "video"],
+  ] as const) {
+    const error = validateEvidenceSelection(files, kind);
+    if (error) fieldErrors[field] = error;
   }
 
   if (Object.keys(fieldErrors).length > 0 || !invoice) {

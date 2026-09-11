@@ -24,6 +24,8 @@ Each product page links to `/klaim-garansi` with the product name and SKU prefil
 | Photos | One to four JPG, PNG, or WebP files up to 4 MB each |
 | Video | One MP4, WebM, or MOV file up to 12 MB |
 
+Evidence is validated immediately when files are selected. Missing files, empty files, unsupported formats, excessive photo counts, and files above the size limits show an error beside the affected upload field and block submission. No minimum size in KB or MB is defined; every selected file must be non-empty. The same validation runs on the server. Failed validation or submission preserves all entered details, consent, and selected files so customers only need to correct the affected field. A ticket confirmation replaces the form only after successful submission.
+
 Supabase stores evidence in the private `warranty-evidence` bucket. Local development stores it under `.data/warranty-tickets/`, which is ignored by Git.
 
 ## Warranty rules

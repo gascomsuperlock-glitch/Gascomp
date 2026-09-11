@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { startTransition, useActionState, useState, type FormEvent } from "react";
+import { validateEvidenceSelection } from "@/features/warranty/model/evidence";
+import type { WarrantyEvidenceKind } from "@/features/warranty/model/types";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -27,7 +29,21 @@ export function WarrantyClaimForm({
   defaultProduct: string;
   defaultSku: string;
 }) {
-  const [state, action, pending] = useActionState(createWarrantyClaim, initialState);
+  const [state, action, pending] = useActionState(async (previousState: WarrantyClaimState, formData: FormData) => {
+    try {
+      return await createWarrantyClaim(previousState, formData);
+    } catch {
+      return { error: "The claim could not be submitted. Your details are still here. Please try again." };
+    }
+  }, initialState);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    // Dispatch manually so a failed action does not reset text or file inputs.
+    event.preventDefault();
+    if (pending) return;
+    const formData = new FormData(event.currentTarget);
+    startTransition(() => action(formData));
+  }
 
   if (state.success && state.ticketId) {
     return (
@@ -46,7 +62,7 @@ export function WarrantyClaimForm({
   }
 
   return (
-    <form action={action} className="rounded-[28px] border border-[#2c3038]/8 bg-white p-5 shadow-[0_22px_60px_rgba(44,48,56,0.09)] sm:p-8">
+    <form onSubmit={handleSubmit} className="rounded-[28px] border border-[#2c3038]/8 bg-white p-5 shadow-[0_22px_60px_rgba(44,48,56,0.09)] sm:p-8">
       <div className="flex items-start gap-3 border-b border-[#2c3038]/8 pb-6">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#edf4ff] text-[#0035b9]"><ShieldCheck className="size-5" /></span>
         <div><h2 className="text-xl font-extrabold tracking-[-0.03em]">Claim form</h2><p className="mt-1 text-xs leading-5 text-[#7a8489]">Enter details that match your proof of purchase so the claim can be reviewed.</p></div>
@@ -72,9 +88,9 @@ export function WarrantyClaimForm({
       <div className="mt-7 border-t border-[#2c3038]/8 pt-6">
         <div className="flex items-center gap-2"><FileCheck2 className="size-4 text-[#0035b9]" /><h3 className="text-sm font-extrabold">Supporting evidence</h3></div>
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
-          <ClaimField label="Invoice or proof of purchase" hint="Required · JPG, PNG, WebP, or PDF · up to 4 MB" error={state.fieldErrors?.invoice}><input name="invoice" required type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className={fileClass} /></ClaimField>
-          <ClaimField label="Product condition photos" hint="Required · 1–4 JPG, PNG, or WebP photos · up to 4 MB each" error={state.fieldErrors?.damagePhotos}><input name="damagePhotos" required multiple type="file" accept="image/jpeg,image/png,image/webp" className={fileClass} /></ClaimField>
-          <div className="sm:col-span-2"><ClaimField label="Product issue video" hint="Required · MP4, WebM, or MOV · up to 12 MB" error={state.fieldErrors?.damageVideo}><input name="damageVideo" required type="file" accept="video/mp4,video/webm,video/quicktime" className={fileClass} /></ClaimField></div>
+          <EvidenceField name="invoice" kind="invoice" label="Invoice or proof of purchase" hint="Required · JPG, PNG, WebP, or PDF · up to 4 MB" accept="image/jpeg,image/png,image/webp,application/pdf" serverError={state.fieldErrors?.invoice} />
+          <EvidenceField name="damagePhotos" kind="photo" label="Product condition photos" hint="Required · 1–4 JPG, PNG, or WebP photos · up to 4 MB each" accept="image/jpeg,image/png,image/webp" serverError={state.fieldErrors?.damagePhotos} />
+          <div className="sm:col-span-2"><EvidenceField name="damageVideo" kind="video" label="Product issue video" hint="Required · MP4, WebM, or MOV · up to 12 MB" accept="video/mp4,video/webm,video/quicktime" serverError={state.fieldErrors?.damageVideo} /></div>
         </div>
       </div>
 
@@ -93,6 +109,33 @@ export function WarrantyClaimForm({
   );
 }
 
-function ClaimField({ label, hint, error, children }: { label: string; hint?: string; error?: string; children: React.ReactNode }) {
-  return <label className="block"><span className="text-[11px] font-extrabold text-[#4f5b62]">{label}</span>{children}{hint && <span className="mt-1.5 block text-[9px] leading-4 text-[#92999d]">{hint}</span>}{error && <span className="mt-1.5 block text-[10px] font-semibold text-[#b33b31]">{error}</span>}</label>;
+function EvidenceField({ name, kind, label, hint, accept, serverError }: {
+  name: string;
+  kind: WarrantyEvidenceKind;
+  label: string;
+  hint: string;
+  accept: string;
+  serverError?: string;
+}) {
+  const [clientError, setClientError] = useState<string | null>();
+  const error = clientError === undefined ? serverError : clientError ?? undefined;
+  const errorId = `${name}-error`;
+
+  function validate(input: HTMLInputElement) {
+    const nextError = validateEvidenceSelection(Array.from(input.files ?? []), kind);
+    input.setCustomValidity(nextError ?? "");
+    setClientError(nextError);
+  }
+
+  return (
+    <ClaimField label={label} hint={hint} error={error} errorId={errorId}>
+      <input name={name} required multiple={kind === "photo"} type="file" accept={accept} className={fileClass}
+        aria-invalid={Boolean(error)} aria-describedby={error ? errorId : undefined}
+        onChange={(event) => validate(event.currentTarget)} onInvalid={(event) => validate(event.currentTarget)} />
+    </ClaimField>
+  );
+}
+
+function ClaimField({ label, hint, error, errorId, children }: { label: string; hint?: string; error?: string; errorId?: string; children: React.ReactNode }) {
+  return <label className="block"><span className="text-[11px] font-extrabold text-[#4f5b62]">{label}</span>{children}{hint && <span className="mt-1.5 block text-[9px] leading-4 text-[#92999d]">{hint}</span>}{error && <span id={errorId} role="alert" className="mt-1.5 block text-[10px] font-semibold text-[#b33b31]">{error}</span>}</label>;
 }

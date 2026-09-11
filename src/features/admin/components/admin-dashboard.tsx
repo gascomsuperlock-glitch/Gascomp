@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { BadgeCheck, Check, ChevronRight, CircleHelp, ExternalLink, FileText, HeartHandshake, ImageIcon, LoaderCircle, LogOut, Menu, MapPin, MonitorPlay, Play, Plus, QrCode, Save, Search } from "lucide-react";
+import { useState } from "react";
+import { BadgeCheck, Check, CircleHelp, ExternalLink, FileText, HeartHandshake, ImageIcon, LoaderCircle, LogOut, Menu, MapPin, MonitorPlay, Play, QrCode, Save } from "lucide-react";
 import { logoutAction } from "@/features/auth/server/actions";
 import { useContent } from "@/features/catalog/hooks/use-content";
-import { ProductVisual } from "@/features/catalog/components/product-visual";
+import { ProductManagementList } from "@/features/catalog/components/product-management-list";
+import { updateBulkProductStatus } from "@/features/catalog/model/bulk-product-status";
 import { ProductImageEditor } from "@/features/catalog/components/product-image-editor";
 import { QrCodeCard } from "@/features/catalog/components/qr-code-card";
 import { createId } from "@/shared/lib/create-id";
-import { createSlug, getPrimaryProductImage } from "@/features/catalog/model/product-utils";
+import { createSlug } from "@/features/catalog/model/product-utils";
 import type { Product } from "@/features/catalog/model/types";
 import type { WarrantyTicket } from "@/features/warranty/model/types";
 import type { MainView } from "@/features/admin/model/types";
@@ -30,18 +31,11 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
   const [editorTab, setEditorTab] = useState<EditorTab>("details");
   const [selectedId, setSelectedId] = useState(content.products[0]?.id ?? "");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [search, setSearch] = useState("");
 
   const selectedProduct = content.products.find((product) => product.id === selectedId) ?? content.products[0];
   const totalVideos = content.products.reduce((total, product) => total + product.videos.length, 0);
   const totalFaqs = content.products.reduce((total, product) => total + product.faqs.length, 0);
   const publishedCount = content.products.filter((product) => product.published && !product.archived).length;
-
-  const filteredProducts = useMemo(() => {
-    const value = search.toLowerCase().trim();
-    if (!value) return content.products;
-    return content.products.filter((product) => `${product.name} ${product.model} ${product.sku}`.toLowerCase().includes(value));
-  }, [content.products, search]);
 
   function updateProduct(productId: string, updater: (product: Product) => Product) {
     updateContent((current) => ({
@@ -145,19 +139,17 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
 
             {view === "content" && (
               <div className="grid gap-5 xl:grid-cols-[285px_1fr]">
-                <aside className="self-start rounded-[22px] border border-[#2c3038]/8 bg-white p-3 shadow-sm xl:sticky xl:top-[88px]">
-                  <div className="flex items-center justify-between px-2 pb-3 pt-1"><div><p className="text-[10px] font-extrabold tracking-[0.13em] text-[#8a9297]">PRODUCTS</p><p className="mt-1 text-xs font-bold text-[#69747a]">{content.products.length} models</p></div><button type="button" onClick={addProduct} className="grid size-9 place-items-center rounded-full bg-[#0035b9] text-white" aria-label="Add product"><Plus className="size-4" /></button></div>
-                  <label className="mb-2 flex h-9 items-center gap-2 rounded-xl bg-[#f4f3ef] px-3"><Search className="size-3.5 text-[#8d9599]" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search products" className="w-full bg-transparent text-xs font-medium outline-none" /></label>
-                  <div className="max-h-[60vh] space-y-1 overflow-auto">
-                    {filteredProducts.map((product) => (
-                      <button key={product.id} type="button" onClick={() => setSelectedId(product.id)} className={`flex w-full items-center gap-3 rounded-xl p-2 text-left transition ${selectedProduct?.id === product.id ? "bg-[#edf4ff]" : "hover:bg-[#f6f5f1]"}`}>
-                        <ProductVisual tone={product.tone} image={getPrimaryProductImage(product)} alt={product.name} className="h-12 w-12 shrink-0 rounded-lg" />
-                        <span className="min-w-0 flex-1"><strong className="block truncate text-xs">{product.name}</strong><small className={`mt-1 block truncate text-[9px] font-bold ${product.archived ? "text-[#69747b]" : product.published ? "text-[#45815a]" : "text-[#9a7a55]"}`}>{product.sku} · {product.archived ? "Archived" : product.published ? "Published" : "Draft"}</small></span>
-                        <ChevronRight className="size-3.5 text-[#9aa1a5]" />
-                      </button>
-                    ))}
-                  </div>
-                </aside>
+                <ProductManagementList
+                  products={content.products}
+                  activeId={selectedProduct?.id}
+                  saving={saveState === "saving"}
+                  onAdd={addProduct}
+                  onOpen={setSelectedId}
+                  onBulkStatus={(ids, status) => updateContent((current) => ({
+                    ...current,
+                    products: updateBulkProductStatus(current.products, ids, status),
+                  }))}
+                />
 
                 {selectedProduct ? (
                   <section className="min-w-0 overflow-hidden rounded-[22px] border border-[#2c3038]/8 bg-white shadow-sm">
