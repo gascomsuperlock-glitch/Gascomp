@@ -90,8 +90,14 @@ the saved URL.
 The application continues to read tutorial rows before this additive migration.
 It does not issue a thumbnail upload URL or save thumbnail metadata until the new
 columns are available, so an older database receives an actionable error without
-losing the staged editor state. The migration is prepared locally and has not
-been applied to production.
+losing the staged editor state.
+
+On September 14, 2026, this migration was applied to production and its remote
+history was aligned with local version `202609140002`. Both columns are available,
+all eight existing tutorial rows retained the same content checksum, and their new
+thumbnail values remained null. The existing `product-images` bucket remained
+public with a 5 MB object limit and WebP support. Verification records are stored
+locally in `.data/tutorial-thumbnail-migration/`.
 
 ## Warranty video upload limit
 
