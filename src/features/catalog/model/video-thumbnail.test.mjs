@@ -15,10 +15,12 @@ test("thumbnail choices cover four useful positions without reaching the final f
   assert.deepEqual(getVideoThumbnailTimes(Number.NaN), []);
 });
 
-test("tutorial thumbnails accept only nonempty WebP images up to 1 MB", () => {
-  assert.equal(videoThumbnailFileError({ type: "image/webp", size: 1 }), null);
-  assert.equal(videoThumbnailFileError({ type: "image/webp", size: MAX_VIDEO_THUMBNAIL_BYTES }), null);
-  assert.ok(videoThumbnailFileError({ type: "image/webp", size: 0 }));
-  assert.ok(videoThumbnailFileError({ type: "image/webp", size: MAX_VIDEO_THUMBNAIL_BYTES + 1 }));
-  assert.ok(videoThumbnailFileError({ type: "image/jpeg", size: 100 }));
+test("tutorial thumbnails accept browser canvas image formats up to 1 MB", () => {
+  for (const type of ["image/webp", "image/jpeg", "image/png"]) {
+    assert.equal(videoThumbnailFileError({ type, size: 1 }), null);
+    assert.equal(videoThumbnailFileError({ type, size: MAX_VIDEO_THUMBNAIL_BYTES }), null);
+    assert.ok(videoThumbnailFileError({ type, size: 0 }));
+    assert.ok(videoThumbnailFileError({ type, size: MAX_VIDEO_THUMBNAIL_BYTES + 1 }));
+  }
+  assert.ok(videoThumbnailFileError({ type: "image/gif", size: 100 }));
 });

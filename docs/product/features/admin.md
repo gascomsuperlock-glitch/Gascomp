@@ -61,7 +61,7 @@ Changes use the existing staged-save workflow: Save persists array order as cons
 
 ## Uploaded video thumbnails
 
-Selecting an MP4/WebM file prepares four local frame choices before uploading. The administrator chooses one thumbnail and explicitly starts the upload; the product editor is updated only after the selected WebP thumbnail and video have both reached Storage. Existing uploaded tutorials provide a **Choose another thumbnail** action that reads frames from the stored video and changes only its thumbnail.
+Selecting an MP4/WebM file prepares four local frame choices before uploading. The administrator chooses one thumbnail and explicitly starts the upload; the product editor is updated only after the selected browser-generated WebP, JPEG, or PNG thumbnail and video have both reached Storage. Existing uploaded tutorials provide a **Choose another thumbnail** action that reads frames from the stored video and changes only its thumbnail.
 
 Thumbnail changes remain staged until Save. The selected image is visible in the video editor preview and Video Order list, then appears in the customer tutorial list and as the native player poster after Save. The thumbnail upload endpoint checks the request origin, admin session, saved product identity, file type and size, and database thumbnail columns before issuing a single-path signed Storage upload.
 

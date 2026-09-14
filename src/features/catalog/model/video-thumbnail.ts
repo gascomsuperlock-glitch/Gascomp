@@ -1,4 +1,5 @@
 export const VIDEO_THUMBNAIL_MIME_TYPE = "image/webp";
+export const VIDEO_THUMBNAIL_MIME_TYPES = [VIDEO_THUMBNAIL_MIME_TYPE, "image/jpeg", "image/png"] as const;
 export const MAX_VIDEO_THUMBNAIL_BYTES = 1024 * 1024;
 
 export type VideoThumbnailCandidate = {
@@ -8,7 +9,9 @@ export type VideoThumbnailCandidate = {
 };
 
 export function videoThumbnailFileError(file: { size: number; type: string }) {
-  if (file.type !== VIDEO_THUMBNAIL_MIME_TYPE) return "The tutorial thumbnail must be a WebP image.";
+  if (!VIDEO_THUMBNAIL_MIME_TYPES.some((type) => type === file.type)) {
+    return "The tutorial thumbnail must be a WebP, JPEG, or PNG image.";
+  }
   if (!Number.isSafeInteger(file.size) || file.size <= 0 || file.size > MAX_VIDEO_THUMBNAIL_BYTES) {
     return "The tutorial thumbnail must be between 1 byte and 1 MB.";
   }

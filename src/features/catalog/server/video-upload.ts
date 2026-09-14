@@ -44,7 +44,7 @@ async function createTutorialUpload(request: Request, kind: "video" | "thumbnail
   const bucket = kind === "video" ? "product-videos" : "product-images";
   const path = kind === "video"
     ? `products/${input.productId}/${randomUUID()}.${input.type === "video/mp4" ? "mp4" : "webm"}`
-    : `tutorial-thumbnails/${input.productId}/${randomUUID()}.webp`;
+    : `tutorial-thumbnails/${input.productId}/${randomUUID()}.${thumbnailExtension(input.type)}`;
   const result = await client.storage.from(bucket).createSignedUploadUrl(path);
   if (result.error) {
     console.error("Tutorial upload authorization failed", { kind, code: result.error.name });
@@ -53,4 +53,10 @@ async function createTutorialUpload(request: Request, kind: "video" | "thumbnail
       : "Thumbnail storage is unavailable. Check the product image bucket configuration." }, 503);
   }
   return reply({ signedUrl: result.data.signedUrl, storagePath: path, publicUrl: client.storage.from(bucket).getPublicUrl(path).data.publicUrl });
+}
+
+function thumbnailExtension(mimeType: string) {
+  if (mimeType === "image/jpeg") return "jpg";
+  if (mimeType === "image/png") return "png";
+  return "webp";
 }

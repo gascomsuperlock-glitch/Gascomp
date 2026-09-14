@@ -8,7 +8,7 @@ Supabase PostgreSQL is the primary shared database; Supabase Storage holds produ
 | --- | --- |
 | Products, variations, help content, publication state | PostgreSQL |
 | Tutorial video files | Public `product-videos` bucket; signed admin uploads, MP4/WebM up to 50 MB |
-| Tutorial video thumbnails | Public `product-images` bucket under `tutorial-thumbnails/`; signed admin uploads, generated WebP up to 1 MB |
+| Tutorial video thumbnails | Public `product-images` bucket under `tutorial-thumbnails/`; signed admin uploads, generated WebP/JPEG/PNG up to 1 MB |
 | Product image files | Public `product-images` bucket |
 | Image metadata and product/variation relationships | PostgreSQL |
 | Warranty tickets and evidence metadata | Private PostgreSQL tables |
@@ -82,7 +82,8 @@ Storage or plan change is required.
 `202609140002_tutorial_video_thumbnails.sql` adds nullable `thumbnail_url` and
 `thumbnail_storage_path` columns to `tutorial_videos`. The browser extracts four
 frames from a selected MP4/WebM file and uploads only the administrator's chosen
-WebP thumbnail to the existing public `product-images` bucket. The same metadata
+WebP, JPEG, or PNG thumbnail to the existing public `product-images` bucket. The browser
+prefers WebP and preserves its actual canvas fallback type when WebP encoding is unavailable. The same metadata
 also supports replacing a thumbnail on an existing uploaded tutorial without
 re-uploading its video. The customer tutorial list and native player poster read
 the saved URL.
