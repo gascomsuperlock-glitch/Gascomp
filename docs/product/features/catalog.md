@@ -25,6 +25,8 @@ If a product or tutorial is unavailable, the page presents a clear empty state a
 
 Content is available in clear Indonesian and English and remains specific to each model. Technical troubleshooting must be verified by the Gascomp team and must identify when a customer should stop and contact support.
 
+The public **What is happening?** section lists the issue guides entered for that product in the admin **Issues** editor. Opening a guide reveals its ordered troubleshooting steps, optional safety warning, and a contextual WhatsApp support action. When a product has no issue guides, the section shows an explicit localized empty state instead of blank space.
+
 Short product descriptions may be sourced from the verified Gascomp brochure and matched to existing admin products by SKU. A brochure import updates only the `description` field; it does not create products or change names, status, images, tutorials, issue guides, FAQs, or source identity. Explicit catalog aliases may cover formatting differences and documented model variants.
 
 Import result on September 11, 2026: 21 existing admin products received short descriptions from the 2026 brochure. The mapping contains 13 exact SKU matches, two formatting-normalized matches, two verified catalog aliases, and four documented catalog variants. The other 40 brochure SKUs were absent from the current admin catalog and were not created. Database verification confirmed that no product field other than `description` changed.

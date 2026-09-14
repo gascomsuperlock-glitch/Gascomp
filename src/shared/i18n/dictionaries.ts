@@ -95,6 +95,7 @@ const english = {
     issuesEyebrow: "ISSUE-BASED HELP",
     issuesTitle: "What is happening?",
     issuesCopy: "Choose the closest issue, then follow each troubleshooting step.",
+    noIssues: "Troubleshooting guidance is being prepared for this product. Contact the Gascomp team if you need help now.",
     askSupport: "Still unresolved? Ask support",
     faqEyebrow: "FREQUENTLY ASKED QUESTIONS",
     faqTitle: "The answer may be here.",
@@ -187,7 +188,7 @@ const indonesian = {
   },
   product: {
     notFound: "Panduan produk tidak ditemukan", notFoundCopy: "Periksa kode QR atau pilih produk dari halaman beranda.", returnHome: "Kembali ke beranda", chooseAnother: "Pilih produk lain", otherProduct: "Produk lain", officialGuide: "PANDUAN RESMI", viewTutorials: "Lihat tutorial", haveIssue: "Saya mengalami kendala",
-    tutorialsEyebrow: "TUTORIAL PENGGUNAAN", tutorialsTitle: "Ikuti setiap langkah sesuai ritme Anda.", videoList: "DAFTAR VIDEO", noVideos: "Belum ada video untuk produk ini.", issuesEyebrow: "BANTUAN BERDASARKAN KENDALA", issuesTitle: "Apa yang sedang terjadi?", issuesCopy: "Pilih kendala yang paling sesuai, lalu ikuti setiap langkah penanganannya.", askSupport: "Masih belum selesai? Hubungi bantuan",
+    tutorialsEyebrow: "TUTORIAL PENGGUNAAN", tutorialsTitle: "Ikuti setiap langkah sesuai ritme Anda.", videoList: "DAFTAR VIDEO", noVideos: "Belum ada video untuk produk ini.", issuesEyebrow: "BANTUAN BERDASARKAN KENDALA", issuesTitle: "Apa yang sedang terjadi?", issuesCopy: "Pilih kendala yang paling sesuai, lalu ikuti setiap langkah penanganannya.", noIssues: "Panduan kendala sedang disiapkan untuk produk ini. Hubungi tim Gascomp jika Anda memerlukan bantuan sekarang.", askSupport: "Masih belum selesai? Hubungi bantuan",
     faqEyebrow: "PERTANYAAN YANG SERING DIAJUKAN", faqTitle: "Jawabannya mungkin ada di sini.", warrantyTitle: "Ajukan klaim garansi", warrantyCopy: "Siapkan bukti pembelian, nomor pesanan, harga pembelian, serta foto atau video kendala. Formulir klaim akan menyertakan nama produk dan SKU.", warrantyTerms: "Pengajuan akan ditinjau sesuai syarat dan ketentuan garansi Gascomp.", warrantyAction: "Ajukan Klaim Garansi",
   },
   player: { loading: "Memuat video...", failed: "Video tidak dapat dimuat. Buka video asli melalui tautan di bawah.", tiktok: "Buka video ini di TikTok.", unsupported: "Tambahkan tautan video yang didukung atau unggah video untuk melihat pratinjau.", openOriginal: "Buka video asli" },

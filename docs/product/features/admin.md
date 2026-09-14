@@ -16,7 +16,7 @@ The public home page header includes an **Admin login** link on desktop and mobi
 | Variation | Add, edit, and remove names and SKUs per product |
 | Image | Upload, preview, replace, link to a variation, set primary, and delete |
 | Tutorial | Manage and reorder YouTube, Google Drive, TikTok, direct video links, file uploads, administrator-selected thumbnails, titles, descriptions, and duration |
-| Issue guide | Manage issue titles, summaries, ordered steps, and warnings |
+| Issue guide | Add, edit, reorder, and remove issue titles, summaries, ordered troubleshooting steps, and optional safety warnings |
 | FAQ | Add, edit, reorder, and remove questions and answers |
 | Settings | Manage the WhatsApp destination and support hours |
 | Warranty ticket | Review private submissions and update status |
@@ -41,7 +41,9 @@ On smaller screens, the workspace shows one pane at a time. Selecting a product 
 
 The default picker emphasizes search and opening a guide. **Bulk Actions** reveals selection checkboxes and publication/archive controls; **Done Selecting** closes them and clears the selection. Search changes also clear selection. Opening a product does not alter the bulk selection. Existing bulk scope, eligibility, counts, and staged-save rules continue to apply.
 
-The editor header shows the full product name, SKU, model, publication status, and an **Open Guide** link for published or archived products. Status copy reminds administrators that changes require Save. Information, Images, Video, FAQ, and Product QR are grouped separately from customer support actions. Image, video, and FAQ counts appear beside their section labels. On narrow phones, a labeled **Editor Section** selector exposes every section without horizontal scrolling.
+The editor header shows the full product name, SKU, model, publication status, and an **Open Guide** link for published or archived products. Status copy reminds administrators that changes require Save. Information, Images, Video, Issues, FAQ, and Product QR are grouped separately from customer support actions. Image, video, issue-guide, and FAQ counts appear beside their section labels. On narrow phones, a labeled **Editor Section** selector exposes every section without horizontal scrolling.
+
+The **Issues** section explains that each issue guide represents one customer symptom shown under **What is happening?** on the public product page. Administrators provide a title, short explanation, ordered troubleshooting steps, and an optional safety warning. Issue guides and individual steps can be reordered or removed. All edits remain staged until Save.
 
 ## Overview workspace
 

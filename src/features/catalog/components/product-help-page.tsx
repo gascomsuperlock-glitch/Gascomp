@@ -179,6 +179,7 @@ export function ProductHelpPage({ slug }: { slug: string }) {
                 );
               })}
             </div>
+            {product.issues.length === 0 && <EmptyBlock text={copy.noIssues} />}
           </div>
         </section>
 

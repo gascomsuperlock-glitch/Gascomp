@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgeCheck, CircleHelp, FileText, HeartHandshake, ImageIcon, MapPin, Play, QrCode } from "lucide-react";
+import { BadgeCheck, CircleAlert, CircleHelp, FileText, HeartHandshake, ImageIcon, MapPin, Play, QrCode } from "lucide-react";
 import type { EditorTab } from "@/features/catalog/model/editor-types";
 import type { Product } from "@/features/catalog/model/types";
 
@@ -8,6 +8,7 @@ const contentSections = [
   ["details", FileText, "Information"],
   ["images", ImageIcon, "Images"],
   ["videos", Play, "Video"],
+  ["issues", CircleAlert, "Issues"],
   ["faqs", CircleHelp, "FAQ"],
   ["qr", QrCode, "Product QR"],
 ] as const;
@@ -18,7 +19,7 @@ const supportSections = [
 ] as const;
 
 export function ContentEditorNavigation({ activeTab, onSelect, product }: { activeTab: EditorTab; onSelect: (tab: EditorTab) => void; product: Product }) {
-  const counts: Partial<Record<EditorTab, number>> = { images: product.images.length, videos: product.videos.length, faqs: product.faqs.length };
+  const counts: Partial<Record<EditorTab, number>> = { images: product.images.length, videos: product.videos.length, issues: product.issues.length, faqs: product.faqs.length };
   return <div className="border-b border-[#e3e8ef] bg-[#fafbfd] px-4 py-3 sm:px-5">
     <div className="sm:hidden">
       <label htmlFor="content-editor-section" className="block text-xs font-bold text-[#53657c]">Editor Section</label>

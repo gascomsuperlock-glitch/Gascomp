@@ -23,6 +23,7 @@ import { DetailsEditor } from "@/features/catalog/components/details-editor";
 import { TicketServiceCard } from "@/features/catalog/components/ticket-service-card";
 import { VideosEditor } from "@/features/catalog/components/videos-editor";
 import { FaqEditor } from "@/features/catalog/components/faq-editor";
+import { IssuesEditor } from "@/features/catalog/components/issues-editor";
 import { SettingsEditor } from "@/features/catalog/components/settings-editor";
 import { ContentEditorNavigation } from "@/features/admin/components/content-editor-navigation";
 
@@ -218,6 +219,7 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
                       {editorTab === "details" && <DetailsEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} onDelete={() => deleteProduct(selectedProduct)} />}
                       {editorTab === "images" && <ProductImageEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
                       {editorTab === "videos" && <VideosEditor key={selectedProduct.id} product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
+                      {editorTab === "issues" && <IssuesEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
                       {editorTab === "faqs" && <FaqEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
                       {editorTab === "qr" && <QrCodeCard key={`${selectedProduct.id}:${selectedProduct.slug}:${publicBaseUrl}`} slug={selectedProduct.slug} name={selectedProduct.name} sku={selectedProduct.sku} published={selectedProduct.published} archived={selectedProduct.archived} publicBaseUrl={publicBaseUrl} />}
                       {editorTab === "warranty" && <TicketServiceCard product={selectedProduct} service="warranty" />}
