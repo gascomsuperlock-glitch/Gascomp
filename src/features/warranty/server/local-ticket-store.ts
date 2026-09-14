@@ -53,9 +53,11 @@ export async function listLocalTickets() {
 export async function updateLocalTicketStatus(ticketId: string, status: WarrantyTicketStatus) {
   const ticketPath = path.join(TICKET_ROOT, ticketId, "ticket.json");
   const value = JSON.parse(await readFile(ticketPath, "utf8")) as Record<string, unknown>;
+  const updatedAt = new Date().toISOString();
   value.status = status;
-  value.updatedAt = new Date().toISOString();
+  value.updatedAt = updatedAt;
   await writeFile(ticketPath, JSON.stringify(value, null, 2), "utf8");
+  return updatedAt;
 }
 
 export async function readLocalEvidence(ticketId: string, evidenceId: string) {

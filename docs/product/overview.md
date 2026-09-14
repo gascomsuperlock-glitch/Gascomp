@@ -8,11 +8,11 @@ Gascomp customers need clear usage guidance, embedded tutorial videos, troublesh
 
 Primary users are customers who already own a Gascomp product. Gascomp staff use the admin panel to maintain product help and review warranty tickets.
 
-English is the standard language for project-owned interface copy, documentation, generated content, and database defaults. Exact external source values and stable public URLs follow the compatibility rules in the [language standard](../architecture/language-standard.md).
+English is the standard language for project-owned source content, documentation, generated content, operator-facing copy, and database defaults. Customer-facing experiences support Indonesian and English through a language selector. Exact external source values and stable public URLs follow the compatibility rules in the [language standard](../architecture/language-standard.md).
 
 ## Language requirement
 
-Use English as the standard language for every task and all project-owned output, including code, configuration, documentation, comments, tests, logs, generated content, and user-facing copy. Preserve exact external values only when they are listed as compatibility exceptions in the [language standard](../architecture/language-standard.md).
+Use English as the standard language for every task and all project-owned output, including code, configuration, documentation, comments, tests, logs, generated content, and operator-facing copy. Customer-facing pages must provide a language selector with Indonesian and English, persist the customer's choice, and fall back to English when no choice or translation is available. Preserve exact external values only when they are listed as compatibility exceptions in the [language standard](../architecture/language-standard.md).
 
 ## Initial scope
 

@@ -1,5 +1,7 @@
 import { getAdminSession } from "@/features/auth/server/session";
 import { readWarrantyEvidence } from "@/features/warranty/server/ticket-service";
+import { evidenceResponse } from "@/features/warranty/server/evidence-response";
+import { createVideoPreview } from "@/features/warranty/server/video-preview";
 
 export async function GET(
   request: Request,
@@ -13,14 +15,15 @@ export async function GET(
 
   const evidence = await readWarrantyEvidence(ticketId, evidenceId);
   if (!evidence) return new Response("Evidence not found", { status: 404 });
-  const disposition = new URL(request.url).searchParams.get("download") === "1" ? "attachment" : "inline";
-  const safeName = evidence.name.replace(/[\r\n"]/g, "_");
-  return new Response(new Uint8Array(evidence.bytes), {
-    headers: {
-      "Content-Type": evidence.mimeType,
-      "Content-Disposition": `${disposition}; filename="${safeName}"; filename*=UTF-8''${encodeURIComponent(safeName)}`,
-      "Cache-Control": "private, no-store",
-      "X-Content-Type-Options": "nosniff",
-    },
-  });
+  const query = new URL(request.url).searchParams;
+  if (query.get("preview") === "1" && query.get("download") !== "1") {
+    const preview = await createVideoPreview(evidence.bytes, request.signal);
+    if (!preview) return new Response("The video preview is unavailable. Retry or download the original video to open it in a compatible player.", {
+      status: 503, headers: { "Cache-Control": "private, no-store" },
+    });
+    return evidenceResponse(request, { bytes: preview, name: "video-preview.mp4", mimeType: "video/mp4" });
+  }
+  return evidenceResponse(request, evidence);
 }
+
+export const HEAD = GET;

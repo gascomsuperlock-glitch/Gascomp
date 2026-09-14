@@ -8,6 +8,7 @@ Supabase PostgreSQL is the primary shared database; Supabase Storage holds produ
 | --- | --- |
 | Products, variations, help content, publication state | PostgreSQL |
 | Tutorial video files | Public `product-videos` bucket; signed admin uploads, MP4/WebM up to 50 MB |
+| Tutorial video thumbnails | Public `product-images` bucket under `tutorial-thumbnails/`; signed admin uploads, generated WebP up to 1 MB |
 | Product image files | Public `product-images` bucket |
 | Image metadata and product/variation relationships | PostgreSQL |
 | Warranty tickets and evidence metadata | Private PostgreSQL tables |
@@ -75,6 +76,22 @@ browser validation, server validation, and the production `product-videos`
 bucket now use the same inclusive 52,428,800-byte limit. The unapplied
 `202609110003_tutorial_video_upload_limit.sql` migration was withdrawn; no
 Storage or plan change is required.
+
+## Tutorial video thumbnail migration
+
+`202609140002_tutorial_video_thumbnails.sql` adds nullable `thumbnail_url` and
+`thumbnail_storage_path` columns to `tutorial_videos`. The browser extracts four
+frames from a selected MP4/WebM file and uploads only the administrator's chosen
+WebP thumbnail to the existing public `product-images` bucket. The same metadata
+also supports replacing a thumbnail on an existing uploaded tutorial without
+re-uploading its video. The customer tutorial list and native player poster read
+the saved URL.
+
+The application continues to read tutorial rows before this additive migration.
+It does not issue a thumbnail upload URL or save thumbnail metadata until the new
+columns are available, so an older database receives an actionable error without
+losing the staged editor state. The migration is prepared locally and has not
+been applied to production.
 
 ## Warranty video upload limit
 

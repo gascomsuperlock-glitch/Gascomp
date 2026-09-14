@@ -6,9 +6,9 @@ English is the canonical language for all project-owned writing and identifiers.
 
 Use Indonesian when conversing with the project owner, including progress updates, questions, and final explanations, unless they request another language. This conversation preference does not change the English requirement for project-owned artifacts below.
 
-## Required English content
+## Required English project content
 
-- User interface copy, accessibility labels, metadata, default values, and prefilled messages.
+- Source-level user interface copy, accessibility labels, metadata, default values, and prefilled messages must be authored in English unless they are localized customer-facing translations.
 - Source-code comments, test descriptions, fixture labels, validation errors, logs, and CLI help/output.
 - Documentation, generated reports, Obsidian headings, generated questions/answers, and bot messages.
 - Database tables, columns, constraints, policies, enum-like values, comments, and system defaults.
@@ -26,3 +26,11 @@ Exact external values must remain unchanged when translation would damage identi
 - Migration predicates may contain exact legacy non-English values solely to replace them with English equivalents.
 
 Code around these values, including variable names, comments, errors, reports, and UI labels, must remain English. New public routes should use English unless a compatibility decision explicitly requires another value.
+
+## Customer language selection
+
+- Customer-facing pages must support Indonesian and English.
+- Provide a visible language selector so customers can choose `Indonesian` or `English`.
+- Apply the selected language consistently to navigation, headings, help content, FAQs, forms, validation messages, support actions, accessibility labels, and metadata where localized values exist.
+- Persist the customer's language preference for subsequent visits and use English as the fallback when no preference or translation exists.
+- Keep source code, documentation, configuration, database identifiers, logs, and operator-facing content in English. Indonesian customer-facing translations are localized content, not a replacement for the project language standard.

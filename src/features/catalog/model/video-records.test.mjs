@@ -16,3 +16,19 @@ test("extended schema populates both URLs and preserves upload metadata", () => 
   assert.equal(row.youtube_url, row.video_url);
   assert.equal(row.storage_path, "products/product/video.webm");
 });
+
+test("thumbnail columns are written only when their schema is available", () => {
+  const product = { id: "product", videos: [{
+    id: "video",
+    videoUrl: "https://storage.example.com/video.webm",
+    thumbnailUrl: "https://storage.example.com/thumbnail.webp",
+    thumbnailStoragePath: "tutorial-thumbnails/product/thumbnail.webp",
+  }] };
+  const [legacyRow] = videoRecords([product], true, false);
+  assert.equal("thumbnail_url" in legacyRow, false);
+  assert.equal("thumbnail_storage_path" in legacyRow, false);
+
+  const [thumbnailRow] = videoRecords([product], true, true);
+  assert.equal(thumbnailRow.thumbnail_url, product.videos[0].thumbnailUrl);
+  assert.equal(thumbnailRow.thumbnail_storage_path, product.videos[0].thumbnailStoragePath);
+});

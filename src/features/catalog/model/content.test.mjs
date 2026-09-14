@@ -93,10 +93,17 @@ test("tutorial mapping preserves legacy YouTube and generic video storage metada
     { id: "product", status: "published" }, [], [],
     [
       { id: "legacy", product_id: "product", youtube_url: "https://youtu.be/dQw4w9WgXcQ", position: 0 },
-      { id: "uploaded", product_id: "product", youtube_url: "", video_url: "https://storage.example.com/tutorial.mp4", storage_path: "products/product/tutorial.mp4", position: 1 },
+      {
+        id: "uploaded", product_id: "product", youtube_url: "",
+        video_url: "https://storage.example.com/tutorial.mp4", storage_path: "products/product/tutorial.mp4",
+        thumbnail_url: "https://storage.example.com/tutorial.webp",
+        thumbnail_storage_path: "tutorial-thumbnails/product/tutorial.webp", position: 1,
+      },
     ], [], [],
   );
   assert.equal(mapped.videos[0].videoUrl, "https://youtu.be/dQw4w9WgXcQ");
   assert.equal(mapped.videos[1].videoUrl, "https://storage.example.com/tutorial.mp4");
   assert.equal(mapped.videos[1].storagePath, "products/product/tutorial.mp4");
+  assert.equal(mapped.videos[1].thumbnailUrl, "https://storage.example.com/tutorial.webp");
+  assert.equal(mapped.videos[1].thumbnailStoragePath, "tutorial-thumbnails/product/tutorial.webp");
 });

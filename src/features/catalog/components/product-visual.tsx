@@ -9,7 +9,7 @@ const tones: Record<ProductTone, { bg: string; shell: string; glow: string }> = 
   green: { bg: "bg-[#dfe9df]", shell: "bg-[#4f745e]", glow: "bg-[#a9c3af]" },
 };
 
-export function ProductVisual({ tone, image, alt = "Gascomp product photo", className }: { tone: ProductTone; image?: ProductImage; alt?: string; className?: string }) {
+export function ProductVisual({ tone, image, alt = "Gascomp product photo", className, compact = false }: { tone: ProductTone; image?: ProductImage; alt?: string; className?: string; compact?: boolean }) {
   const palette = tones[tone];
   const Icon = tone === "orange" ? Gauge : tone === "navy" ? LockKeyhole : Flame;
 
@@ -18,10 +18,14 @@ export function ProductVisual({ tone, image, alt = "Gascomp product photo", clas
     return (
       <div className={cn("relative isolate overflow-hidden bg-[#f4f5f7]", className)}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={source} alt={image.alt || alt} className="size-full object-contain p-3" />
-        {image.isPrimary && <span className="absolute bottom-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[8px] font-extrabold tracking-[0.12em] text-[#0035b9] shadow-sm">PRIMARY PHOTO</span>}
+        <img src={source} alt={image.alt || alt} width={640} height={480} loading="lazy" className={cn("size-full object-contain", compact ? "p-1" : "p-3")} />
+        {!compact && image.isPrimary && <span className="absolute bottom-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[8px] font-extrabold tracking-[0.12em] text-[#0035b9] shadow-sm">PRIMARY PHOTO</span>}
       </div>
     );
+  }
+
+  if (compact) {
+    return <div aria-hidden="true" className={cn("grid place-items-center text-[#0035b9]", palette.bg, className)}><Icon className="size-5" /></div>;
   }
 
   return (

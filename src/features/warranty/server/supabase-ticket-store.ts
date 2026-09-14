@@ -77,9 +77,9 @@ export async function listSupabaseTickets(): Promise<WarrantyTicket[]> {
 export async function updateSupabaseTicketStatus(ticketId: string, status: WarrantyTicketStatus) {
   const client = createAdminSupabaseClient();
   if (!client) throw new Error("Supabase is not configured.");
-  const result = await client.from("warranty_tickets").update({ status }).eq("ticket_id", ticketId).select("ticket_id").single();
+  const result = await client.from("warranty_tickets").update({ status }).eq("ticket_id", ticketId).select("updated_at").single();
   if (result.error) throw result.error;
-  return;
+  return String(result.data.updated_at);
 }
 
 export async function readSupabaseEvidence(ticketId: string, evidenceId: string) {

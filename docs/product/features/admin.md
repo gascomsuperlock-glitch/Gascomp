@@ -15,7 +15,7 @@ The public home page header includes an **Admin login** link on desktop and mobi
 | Product | Manage SKU, name, model, description, status, and source metadata |
 | Variation | Add, edit, and remove names and SKUs per product |
 | Image | Upload, preview, replace, link to a variation, set primary, and delete |
-| Tutorial | Manage YouTube, Google Drive, TikTok, direct video links, file uploads, titles, descriptions, and duration |
+| Tutorial | Manage and reorder YouTube, Google Drive, TikTok, direct video links, file uploads, administrator-selected thumbnails, titles, descriptions, and duration |
 | Issue guide | Manage issue titles, summaries, ordered steps, and warnings |
 | FAQ | Add, edit, reorder, and remove questions and answers |
 | Settings | Manage the WhatsApp destination and support hours |
@@ -32,6 +32,38 @@ Bulk archive skips products that have never been published and keeps existing sl
 Save uses the stable `POST /admin/content` JSON endpoint, which verifies the request origin and admin session before reading up to 40 MB and invoking catalog persistence. This avoids tying the browser save request to a build-specific Server Action identifier. Save failures retain edits in the current tab and distinguish expired sessions, rejected origins, unavailable deployments, oversized uploads, and hosting timeouts. A lost response does not prove that the server failed to save; check the product before retrying.
 
 The dashboard can download one QR code per product when `GASCOMP_PUBLIC_BASE_URL` is configured with a production HTTPS origin. It also exposes Warranty Claim, Gascomp Care, and Service Center actions with the current product and SKU context.
+
+## Help content workspace
+
+The product picker and editor use a master-detail layout on wide screens (1280 px and above). The product list stays available beside the editor, with its own bounded scroll area. Product rows show a readable name, SKU, status badge, and an explicit active state.
+
+On smaller screens, the workspace shows one pane at a time. Selecting a product or adding one opens the editor immediately and moves focus to its heading. **Back to Products** returns focus to the active product in the list, or to search when that product is outside the current results. Search text, bulk selections, the current editor section, and staged product edits remain intact when moving between panes. Adding a product opens Information; an overview shortcut opens its requested section.
+
+The default picker emphasizes search and opening a guide. **Bulk Actions** reveals selection checkboxes and publication/archive controls; **Done Selecting** closes them and clears the selection. Search changes also clear selection. Opening a product does not alter the bulk selection. Existing bulk scope, eligibility, counts, and staged-save rules continue to apply.
+
+The editor header shows the full product name, SKU, model, publication status, and an **Open Guide** link for published or archived products. Status copy reminds administrators that changes require Save. Information, Images, Video, FAQ, and Product QR are grouped separately from customer support actions. Image, video, and FAQ counts appear beside their section labels. On narrow phones, a labeled **Editor Section** selector exposes every section without horizontal scrolling.
+
+## Overview workspace
+
+The Overview starts with clear **Manage Products** and **Add Product** actions, followed by summary cards for published products, tutorial videos, FAQ answers, and open warranty tickets. Counts use locale-aware number formatting and remain informational rather than acting as ambiguous navigation targets.
+
+The **Product Library** supports search by name, model, or SKU and filters for All, Published, Draft, and Archived products. Each product card presents the product identity, status, and image/video/FAQ counts before offering explicit **Edit Guide** and **QR Tools** actions. Selecting either action opens the matching Help content editor section and moves focus to the selected product heading. **Manage Products** opens the Help content product picker without selecting the first product implicitly.
+
+The library renders eight matching products initially and adds eight at a time through **Show More Products**. Search or status changes reset the visible group. Empty catalog and no-result states provide a direct recovery action. All controls retain visible keyboard focus, and the layout stacks without horizontal page overflow on small screens.
+
+## Tutorial order
+
+The Video tab includes a compact, numbered **Video Order** list above the video editors. Administrators can drag a handle onto another row to move that video into the target position. Up/down buttons provide touch and keyboard alternatives; focused handles also support the Up and Down arrow keys. The first and last positions disable unavailable moves. A live announcement confirms the new position and reminds the administrator to select **Save**.
+
+Reordering applies to uploaded files and linked tutorials. List numbers and editor numbers follow the current array order immediately. Video IDs, file URLs, storage paths, metadata, staged edits, and active upload components retain their identity. Dropping outside the list or cancelling a drag leaves the order unchanged. Reordering is disabled while saving.
+
+Changes use the existing staged-save workflow: Save persists array order as consecutive tutorial `position` values (or as array order in local storage). Reloaded editors and public product guides use the saved order. No database migration or file re-upload is required.
+
+## Uploaded video thumbnails
+
+Selecting an MP4/WebM file prepares four local frame choices before uploading. The administrator chooses one thumbnail and explicitly starts the upload; the product editor is updated only after the selected WebP thumbnail and video have both reached Storage. Existing uploaded tutorials provide a **Choose another thumbnail** action that reads frames from the stored video and changes only its thumbnail.
+
+Thumbnail changes remain staged until Save. The selected image is visible in the video editor preview and Video Order list, then appears in the customer tutorial list and as the native player poster after Save. The thumbnail upload endpoint checks the request origin, admin session, saved product identity, file type and size, and database thumbnail columns before issuing a single-path signed Storage upload.
 
 ## Dashboard design
 

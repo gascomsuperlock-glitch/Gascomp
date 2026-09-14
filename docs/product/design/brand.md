@@ -7,17 +7,19 @@ The brand guide is stored in [Gascomp - Guidelines.pdf](<../../brand/Gascomp - G
 The visual reference is the [Gascomp Superlock website](https://gascompsuperlock.com/).
 
 - Use the official logo, colors, and typography consistently.
-- The current direction uses a navy wordmark, bright blue accents, generous white space, and pill-shaped controls.
+- The current direction uses the official navy wordmark, saturated Gascomp blue, cyan, generous spacing, and pill-shaped controls. The September 14, 2026 update adds lime-yellow and coral accents following the owner’s preference for a bold, colorful website.
 - Replace temporary illustrations with approved logo and product-photo assets when those files are available.
 - Preserve the agreed help flow: searchable catalog at the root URL and a product-specific help page opened by QR.
 - Prioritize mobile use because many customers arrive by scanning packaging. Keep product identity, tutorial access, troubleshooting, and WhatsApp easy to reach.
 
-## Home-page hero
+## Public home-page design
 
-The September 11, 2026 hero redesign follows the PDF's brand palette (printed page 6), A-shaped supergraphic (pages 5 and 9), and typography (page 13):
+The September 14, 2026 redesign covers the home page and shared public header:
 
-- Use a solid navy `#021B40` background, cyan `#31B4DD` accents, white headings, and a supporting `#044972` A-shaped motif.
-- Set headings in Raleway and supporting text in Open Sans. Latin variable fonts and their OFL licenses are hosted in `public/fonts` and scoped to the hero; the rest of the site retains its existing typography.
-- Use a two-column desktop layout and a stacked mobile layout, with a white three-step guide panel and a packaging QR reminder. Decorative graphics are hidden from assistive technology.
-- Keep the primary product action and guide-selection steps linked to `#produk`; support actions use the configured WhatsApp number. The hero does not require catalog data or product photography to render.
-- Limit this redesign to the hero. The shared header, catalog, help sections, and other routes retain their existing presentation.
+- Use Gascomp blue `#0035B9` for the hero, navy `#021B40` for text and the contact section, cyan `#31B4DD`, lime-yellow `#DAEF69`, coral `#FFB39D`, and warm off-white `#FFFDF7` surfaces.
+- Keep the official logo. The hero uses locally hosted Raleway headings and Open Sans supporting text; the rest of the site retains Manrope. Existing font files and licenses remain in `public/fonts`.
+- Use large, expressive headings, a tilted guide illustration built from HTML/CSS, a QR reminder, colorful help cards, and clear product cards. Decorative graphics remain hidden from assistive technology.
+- Keep product selection as the primary action. Quick links lead to product guides, warranty support, and contact details. Preserve `#produk`, `#bantuan`, `#hubungi`, product URLs, and the configured WhatsApp destination.
+- Keep the catalog searchable by name, model, and SKU. Provide a labeled search, a result announcement, a clear-search action, and support links when no results or published guides are available.
+- Stack content on mobile. Keep visible keyboard focus, a skip link, touch-friendly actions, readable contrast, and reduced-motion support. Product cards use content visibility to limit rendering work for large catalogs.
+- The admin dashboard retains its own design system. Public product-help and warranty forms retain their existing layouts.

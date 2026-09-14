@@ -1,7 +1,8 @@
 "use client";
 
-import { Fragment, useState } from "react";
-import { Download, ExternalLink, Inbox, Search } from "lucide-react";
+import { useState } from "react";
+import { ExternalLink, Inbox, Search } from "lucide-react";
+import { TicketVideoPreview } from "./ticket-video-preview";
 import { updateWarrantyTicketStatusAction } from "@/features/warranty/server/admin-actions";
 import { WARRANTY_TICKET_STATUSES, type WarrantyTicket, type WarrantyTicketStatus } from "@/features/warranty/model/types";
 
@@ -13,7 +14,7 @@ export const ticketStatusLabels: Record<WarrantyTicketStatus, string> = {
   closed: "Closed",
 };
 
-export function TicketInbox({ tickets, setTickets }: { tickets: WarrantyTicket[]; setTickets: React.Dispatch<React.SetStateAction<WarrantyTicket[]>> }) {
+export function TicketInbox({ tickets, setTickets, onTicketUpdated }: { tickets: WarrantyTicket[]; setTickets: React.Dispatch<React.SetStateAction<WarrantyTicket[]>>; onTicketUpdated?: (ticket: WarrantyTicket) => void }) {
   const [query, setQuery] = useState("");
   const [busyTicket, setBusyTicket] = useState("");
   const [error, setError] = useState("");
@@ -24,7 +25,9 @@ export function TicketInbox({ tickets, setTickets }: { tickets: WarrantyTicket[]
     setError("");
     const result = await updateWarrantyTicketStatusAction(ticket.ticketId, status);
     if (result.success) {
-      setTickets((current) => current.map((item) => item.ticketId === ticket.ticketId ? { ...item, status, updatedAt: new Date().toISOString() } : item));
+      const updatedTicket = { ...ticket, status, updatedAt: result.updatedAt };
+      setTickets((current) => current.map((item) => item.ticketId === ticket.ticketId ? updatedTicket : item));
+      onTicketUpdated?.(updatedTicket);
     } else {
       setError(result.error ?? "The ticket status could not be updated.");
     }
@@ -48,7 +51,7 @@ export function TicketInbox({ tickets, setTickets }: { tickets: WarrantyTicket[]
             <div className="grid gap-6 p-5 lg:grid-cols-3">
               <div><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">CUSTOMER</p><p className="mt-2 text-xs font-extrabold">{ticket.customer.name}</p><a href={`mailto:${ticket.customer.email}`} className="mt-1 block break-all text-[11px] text-[#58666e] hover:text-[#0035b9]">{ticket.customer.email}</a><a href={`https://wa.me/${ticket.customer.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="mt-1 block text-[11px] font-bold text-[#318257]">{ticket.customer.whatsapp}</a></div>
               <div><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">PURCHASE</p><dl className="mt-2 space-y-1 text-[11px] text-[#58666e]"><div><dt className="inline font-bold">Order: </dt><dd className="inline">{ticket.purchase.orderNumber}</dd></div><div><dt className="inline font-bold">Store: </dt><dd className="inline">{ticket.purchase.store}</dd></div><div><dt className="inline font-bold">Date: </dt><dd className="inline">{ticket.purchase.date}</dd></div><div><dt className="inline font-bold">Price: </dt><dd className="inline">{new Intl.NumberFormat("en-US", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(ticket.purchase.price)}</dd></div></dl></div>
-              <div><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">PRIVATE EVIDENCE</p><div className="mt-2 flex flex-wrap gap-2">{ticket.evidence.map((file) => <Fragment key={file.id}><a href={`/admin/tiket/${ticket.ticketId}/lampiran/${file.id}`} target="_blank" className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#edf4ff] px-3 text-[10px] font-extrabold text-[#0035b9]"><ExternalLink className="size-3" /> {file.kind === "invoice" ? "Invoice" : file.kind === "photo" ? "Photo" : "Video"}</a>{file.kind === "video" && <a href={`/admin/tiket/${ticket.ticketId}/lampiran/${file.id}?download=1`} className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#edf4ff] px-3 text-[10px] font-extrabold text-[#0035b9]"><Download className="size-3" /> Download video</a>}</Fragment>)}</div></div>
+              <div className="min-w-0"><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">PRIVATE EVIDENCE</p><div className="mt-2 flex flex-wrap gap-2">{ticket.evidence.map((file) => file.kind === "video" ? <TicketVideoPreview key={file.id} url={`/admin/tiket/${ticket.ticketId}/lampiran/${file.id}`} /> : <a key={file.id} href={`/admin/tiket/${ticket.ticketId}/lampiran/${file.id}`} target="_blank" rel="noreferrer" className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#edf4ff] px-3 text-[10px] font-extrabold text-[#0035b9]"><ExternalLink className="size-3" /> {file.kind === "invoice" ? "Invoice" : "Photo"}</a>)}</div></div>
             </div>
             <div className="border-t border-[#2c3038]/8 bg-[#faf9f6] px-5 py-4"><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">ISSUE</p><p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-[#566269]">{ticket.problem}</p></div>
           </article>

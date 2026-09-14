@@ -4,9 +4,12 @@ export function normalizeWhatsapp(number: string) {
   return digits;
 }
 
-export function getWhatsappUrl(number: string, productName?: string, issue?: string) {
-  const context = productName ? ` with ${productName}` : "";
-  const issueText = issue ? ` My issue: ${issue}.` : "";
-  const message = `Hello Gascomp Admin, I need help${context}.${issueText}`;
+export function getWhatsappUrl(number: string, productName?: string, issue?: string, language: AppLanguage = "en") {
+  const context = productName ? (language === "id" ? ` untuk ${productName}` : ` with ${productName}`) : "";
+  const issueText = issue ? (language === "id" ? ` Kendala saya: ${issue}.` : ` My issue: ${issue}.`) : "";
+  const message = language === "id"
+    ? `Halo Admin Gascomp, saya membutuhkan bantuan${context}.${issueText}`
+    : `Hello Gascomp Admin, I need help${context}.${issueText}`;
   return `https://wa.me/${normalizeWhatsapp(number)}?text=${encodeURIComponent(message)}`;
 }
+import type { AppLanguage } from "@/shared/i18n/language";

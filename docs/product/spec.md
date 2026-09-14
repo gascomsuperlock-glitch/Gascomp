@@ -29,5 +29,6 @@ Specifications are grouped by topic to keep each working context small. Read the
 - Record decision and status changes in one owning document without duplicating them elsewhere.
 - Add a new focused document and index row when a new independent topic appears.
 - Treat implementation status as a dated note and verify current behavior in code.
-- Use English as the standard language for every task and all project-owned output, including code, configuration, documentation, comments, tests, logs, generated content, and user-facing copy.
+- Use English as the standard language for every task and all project-owned output, including code, configuration, documentation, comments, tests, logs, generated content, and operator-facing copy.
+- Customer-facing product experiences must support both Indonesian and English and provide a language selector.
 - Preserve exact external values only when they are listed as compatibility exceptions in the [English language standard](../architecture/language-standard.md).

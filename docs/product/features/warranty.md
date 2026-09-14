@@ -32,10 +32,28 @@ Before creating a ticket or storing evidence, the server uses FFmpeg compiled to
 
 The Server Action accepts up to 72 MB per request to accommodate a 50 MB video, a 4 MB invoice, four 4 MB photos, and multipart overhead. Per-file limits still apply.
 
+## Admin video preview
+
+Ticket Inbox opens video previews inline with native playback controls and mobile inline playback. A preview is prepared only after selecting **Preview video**, with loading, retry, expired-session, and playback-error states. Closing the preview cancels its request and releases the browser object URL. Videos do not autoplay.
+
+The authenticated evidence endpoint accepts `preview=1` to prepare a private MP4 copy in memory using the installed FFmpeg worker. Compatible H.264 video is remuxed without re-encoding; other video codecs are converted to H.264 with a maximum 1280-pixel dimension, and the first audio track is converted to AAC. MP4 metadata is placed before media data for browser playback. Conversion is limited to one concurrent job per server process, 30 seconds, and 64 MB output. When conversion cannot finish, the administrator can retry or download the original file. Preview generation never overwrites evidence or writes to Storage.
+
+Original attachment URLs remain stable. Downloads return the original bytes, filename, and MIME type. Evidence responses support single byte ranges (`206`, `Content-Range`, and `Accept-Ranges`), unsatisfiable ranges (`416`), and `HEAD`; every request checks the admin session and uses `private, no-store` caching. The browser fetches each prepared preview once and uses a temporary object URL for playback and seeking.
+
+Video inspection and preview workers run as native Node entrypoints in development and production. Their `node:worker_threads` constructors are imported at runtime with `webpackIgnore: true`; output tracing still includes the worker files and FFmpeg assets. This lets FFmpeg initialize its own WASM imports rather than having the bundler resolve the WASM import namespace as an npm package.
+
 Supabase stores evidence in the private `warranty-evidence` bucket. Local development stores it under `.data/warranty-tickets/`, which is ignored by Git.
+
+## Admin notifications
+
+The protected admin header includes a warranty notification bell. It checks for new and updated tickets every 30 seconds while the dashboard tab is visible and checks immediately when the tab becomes visible again. A badge shows unread updates, a dropdown lists recent ticket activity, and an in-app alert appears when a change is detected while the dashboard is open.
+
+Read state is stored in the administrator's browser and records the latest observed status and update timestamp for each ticket. On the first visit, existing tickets with `new` status are unread. Opening a ticket or selecting **Mark all read** clears the corresponding badge. Status changes made in the current dashboard use the server timestamp immediately so they do not create a redundant notification on the next refresh.
+
+Notifications remain inside the protected admin panel. Email, WhatsApp, operating-system push notifications, and background delivery while the dashboard is closed are outside the current scope.
 
 ## Warranty rules
 
 Submission does not imply approval. Administrators must evaluate proof of purchase, eligibility period, coverage, and prior warranty use against official Gascomp terms. The warranty duration, start date, covered damage, one-time-use basis, and post-decision procedure still require a final business decision. The system does not automatically reject claims using undefined rules.
 
-Status: form validation, evidence validation, ticket numbers, Supabase/local storage, private admin access, ticket listing, evidence download, and status updates are implemented.
+Status: form validation, evidence validation, ticket numbers, Supabase/local storage, private admin access, ticket listing, evidence download, status updates, and in-app admin notifications are implemented.

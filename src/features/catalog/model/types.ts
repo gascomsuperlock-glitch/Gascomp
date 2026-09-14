@@ -7,6 +7,8 @@ export type TutorialVideo = {
   youtubeUrl: string;
   videoUrl?: string;
   storagePath?: string;
+  thumbnailUrl?: string;
+  thumbnailStoragePath?: string;
   duration: string;
 };
 

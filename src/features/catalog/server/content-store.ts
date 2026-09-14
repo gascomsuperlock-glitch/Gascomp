@@ -116,11 +116,21 @@ export async function persistSiteContent(input: SiteContent): Promise<SiteConten
   const videoSchema = await client.from("tutorial_videos").select("video_url, storage_path").limit(0);
   if (videoSchema.error && !["42703", "PGRST204"].includes(videoSchema.error.code)) throw videoSchema.error;
   const extendedVideoSchema = !videoSchema.error;
+  const thumbnailSchema = await client.from("tutorial_videos").select("thumbnail_url, thumbnail_storage_path").limit(0);
+  if (thumbnailSchema.error && !["42703", "PGRST204"].includes(thumbnailSchema.error.code)) throw thumbnailSchema.error;
+  const hasThumbnailSchema = !thumbnailSchema.error;
+  if (!hasThumbnailSchema && input.products.some((product) => product.videos.some((video) => video.thumbnailUrl || video.thumbnailStoragePath))) {
+    throw new Error("Tutorial thumbnails cannot be saved until the tutorial thumbnail migration is applied.");
+  }
 
   const existingProductsResult = await client.from("products").select("id, ever_published");
   const existingImagesResult = await client.from("product_images").select("storage_path");
+  const existingThumbnailsResult = hasThumbnailSchema
+    ? await client.from("tutorial_videos").select("thumbnail_storage_path")
+    : { data: [], error: null };
   throwOnError(existingProductsResult);
   throwOnError(existingImagesResult);
+  throwOnError(existingThumbnailsResult);
 
   const content = await uploadNewImages(input);
   const currentIds = new Set(content.products.map((product) => product.id));
@@ -166,7 +176,7 @@ export async function persistSiteContent(input: SiteContent): Promise<SiteConten
 
   const variationRows = content.products.flatMap((product) => product.variations.map((item, position) => ({ id: item.id, product_id: product.id, name: item.name, sku: item.sku, source_variation_id: item.sourceId ?? null, attributes: item.attributes ?? [], position })));
   const imageRows = content.products.flatMap((product) => product.images.map((item, position) => ({ id: item.id, product_id: product.id, variation_id: item.variationId ?? null, name: item.name, storage_path: item.storagePath, public_url: item.url, alt: item.alt, is_primary: item.isPrimary, position })));
-  const videoRows = videoRecords(content.products, extendedVideoSchema);
+  const videoRows = videoRecords(content.products, extendedVideoSchema, hasThumbnailSchema);
   const issueRows = content.products.flatMap((product) => product.issues.map((item, position) => ({ id: item.id, product_id: product.id, title: item.title, summary: item.summary, steps: item.steps, warning: item.warning ?? null, position })));
   const faqRows = content.products.flatMap((product) => product.faqs.map((item, position) => ({ id: item.id, product_id: product.id, question: item.question, answer: item.answer, position })));
 
@@ -181,6 +191,17 @@ export async function persistSiteContent(input: SiteContent): Promise<SiteConten
   if (abandonedPaths.length) {
     const removal = await client.storage.from("product-images").remove(abandonedPaths);
     if (removal.error) console.error("Unused product images could not be removed", removal.error);
+  }
+
+  const referencedThumbnailPaths = new Set(content.products.flatMap((product) => product.videos
+    .map((video) => video.thumbnailStoragePath)
+    .filter((path): path is string => Boolean(path))));
+  const abandonedThumbnailPaths = ((existingThumbnailsResult.data ?? []) as Array<{ thumbnail_storage_path: string | null }>)
+    .map((item) => item.thumbnail_storage_path)
+    .filter((item): item is string => typeof item === "string" && item.length > 0 && !referencedThumbnailPaths.has(item));
+  if (abandonedThumbnailPaths.length) {
+    const removal = await client.storage.from("product-images").remove(abandonedThumbnailPaths);
+    if (removal.error) console.error("Unused tutorial thumbnails could not be removed", removal.error);
   }
 
   return content;
