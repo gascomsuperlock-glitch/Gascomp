@@ -2,7 +2,7 @@ import { getAdminSession } from "@/features/auth/server/session";
 import { readWarrantyEvidence } from "@/features/warranty/server/ticket-service";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ ticketId: string; evidenceId: string }> },
 ) {
   if (!(await getAdminSession())) return new Response("Unauthorized", { status: 401 });
@@ -13,11 +13,12 @@ export async function GET(
 
   const evidence = await readWarrantyEvidence(ticketId, evidenceId);
   if (!evidence) return new Response("Evidence not found", { status: 404 });
+  const disposition = new URL(request.url).searchParams.get("download") === "1" ? "attachment" : "inline";
   const safeName = evidence.name.replace(/[\r\n"]/g, "_");
   return new Response(new Uint8Array(evidence.bytes), {
     headers: {
       "Content-Type": evidence.mimeType,
-      "Content-Disposition": `inline; filename="${safeName}"; filename*=UTF-8''${encodeURIComponent(safeName)}`,
+      "Content-Disposition": `${disposition}; filename="${safeName}"; filename*=UTF-8''${encodeURIComponent(safeName)}`,
       "Cache-Control": "private, no-store",
       "X-Content-Type-Options": "nosniff",
     },

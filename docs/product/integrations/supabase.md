@@ -89,3 +89,16 @@ On September 11, 2026, the equivalent production bucket update was applied
 through the Storage API and verified: `warranty-evidence` now allows 52,428,800
 bytes, remains private, and retains its existing MIME allowlist. No ticket,
 evidence object, or access policy was changed.
+
+## Warranty video formats
+
+`202609140001_warranty_video_formats.sql` extends the private warranty bucket's
+MIME allowlist with Matroska, AVI, 3GP, MPEG, MPEG-TS, WMV, FLV, and Ogg video.
+The application detects containers from bytes, fully verifies video decoding,
+and stores canonical video MIME types rather than trusting browser metadata.
+
+On September 14, 2026, the equivalent additive update was applied through the
+Storage API and verified: all 15 MIME types are allowed, the bucket remains
+private, and its file limit remains 52,428,800 bytes. Existing objects and
+access policies are unchanged. Local verification records are in
+`.data/warranty-video-formats/bucket-before.json` and `bucket-after.json`.

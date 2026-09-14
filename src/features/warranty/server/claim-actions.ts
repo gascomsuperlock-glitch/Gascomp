@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { saveWarrantyTicket } from "@/features/warranty/server/ticket-service";
 import { validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyTicketInput } from "@/features/warranty/model/input";
-import { UNREADABLE_VIDEO_ERROR } from "@/features/warranty/model/video-evidence";
+import { UNREADABLE_VIDEO_ERROR, detectVideoContainer } from "@/features/warranty/model/video-evidence";
 import { inspectVideo } from "./video-inspection";
 
 export type WarrantyClaimState = {
@@ -57,7 +57,7 @@ export async function createWarrantyClaim(
   const invoice = invoices[0];
   const damagePhotos = getFiles(formData, "damagePhotos");
   const damageVideos = getFiles(formData, "damageVideo");
-  const damageVideo = damageVideos[0];
+  let damageVideo = damageVideos[0];
   const agreement = formData.get("agreement") === "yes";
   const fieldErrors: WarrantyClaimState["fieldErrors"] = {};
 
@@ -96,6 +96,13 @@ export async function createWarrantyClaim(
           : UNREADABLE_VIDEO_ERROR;
       return { error: "Review the supporting evidence.", fieldErrors: { damageVideo: error } };
     }
+  }
+
+  if (damageVideo) {
+    const container = await detectVideoContainer(damageVideo);
+    if (!container) return { error: "Review the supporting evidence.", fieldErrors: { damageVideo: UNREADABLE_VIDEO_ERROR } };
+    // Store the verified container MIME even when the browser omits or mislabels it.
+    damageVideo = new File([damageVideo], damageVideo.name, { type: container.mimeType });
   }
 
   const input: WarrantyTicketInput = { ...values, purchasePrice, invoice, damagePhotos, damageVideo };

@@ -33,9 +33,12 @@ async function inspect() {
       "-hide_banner", "-loglevel", "error", "-xerror",
       "-max_alloc", "67108864", "-threads", "1", "-err_detect", "explode",
       "-protocol_whitelist", "file,pipe",
-      "-f", workerData.mimeType === "video/webm" ? "matroska" : "mov", "-i", "/evidence",
+      "-f", workerData.demuxer, "-i", "/evidence",
       "-map", "0:V:0", "-map", "0:a?", "-sn", "-dn",
-      "-threads", "1", "-progress", "pipe:1", "-f", "null", "-",
+      // Preserve variable frame timestamps. Rounding them to the nominal frame
+      // rate makes valid screen recordings fail in the null output muxer.
+      "-threads", "1", "-enc_time_base", "-1", "-vsync", "0",
+      "-progress", "pipe:1", "-f", "null", "-",
     );
     return result === 0 && hasFrames && !hasDecodeError ? "valid" : "invalid";
   } catch {

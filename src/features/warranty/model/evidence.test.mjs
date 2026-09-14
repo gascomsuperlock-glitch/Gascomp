@@ -69,3 +69,14 @@ test("warranty videos accept 1 MB and 23 MB through the inclusive 50 MB limit", 
     assert.equal(validateEvidenceSelection([{ type, size: 52428801 }], "video"), "The issue video must be no larger than 50 MB.");
   }
 });
+
+test("video picker accepts video MIME types and missing MIME for recognized extensions", () => {
+  for (const name of ["screen.MOV", "clip.mkv", "clip.avi", "clip.3gp", "clip.mts", "clip.wmv", "clip.ogv"]) {
+    for (const type of ["", "application/octet-stream"]) assert.equal(validateEvidenceFile({ name, type, size: 100 }, "video"), null);
+  }
+  assert.equal(validateEvidenceFile({ name: "clip", type: "video/x-matroska", size: 100 }, "video"), null);
+  for (const type of ["", "application/octet-stream", "text/html"]) assert.ok(validateEvidenceFile({ name: "page.html", type, size: 100 }, "video"));
+  for (const type of ["video/mp4", "video/quicktime", "video/webm", "video/x-matroska", "video/x-msvideo", "video/3gpp", "video/mpeg", "video/mp2t", "video/x-ms-wmv", "video/x-flv", "video/ogg"]) {
+    assert.match(allowedExtension({ type }, "video"), /^\.[a-z0-9]+$/);
+  }
+});

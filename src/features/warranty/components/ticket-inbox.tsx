@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { ExternalLink, Inbox, Search } from "lucide-react";
+import { Fragment, useState } from "react";
+import { Download, ExternalLink, Inbox, Search } from "lucide-react";
 import { updateWarrantyTicketStatusAction } from "@/features/warranty/server/admin-actions";
 import { WARRANTY_TICKET_STATUSES, type WarrantyTicket, type WarrantyTicketStatus } from "@/features/warranty/model/types";
 
@@ -48,7 +48,7 @@ export function TicketInbox({ tickets, setTickets }: { tickets: WarrantyTicket[]
             <div className="grid gap-6 p-5 lg:grid-cols-3">
               <div><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">CUSTOMER</p><p className="mt-2 text-xs font-extrabold">{ticket.customer.name}</p><a href={`mailto:${ticket.customer.email}`} className="mt-1 block break-all text-[11px] text-[#58666e] hover:text-[#0035b9]">{ticket.customer.email}</a><a href={`https://wa.me/${ticket.customer.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="mt-1 block text-[11px] font-bold text-[#318257]">{ticket.customer.whatsapp}</a></div>
               <div><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">PURCHASE</p><dl className="mt-2 space-y-1 text-[11px] text-[#58666e]"><div><dt className="inline font-bold">Order: </dt><dd className="inline">{ticket.purchase.orderNumber}</dd></div><div><dt className="inline font-bold">Store: </dt><dd className="inline">{ticket.purchase.store}</dd></div><div><dt className="inline font-bold">Date: </dt><dd className="inline">{ticket.purchase.date}</dd></div><div><dt className="inline font-bold">Price: </dt><dd className="inline">{new Intl.NumberFormat("en-US", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(ticket.purchase.price)}</dd></div></dl></div>
-              <div><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">PRIVATE EVIDENCE</p><div className="mt-2 flex flex-wrap gap-2">{ticket.evidence.map((file) => <a key={file.id} href={`/admin/tiket/${ticket.ticketId}/lampiran/${file.id}`} target="_blank" className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#edf4ff] px-3 text-[10px] font-extrabold text-[#0035b9]"><ExternalLink className="size-3" /> {file.kind === "invoice" ? "Invoice" : file.kind === "photo" ? "Photo" : "Video"}</a>)}</div></div>
+              <div><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">PRIVATE EVIDENCE</p><div className="mt-2 flex flex-wrap gap-2">{ticket.evidence.map((file) => <Fragment key={file.id}><a href={`/admin/tiket/${ticket.ticketId}/lampiran/${file.id}`} target="_blank" className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#edf4ff] px-3 text-[10px] font-extrabold text-[#0035b9]"><ExternalLink className="size-3" /> {file.kind === "invoice" ? "Invoice" : file.kind === "photo" ? "Photo" : "Video"}</a>{file.kind === "video" && <a href={`/admin/tiket/${ticket.ticketId}/lampiran/${file.id}?download=1`} className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#edf4ff] px-3 text-[10px] font-extrabold text-[#0035b9]"><Download className="size-3" /> Download video</a>}</Fragment>)}</div></div>
             </div>
             <div className="border-t border-[#2c3038]/8 bg-[#faf9f6] px-5 py-4"><p className="text-[9px] font-extrabold tracking-[0.12em] text-[#8b9397]">ISSUE</p><p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-[#566269]">{ticket.problem}</p></div>
           </article>

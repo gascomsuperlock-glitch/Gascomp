@@ -10,3 +10,9 @@ test("video signatures reject renamed non-video files before playback checks", a
   assert.equal(await validateVideoSignature(new File([new Uint8Array([0, 0, 0, 20, 102, 116, 121, 112, 105, 115, 111, 109])], "video.mp4", { type: "video/mp4" })), true);
   assert.equal(await validateVideoSignature(new File([new Uint8Array([0x1a, 0x45, 0xdf, 0xa3, 0, 0, 0, 0, 0, 0, 0, 0])], "video.webm", { type: "video/webm" })), true);
 });
+
+test("video signatures exclude image, audio, and playlist containers", async () => {
+  for (const bytes of ["RIFF0000WAVE00000000", "GIF89a0000000000", "#EXTM3U\n#EXTINF:10\nhttps://example.com/video.ts"]) {
+    assert.equal(await validateVideoSignature(new File([bytes], "renamed.mp4", { type: "video/mp4" })), false);
+  }
+});

@@ -6,6 +6,7 @@ import { test } from "node:test";
 const hooks = registerHooks({
   resolve(specifier, context, nextResolve) {
     if (specifier === "server-only") return { url: "data:text/javascript,export {};", shortCircuit: true };
+    if (specifier === "../model/video-evidence") return nextResolve(`${specifier}.ts`, context);
     return nextResolve(specifier, context);
   },
 });
@@ -27,4 +28,20 @@ test("portable video inspection rejects damaged bytes without a native executabl
   }
   const audio = await readFile(new URL("./fixtures/audio-only.mp4", import.meta.url));
   assert.equal(await inspectVideo(new File([audio], "audio.mp4", { type: "video/mp4" })), "invalid", "audio-only MP4 is not video evidence");
+});
+
+test("valid screen recordings preserve variable timestamps and support HEVC with audio", async () => {
+  for (const name of ["variable-frame-rate.mov", "hevc-with-audio.mov"]) {
+    const bytes = await readFile(new URL(`./fixtures/${name}`, import.meta.url));
+    assert.equal(await inspectVideo(new File([bytes], name, { type: "video/quicktime" })), "valid", name);
+  }
+});
+
+test("video containers are detected from content when browsers omit or mislabel MIME", async () => {
+  for (const extension of ["mkv", "avi", "3gp", "mpg", "m2ts", "wmv", "flv", "ogv"]) {
+    const bytes = await readFile(new URL(`./fixtures/valid.${extension}`, import.meta.url));
+    assert.equal(await inspectVideo(new File([bytes], `valid.${extension}`, { type: "application/octet-stream" })), "valid", extension);
+  }
+  const mov = await readFile(new URL("./fixtures/valid.mov", import.meta.url));
+  assert.equal(await inspectVideo(new File([mov], "mislabeled.webm", { type: "video/webm" })), "valid");
 });

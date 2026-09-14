@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { startTransition, useActionState, useRef, useState, type FormEvent } from "react";
-import { MAX_VIDEO_MB, validateEvidenceSelection } from "@/features/warranty/model/evidence";
+import { MAX_VIDEO_MB, VIDEO_ACCEPT, validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyEvidenceKind } from "@/features/warranty/model/types";
 import { validateVideoPlayback } from "./video-validation";
 import {
@@ -92,7 +92,7 @@ export function WarrantyClaimForm({
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
           <EvidenceField name="invoice" kind="invoice" label="Invoice or proof of purchase" hint="Required · JPG, PNG, WebP, or PDF · up to 4 MB" accept="image/jpeg,image/png,image/webp,application/pdf" serverErrors={state.fieldErrors} disabled={pending} />
           <EvidenceField name="damagePhotos" kind="photo" label="Product condition photos" hint="Required · 1–4 JPG, PNG, or WebP photos · up to 4 MB each" accept="image/jpeg,image/png,image/webp" serverErrors={state.fieldErrors} disabled={pending} />
-          <div className="sm:col-span-2"><EvidenceField name="damageVideo" kind="video" label="Product issue video" hint={`Required · MP4, WebM, or MOV · up to ${MAX_VIDEO_MB} MB · 1 MB videos accepted · must be playable`} accept="video/mp4,video/webm,video/quicktime" serverErrors={state.fieldErrors} disabled={pending} onCheckingChange={setCheckingVideo} /></div>
+          <div className="sm:col-span-2"><EvidenceField name="damageVideo" kind="video" label="Product issue video" hint={`Required · Video files (MP4, MOV, WebM, MKV, AVI, and more) · up to ${MAX_VIDEO_MB} MB`} accept={VIDEO_ACCEPT} serverErrors={state.fieldErrors} disabled={pending} onCheckingChange={setCheckingVideo} /></div>
         </div>
       </div>
 
