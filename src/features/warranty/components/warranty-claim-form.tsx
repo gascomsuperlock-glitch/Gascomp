@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { startTransition, useActionState, useRef, useState, type FormEvent } from "react";
+import { formatJakartaDate } from "@/features/warranty/model/claim-eligibility";
 import { MAX_VIDEO_MB, VIDEO_ACCEPT, validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyEvidenceKind } from "@/features/warranty/model/types";
 import { validateVideoPlayback } from "./video-validation";
@@ -75,6 +76,7 @@ export function WarrantyClaimForm({
         <div><h2 className="text-xl font-extrabold tracking-[-0.03em]">{copy.formTitle}</h2><p className="mt-1 text-xs leading-5 text-[#7a8489]">{copy.formCopy}</p></div>
       </div>
 
+      <p className="mt-4 text-xs leading-5 text-[#53657c]">{copy.eligibility}</p>
       {state.error && <div role="alert" className="mt-5 rounded-xl bg-[#fff0ef] p-4 text-xs font-semibold text-[#ad4037]">{localizeMessage(state.error, language)}</div>}
 
       <input name="company" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
@@ -83,7 +85,7 @@ export function WarrantyClaimForm({
         <ClaimField label={copy.fullName} error={localizeMessage(state.fieldErrors?.name, language)}><input name="name" required maxLength={120} autoComplete="name" placeholder={copy.fullNamePlaceholder} className={inputClass} /></ClaimField>
         <ClaimField label={copy.whatsapp} error={localizeMessage(state.fieldErrors?.whatsapp, language)}><input name="whatsapp" required maxLength={30} inputMode="tel" autoComplete="tel" placeholder={copy.examplePhone} className={inputClass} /></ClaimField>
         <ClaimField label={copy.email} error={localizeMessage(state.fieldErrors?.email, language)}><input name="email" required maxLength={180} type="email" autoComplete="email" placeholder="name@example.com" className={inputClass} /></ClaimField>
-        <ClaimField label={copy.purchaseDate} error={localizeMessage(state.fieldErrors?.purchaseDate, language)}><input name="purchaseDate" required type="date" max={new Date().toISOString().slice(0, 10)} className={inputClass} /></ClaimField>
+        <ClaimField label={copy.purchaseDate} error={localizeMessage(state.fieldErrors?.purchaseDate, language)}><input name="purchaseDate" required type="date" max={formatJakartaDate()} className={inputClass} /></ClaimField>
         <ClaimField label={copy.productName} error={localizeMessage(state.fieldErrors?.product, language)}><input name="product" required maxLength={180} defaultValue={defaultProduct} placeholder={copy.productNamePlaceholder} className={inputClass} /></ClaimField>
         <ClaimField label={copy.productSku} error={localizeMessage(state.fieldErrors?.sku, language)}><input name="sku" required maxLength={80} defaultValue={defaultSku} placeholder={copy.skuPlaceholder} className={inputClass} /></ClaimField>
         <ClaimField label={copy.store} error={localizeMessage(state.fieldErrors?.store, language)}><input name="store" required maxLength={160} placeholder={copy.storePlaceholder} className={inputClass} /></ClaimField>

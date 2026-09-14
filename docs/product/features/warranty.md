@@ -54,6 +54,10 @@ Notifications remain inside the protected admin panel. Email, WhatsApp, operatin
 
 ## Warranty rules
 
-Submission does not imply approval. Administrators must evaluate proof of purchase, eligibility period, coverage, and prior warranty use against official Gascomp terms. The warranty duration, start date, covered damage, one-time-use basis, and post-decision procedure still require a final business decision. The system does not automatically reject claims using undefined rules.
+Submission does not imply approval. New claims are limited to one per order number and product SKU, compared case-insensitively after trimming surrounding whitespace. All existing ticket statuses count, including rejected and closed tickets; another order or SKU remains eligible. There is no unit serial number, so multiple units of the same SKU in one order share this limit.
+
+The purchase date must be valid, cannot be in the future, and must be within one calendar year using the Asia/Jakarta date. The first anniversary remains eligible; February 29 anniversaries fall on February 28 in non-leap years. Server validation rejects expired claims before storing evidence. Administrators still verify the invoice and coverage.
+
+Migration `202609140003_warranty_claim_eligibility.sql` adds database enforcement that serializes concurrent submissions for the same identity without changing historical tickets. It is prepared locally and requires application before production concurrency protection is active. Application checks cover existing tickets; local storage uses an exclusive per-identity directory lock. A crashed local process may leave a lock requiring operator cleanup.
 
 Status: form validation, evidence validation, ticket numbers, Supabase/local storage, private admin access, ticket listing, evidence download, status updates, and in-app admin notifications are implemented.

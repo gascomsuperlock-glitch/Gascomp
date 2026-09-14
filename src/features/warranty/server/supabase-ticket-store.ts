@@ -1,4 +1,5 @@
 import "server-only";
+import { DUPLICATE_CLAIM_ERROR, EXPIRED_CLAIM_ERROR, normalizeClaimIdentity } from "../model/claim-eligibility";
 import { randomBytes } from "node:crypto";
 import path from "node:path";
 import { createAdminSupabaseClient } from "@/shared/integrations/supabase/server";
@@ -11,6 +12,14 @@ const WARRANTY_BUCKET = "warranty-evidence";
 export async function saveSupabaseTicket(input: WarrantyTicketInput, ticketId: string, submittedAt: string) {
   const client = createAdminSupabaseClient();
   if (!client) throw new Error("Supabase is not configured.");
+  // Check existing tickets before uploading evidence, including legacy records.
+  for (let offset = 0; ; offset += 500) {
+    const result = await client.from("warranty_tickets").select("order_number, sku").order("ticket_id").range(offset, offset + 499);
+    if (result.error) throw result.error;
+    const rows = result.data ?? [];
+    if (rows.some((row) => normalizeClaimIdentity(row.order_number) === normalizeClaimIdentity(input.orderNumber) && normalizeClaimIdentity(row.sku) === normalizeClaimIdentity(input.sku))) throw new Error(DUPLICATE_CLAIM_ERROR);
+    if (rows.length < 500) break;
+  }
   const productResult = await client.from("products").select("id").eq("sku", input.sku).limit(1).maybeSingle();
   if (productResult.error) throw productResult.error;
   const productId = (productResult.data as { id: string } | null)?.id ?? null;
@@ -21,7 +30,11 @@ export async function saveSupabaseTicket(input: WarrantyTicketInput, ticketId: s
     store: input.store, purchase_date: input.purchaseDate, order_number: input.orderNumber,
     purchase_price: input.purchasePrice, problem: input.problem,
   });
-  if (insertTicket.error) throw insertTicket.error;
+  if (insertTicket.error) {
+    if (insertTicket.error.message.includes("duplicate_warranty_claim")) throw new Error(DUPLICATE_CLAIM_ERROR);
+    if (insertTicket.error.message.includes("expired_warranty_claim")) throw new Error(EXPIRED_CLAIM_ERROR);
+    throw insertTicket.error;
+  }
 
   const uploadedPaths: string[] = [];
   try {

@@ -116,6 +116,7 @@ const english = {
     serviceLabel: "OFFICIAL GASCOMP SERVICE",
     title: "Warranty Claim",
     introduction: "Request a product inspection with complete purchase details and evidence. The Gascomp team will review your submission under the warranty terms.",
+    eligibility: "One claim per order number and product SKU. Warranty coverage ends one year after purchase.",
     prepareTitle: "Prepare proof of purchase",
     prepareCopy: "Provide an invoice or transaction screenshot.",
     describeTitle: "Describe the issue",
@@ -194,6 +195,7 @@ const indonesian = {
   player: { loading: "Memuat video...", failed: "Video tidak dapat dimuat. Buka video asli melalui tautan di bawah.", tiktok: "Buka video ini di TikTok.", unsupported: "Tambahkan tautan video yang didukung atau unggah video untuk melihat pratinjau.", openOriginal: "Buka video asli" },
   warranty: {
     helpCenter: "Pusat bantuan", serviceLabel: "LAYANAN RESMI GASCOMP", title: "Klaim Garansi", introduction: "Ajukan pemeriksaan produk dengan detail pembelian dan bukti yang lengkap. Tim Gascomp akan meninjau pengajuan Anda sesuai ketentuan garansi.",
+    eligibility: "Satu kali klaim untuk setiap nomor pesanan dan SKU produk. Masa garansi berlaku satu tahun sejak pembelian.",
     prepareTitle: "Siapkan bukti pembelian", prepareCopy: "Sertakan faktur atau tangkapan layar transaksi.", describeTitle: "Jelaskan kendalanya", describeCopy: "Jelaskan kondisi produk dengan jelas.", saveTicketTitle: "Simpan nomor tiket", saveTicketCopy: "Nomor tiket akan muncul setelah pengajuan.",
     ticketCreated: "TIKET DIBUAT", awaitingReview: "Klaim Anda sedang menunggu peninjauan", saveForFollowUp: "Simpan nomor tiket ini untuk tindak lanjut dengan tim Gascomp.", ticketNumber: "NOMOR TIKET", backToHelp: "Kembali ke pusat bantuan", formTitle: "Formulir klaim", formCopy: "Masukkan data yang sesuai dengan bukti pembelian agar klaim dapat ditinjau.",
     fullName: "Nama lengkap", fullNamePlaceholder: "Nama sesuai kartu identitas", whatsapp: "Nomor WhatsApp", examplePhone: "Contoh: 081234567890", email: "Email", purchaseDate: "Tanggal pembelian", productName: "Nama produk", productNamePlaceholder: "Nama produk Gascomp", productSku: "SKU produk", skuPlaceholder: "SKU pada produk atau kemasan", store: "Toko pembelian", storePlaceholder: "Nama toko atau marketplace", orderNumber: "Nomor pesanan", orderExample: "Contoh: INV/2026/001234", purchasePrice: "Harga pembelian", purchasePriceHint: "Masukkan nominal Rupiah tanpa titik atau koma", productIssue: "Kendala produk", problemPlaceholder: "Jelaskan kondisi dan kendala produk...",
@@ -206,6 +208,10 @@ const indonesian = {
 export const dictionaries: Record<AppLanguage, WidenStrings<typeof english>> = { en: english, id: indonesian };
 
 const indonesianValidationMessages: Record<string, string> = {
+  "Select a valid purchase date.": "Pilih tanggal pembelian yang valid.",
+  "The purchase date cannot be in the future.": "Tanggal pembelian tidak boleh di masa depan.",
+  "The one-year warranty period has expired.": "Masa garansi satu tahun sudah berakhir.",
+  "A warranty claim already exists for this order number and product SKU. Contact support about your existing claim.": "Klaim garansi sudah diajukan untuk nomor pesanan dan SKU ini. Hubungi admin untuk melanjutkan klaim yang sudah ada.",
   "Please wait before submitting another ticket.": "Mohon tunggu sebelum mengirim tiket lain.",
   "The submission could not be processed.": "Pengajuan tidak dapat diproses.",
   "Enter your full name.": "Masukkan nama lengkap Anda.",

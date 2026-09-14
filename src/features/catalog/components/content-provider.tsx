@@ -25,6 +25,7 @@ export function ContentProvider({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveError, setSaveError] = useState<string>();
   const latestRevision = useRef(0);
+  const savedContent = useRef(initialContent);
 
   useEffect(() => {
     if (storageMode !== "local") return;
@@ -33,7 +34,9 @@ export function ContentProvider({
       if (stored) {
         try {
           const parsed = JSON.parse(stored) as SiteContent;
-          setContent(migrateContent(parsed, DEFAULT_CONTENT));
+          const loaded = migrateContent(parsed, DEFAULT_CONTENT);
+          savedContent.current = loaded;
+          setContent(loaded);
         } catch {
           window.localStorage.removeItem(STORAGE_KEY);
         }
@@ -53,6 +56,7 @@ export function ContentProvider({
         setSaveError(result.error);
         return false;
       }
+      savedContent.current = result.content;
       if (latestRevision.current === savingRevision) {
         setContent(result.content);
         setHasUnsavedChanges(false);
@@ -87,6 +91,7 @@ export function ContentProvider({
       setSaveState("saving");
       try {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
+        savedContent.current = content;
         if (latestRevision.current === savingRevision) {
           setHasUnsavedChanges(false);
           setSaveError(undefined);
@@ -105,6 +110,15 @@ export function ContentProvider({
     return persistContent(content, savingRevision);
   }, [content, hasUnsavedChanges, persistContent, storageMode]);
 
+  const cancelContent = useCallback(() => {
+    if (saveState === "saving") return;
+    setContent(savedContent.current);
+    setHasUnsavedChanges(false);
+    setSaveState("idle");
+    setSaveError(undefined);
+    latestRevision.current += 1;
+  }, [saveState]);
+
   const resetContent = useCallback(() => {
     setContent(DEFAULT_CONTENT);
     setSaveState("idle");
@@ -114,8 +128,8 @@ export function ContentProvider({
   }, []);
 
   const value = useMemo(
-    () => ({ content, hydrated, storageMode, saveState, hasUnsavedChanges, saveError, updateContent, saveContent, resetContent }),
-    [content, hasUnsavedChanges, hydrated, resetContent, saveContent, saveError, saveState, storageMode, updateContent],
+    () => ({ content, hydrated, storageMode, saveState, hasUnsavedChanges, saveError, updateContent, saveContent, resetContent, cancelContent }),
+    [cancelContent, content, hasUnsavedChanges, hydrated, resetContent, saveContent, saveError, saveState, storageMode, updateContent],
   );
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;

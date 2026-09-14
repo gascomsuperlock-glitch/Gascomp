@@ -1,5 +1,6 @@
 "use server";
 
+import { purchaseDateError, DUPLICATE_CLAIM_ERROR, EXPIRED_CLAIM_ERROR } from "../model/claim-eligibility";
 import { headers } from "next/headers";
 import { saveWarrantyTicket } from "@/features/warranty/server/ticket-service";
 import { validateEvidenceSelection } from "@/features/warranty/model/evidence";
@@ -67,7 +68,8 @@ export async function createWarrantyClaim(
   if (!values.product) fieldErrors.product = "Enter the product name.";
   if (!values.sku) fieldErrors.sku = "Enter the product SKU.";
   if (!values.store) fieldErrors.store = "Enter the store where the product was purchased.";
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(values.purchaseDate)) fieldErrors.purchaseDate = "Select the purchase date.";
+  const dateError = purchaseDateError(values.purchaseDate);
+  if (dateError) fieldErrors.purchaseDate = dateError;
   if (!values.orderNumber) fieldErrors.orderNumber = "Enter the order number.";
   if (!Number.isSafeInteger(purchasePrice) || purchasePrice <= 0) fieldErrors.purchasePrice = "Enter the purchase price in Indonesian Rupiah.";
   if (values.problem.length < 15) fieldErrors.problem = "Describe the product issue in at least 15 characters.";
@@ -110,7 +112,8 @@ export async function createWarrantyClaim(
     const result = await saveWarrantyTicket(input);
     recentSubmissions.set(clientId, now);
     return { success: true, ticketId: result.ticketId };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && [DUPLICATE_CLAIM_ERROR, EXPIRED_CLAIM_ERROR].includes(error.message)) return { error: error.message };
     return { error: "The ticket could not be saved. Please try again." };
   }
 }

@@ -77,3 +77,5 @@ The panel adapts the **Dashboard with Collapsible Sidebar** component by **uniqu
 - Operational data replaces reference/demo data; the reference component does not define new business requirements.
 
 Status: the protected admin flow, feature dashboard, product/content editors, image management, QR, settings, and warranty-ticket review are implemented. Supabase is used when configured; local fallback remains available for development.
+
+The header **Cancel** button restores all product and settings edits to the last successful Save (or initial loaded content). It clears save errors and unsaved state without writing to the database. Cancel is disabled while saving and when there are no staged changes. Uploaded files can remain unreferenced after cancellation.

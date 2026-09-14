@@ -1,4 +1,5 @@
 import "server-only";
+import { purchaseDateError } from "../model/claim-eligibility";
 import { randomBytes } from "node:crypto";
 import { isSupabaseConfigured } from "@/shared/integrations/supabase/server";
 import type { WarrantyTicketInput } from "../model/input";
@@ -12,6 +13,8 @@ function createTicketId() {
 }
 
 export async function saveWarrantyTicket(input: WarrantyTicketInput) {
+  const error = purchaseDateError(input.purchaseDate);
+  if (error) throw new Error(error);
   const ticketId = createTicketId();
   const submittedAt = new Date().toISOString();
   const ticket = isSupabaseConfigured()

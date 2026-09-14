@@ -12,6 +12,7 @@ export type ContentContextValue = {
   saveError?: string;
   updateContent: (updater: (current: SiteContent) => SiteContent) => void;
   saveContent: () => Promise<boolean>;
+  cancelContent: () => void;
   resetContent: () => void;
 };
 

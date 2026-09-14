@@ -9,6 +9,7 @@
    - `supabase/migrations/202609110004_warranty_video_upload_limit.sql`
    - `supabase/migrations/202609140001_warranty_video_formats.sql`
    - `supabase/migrations/202609140002_tutorial_video_thumbnails.sql`
+   - `supabase/migrations/202609140003_warranty_claim_eligibility.sql`
 3. Copy the project URL, publishable key, and secret key into `.env.local`. Keep the secret server-only and never give it a `NEXT_PUBLIC_` prefix. The code also accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` name when required.
 4. Restart the development server after changing environment variables.
 5. Create a draft product, upload an image, and publish it. Confirm that public visitors cannot read drafts and another browser can read the published product.

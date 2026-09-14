@@ -28,12 +28,13 @@ import { SettingsEditor } from "@/features/catalog/components/settings-editor";
 import { ContentEditorNavigation } from "@/features/admin/components/content-editor-navigation";
 
 export function AdminDashboard({ initialTickets = [], backendError, ticketError, publicBaseUrl }: { initialTickets?: WarrantyTicket[]; backendError?: string; ticketError?: string; publicBaseUrl?: string }) {
-  const { content, updateContent, saveContent, resetContent, storageMode, saveState, hasUnsavedChanges, saveError } = useContent();
+  const { content, updateContent, saveContent, cancelContent, resetContent, storageMode, saveState, hasUnsavedChanges, saveError } = useContent();
   const [tickets, setTickets] = useState(initialTickets);
   const [view, setView] = useState<MainView>("overview");
   const [editorTab, setEditorTab] = useState<EditorTab>("details");
   const [selectedId, setSelectedId] = useState(content.products[0]?.id ?? "");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [editorVersion, setEditorVersion] = useState(0);
   const [showEditor, setShowEditor] = useState(false);
   const editorHeading = useRef<HTMLHeadingElement>(null);
   const productList = useRef<HTMLDivElement>(null);
@@ -146,6 +147,7 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
                 setSidebarOpen(false);
               }}
             />
+            <button type="button" onClick={() => { cancelContent(); setEditorVersion((version) => version + 1); }} disabled={saveState === "saving" || !hasUnsavedChanges} className="inline-flex h-9 items-center rounded-full border border-[#2c3038]/15 px-4 text-xs font-extrabold disabled:opacity-40">Cancel</button>
             <button type="button" onClick={() => void saveContent()} disabled={saveState === "saving" || !hasUnsavedChanges} className="inline-flex h-9 items-center gap-2 rounded-full bg-[#0035b9] px-4 text-xs font-extrabold text-white transition hover:bg-[#002c98] disabled:cursor-not-allowed disabled:opacity-50">
               {saveState === "saving" ? <LoaderCircle className="size-3.5 animate-spin" /> : !hasUnsavedChanges && saveState === "saved" ? <Check className="size-3.5" /> : <Save className="size-3.5" />}
               <span>{saveState === "saving" ? "Saving..." : saveState === "error" ? "Retry save" : !hasUnsavedChanges && saveState === "saved" ? "Saved" : "Save"}</span>
@@ -215,7 +217,7 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
 
                     <ContentEditorNavigation activeTab={editorTab} onSelect={setEditorTab} product={selectedProduct} />
 
-                    <div className="p-5 sm:p-7">
+                    <div key={editorVersion} className="p-5 sm:p-7">
                       {editorTab === "details" && <DetailsEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} onDelete={() => deleteProduct(selectedProduct)} />}
                       {editorTab === "images" && <ProductImageEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
                       {editorTab === "videos" && <VideosEditor key={selectedProduct.id} product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}

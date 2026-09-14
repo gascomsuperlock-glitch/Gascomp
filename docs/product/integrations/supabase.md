@@ -126,3 +126,13 @@ Storage API and verified: all 15 MIME types are allowed, the bucket remains
 private, and its file limit remains 52,428,800 bytes. Existing objects and
 access policies are unchanged. Local verification records are in
 `.data/warranty-video-formats/bucket-before.json` and `bucket-after.json`.
+
+## Warranty claim eligibility
+
+`202609140003_warranty_claim_eligibility.sql` adds a `BEFORE INSERT` trigger for
+new warranty tickets. It rejects future or expired purchase dates and uses a
+transaction-level advisory lock to serialize submissions with the same trimmed,
+case-insensitive order number and SKU before checking for an existing ticket.
+Historical tickets remain unchanged, and the supporting expression index is not
+unique so existing duplicate records do not block migration. Apply this migration
+before relying on database-level protection for simultaneous submissions.

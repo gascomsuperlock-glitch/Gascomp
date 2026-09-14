@@ -1,4 +1,6 @@
 import "server-only";
+import { createHash } from "node:crypto";
+import { DUPLICATE_CLAIM_ERROR, normalizeClaimIdentity } from "../model/claim-eligibility";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { WarrantyEvidence, WarrantyTicket, WarrantyTicketStatus } from "../model/types";
@@ -8,7 +10,7 @@ import { normalizeLocalTicket } from "../model/ticket-mappers";
 
 const TICKET_ROOT = path.join(process.cwd(), ".data", "warranty-tickets");
 
-export async function saveLocalTicket(input: WarrantyTicketInput, ticketId: string, submittedAt: string) {
+async function writeLocalTicket(input: WarrantyTicketInput, ticketId: string, submittedAt: string) {
   const ticketDirectory = path.join(TICKET_ROOT, ticketId);
   await mkdir(TICKET_ROOT, { recursive: true });
   await mkdir(ticketDirectory, { recursive: false });
@@ -65,4 +67,23 @@ export async function readLocalEvidence(ticketId: string, evidenceId: string) {
   const evidence = tickets.find((item) => item.ticketId === ticketId)?.evidence.find((item) => item.id === evidenceId);
   if (!evidence?.storedName) return null;
   return { bytes: await readFile(path.join(TICKET_ROOT, ticketId, path.basename(evidence.storedName))), name: evidence.originalName, mimeType: evidence.mimeType };
+}
+
+export async function saveLocalTicket(input: WarrantyTicketInput, ticketId: string, submittedAt: string) {
+  const order = normalizeClaimIdentity(input.orderNumber);
+  const sku = normalizeClaimIdentity(input.sku);
+  const key = createHash("sha256").update(JSON.stringify([order, sku])).digest("hex");
+  await mkdir(TICKET_ROOT, { recursive: true });
+  const lock = path.join(TICKET_ROOT, `.claim-${key}`);
+  try { await mkdir(lock); } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "EEXIST") throw new Error(DUPLICATE_CLAIM_ERROR);
+    throw error;
+  }
+  try {
+    const existing = await listLocalTickets();
+    if (existing.some((ticket) => normalizeClaimIdentity(ticket.purchase.orderNumber) === order && normalizeClaimIdentity(ticket.product.sku) === sku)) throw new Error(DUPLICATE_CLAIM_ERROR);
+    return await writeLocalTicket(input, ticketId, submittedAt);
+  } finally {
+    await rm(lock, { recursive: true, force: true });
+  }
 }
