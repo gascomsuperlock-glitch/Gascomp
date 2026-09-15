@@ -7,6 +7,7 @@ The brand guide is stored in [Gascomp - Guidelines.pdf](<../../brand/Gascomp - G
 The visual reference is the [Gascomp Superlock website](https://gascompsuperlock.com/).
 
 - Use the official logo, colors, and typography consistently.
+- Browser icons use the official A-shaped supergraphic described on printed pages 2 and 5 of the brand guide, in white on Gascomp navy `#021B40`. `src/app/icon.svg` supplies the scalable icon, and `src/app/favicon.ico` provides 16, 32, and 48 pixel fallbacks with the same design.
 - The current direction uses the official navy wordmark, saturated Gascomp blue, cyan, generous spacing, and pill-shaped controls. The September 14, 2026 update adds lime-yellow and coral accents following the owner’s preference for a bold, colorful website.
 - Replace temporary illustrations with approved logo and product-photo assets when those files are available.
 - Preserve the agreed help flow: searchable catalog at the root URL and a product-specific help page opened by QR.

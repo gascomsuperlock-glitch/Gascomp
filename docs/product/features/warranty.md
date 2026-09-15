@@ -101,7 +101,13 @@ cannot be updated. All writes require an active administrator session.
 
 Migration `202609150002_warranty_ticket_solution.sql` adds a nullable, constrained
 solution column. Historical solutions stay unset; historical statuses are preserved.
-The migration is prepared locally and has not been applied to production.
+On September 15, 2026, this migration was applied to production under explicit
+authorization for the solution column. Read-only SQL and application API checks
+confirmed the nullable text column and all six allowed values. Checksums confirmed
+that all seven existing tickets and 19 evidence metadata records were unchanged;
+all historical solutions remain null. Only this migration's SQL was executed;
+no other migration or migration-history update was applied. Verification records
+are stored locally in `.data/warranty-solution-migration/`.
 
 The inbox exports UTF-8 CSV compatible with Excel and Google Sheets through the
 protected `/admin/warranty-tickets/export?start=YYYY-MM-DD&end=YYYY-MM-DD` endpoint.
