@@ -24,7 +24,7 @@ export async function loginCareAction(_previous: CareActionState, form: FormData
       if (attempt.error) return { error: "unavailable" };
       if (!attempt.data) return { error: "rateLimited" };
     }
-    const { data: row, error } = await db.from("care_members").select("id,password_hash,credential_version,must_change_password").eq("username", username).maybeSingle();
+    const { data: row, error } = await db.from("care_members").select("id,password_hash,credential_version,must_change_password").eq("username", username).is("deleted_at", null).maybeSingle();
     if (error) return { error: "unavailable" };
     const valid = await verifyCarePassword(password, row?.password_hash ?? dummyHash);
     if (!row || !valid) return { error: "invalidCredentials" };

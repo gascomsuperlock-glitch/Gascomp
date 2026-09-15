@@ -253,3 +253,20 @@ reported no repository webhooks, Actions runs, deployment records, or commit
 statuses establishing the Hostinger release mapping. Hostinger hosting access
 was not connected in this session; a successful push alone must not be reported
 as a verified hosting deployment.
+
+
+### Coverage, claim confirmation, and deletion release
+
+The owner authorized the next GitHub push and Hostinger deployment. The release
+adds customer remaining-claim/expiry views, administrator purchase records and
+Confirm Claim, member selection, and single/bulk soft deletion. It passed lint,
+typecheck, all 147 Node tests, production build, and local browser workflows,
+including confirmation limits, deletion retries, access revocation, history
+preservation, and mobile layouts.
+
+Both new database migrations (`202609150004` and `202609150005`) are applied;
+existing data preservation is recorded in the
+[Supabase specification](../integrations/supabase.md#gascompcare-member-deletion).
+No fixture accounts or purchases were copied to production. Hostinger hosting
+access was still unavailable in this session; the plugin search found only
+Hostinger Mail for that provider. A push is not proof of hosting deployment.

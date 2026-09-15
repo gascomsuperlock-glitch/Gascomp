@@ -11,7 +11,7 @@ export async function listCareMembers(input: { query?: string; page?: number } =
   const page = Number.isSafeInteger(input.page) && input.page! > 0 ? Math.min(input.page!, 100000) : 1;
   const query = String(input.query ?? "").trim().slice(0, 100);
   try {
-    let request = careDatabase().from("care_members").select(memberColumns, { count: "exact" }).order("created_at", { ascending: false }).order("id", { ascending: false }).range((page - 1) * 20, page * 20 - 1);
+    let request = careDatabase().from("care_members").select(memberColumns, { count: "exact" }).is("deleted_at", null).order("created_at", { ascending: false }).order("id", { ascending: false }).range((page - 1) * 20, page * 20 - 1);
     if (query) {
       // Strip PostgREST expression syntax and escape LIKE wildcards before interpolation.
       const safe = query.replace(/[^\p{L}\p{N} ._-]/gu, "").replace(/[_%]/g, "\\$&");
@@ -50,7 +50,7 @@ export async function resetCarePasswordAction(memberId: string): Promise<CareAct
   if (typeof memberId !== "string" || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(memberId)) return { error: "invalidInput" };
   try {
     const db = careDatabase();
-    const { data: row, error } = await db.from("care_members").select("username").eq("id", memberId).maybeSingle();
+    const { data: row, error } = await db.from("care_members").select("username").eq("id", memberId).is("deleted_at", null).maybeSingle();
     if (error) return { error: "unavailable" };
     if (!row) return { error: "invalidInput" };
     const password = createCareTemporaryPassword();

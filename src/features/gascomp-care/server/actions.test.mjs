@@ -251,3 +251,16 @@ test('password replacement rejects fewer than eight characters before database w
   assert.equal(state.rpcCalls.length, 0);
   assert.equal(state.writes.length, 0);
 });
+
+test('admin list, reset lookup and login lookup exclude soft-deleted accounts', async () => {
+  state.admin = true;
+  state.results.push({ data: [], count: 0, error: null });
+  assert.deepEqual(await list(), { members: [], total: 0 });
+  state.results.push({ data: null, error: null });
+  assert.equal((await reset(id)).error, 'invalidInput');
+  state.results.push({ data: null, error: null });
+  assert.equal((await login({}, form({ username: row.username, password }))).error, 'invalidCredentials');
+  assert.equal(state.queries.length, 3);
+  for (const query of state.queries) assert.ok(query.operations.some(operation => operation[0] === 'is' && operation[1] === 'deleted_at' && operation[2] === null));
+  assert.equal(state.writes.length, 0);
+});

@@ -9,19 +9,25 @@ from the product's included warranty. One Care unit provides one year of coverag
 and up to three additional claims. Two units provide two years and up to six
 additional claims; N units provide N years and up to 3 × N additional claims.
 The Care purchase date starts coverage, not the login date or the date an operator
-enters the purchase. One account has one virtual member card; future coverage
-records will identify the specific item being protected.
+enters the purchase. One account has one virtual member card; each coverage
+record identifies the specific item being protected.
 
 The owner's latest description of the included product warranty allows one to
 three claims. Its exact policy remains to be defined separately. The existing
 [Warranty Claim](warranty.md) implementation still enforces its documented
 one-claim rule and is unchanged by this feature.
 
-Marketplace order synchronization, purchase recording, coverage issuance,
-activation verification, working QR codes, claims and balance deductions are
-deferred. Policies for purchases on different dates, refunds, and allocation
-between included warranty and Care also remain deferred. Account creation does
-not issue coverage, reset a balance, or activate a warranty.
+Administrators record verified Care purchases and approved claim usage manually.
+A purchase identifies one protected item, its Care order reference, actual purchase
+date, and number of units (1–10 per record). Each purchase has its own coverage
+period and claim balance. Purchases on different dates remain separate; the system
+does not combine their periods or reassign claims between purchases. Account
+creation alone does not activate coverage.
+
+Marketplace synchronization, working QR codes, refunds, purchase corrections,
+and automatic allocation between included warranty tickets and Care remain
+deferred. An approved claim is recorded manually against its Care purchase; the
+ordinary warranty ticket workflow does not automatically consume Care quota.
 
 ## Customer access
 
@@ -42,16 +48,33 @@ Customer pages support English and Indonesian using the existing language
 preference. Metadata, validation and accessibility labels are localized. Account
 pages are excluded from indexing and member data is not publicly cached.
 
-The real member card shows the official Gascomp identity, customer name, and a
-permanent member number. It states that Care purchase details are not available
-yet. It does not show a usable QR, claim balance, expiration date, or unverified
-coverage status. An account is usable even while purchase details are unavailable.
+The member page shows the official Gascomp identity, customer name, permanent
+member number, and a coverage section for each recorded purchase. Each section
+shows its protected item, start date, inclusive end date,
+active/expired/exhausted status and remaining usable claims. Used counts, internal
+claim references, and history are reserved for the admin detail view and are
+not sent to the customer page. Expired coverage
+shows zero usable claims even if part of the original quota was unused.
+
+Coverage begins on the actual Care purchase date in Asia/Jakarta and runs through
+the day before its N-year calendar anniversary. February 29 anniversaries clamp
+to February 28 in non-leap years, then subtract one day for the inclusive end.
+For example, a one-unit purchase on September 15, 2026 covers through September
+14, 2027 and permits up to three approved claims; two units cover through
+September 14, 2028 with up to six claims.
+
+An account without recorded purchases shows an explicit empty state, not a made-up
+expiry or zero balance. Unavailable coverage data shows a retryable error, not
+an empty purchase list. Customers can refresh details; visible pages refresh every
+minute and on focus to update usage and expiry. Reads derive ownership exclusively
+from the member session, and accounts awaiting password replacement cannot read
+coverage. No usable QR is issued.
 
 ## Admin account management
 
 **GascompCare** appears after **Warranty tickets**. Administrators can search
 members by name, username, or member number, browse 20 results per page, create
-accounts, inspect a member, and reset passwords. The initial list is empty.
+accounts, inspect a member, reset passwords, and delete accounts. The initial list is empty.
 
 Creation collects name, username, WhatsApp number, and an optional Shopee order
 reference. That reference is an operator note, not a verified purchase or an
@@ -70,6 +93,38 @@ password change at the next login. Member operations persist immediately and do
 not use the catalog's Save/Cancel workflow. Unsaved catalog edits survive moving
 between dashboard views.
 
+### Selection and deletion
+
+**Select Members** enables checkboxes in the member list. **Select all on this
+page** selects only the visible page, and **Delete Selected** deletes those
+explicitly selected accounts. Selection clears when searching, changing pages,
+or leaving selection mode, so hidden results are never implicitly deleted.
+The member detail also offers **Delete Member** for one account.
+
+Deletion requires confirmation, hides the accounts from the active member list,
+and immediately ends customer access. It marks `deleted_at` and revokes sessions;
+it does not physically remove members, purchases, claims, or other customer data.
+Member numbers and usernames remain reserved. Deleted accounts cannot log in,
+reset or change passwords, create a purchase, or confirm a claim. Existing
+purchase and claim references remain reserved to preserve duplicate protection.
+There is no restoration UI in this release.
+
+The server accepts 1–100 explicit UUIDs, validates the entire batch, and performs
+an atomic deletion. Unknown IDs reject the batch; retrying an already-deleted
+account is safe. Database locks serialize deletion with credential and coverage
+changes. Failed or uncertain requests do not show a false success. Successful
+deletion clears affected detail and temporary credentials and refreshes the list.
+
+The selected member also has a **Coverage and claims** panel. **Add Care Purchase**
+persists an operator-verified purchase immediately. **Confirm Claim** is a single button in the card detail view, with a confirmation
+dialog; one successful confirmation uses one claim. Admins see used/total claims
+and dated history. The server determines today in Asia/Jakarta and uses an internal
+request identifier, so admins do not enter a reference or usage date. Expired or
+exhausted coverage cannot accept new confirmations. References are normalized
+case-insensitively and unique across members to prevent duplicate purchases or
+claims. Retrying the same request identifier is idempotent; the admin keeps that identifier
+after an ambiguous network error and replaces it only after confirmed success. Claim quota checks and inserts hold a purchase-row lock.
+
 A separate card preview is labeled **Sample** and uses fictional data, one year,
 up to three claims, and a nonfunctional QR placeholder. It never represents a
 customer's actual purchase or coverage.
@@ -87,7 +142,8 @@ Optional `GASCOMP_CARE_PREVIEW_URL` and `GASCOMP_CARE_PREVIEW_KEY` variables in
 the ignored `.env.local` connect only GascompCare to the existing loopback test
 database. The catalog, ordinary warranty workflow, and their configured Supabase
 connection remain unchanged. The database listener is a background service, not
-a second website. Keep it running to retain the current in-memory test members.
+a second website. The local gateway persists test accounts, sessions, purchases, and claims in an
+ignored private data directory so restarting it retains the existing records.
 
 This override is available only in development and permits only an HTTP loopback
 database. Invalid or incomplete settings, or an unavailable preview database,
@@ -151,6 +207,19 @@ It must be applied before functional member authentication is available. The
 authorized production migration is recorded in the
 [Supabase integration specification](../integrations/supabase.md#gascompcare-member-accounts).
 
+Coverage migration `202609150004_gascomp_care_coverage.sql` adds private
+`care_purchases` and `care_claims` tables and three RPCs. Server-only read access
+uses the service role; authenticated and anonymous database roles have no access.
+The service role can mutate coverage only through restricted functions that
+enforce dates, ownership, references, and quota. This migration preserves existing
+accounts, warranty data, and Storage; it does not backfill purchases from account
+creation dates or optional order notes.
+
+Deletion migration `202609150005_gascomp_care_member_deletion.sql` adds the
+nullable marker and protected batch deletion function, and updates authentication
+and coverage functions to reject deleted accounts. Apply it after the coverage
+migration before deploying the updated application. Existing data is retained.
+
 ## Verification
 
 Run lint, typecheck, Node tests, and production build. Cover account creation and
@@ -213,3 +282,36 @@ enabled. Tests cover production ignoring preview variables, invalid or unavailab
 preview connections never falling back to the primary database, and preservation
 of existing rows when adding or accidentally repeating the Care migration.
 No production migration, push, or deployment was performed.
+
+
+### Coverage and confirmation verification
+
+Lint, typecheck, build, and all 134 Node tests passed with the optional SQL engine
+enabled. Tests cover ownership, date boundaries, idempotency, quota exhaustion,
+protected database access, server-generated confirmation dates, and the customer
+DTO excluding admin usage/history fields. Chromium verified the admin Confirm
+Claim button, two-unit coverage showing 1/6 to the admin and five remaining to the
+customer, one-unit exhaustion after three confirmations, disabled confirmation
+on expired coverage, bilingual mobile layouts, empty accounts, and coverage
+outage/recovery. Records are in `.data/gascomp-care-validation/coverage-browser.json`.
+
+The local gateway now persists its database. Its conversion preserved all 16
+existing members, 13 sessions, and 13 attempt rows exactly before further tests.
+The new coverage migration and application changes have only been exercised
+locally; this follow-up has not been pushed or deployed to production.
+
+
+### Member deletion verification
+
+Lint, typecheck, build, and all 147 Node tests passed with SQL validation enabled.
+Chromium verified selection, mixed select-all state, clear selection, search
+scoping, canceling confirmation, single and bulk deletion, mobile layout, and
+retry after a simulated request failure. A deleted member's live session was
+rejected and subsequent login failed, while its purchase and confirmed claim
+remained stored. An unselected member remained active until its separate explicit
+deletion. Browser fixtures used only fictional local accounts; the report is
+`.data/gascomp-care-validation/deletion-browser.json`.
+
+The local migration preserved existing members, sessions, purchases and claims;
+its only initial row change was adding null `deleted_at` values. Production
+migration, GitHub push, and hosting deployment of this follow-up remain pending.

@@ -13,6 +13,8 @@
    - `supabase/migrations/202609150001_warranty_ticket_deletion.sql`
    - `supabase/migrations/202609150002_warranty_ticket_solution.sql`
    - `supabase/migrations/202609150003_gascomp_care_accounts.sql`
+   - `supabase/migrations/202609150004_gascomp_care_coverage.sql`
+   - `supabase/migrations/202609150005_gascomp_care_member_deletion.sql`
 3. Copy the project URL, publishable key, and secret key into `.env.local`. Keep the secret server-only and never give it a `NEXT_PUBLIC_` prefix. The code also accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` name when required.
 4. Restart the development server after changing environment variables.
 5. Create a draft product, upload an image, and publish it. Confirm that public visitors cannot read drafts and another browser can read the published product.
@@ -47,8 +49,8 @@ and an admin password reset revokes the previous session. Remove test credential
 from delivery drafts and use non-production data for validation.
 
 An account is not a Care purchase: the optional marketplace order reference does
-not activate coverage. Marketplace synchronization and actual entitlements remain
-deferred. See the [GascompCare specification](../product/features/gascomp-care.md).
+not activate coverage. Marketplace synchronization remains deferred. Administrators can record verified
+purchases and approved claim usage after the separate coverage migration. See the [GascompCare specification](../product/features/gascomp-care.md).
 
 The hosting proxy must preserve the public `Host` for same-origin checks and
 append or replace `X-Forwarded-For` with a trusted client IP. Member authentication

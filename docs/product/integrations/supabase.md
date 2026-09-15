@@ -170,3 +170,39 @@ application-data and Storage backup, not a full managed-project/role backup;
 
 Without the migration, Care reports unavailability while the existing catalog
 and warranty features retain their behavior.
+
+
+## GascompCare coverage and claim usage
+
+`202609150004_gascomp_care_coverage.sql` adds private Care purchase and approved
+claim ledgers. Each verified purchase has a calendar-based period and a quota
+of three claims per purchased year. Restricted mutation functions enforce
+ownership, normalized unique references, dates, and serialized claim limits;
+public roles have no access. Existing account, catalog, warranty, and Storage
+records are unchanged. Account order notes are not converted into coverage.
+
+On September 15, 2026, the owner-authorized release applied this migration to
+production with history version `202609150004`. No purchases or claims were
+created during rollout. A missing coverage migration displays an explicit
+coverage error while account access continues.
+
+
+## GascompCare member deletion
+
+`202609150005_gascomp_care_member_deletion.sql` adds soft deletion with atomic
+batch handling and session revocation. Authentication and coverage mutations
+reject deleted accounts, including requests racing with deletion. Accounts,
+purchases, claims, usernames, and purchase references remain retained; no Storage
+or warranty data is removed. The admin list reads only active accounts.
+
+On September 15, 2026, the owner-authorized release applied this migration after
+coverage and aligned history version `202609150005`. No member was deleted during
+rollout. RLS remains enabled, public roles cannot confirm claims or delete members,
+and the service role retains the required protected operations.
+
+Fresh snapshots of 14 pre-existing tables verified all 247 rows unchanged after
+both migrations (allowing the added nullable deletion marker). All 88 Storage
+files were verified against unchanged remote metadata and local SHA-256 backups.
+Data restoration and both migrations passed on a disposable database before the
+production changes. Private records are in `.data/gascomp-care-release-2/`.
+Application hosting deployment still requires separate verification.

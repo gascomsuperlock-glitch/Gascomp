@@ -12,6 +12,8 @@ import { getWhatsappUrl } from "@/shared/lib/whatsapp";
 import { careCopy } from "../model/copy";
 import type { CareActionState, CareMember } from "../model/types";
 import { loginCareAction, changeCarePasswordAction, logoutCareAction } from "../server/member-actions";
+import type { CareCustomerCoverageResult } from "../model/customer-coverage";
+import { CareCoverageSummary } from "./care-coverage-summary";
 import { CareMemberCard } from "./care-member-card";
 
 const inputClass = "mt-2 min-h-12 w-full rounded-xl border border-[#021b40]/20 bg-white px-4 text-base outline-none focus:border-[#0035b9] focus:ring-2 focus:ring-[#0035b9]/20";
@@ -76,10 +78,10 @@ function LogoutButton() {
 }
 function LogoutForm() { return <form action={logoutCareAction}><LogoutButton /></form>; }
 
-export function CareMemberPage({ member }: { member: CareMember }) {
+export function CareMemberPage({ member, coverage }: { member: CareMember; coverage: CareCustomerCoverageResult }) {
   const { language } = useLanguage();
   const copy = careCopy[language];
-  return <CareShell><div className="mb-8 flex flex-wrap items-start justify-between gap-5"><div><h1 className="text-4xl font-extrabold tracking-tight">{copy.memberTitle}</h1><p className="mt-3 text-sm text-[#566779]">{copy.memberIntro}</p></div><LogoutForm /></div><div className="grid items-start gap-7 md:grid-cols-2"><CareMemberCard name={member.name} memberNumber={member.memberNumber} language={language} /><section className="min-w-0 rounded-3xl border border-[#021b40]/10 bg-white p-6 sm:p-8"><h2 className="text-lg font-extrabold">{copy.profile}</h2><dl className="mt-6 space-y-5">{[[copy.name, member.name], [copy.username, member.username], [copy.memberNumber, member.memberNumber]].map(([label, value]) => <div key={label}><dt className="text-xs font-semibold text-[#566779]">{label}</dt><dd className="mt-1 break-words text-sm font-bold">{value}</dd></div>)}</dl><Link href="/gascomp-care/change-password" className="mt-7 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#0035b9]"><KeyRound aria-hidden="true" className="size-4" />{copy.passwordTitle}</Link></section></div></CareShell>;
+  return <CareShell><div className="mb-8 flex flex-wrap items-start justify-between gap-5"><div><h1 className="text-4xl font-extrabold tracking-tight">{copy.memberTitle}</h1><p className="mt-3 text-sm text-[#566779]">{copy.memberIntro}</p></div><LogoutForm /></div><div className="grid items-start gap-7 md:grid-cols-2"><CareMemberCard name={member.name} memberNumber={member.memberNumber} language={language} /><section className="min-w-0 rounded-3xl border border-[#021b40]/10 bg-white p-6 sm:p-8"><h2 className="text-lg font-extrabold">{copy.profile}</h2><dl className="mt-6 space-y-5">{[[copy.name, member.name], [copy.username, member.username], [copy.memberNumber, member.memberNumber]].map(([label, value]) => <div key={label}><dt className="text-xs font-semibold text-[#566779]">{label}</dt><dd className="mt-1 break-words text-sm font-bold">{value}</dd></div>)}</dl><Link href="/gascomp-care/change-password" className="mt-7 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#0035b9]"><KeyRound aria-hidden="true" className="size-4" />{copy.passwordTitle}</Link></section></div><CareCoverageSummary result={coverage} /></CareShell>;
 }
 
 export function CareLoading() {

@@ -9,9 +9,9 @@ export const careCopy = {
     firstPassword: "Before opening your member account, replace the temporary password provided by our team.",
     passwordIntro: "Keep your account secure by choosing a new password. Other signed-in sessions will end after saving.",
     save: "Save new password", pending: "Please wait…", logout: "Sign out", contact: "Contact Gascomp support", back: "Back to your account",
-    memberIntro: "Your member identity, all in one place.", profile: "Member profile", name: "Name", memberNumber: "Member number", card: "Virtual Member Card",
+    memberIntro: "Your member card, coverage dates, and remaining claims in one place.", profile: "Member profile", name: "Name", memberNumber: "Member number", card: "Virtual Member Card",
     unavailable: "GascompCare is temporarily unavailable. Please try again later or contact our team.",
-    purchaseUnavailable: "Care purchase details are not available yet", sample: "Sample", sampleYear: "1 year", sampleClaims: "Up to 3 claims", qrPreview: "QR Preview",
+    purchaseUnavailable: "See coverage dates and remaining claims below.", sample: "Sample", sampleYear: "1 year", sampleClaims: "Up to 3 claims", qrPreview: "QR Preview",
     loading: "Loading GascompCare…", retry: "Try again",
     errors: {
       invalidCredentials: "The username or password is incorrect.", unavailable: "GascompCare is temporarily unavailable. Please try again later.", rateLimited: "Too many sign-in attempts. Please try again in 15 minutes.", invalidInput: "Check your details and try again.", unauthorized: "Your session has ended. Please sign in again.", duplicateUsername: "This username is already in use.", passwordMismatch: "The new passwords do not match.", currentPasswordIncorrect: "Your current password is incorrect.", requestFailed: "We could not complete your request. Please try again.",
@@ -27,9 +27,9 @@ export const careCopy = {
     firstPassword: "Sebelum membuka akun member, ganti kata sandi sementara yang diberikan oleh tim kami.",
     passwordIntro: "Jaga keamanan akun dengan memilih kata sandi baru. Sesi masuk lainnya akan berakhir setelah menyimpan.",
     save: "Simpan kata sandi baru", pending: "Mohon tunggu…", logout: "Keluar", contact: "Hubungi bantuan Gascomp", back: "Kembali ke akun Anda",
-    memberIntro: "Identitas member Anda dalam satu tempat.", profile: "Profil member", name: "Nama", memberNumber: "Nomor member", card: "Kartu Member Virtual",
+    memberIntro: "Kartu member, masa berlaku, dan sisa klaim Anda dalam satu tempat.", profile: "Profil member", name: "Nama", memberNumber: "Nomor member", card: "Kartu Member Virtual",
     unavailable: "GascompCare sedang tidak tersedia. Silakan coba lagi nanti atau hubungi tim kami.",
-    purchaseUnavailable: "Detail pembelian Care belum tersedia", sample: "Contoh", sampleYear: "1 tahun", sampleClaims: "Maksimal 3 klaim", qrPreview: "Pratinjau QR",
+    purchaseUnavailable: "Lihat masa berlaku dan sisa klaim di bawah.", sample: "Contoh", sampleYear: "1 tahun", sampleClaims: "Maksimal 3 klaim", qrPreview: "Pratinjau QR",
     loading: "Memuat GascompCare…", retry: "Coba lagi",
     errors: {
       invalidCredentials: "Nama pengguna atau kata sandi salah.", unavailable: "GascompCare sedang tidak tersedia. Silakan coba lagi nanti.", rateLimited: "Terlalu banyak percobaan masuk. Silakan coba lagi dalam 15 menit.", invalidInput: "Periksa data Anda dan coba lagi.", unauthorized: "Sesi Anda telah berakhir. Silakan masuk kembali.", duplicateUsername: "Nama pengguna ini sudah digunakan.", passwordMismatch: "Kata sandi baru tidak cocok.", currentPasswordIncorrect: "Kata sandi saat ini salah.", requestFailed: "Permintaan Anda belum berhasil. Silakan coba lagi.",
