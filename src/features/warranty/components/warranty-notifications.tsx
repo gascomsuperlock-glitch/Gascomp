@@ -53,7 +53,7 @@ export function WarrantyNotifications({
     return new Set([...unreadIds].filter((ticketId) => {
       const acknowledged = acknowledgedTickets[ticketId];
       const current = currentTickets.get(ticketId);
-      return !acknowledged || !current || getWarrantyTicketVersion(acknowledged) !== getWarrantyTicketVersion(current);
+      return Boolean(current) && (!acknowledged || getWarrantyTicketVersion(acknowledged) !== getWarrantyTicketVersion(current!));
     }));
   }, [acknowledgedTickets, tickets, unreadIds]);
 

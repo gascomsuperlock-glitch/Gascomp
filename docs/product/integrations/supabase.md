@@ -136,3 +136,12 @@ case-insensitive order number and SKU before checking for an existing ticket.
 Historical tickets remain unchanged, and the supporting expression index is not
 unique so existing duplicate records do not block migration. Apply this migration
 before relying on database-level protection for simultaneous submissions.
+
+## Warranty ticket deletion
+
+`202609150001_warranty_ticket_deletion.sql` adds the nullable `deleted_at`
+timestamp used for soft deletion. Deleted tickets and their private evidence stay
+in PostgreSQL and Storage so claim identity remains available to the one-claim
+rule, while application reads omit them from the admin inbox and reject direct
+evidence access. Apply this migration before enabling deletion in a Supabase-backed
+deployment.

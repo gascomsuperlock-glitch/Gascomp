@@ -4,8 +4,8 @@ import { randomBytes } from "node:crypto";
 import { isSupabaseConfigured } from "@/shared/integrations/supabase/server";
 import type { WarrantyTicketInput } from "../model/input";
 import type { WarrantyTicketStatus } from "../model/types";
-import { saveLocalTicket, listLocalTickets, updateLocalTicketStatus, readLocalEvidence } from "./local-ticket-store";
-import { saveSupabaseTicket, listSupabaseTickets, updateSupabaseTicketStatus, readSupabaseEvidence } from "./supabase-ticket-store";
+import { deleteLocalTicket, saveLocalTicket, listLocalTickets, updateLocalTicketStatus, readLocalEvidence } from "./local-ticket-store";
+import { deleteSupabaseTicket, saveSupabaseTicket, listSupabaseTickets, updateSupabaseTicketStatus, readSupabaseEvidence } from "./supabase-ticket-store";
 
 function createTicketId() {
   const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
@@ -33,4 +33,8 @@ export async function updateWarrantyTicketStatus(ticketId: string, status: Warra
 
 export async function readWarrantyEvidence(ticketId: string, evidenceId: string) {
   return isSupabaseConfigured() ? readSupabaseEvidence(ticketId, evidenceId) : readLocalEvidence(ticketId, evidenceId);
+}
+
+export async function deleteWarrantyTicket(ticketId: string) {
+  return isSupabaseConfigured() ? deleteSupabaseTicket(ticketId) : deleteLocalTicket(ticketId);
 }

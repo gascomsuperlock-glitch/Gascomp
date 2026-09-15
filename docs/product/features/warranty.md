@@ -61,3 +61,9 @@ The purchase date must be valid, cannot be in the future, and must be within one
 Migration `202609140003_warranty_claim_eligibility.sql` adds database enforcement that serializes concurrent submissions for the same identity without changing historical tickets. It is prepared locally and requires application before production concurrency protection is active. Application checks cover existing tickets; local storage uses an exclusive per-identity directory lock. A crashed local process may leave a lock requiring operator cleanup.
 
 Status: form validation, evidence validation, ticket numbers, Supabase/local storage, private admin access, ticket listing, evidence download, status updates, and in-app admin notifications are implemented.
+
+## Ticket selection and deletion
+
+The admin inbox supports individual checkboxes, selecting all search results, clearing selection, deleting one ticket, and deleting up to 100 selected tickets per request. Search changes clear selection. Deletion requires confirmation and takes effect immediately, independently of catalog Save/Cancel. Controls are disabled during deletion or status updates. Partial failures remove only successfully deleted tickets and keep the remaining selection available for retry.
+
+Deletion marks tickets as deleted instead of erasing claim history. Deleted tickets are excluded from the inbox and notifications; direct evidence access is denied. Their order/SKU identity and private evidence remain stored, so the one-claim rule still applies. Supabase requires `202609150001_warranty_ticket_deletion.sql` (prepared, not applied to production). Local records use `deletedAt` with the same behavior.

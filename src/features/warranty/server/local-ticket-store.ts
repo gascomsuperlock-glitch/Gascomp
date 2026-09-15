@@ -40,12 +40,13 @@ async function writeLocalTicket(input: WarrantyTicketInput, ticketId: string, su
   }
 }
 
-export async function listLocalTickets() {
+export async function listLocalTickets(includeDeleted = false) {
   let directories: string[] = [];
   try { directories = await readdir(TICKET_ROOT); } catch { return []; }
   const tickets = await Promise.all(directories.map(async (directory) => {
     try {
       const value = JSON.parse(await readFile(path.join(TICKET_ROOT, directory, "ticket.json"), "utf8")) as Record<string, unknown>;
+      if (!includeDeleted && value.deletedAt) return null;
       return normalizeLocalTicket(value);
     } catch { return null; }
   }));
@@ -80,10 +81,21 @@ export async function saveLocalTicket(input: WarrantyTicketInput, ticketId: stri
     throw error;
   }
   try {
-    const existing = await listLocalTickets();
+    const existing = await listLocalTickets(true);
     if (existing.some((ticket) => normalizeClaimIdentity(ticket.purchase.orderNumber) === order && normalizeClaimIdentity(ticket.product.sku) === sku)) throw new Error(DUPLICATE_CLAIM_ERROR);
     return await writeLocalTicket(input, ticketId, submittedAt);
   } finally {
     await rm(lock, { recursive: true, force: true });
+  }
+}
+
+export async function deleteLocalTicket(ticketId: string) {
+  const ticketPath = path.join(TICKET_ROOT, ticketId, "ticket.json");
+  try {
+    const value = JSON.parse(await readFile(ticketPath, "utf8"));
+    value.deletedAt = new Date().toISOString();
+    await writeFile(ticketPath, JSON.stringify(value, null, 2), "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
   }
 }

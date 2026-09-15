@@ -76,7 +76,7 @@ export async function listSupabaseTickets(): Promise<WarrantyTicket[]> {
   if (ticketsResult.error) throw ticketsResult.error;
   if (evidenceResult.error) throw evidenceResult.error;
   const evidenceRows = (evidenceResult.data ?? []) as Array<Record<string, unknown>>;
-  return ((ticketsResult.data ?? []) as Array<Record<string, unknown>>).map((row) => ({
+  return ((ticketsResult.data ?? []) as Array<Record<string, unknown>>).filter((row) => !row.deleted_at).map((row) => ({
     ticketId: String(row.ticket_id), status: row.status as WarrantyTicketStatus,
     submittedAt: String(row.submitted_at), updatedAt: String(row.updated_at),
     customer: { name: String(row.customer_name), email: String(row.customer_email), whatsapp: String(row.customer_whatsapp) },
@@ -98,9 +98,18 @@ export async function updateSupabaseTicketStatus(ticketId: string, status: Warra
 export async function readSupabaseEvidence(ticketId: string, evidenceId: string) {
   const client = createAdminSupabaseClient();
   if (!client) return null;
+  const ticket = await client.from("warranty_tickets").select("*").eq("ticket_id", ticketId).maybeSingle();
+  if (ticket.error || !ticket.data || ticket.data.deleted_at) return null;
   const metadata = await client.from("warranty_evidence").select("original_name, storage_path, mime_type").eq("ticket_id", ticketId).eq("id", evidenceId).maybeSingle();
   if (metadata.error || !metadata.data) return null;
   const file = await client.storage.from(WARRANTY_BUCKET).download(metadata.data.storage_path);
   if (file.error) return null;
   return { bytes: Buffer.from(await file.data.arrayBuffer()), name: metadata.data.original_name, mimeType: metadata.data.mime_type };
+}
+
+export async function deleteSupabaseTicket(ticketId: string) {
+  const client = createAdminSupabaseClient();
+  if (!client) throw new Error("Supabase is not configured.");
+  const result = await client.from("warranty_tickets").update({ deleted_at: new Date().toISOString() }).eq("ticket_id", ticketId);
+  if (result.error) throw result.error;
 }

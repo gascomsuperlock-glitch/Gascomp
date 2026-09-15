@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminSession } from "@/features/auth/server/session";
-import { updateWarrantyTicketStatus } from "@/features/warranty/server/ticket-service";
+import { deleteWarrantyTicket, updateWarrantyTicketStatus } from "@/features/warranty/server/ticket-service";
 import { WARRANTY_TICKET_STATUSES, type WarrantyTicketStatus } from "@/features/warranty/model/types";
 
 export async function updateWarrantyTicketStatusAction(
@@ -22,4 +22,23 @@ export async function updateWarrantyTicketStatusAction(
     console.error("Warranty ticket status update failed", error);
     return { success: false, error: "The ticket status could not be updated." };
   }
+}
+
+export async function deleteWarrantyTicketsAction(ticketIds: string[]): Promise<{ deletedIds: string[]; error?: string }> {
+  if (!(await getAdminSession())) return { deletedIds: [], error: "Your admin session has expired. Sign in again." };
+  if (!Array.isArray(ticketIds) || !ticketIds.length || ticketIds.length > 100 || ticketIds.some((id) => typeof id !== "string" || !/^GWC-\d{8}-[A-F0-9]{6}$/.test(id))) {
+    return { deletedIds: [], error: "Select between 1 and 100 valid tickets." };
+  }
+  const deletedIds: string[] = [];
+  for (const id of new Set(ticketIds)) {
+    try {
+      await deleteWarrantyTicket(id);
+      deletedIds.push(id);
+    } catch {
+      revalidatePath("/admin");
+      return { deletedIds, error: "Some tickets could not be deleted. Check the database migration and connection, then retry the remaining selection." };
+    }
+  }
+  revalidatePath("/admin");
+  return { deletedIds };
 }
