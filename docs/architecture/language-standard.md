@@ -14,6 +14,11 @@ Use Indonesian when conversing with the project owner, including progress update
 - Database tables, columns, constraints, policies, enum-like values, comments, and system defaults.
 - New TypeScript/JavaScript file names in `kebab-case` and Python file names in `snake_case`.
 
+## Owner-requested interface labels
+
+- Warranty solution options retain `Klaim Garansi`, `Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`, and `Refund dana sebagian`, including spreadsheet values.
+- The claim order field retains `order number/No.Resi/No Pesanan` in both languages.
+
 ## Compatibility exceptions
 
 Exact external values must remain unchanged when translation would damage identity, matching, or existing links:

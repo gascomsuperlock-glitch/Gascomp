@@ -1,4 +1,4 @@
-import type { WarrantyTicket, WarrantyEvidence, WarrantyTicketStatus } from "./types";
+import { isWarrantySolution, type WarrantyTicket, type WarrantyEvidence, type WarrantyTicketStatus } from "./types";
 
 export function normalizeLocalTicket(value: Record<string, unknown>): WarrantyTicket | null {
   if (typeof value.ticketId !== "string" || typeof value.submittedAt !== "string") return null;
@@ -18,6 +18,7 @@ export function normalizeLocalTicket(value: Record<string, unknown>): WarrantyTi
   return {
     ticketId: value.ticketId,
     status: (value.status ?? "new") as WarrantyTicketStatus,
+    solution: isWarrantySolution(value.solution) ? value.solution : null,
     submittedAt: value.submittedAt,
     updatedAt: typeof value.updatedAt === "string" ? value.updatedAt : value.submittedAt,
     customer: { name: String(customer?.name ?? ""), email: String(customer?.email ?? ""), whatsapp: String(customer?.whatsapp ?? "") },

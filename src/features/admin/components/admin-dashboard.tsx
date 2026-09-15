@@ -136,7 +136,7 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
               <h1 className="text-sm font-extrabold">{view === "overview" ? "Overview" : view === "content" ? "Help Content" : view === "tickets" ? "Warranty tickets" : "Settings"}</h1>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <span aria-live="polite" className={`hidden items-center gap-1.5 text-[10px] font-bold transition sm:flex ${saveState === "error" ? "text-[#b33b31]" : hasUnsavedChanges ? "text-[#9a6a2f]" : saveState === "saved" ? "text-[#3f8759]" : "text-[#90979b]"}`}>{!hasUnsavedChanges && saveState === "saved" ? <Check className="size-3.5" /> : <Save className="size-3.5" />}{saveState === "saving" ? "Saving changes..." : saveState === "error" ? "Save failed" : hasUnsavedChanges ? "Unsaved changes" : saveState === "saved" ? "Changes saved" : storageMode === "supabase" ? "Supabase active" : "Local storage ready"}</span>
             <WarrantyNotifications
               tickets={tickets}
@@ -152,7 +152,7 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
               {saveState === "saving" ? <LoaderCircle className="size-3.5 animate-spin" /> : !hasUnsavedChanges && saveState === "saved" ? <Check className="size-3.5" /> : <Save className="size-3.5" />}
               <span>{saveState === "saving" ? "Saving..." : saveState === "error" ? "Retry save" : !hasUnsavedChanges && saveState === "saved" ? "Saved" : "Save"}</span>
             </button>
-            <Link href="/" target="_blank" className="inline-flex h-9 items-center gap-2 rounded-full bg-[#2c3038] px-4 text-xs font-extrabold text-white"><ExternalLink className="size-3.5" /> <span className="hidden sm:inline">View website</span></Link>
+            <Link href="/" target="_blank" aria-label="View website" className="inline-flex h-9 items-center gap-2 rounded-full bg-[#2c3038] px-3 text-xs font-extrabold text-white sm:px-4"><ExternalLink aria-hidden="true" className="size-3.5" /> <span className="hidden sm:inline">View website</span></Link>
             <form action={logoutAction}>
               <button type="submit" className="grid size-9 place-items-center rounded-full border border-[#2c3038]/10 bg-white text-[#69747b] transition hover:border-[#b63c35]/20 hover:bg-[#fff3f1] hover:text-[#b63c35]" aria-label="Sign out of dashboard">
                 <LogOut className="size-3.5" />

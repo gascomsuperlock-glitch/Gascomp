@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
+import { test } from 'node:test';
+const state = { authorized: false, updates: [] };
+globalThis.solutionTest = state;
+const mock = source => ({ url: `data:text/javascript,${encodeURIComponent(source)}`, shortCircuit: true });
+const hooks = registerHooks({ resolve(specifier, context, next) {
+  if (specifier === 'next/cache') return mock('export const revalidatePath = () => {};');
+  if (specifier.endsWith('/auth/server/session')) return mock('export const getAdminSession = async () => globalThis.solutionTest.authorized;');
+  if (specifier.endsWith('/warranty/server/ticket-service')) return mock(`export const deleteWarrantyTicket = async () => {}; export const updateWarrantyTicketStatus = async (...args) => {globalThis.solutionTest.updates.push(args); return '2026-09-15T00:00:00Z';};`);
+  if (specifier.endsWith('/warranty/model/types')) return { url: new URL('../model/types.ts', import.meta.url).href, shortCircuit: true };
+  return next(specifier, context);
+} });
+const { updateWarrantyTicketStatusAction: update } = await import('./admin-actions.ts');
+hooks.deregister();
+test('solution actions require authentication and validate before writes', async () => {
+  const id = 'GWC-20260915-AAAAAA';
+  assert.equal((await update(id, 'warranty_claim', true)).success, false);
+  state.authorized = true;
+  for (const args of [[id, '', true], [id, 'toString', true], ['../private', 'spare_part'], [id, 'spare_part', 'yes'], [id, undefined, false]]) assert.equal((await update(...args)).success, false);
+  assert.deepEqual(state.updates, []);
+  assert.equal((await update(id, undefined, true)).success, true);
+  assert.deepEqual(state.updates.pop(), [id, 'closed', undefined]);
+  assert.equal((await update(id, 'spare_part', true)).success, true);
+  assert.deepEqual(state.updates.pop(), [id, 'closed', 'spare_part']);
+  assert.equal((await update(id, 'partial_refund', false)).success, true);
+  assert.deepEqual(state.updates.pop(), [id, undefined, 'partial_refund']);
+});

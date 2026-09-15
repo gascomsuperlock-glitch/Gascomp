@@ -39,7 +39,7 @@ export function TicketVideoPreview({ url }: { url: string }) {
     };
   }, [open, attempt, url]);
 
-  const buttonClass = "inline-flex min-h-9 items-center gap-1.5 rounded-full bg-[#edf4ff] px-3 text-[10px] font-extrabold text-[#0035b9]";
+  const buttonClass = "inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#edf4ff] px-3 text-xs font-extrabold text-[#0035b9] hover:bg-[#dce9ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0035b9]";
   function toggle() {
     setSource(undefined);
     setError("");

@@ -22,6 +22,7 @@ export type WarrantyEvidence = {
 export type WarrantyTicket = {
   ticketId: string;
   status: WarrantyTicketStatus;
+  solution?: WarrantySolution | null;
   submittedAt: string;
   updatedAt: string;
   customer: {
@@ -43,3 +44,19 @@ export type WarrantyTicket = {
   problem: string;
   evidence: WarrantyEvidence[];
 };
+
+export const WARRANTY_SOLUTIONS = {
+  warranty_claim: "Klaim Garansi",
+  missing_item: "Kirim Barang Kurang",
+  wrong_item: "Kirim Barang Salah",
+  return_refund: "Retur/Refund",
+  spare_part: "Kirim sparepart",
+  partial_refund: "Refund dana sebagian",
+} as const;
+export type WarrantySolution = keyof typeof WARRANTY_SOLUTIONS;
+export function isWarrantySolution(value: unknown): value is WarrantySolution {
+  return typeof value === "string" && Object.hasOwn(WARRANTY_SOLUTIONS, value);
+}
+export function ticketStatusLabel(status: WarrantyTicketStatus) {
+  return status === "closed" ? "Done" : "Pending";
+}

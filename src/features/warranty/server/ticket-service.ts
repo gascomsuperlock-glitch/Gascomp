@@ -3,7 +3,7 @@ import { purchaseDateError } from "../model/claim-eligibility";
 import { randomBytes } from "node:crypto";
 import { isSupabaseConfigured } from "@/shared/integrations/supabase/server";
 import type { WarrantyTicketInput } from "../model/input";
-import type { WarrantyTicketStatus } from "../model/types";
+import type { WarrantyTicketStatus, WarrantySolution } from "../model/types";
 import { deleteLocalTicket, saveLocalTicket, listLocalTickets, updateLocalTicketStatus, readLocalEvidence } from "./local-ticket-store";
 import { deleteSupabaseTicket, saveSupabaseTicket, listSupabaseTickets, updateSupabaseTicketStatus, readSupabaseEvidence } from "./supabase-ticket-store";
 
@@ -27,8 +27,8 @@ export async function listWarrantyTickets() {
   return isSupabaseConfigured() ? listSupabaseTickets() : listLocalTickets();
 }
 
-export async function updateWarrantyTicketStatus(ticketId: string, status: WarrantyTicketStatus) {
-  return isSupabaseConfigured() ? updateSupabaseTicketStatus(ticketId, status) : updateLocalTicketStatus(ticketId, status);
+export async function updateWarrantyTicketStatus(ticketId: string, status: WarrantyTicketStatus | undefined, solution: WarrantySolution | undefined) {
+  return isSupabaseConfigured() ? updateSupabaseTicketStatus(ticketId, status, solution) : updateLocalTicketStatus(ticketId, status, solution);
 }
 
 export async function readWarrantyEvidence(ticketId: string, evidenceId: string) {
@@ -37,4 +37,10 @@ export async function readWarrantyEvidence(ticketId: string, evidenceId: string)
 
 export async function deleteWarrantyTicket(ticketId: string) {
   return isSupabaseConfigured() ? deleteSupabaseTicket(ticketId) : deleteLocalTicket(ticketId);
+}
+
+export async function listWarrantyTicketsForRange(bounds: { start: string; end: string }) {
+  const tickets = isSupabaseConfigured() ? await listSupabaseTickets(bounds) : await listLocalTickets();
+  return tickets.filter(ticket => Date.parse(ticket.submittedAt) >= Date.parse(bounds.start) && Date.parse(ticket.submittedAt) < Date.parse(bounds.end))
+    .sort((a, b) => a.submittedAt.localeCompare(b.submittedAt) || a.ticketId.localeCompare(b.ticketId));
 }

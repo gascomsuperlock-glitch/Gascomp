@@ -8,7 +8,7 @@ The admin panel and customer website use the same Supabase data. Published produ
 
 A successful claim receives a unique `GWC-YYYYMMDD-XXXXXX` ticket number. The same number appears in the admin Warranty Tickets view. Product name and SKU are stored as snapshots, while `product_id` links to the current product when a match exists.
 
-Ticket statuses are `new`, `reviewing`, `approved`, `rejected`, and `closed`. Only an administrator with an active session can view personal data, download private evidence, or change status. WhatsApp and Duoke ticket synchronization are outside the current scope.
+The admin workflow displays Pending and Done. Stored statuses remain compatible: `closed` means Done; `new`, `reviewing`, `approved`, and `rejected` mean Pending. Only an administrator with an active session can view personal data, download private evidence, or change status. WhatsApp and Duoke ticket synchronization are outside the current scope.
 
 ## Claim submission
 
@@ -64,6 +64,63 @@ Status: form validation, evidence validation, ticket numbers, Supabase/local sto
 
 ## Ticket selection and deletion
 
+The inbox uses a compact claim list and a separate detail panel on wide screens.
+Phones and tablets show the list or the selected ticket, with Back to Tickets
+restoring focus to the selected row. Search covers ticket number, customer name,
+email, phone, product, SKU, and order number. All, Pending, and Done filters can be
+combined with search. Results show 20 rows initially with Show More Tickets for
+additional results. Empty results offer Clear Filters; a new inbox explains where
+claims will appear. Dates and times use Asia/Jakarta consistently.
+
+Ticket details group the reported issue, customer contact, purchase information,
+private evidence, and resolution. Evidence cards show file names, type, and size;
+video previews load on request. Unsubmitted solution selections remain available
+when switching tickets or filters within the inbox. The export report is collapsible
+and uses all tickets independently of the list filters. Select Tickets reveals bulk
+checkboxes and deletion controls, keeping them separate from ordinary ticket review.
+
 The admin inbox supports individual checkboxes, selecting all search results, clearing selection, deleting one ticket, and deleting up to 100 selected tickets per request. Search changes clear selection. Deletion requires confirmation and takes effect immediately, independently of catalog Save/Cancel. Controls are disabled during deletion or status updates. Partial failures remove only successfully deleted tickets and keep the remaining selection available for retry.
 
-Deletion marks tickets as deleted instead of erasing claim history. Deleted tickets are excluded from the inbox and notifications; direct evidence access is denied. Their order/SKU identity and private evidence remain stored, so the one-claim rule still applies. Supabase requires `202609150001_warranty_ticket_deletion.sql` (prepared, not applied to production). Local records use `deletedAt` with the same behavior.
+Deletion marks tickets as deleted instead of erasing claim history. Deleted tickets are excluded from the inbox and notifications; direct evidence access is denied. Their order/SKU identity and private evidence remain stored, so the one-claim rule still applies. The `deleted_at` column from `202609150001_warranty_ticket_deletion.sql` was added to production on September 15, 2026 under one-time authorization for that column only. No other migrations or migration-history writes were performed. Read-only verification confirmed that the API can read the column, all seven existing tickets are unchanged, and no tickets are marked deleted. The authorization is exhausted; any further production write requires new explicit authorization. Local records use `deletedAt` with the same behavior.
+
+After an individual or bulk deletion finishes, a modal reports success, failure, or partial success with the deleted/requested count and any error details. It also appears for transport failures without claiming that the server definitely did not delete the tickets. The modal stays open until OK or Escape, then returns focus to inbox search. Cancelling the initial confirmation does not show a result modal. Existing inline notices remain available after dismissal.
+
+## Solutions and spreadsheet export
+
+Administrators select one of six owner-requested solution labels: `Klaim Garansi`,
+`Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`, or
+`Refund dana sebagian`. These exact labels are explicitly requested exceptions to
+English operator copy; database values remain English. Done is the only primary
+save action: it saves the selected solution and sets the stored status to `closed`,
+confirming completion. Done remains available without a selected solution.
+There is no separate Save solution button. After completion, Edit solution exposes
+the dropdown and Done saves the correction while preserving completion status.
+Edit solution changes only the solution and update timestamp, including on Done
+tickets; it does not reopen a ticket or edit customer submissions. Deleted tickets
+cannot be updated. All writes require an active administrator session.
+
+Migration `202609150002_warranty_ticket_solution.sql` adds a nullable, constrained
+solution column. Historical solutions stay unset; historical statuses are preserved.
+The migration is prepared locally and has not been applied to production.
+
+The inbox exports UTF-8 CSV compatible with Excel and Google Sheets through the
+protected `/admin/warranty-tickets/export?start=YYYY-MM-DD&end=YYYY-MM-DD` endpoint.
+Administrators choose start and end dates, initially covering the earliest through
+today in Asia/Jakarta. The earliest date follows the first available submission;
+both date inputs allow dates only from that day through today, independently of
+inbox search or selection. The current-day limit refreshes while the panel is open
+and when it becomes visible again. With no data, export is disabled.
+The server validates real dates and rejects reversed ranges and future end dates. The report includes both
+selected days: midnight on the first day through, but excluding, midnight after the
+last day in Asia/Jakarta. Export includes all active
+tickets regardless of status, inbox search, or checkbox selection; deleted tickets
+and private evidence URLs are excluded. Database reads are paginated. Columns begin
+with date, name, phone, order/tracking number, issue, product, status, and solution,
+followed by ticket number, SKU, email, store, purchase date, price, and updated time.
+An empty date range exports headers with an explicit empty-result message. Export errors
+and expired sessions remain visible in the inbox. Formula-like customer values are
+escaped. Import phone and order columns as text to retain leading zeros and long IDs.
+
+The claim form's order field uses the owner's exact label
+`order number/No.Resi/No Pesanan` in both interface languages. The field retains its
+existing key and claim identity rules.

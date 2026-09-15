@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { DUPLICATE_CLAIM_ERROR, normalizeClaimIdentity } from "../model/claim-eligibility";
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { WarrantyEvidence, WarrantyTicket, WarrantyTicketStatus } from "../model/types";
+import type { WarrantyEvidence, WarrantyTicket, WarrantyTicketStatus, WarrantySolution } from "../model/types";
 import type { WarrantyTicketInput } from "../model/input";
 import { allowedExtension, evidenceInputs } from "../model/evidence";
 import { normalizeLocalTicket } from "../model/ticket-mappers";
@@ -53,11 +53,13 @@ export async function listLocalTickets(includeDeleted = false) {
   return tickets.filter((ticket): ticket is WarrantyTicket => Boolean(ticket)).sort((a, b) => b.submittedAt.localeCompare(a.submittedAt));
 }
 
-export async function updateLocalTicketStatus(ticketId: string, status: WarrantyTicketStatus) {
+export async function updateLocalTicketStatus(ticketId: string, status: WarrantyTicketStatus | undefined, solution: WarrantySolution | undefined) {
   const ticketPath = path.join(TICKET_ROOT, ticketId, "ticket.json");
   const value = JSON.parse(await readFile(ticketPath, "utf8")) as Record<string, unknown>;
   const updatedAt = new Date().toISOString();
-  value.status = status;
+  if (value.deletedAt) throw new Error("Ticket is deleted.");
+  if (status) value.status = status;
+  if (solution !== undefined) value.solution = solution;
   value.updatedAt = updatedAt;
   await writeFile(ticketPath, JSON.stringify(value, null, 2), "utf8");
   return updatedAt;

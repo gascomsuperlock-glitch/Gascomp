@@ -1,14 +1,17 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useContent } from "@/features/catalog/hooks/use-content";
 import { dictionaries } from "@/shared/i18n/dictionaries";
 import { useLanguage } from "@/shared/i18n/language-context";
 import { getWhatsappUrl, normalizeWhatsapp } from "@/shared/lib/whatsapp";
 
 export function FloatingWhatsappButton() {
+  const pathname = usePathname();
   const { content } = useContent();
   const { language } = useLanguage();
 
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return null;
   if (!normalizeWhatsapp(content.whatsappNumber)) return null;
 
   return (

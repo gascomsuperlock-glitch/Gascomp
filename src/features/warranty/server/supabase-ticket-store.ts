@@ -3,7 +3,7 @@ import { DUPLICATE_CLAIM_ERROR, EXPIRED_CLAIM_ERROR, normalizeClaimIdentity } fr
 import { randomBytes } from "node:crypto";
 import path from "node:path";
 import { createAdminSupabaseClient } from "@/shared/integrations/supabase/server";
-import type { WarrantyEvidence, WarrantyEvidenceKind, WarrantyTicket, WarrantyTicketStatus } from "../model/types";
+import type { WarrantyEvidence, WarrantyEvidenceKind, WarrantyTicket, WarrantyTicketStatus, WarrantySolution } from "../model/types";
 import type { WarrantyTicketInput } from "../model/input";
 import { allowedExtension, evidenceInputs } from "../model/evidence";
 
@@ -66,18 +66,28 @@ export async function saveSupabaseTicket(input: WarrantyTicketInput, ticketId: s
   }
 }
 
-export async function listSupabaseTickets(): Promise<WarrantyTicket[]> {
+export async function listSupabaseTickets(bounds?: { start: string; end: string }): Promise<WarrantyTicket[]> {
   const client = createAdminSupabaseClient();
   if (!client) return [];
-  const [ticketsResult, evidenceResult] = await Promise.all([
-    client.from("warranty_tickets").select("*").order("submitted_at", { ascending: false }),
-    client.from("warranty_evidence").select("*").order("created_at", { ascending: true }),
-  ]);
-  if (ticketsResult.error) throw ticketsResult.error;
-  if (evidenceResult.error) throw evidenceResult.error;
-  const evidenceRows = (evidenceResult.data ?? []) as Array<Record<string, unknown>>;
-  return ((ticketsResult.data ?? []) as Array<Record<string, unknown>>).filter((row) => !row.deleted_at).map((row) => ({
+  const ticketRows: Record<string, unknown>[] = [];
+  const evidenceRows: Record<string, unknown>[] = [];
+  for (const [table, rows, order] of [
+    ["warranty_tickets", ticketRows, "ticket_id"],
+    ["warranty_evidence", evidenceRows, "id"],
+  ] as const) {
+    if (bounds && table === "warranty_evidence") continue;
+    for (let offset = 0; ; offset += 500) {
+      let query = client.from(table).select("*").order(order).range(offset, offset + 499);
+      if (bounds) query = query.gte("submitted_at", bounds.start).lt("submitted_at", bounds.end);
+      const result = await query;
+      if (result.error) throw result.error;
+      rows.push(...(result.data ?? []));
+      if ((result.data ?? []).length < 500) break;
+    }
+  }
+  return ticketRows.filter((row) => !row.deleted_at).sort((a, b) => String(b.submitted_at).localeCompare(String(a.submitted_at))).map((row) => ({
     ticketId: String(row.ticket_id), status: row.status as WarrantyTicketStatus,
+    solution: row.solution as WarrantySolution | null,
     submittedAt: String(row.submitted_at), updatedAt: String(row.updated_at),
     customer: { name: String(row.customer_name), email: String(row.customer_email), whatsapp: String(row.customer_whatsapp) },
     product: { id: row.product_id ? String(row.product_id) : undefined, name: String(row.product_name), sku: String(row.sku) },
@@ -87,10 +97,10 @@ export async function listSupabaseTickets(): Promise<WarrantyTicket[]> {
   }));
 }
 
-export async function updateSupabaseTicketStatus(ticketId: string, status: WarrantyTicketStatus) {
+export async function updateSupabaseTicketStatus(ticketId: string, status: WarrantyTicketStatus | undefined, solution: WarrantySolution | undefined) {
   const client = createAdminSupabaseClient();
   if (!client) throw new Error("Supabase is not configured.");
-  const result = await client.from("warranty_tickets").update({ status }).eq("ticket_id", ticketId).select("updated_at").single();
+  const result = await client.from("warranty_tickets").update({ ...(status ? { status } : {}), ...(solution !== undefined ? { solution } : {}) }).eq("ticket_id", ticketId).is("deleted_at", null).select("updated_at").single();
   if (result.error) throw result.error;
   return String(result.data.updated_at);
 }

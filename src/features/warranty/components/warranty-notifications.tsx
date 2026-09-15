@@ -9,7 +9,7 @@ import {
   getWarrantyTicketVersions,
   type WarrantyTicketVersions,
 } from "@/features/warranty/model/notifications";
-import type { WarrantyTicket } from "@/features/warranty/model/types";
+import { ticketStatusLabel, type WarrantyTicket } from "@/features/warranty/model/types";
 
 const STORAGE_KEY = "gascomp-admin-warranty-notifications-v1";
 const POLL_INTERVAL_MS = 30_000;
@@ -306,13 +306,7 @@ function formatActivity(ticket: WarrantyTicket) {
 }
 
 function statusLabel(status: WarrantyTicket["status"]) {
-  return ({
-    new: "New",
-    reviewing: "Under review",
-    approved: "Approved",
-    rejected: "Rejected",
-    closed: "Closed",
-  } as const)[status];
+  return ticketStatusLabel(status);
 }
 
 function readStoredVersions(): WarrantyTicketVersions | null {
