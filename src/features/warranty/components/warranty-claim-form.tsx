@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useActionState, useRef, useState, type FormEvent } from "react";
+import { ticketLoginUrl } from "@/shared/lib/ticket-links";
+import { useContent } from "@/features/catalog/hooks/use-content";
+import { getWarrantyWhatsappUrl } from "@/shared/lib/whatsapp";
+import { startTransition, useActionState, useEffect, useRef, useState, type FormEvent } from "react";
 import { formatJakartaDate } from "@/features/warranty/model/claim-eligibility";
 import { MAX_VIDEO_MB, VIDEO_ACCEPT, validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyEvidenceKind } from "@/features/warranty/model/types";
@@ -36,14 +39,27 @@ export function WarrantyClaimForm({
 }) {
   const { language } = useLanguage();
   const copy = dictionaries[language].warranty;
+  const { content } = useContent();
+
+  const redirectedTicket = useRef<string | null>(null);
   const [checkingVideo, setCheckingVideo] = useState(false);
-  const [state, action, pending] = useActionState(async (previousState: WarrantyClaimState, formData: FormData) => {
+  const [state, action, pending] = useActionState<WarrantyClaimState & { whatsappUrl?: string | null }, FormData>(async (previousState: WarrantyClaimState, formData: FormData) => {
     try {
-      return await createWarrantyClaim(previousState, formData);
+      const result = await createWarrantyClaim(previousState, formData);
+      if (!result.success || !result.ticketId) return result;
+      return { ...result, whatsappUrl: getWarrantyWhatsappUrl(content.whatsappNumber, result.ticketId, ticketLoginUrl(window.location.origin, result.ticketId)) };
     } catch {
       return { error: copy.submitError };
     }
   }, initialState);
+
+  const whatsappUrl = state.whatsappUrl;
+
+  useEffect(() => {
+    if (!state.success || !state.ticketId || !whatsappUrl || redirectedTicket.current === state.ticketId) return;
+    redirectedTicket.current = state.ticketId;
+    window.location.assign(whatsappUrl);
+  }, [state.success, state.ticketId, whatsappUrl]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Dispatch manually so a failed action does not reset text or file inputs.
@@ -64,6 +80,7 @@ export function WarrantyClaimForm({
           <span className="block text-[9px] font-extrabold tracking-[0.13em] text-[#7b8899]">{copy.ticketNumber}</span>
           <strong className="mt-1 block text-xl tracking-[0.04em] text-[#0035b9]">{state.ticketId}</strong>
         </div>
+        {whatsappUrl && <div className="mt-6"><p className="text-sm text-[#707a80]">{copy.whatsappRedirect}</p><a href={whatsappUrl} className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full bg-[#2e8250] px-5 text-sm font-bold text-white">{copy.openWhatsapp}</a></div>}
         <Link href="/" className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#2c3038] px-5 text-xs font-extrabold text-white"><ArrowLeft className="size-4" /> {copy.backToHelp}</Link>
       </div>
     );

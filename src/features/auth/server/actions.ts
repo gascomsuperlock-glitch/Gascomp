@@ -1,5 +1,6 @@
 "use server";
 
+import { adminTicketPath } from "@/shared/lib/ticket-links";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ADMIN_SESSION_COOKIE, adminSessionOptions, createSessionToken, getAdminSession, isAuthConfigured, verifyCredentials } from "@/features/auth/server/session";
@@ -34,7 +35,7 @@ export async function loginAction(
     createSessionToken(username),
     adminSessionOptions,
   );
-  redirect("/admin");
+  redirect(adminTicketPath(formData.get("ticket")));
 }
 
 export async function logoutAction() {

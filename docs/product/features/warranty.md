@@ -12,7 +12,7 @@ Ticket statuses are `new`, `reviewing`, `approved`, `rejected`, and `closed`. On
 
 ## Claim submission
 
-Each product page links to `/klaim-garansi` with the product name and SKU prefilled. A claim is created only after the form and every evidence file are stored successfully.
+Each product page links to `/klaim-garansi` with the product name and SKU prefilled. A claim is created only after the form and every evidence file are stored successfully. After successful submission, the browser opens the configured admin WhatsApp number in the same tab with the opening message `kak, aku sudah claim garansi`, followed by the saved ticket number and an absolute link to `/admin/login?ticket=...` on the current website origin. The link retains its ticket selection through login and opens the protected Warranty Tickets view with that number prefilled in search and its details visible. Invalid ticket parameters fall back to the normal dashboard; unmatched tickets show the inbox empty state. The customer sends the message in WhatsApp. Failed or rejected submissions remain on the form. The success screen retains the ticket number and a manual WhatsApp link if automatic navigation is blocked; without a configured number, it keeps the ticket confirmation.
 
 | Required data | Rule |
 | --- | --- |

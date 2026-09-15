@@ -18,6 +18,7 @@ Use Indonesian when conversing with the project owner, including progress update
 
 Exact external values must remain unchanged when translation would damage identity, matching, or existing links:
 
+- The owner-requested post-claim WhatsApp message remains exactly `kak, aku sudah claim garansi` in every interface language.
 - Imported product names, SKUs, category values, filenames, and provider-specific IDs.
 - Warehouse XLSX headers such as `Nomor SKU`, `Judul`, and `Kode Produk` because they are source-schema keys.
 - Captured customer messages and Indonesian tokens used by privacy filters or retrieval matching.

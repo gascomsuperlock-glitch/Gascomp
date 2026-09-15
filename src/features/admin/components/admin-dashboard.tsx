@@ -27,10 +27,10 @@ import { IssuesEditor } from "@/features/catalog/components/issues-editor";
 import { SettingsEditor } from "@/features/catalog/components/settings-editor";
 import { ContentEditorNavigation } from "@/features/admin/components/content-editor-navigation";
 
-export function AdminDashboard({ initialTickets = [], backendError, ticketError, publicBaseUrl }: { initialTickets?: WarrantyTicket[]; backendError?: string; ticketError?: string; publicBaseUrl?: string }) {
+export function AdminDashboard({ initialTicketId, initialTickets = [], backendError, ticketError, publicBaseUrl }: { initialTicketId?: string; initialTickets?: WarrantyTicket[]; backendError?: string; ticketError?: string; publicBaseUrl?: string }) {
   const { content, updateContent, saveContent, cancelContent, resetContent, storageMode, saveState, hasUnsavedChanges, saveError } = useContent();
   const [tickets, setTickets] = useState(initialTickets);
-  const [view, setView] = useState<MainView>("overview");
+  const [view, setView] = useState<MainView>(initialTicketId ? "tickets" : "overview");
   const [editorTab, setEditorTab] = useState<EditorTab>("details");
   const [selectedId, setSelectedId] = useState(content.products[0]?.id ?? "");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -234,7 +234,7 @@ export function AdminDashboard({ initialTickets = [], backendError, ticketError,
             )}
 
             {ticketError && <p role="alert" className="mb-6 rounded-2xl border border-[#d65d50]/30 bg-[#fff0ef] p-4 text-xs leading-5 text-[#a23f36]">{ticketError}</p>}
-            {view === "tickets" && !ticketError && <TicketInbox tickets={tickets} setTickets={setTickets} onTicketUpdated={(ticket) => setAcknowledgedTickets((current) => ({ ...current, [ticket.ticketId]: ticket }))} />}
+            {view === "tickets" && !ticketError && <TicketInbox initialQuery={initialTicketId} tickets={tickets} setTickets={setTickets} onTicketUpdated={(ticket) => setAcknowledgedTickets((current) => ({ ...current, [ticket.ticketId]: ticket }))} />}
 
             {view === "settings" && (
               <SettingsEditor

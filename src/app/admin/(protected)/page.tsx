@@ -1,3 +1,4 @@
+import { parseTicketId } from "@/shared/lib/ticket-links";
 import type { Metadata } from "next";
 import { AdminDashboard } from "@/features/admin/components/admin-dashboard";
 import { ContentProvider } from "@/features/catalog/components/content-provider";
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AdminPage() {
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ ticket?: string | string[] }> }) {
+  const ticketId = parseTicketId((await searchParams).ticket);
   const publicBaseUrl = getPublicBaseUrl();
   const [loaded, ticketResult] = await Promise.all([
     loadAdminSiteContent(),
@@ -31,7 +33,7 @@ export default async function AdminPage() {
 
   return (
     <ContentProvider initialContent={loaded.content} storageMode={loaded.storageMode}>
-      <AdminDashboard initialTickets={ticketResult.tickets} backendError={loaded.error} ticketError={ticketResult.error} publicBaseUrl={publicBaseUrl} />
+      <AdminDashboard key={ticketId ?? "dashboard"} initialTicketId={ticketId} initialTickets={ticketResult.tickets} backendError={loaded.error} ticketError={ticketResult.error} publicBaseUrl={publicBaseUrl} />
     </ContentProvider>
   );
 }

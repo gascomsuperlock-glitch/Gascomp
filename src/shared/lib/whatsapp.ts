@@ -13,3 +13,10 @@ export function getWhatsappUrl(number: string, productName?: string, issue?: str
   return `https://wa.me/${normalizeWhatsapp(number)}?text=${encodeURIComponent(message)}`;
 }
 import type { AppLanguage } from "@/shared/i18n/language";
+
+export function getWarrantyWhatsappUrl(number: string, ticketId?: string, adminUrl?: string) {
+  const destination = normalizeWhatsapp(number);
+  if (!destination) return null;
+  const message = ["kak, aku sudah claim garansi", ticketId ? `Ticket: ${ticketId}` : "", adminUrl ?? ""].filter(Boolean).join("\n");
+  return `https://wa.me/${destination}?text=${encodeURIComponent(message)}`;
+}

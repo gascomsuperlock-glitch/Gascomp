@@ -14,8 +14,8 @@ export const ticketStatusLabels: Record<WarrantyTicketStatus, string> = {
   closed: "Closed",
 };
 
-export function TicketInbox({ tickets, setTickets, onTicketUpdated }: { tickets: WarrantyTicket[]; setTickets: React.Dispatch<React.SetStateAction<WarrantyTicket[]>>; onTicketUpdated?: (ticket: WarrantyTicket) => void }) {
-  const [query, setQuery] = useState("");
+export function TicketInbox({ tickets, setTickets, onTicketUpdated, initialQuery = "" }: { initialQuery?: string; tickets: WarrantyTicket[]; setTickets: React.Dispatch<React.SetStateAction<WarrantyTicket[]>>; onTicketUpdated?: (ticket: WarrantyTicket) => void }) {
+  const [query, setQuery] = useState(initialQuery);
   const [busyTicket, setBusyTicket] = useState("");
   const [error, setError] = useState("");
   const visibleTickets = tickets.filter((ticket) => `${ticket.ticketId} ${ticket.customer.name} ${ticket.customer.whatsapp} ${ticket.product.name} ${ticket.product.sku} ${ticket.purchase.orderNumber}`.toLowerCase().includes(query.trim().toLowerCase()));
@@ -38,7 +38,7 @@ export function TicketInbox({ tickets, setTickets, onTicketUpdated }: { tickets:
     <section>
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div><p className="text-xs font-bold text-[#0035b9]">WARRANTY CLAIMS</p><h2 className="mt-2 text-3xl font-extrabold tracking-[-0.045em]">Ticket inbox</h2><p className="mt-2 text-sm text-[#707a80]">Review the purchase details, issue, and evidence submitted by each customer.</p></div>
-        <label className="flex h-11 w-full items-center gap-2 rounded-full border border-[#2c3038]/10 bg-white px-4 shadow-sm sm:w-80"><Search className="size-4 text-[#899197]" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search tickets, SKUs, or customers" className="w-full bg-transparent text-xs font-semibold outline-none" /></label>
+        <label className="flex h-11 w-full items-center gap-2 rounded-full border border-[#2c3038]/10 bg-white px-4 shadow-sm sm:w-80"><Search className="size-4 text-[#899197]" /><input aria-label="Search warranty tickets" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search tickets, SKUs, or customers" className="w-full bg-transparent text-xs font-semibold outline-none" /></label>
       </div>
       {error && <p role="alert" className="mt-5 rounded-xl bg-[#fff0ef] p-4 text-xs font-semibold text-[#ad4037]">{error}</p>}
       <div className="mt-7 space-y-4">

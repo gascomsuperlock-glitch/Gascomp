@@ -1,3 +1,4 @@
+import { adminTicketPath, parseTicketId } from "@/shared/lib/ticket-links";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
@@ -12,9 +13,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AdminLoginPage() {
+export default async function AdminLoginPage({ searchParams }: { searchParams: Promise<{ ticket?: string | string[] }> }) {
+  const ticketId = parseTicketId((await searchParams).ticket);
   const session = await getAdminSession();
-  if (session) redirect("/admin");
+  if (session) redirect(adminTicketPath(ticketId));
 
   return (
     <main className="relative grid min-h-screen place-items-center overflow-hidden bg-[#f4f7fb] px-5 py-12 text-[#2c3038]">
@@ -36,7 +38,7 @@ export default async function AdminLoginPage() {
           <p className="mt-7 text-[10px] font-extrabold tracking-[0.16em] text-[#0066ff]">RESTRICTED AREA</p>
           <h1 className="mt-2 text-3xl font-black tracking-[-0.045em]">Admin login</h1>
           <p className="mt-3 text-sm leading-6 text-[#758089]">Sign in to manage Gascomp product SKUs, tutorials, FAQs, and QR codes.</p>
-          <AdminLoginForm configured={isAuthConfigured()} />
+          <AdminLoginForm ticketId={ticketId} configured={isAuthConfigured()} />
         </section>
 
         <p className="mt-5 text-center text-[10px] font-semibold text-[#8a949b]">The session expires automatically after 8 hours.</p>

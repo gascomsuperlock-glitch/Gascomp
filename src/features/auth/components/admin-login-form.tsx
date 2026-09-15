@@ -6,12 +6,13 @@ import { loginAction, type LoginState } from "@/features/auth/server/actions";
 
 const initialState: LoginState = {};
 
-export function AdminLoginForm({ configured }: { configured: boolean }) {
+export function AdminLoginForm({ configured, ticketId }: { configured: boolean; ticketId?: string }) {
   const [state, action, pending] = useActionState(loginAction, initialState);
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form action={action} className="mt-8 space-y-5">
+      {ticketId && <input type="hidden" name="ticket" value={ticketId} />}
       <label className="block">
         <span className="text-xs font-extrabold text-[#45515b]">Username</span>
         <span className="mt-2 flex h-12 items-center gap-3 rounded-xl border border-[#2c3038]/10 bg-white px-4 focus-within:border-[#0066ff]/45 focus-within:ring-4 focus-within:ring-[#0066ff]/8">
