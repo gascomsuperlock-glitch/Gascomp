@@ -191,3 +191,65 @@ production Storage, its recorded size checked, and the test object removed.
 Desktop/mobile checks had no JavaScript errors or horizontal overflow. Lint,
 typecheck, all 34 Node tests, and the production build passed. Verification is
 recorded locally in `.data/warranty-video-limit/production-verification.json`.
+
+
+## GascompCare release to an existing site
+
+The repository's application commands are `npm run build` (`next build --webpack`)
+and `npm run start` (`next start`). Neither command applies a database migration,
+resets Supabase, imports fixtures, or uploads Storage objects. There is currently
+no `.github` workflow directory in this checkout. This does not verify external
+Hostinger/GitHub deployment settings, which can run commands outside the repository.
+
+Before an authorized release:
+
+1. Inspect the hosting deployment target, branch, build/start commands, and any
+   pre/post-deploy hooks. Confirm that the intended existing Supabase project and
+   server-only credentials remain configured. Preserve the existing public domain,
+   product QR paths, Storage buckets, and customer data. Resolve the previously
+   documented duplicate deployment targets before assuming a push has one target.
+2. Follow the [Supabase preservation procedure](../../setup/supabase.md#preserve-existing-production-data-when-adding-gascompcare):
+   verify independent database and Storage-file backups, inspect the installed
+   schema, and obtain specific approval before applying only the missing additive
+   Care migration. Do not add database reset, full-schema replacement, or local
+   fixture import to an automatic build or startup hook.
+3. Keep local preview configuration and fictional accounts out of the production
+   environment. Do not enable `GASCOMP_LOCAL_HTTP_PREVIEW` on the hosting service.
+   Production customer and administrator cookies must keep their HTTPS protection.
+4. Run repository verification and deploy the reviewed application revision only
+   when authorized. If the Care migration is absent, Care must show its unavailable
+   state rather than creating a schema or fake member data during startup.
+5. Compare private before/after data baselines, check existing catalog pages,
+   product images and printed-QR destinations, and verify that private warranty
+   evidence remains protected. Validate Care login and password rotation in staging;
+   any production account creation or test claim needs explicit authorization.
+6. If the application needs rollback, restore the previous application revision
+   and retain the additive Care schema and member records. Do not delete tables,
+   restore an old database over live writes, or remove Storage files as an app rollback.
+
+Local tests establish that the Care migration preserves seeded existing rows and
+fails safely on an already-existing Care table. They do not establish that remote
+backups, deployment hooks, project credentials, or migration history are correct.
+No production migration, push, deployment, or hosting change is authorized by this
+preparation alone.
+
+
+### GascompCare release preparation on September 15, 2026
+
+The owner authorized a GitHub push and Hostinger deployment. The reviewed release
+includes Care account management, mandatory password replacement with an
+8-character minimum, member cards, public navigation, and the existing mobile
+admin improvements. Care purchases and entitlement activation remain deferred.
+Lint, typecheck, all 117 Node tests (including SQL), and the production build
+passed. Chromium and WebKit verified member creation, an eight-character password
+replacement, session persistence, logout, and subsequent login locally.
+
+The additive Care migration was applied and existing data preservation verified;
+see [Supabase integration](../integrations/supabase.md#gascompcare-member-accounts).
+Local preview variables, fictional members, backups, and credentials remain
+outside the release. Initial production checks found the home and warranty pages
+available and `/gascomp-care/login` returning 404. The available GitHub API
+reported no repository webhooks, Actions runs, deployment records, or commit
+statuses establishing the Hostinger release mapping. Hostinger hosting access
+was not connected in this session; a successful push alone must not be reported
+as a verified hosting deployment.

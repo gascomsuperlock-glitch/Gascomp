@@ -12,6 +12,7 @@ Specifications are grouped by topic to keep each working context small. Read the
 | Product QR codes and URLs | [qr](features/qr.md) | Per-SKU QR, stable URLs, archived-guide retention |
 | Customer support channels | [support](features/support.md) | WhatsApp, Gascomp Care, Service Center |
 | Warranty claims and tickets | [warranty](features/warranty.md) | Form, evidence, ticket number, status, private access, policy |
+| GascompCare membership | [gascomp-care](features/gascomp-care.md) | Member accounts, login, virtual cards, planned paid warranty extensions |
 | Duoke catalog synchronization | [duoke-catalog](integrations/duoke-catalog.md) | Scrapling, source fields, idempotent import, Obsidian product graph |
 | Supabase storage | [supabase](integrations/supabase.md) | Shared database, Storage, access rules, migrations |
 | Warehouse SKU import | [warehouse](integrations/warehouse.md) | XLSX normalization, SKU matching, images, import result |

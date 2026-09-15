@@ -9,6 +9,7 @@ src/
     auth/                         # Admin sign-in, session, and sign-out
     catalog/                      # Public catalog, product help, editors, QR, content
     warranty/                     # Claims, tickets, status, and evidence
+    gascomp-care/                 # Member accounts, sessions, and virtual cards
     admin/                        # Dashboard, navigation, cross-feature overview
   shared/
     components/                   # Brand, header, and reusable UI

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, ChevronRight, HelpCircle, Inbox, LayoutDashboard, Settings, X } from "lucide-react";
+import { BookOpen, ChevronRight, HelpCircle, Inbox, LayoutDashboard, Settings, ShieldCheck, X } from "lucide-react";
 import { Brand } from "@/shared/components/brand";
 import type { MainView } from "@/features/admin/model/types";
 import type { IconType } from "@/shared/lib/icon-types";
@@ -11,6 +11,7 @@ export function AdminSidebar({ view, setView, open, close }: { view: MainView; s
     ["overview", LayoutDashboard, "Overview"],
     ["content", BookOpen, "Help content"],
     ["tickets", Inbox, "Warranty tickets"],
+    ["care", ShieldCheck, "GascompCare"],
     ["settings", Settings, "Settings"],
   ];
 

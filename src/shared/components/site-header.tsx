@@ -23,6 +23,7 @@ export function SiteHeader({ compact = false }: { compact?: boolean }) {
           <Link href="/#bantuan" className="hidden text-sm font-semibold text-[#566169] transition hover:text-[#2c3038] sm:block">
             {copy.howItWorks}
           </Link>
+          <Link href="/gascomp-care" prefetch={false} className="inline-flex min-h-10 shrink-0 items-center rounded-full bg-[#0035b9]/10 px-3 text-xs font-bold text-[#0035b9] sm:text-sm">GascompCare</Link>
           <LanguageSelector />
           <Link
             href="/admin/login"

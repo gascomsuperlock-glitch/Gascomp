@@ -101,10 +101,10 @@ export function IssuesEditor({ product, update }: IssuesEditorProps) {
                 </div>
                 <div className="mt-3 space-y-2">
                   {issue.steps.map((step, stepIndex) => (
-                    <div key={`${issue.id}-step-${stepIndex}`} className="flex items-center gap-2">
+                    <div key={`${issue.id}-step-${stepIndex}`} className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 rounded-xl border border-[#2c3038]/8 p-2 sm:flex sm:rounded-none sm:border-0 sm:p-0">
                       <span className="grid size-7 shrink-0 place-items-center rounded-full bg-[#2c3038] text-[10px] font-extrabold text-white">{stepIndex + 1}</span>
-                      <input value={step} onChange={(event) => updateIssue(issue.id, (current) => ({ ...current, steps: current.steps.map((item, index) => index === stepIndex ? event.target.value : item) }))} placeholder={`Step ${stepIndex + 1}`} className={`${fieldClass.replace("mt-2 ", "")} min-w-0 flex-1`} />
-                      <div className="flex shrink-0">
+                      <input value={step} onChange={(event) => updateIssue(issue.id, (current) => ({ ...current, steps: current.steps.map((item, index) => index === stepIndex ? event.target.value : item) }))} placeholder={`Step ${stepIndex + 1}`} aria-label={`Step ${stepIndex + 1}`} className={`${fieldClass.replace("mt-2 ", "")} col-span-2 row-start-2 min-w-0 flex-1`} />
+                      <div className="col-start-2 row-start-1 flex shrink-0 justify-end">
                         <button type="button" onClick={() => moveStep(issue.id, stepIndex, -1)} disabled={stepIndex === 0} className="grid size-8 place-items-center rounded-full text-[#657178] hover:bg-white disabled:cursor-not-allowed disabled:opacity-30" aria-label={`Move step ${stepIndex + 1} up`}><ArrowUp className="size-3" /></button>
                         <button type="button" onClick={() => moveStep(issue.id, stepIndex, 1)} disabled={stepIndex === issue.steps.length - 1} className="grid size-8 place-items-center rounded-full text-[#657178] hover:bg-white disabled:cursor-not-allowed disabled:opacity-30" aria-label={`Move step ${stepIndex + 1} down`}><ArrowDown className="size-3" /></button>
                         <button type="button" onClick={() => updateIssue(issue.id, (current) => ({ ...current, steps: current.steps.filter((_, index) => index !== stepIndex) }))} className="grid size-8 place-items-center rounded-full text-[#9b7770] hover:bg-[#feeae5] hover:text-[#c9482d]" aria-label={`Delete step ${stepIndex + 1}`}><Trash2 className="size-3" /></button>

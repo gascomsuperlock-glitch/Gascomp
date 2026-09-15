@@ -12,6 +12,7 @@ Supabase PostgreSQL is the primary shared database; Supabase Storage holds produ
 | Product image files | Public `product-images` bucket |
 | Image metadata and product/variation relationships | PostgreSQL |
 | Warranty tickets and evidence metadata | Private PostgreSQL tables |
+| GascompCare accounts, sessions, and login limits | Private PostgreSQL tables; server-only access |
 | Warranty evidence files | Private `warranty-evidence` bucket; video files up to 50 MB |
 | Duoke source identity and import history | PostgreSQL |
 | Product/knowledge graph notes | Project Obsidian vault |
@@ -145,3 +146,27 @@ in PostgreSQL and Storage so claim identity remains available to the one-claim
 rule, while application reads omit them from the admin inbox and reject direct
 evidence access. Apply this migration before enabling deletion in a Supabase-backed
 deployment.
+
+## GascompCare member accounts
+
+`202609150003_gascomp_care_accounts.sql` introduces private member accounts,
+hashed sessions, shared login-attempt limits, and transactional authentication
+functions. It does not create Care purchases or modify existing warranty rules.
+See [GascompCare](../features/gascomp-care.md) for behavior and security boundaries.
+On September 15, 2026, the authorized release applied this migration to the
+existing production project and aligned its history with local version
+`202609150003`. All 247 existing rows across nine application tables and two
+Storage metadata tables remained identical. RLS is enabled on all three Care
+tables; anonymous readiness calls are denied and the service role is allowed.
+No production member or test ticket was created.
+
+Private application-data snapshots, schema definitions, and a data restoration
+script are saved under `.data/gascomp-care-release/`. All 247 rows were restored
+with relational constraints in a disposable PostgreSQL engine, and the Care
+migration preserved that restored data. All 88 Storage files (113,326,093 bytes)
+were downloaded and verified by size and SHA-256 readback. This is an
+application-data and Storage backup, not a full managed-project/role backup;
+`pg_dump` was unavailable because Docker/Podman was not installed.
+
+Without the migration, Care reports unavailability while the existing catalog
+and warranty features retain their behavior.

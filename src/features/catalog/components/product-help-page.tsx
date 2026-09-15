@@ -65,7 +65,8 @@ export function ProductHelpPage({ slug }: { slug: string }) {
       <header className="border-b border-[#2c3038]/8 bg-white">
         <div className="mx-auto flex min-h-[68px] max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-3 sm:px-8">
           <Brand />
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Link href="/gascomp-care" prefetch={false} className="inline-flex min-h-10 items-center rounded-full bg-[#0035b9]/10 px-3 text-xs font-bold text-[#0035b9] focus-visible:outline-2 focus-visible:outline-offset-4">GascompCare</Link>
             <LanguageSelector />
             <Link href="/" className="inline-flex shrink-0 items-center gap-2 text-xs font-extrabold text-[#647077] transition hover:text-[#0035b9]"><ArrowLeft className="size-4" /> <span className="hidden sm:inline">{copy.chooseAnother}</span><span className="sm:hidden">{copy.otherProduct}</span></Link>
           </div>

@@ -1,6 +1,7 @@
 "use server";
 
 import { adminTicketPath } from "@/shared/lib/ticket-links";
+import { getSessionCookieSecurity } from "@/shared/lib/session-cookie";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ADMIN_SESSION_COOKIE, adminSessionOptions, createSessionToken, getAdminSession, isAuthConfigured, verifyCredentials } from "@/features/auth/server/session";
@@ -33,7 +34,7 @@ export async function loginAction(
   cookieStore.set(
     ADMIN_SESSION_COOKIE,
     createSessionToken(username),
-    adminSessionOptions,
+    { ...adminSessionOptions, secure: await getSessionCookieSecurity() },
   );
   redirect(adminTicketPath(formData.get("ticket")));
 }
@@ -45,6 +46,7 @@ export async function logoutAction() {
   const cookieStore = await cookies();
   cookieStore.set(ADMIN_SESSION_COOKIE, "", {
     ...adminSessionOptions,
+    secure: await getSessionCookieSecurity(),
     maxAge: 0,
   });
   redirect("/admin/login");

@@ -42,8 +42,8 @@ export function TicketExport({ tickets }: { tickets: WarrantyTicket[] }) {
     } catch (error) { setError(error instanceof Error ? error.message : "The export failed. Please try again."); }
     finally { setBusy(false); }
   }
-  return <details className="group mt-4 rounded-2xl border border-[#dfe4ed] bg-white">
-    <summary className="flex min-h-16 list-none items-center gap-3 rounded-2xl p-4 hover:bg-[#f8faff] [&::-webkit-details-marker]:hidden"><FileSpreadsheet aria-hidden="true" className="size-5 shrink-0 text-[#0035b9]" /><span className="min-w-0 flex-1 text-sm font-extrabold">Export Report<span className="mt-1 block text-xs font-normal text-[#626d79]">Choose dates and download a spreadsheet</span></span><ChevronDown aria-hidden="true" className="size-4 shrink-0 text-[#626d79] group-open:rotate-180" /></summary>
+  return <details className="group mt-3 rounded-2xl border border-[#dfe4ed] bg-white sm:mt-4">
+    <summary className="flex min-h-12 list-none items-center gap-3 rounded-2xl px-4 py-3 hover:bg-[#f8faff] sm:min-h-16 sm:p-4 [&::-webkit-details-marker]:hidden"><FileSpreadsheet aria-hidden="true" className="size-5 shrink-0 text-[#0035b9]" /><span className="min-w-0 flex-1 text-sm font-extrabold">Export Report<span className="mt-1 hidden text-xs font-normal text-[#626d79] sm:block">Choose dates and download a spreadsheet</span></span><ChevronDown aria-hidden="true" className="size-4 shrink-0 text-[#626d79] group-open:rotate-180" /></summary>
     <div className="border-t border-[#e6e9ef] p-4">
     <div className="flex flex-wrap items-end gap-3">
       <label className="flex min-w-0 max-w-full flex-col gap-2 text-xs font-bold">Start Date<input type="date" name="report-start" value={start} min={available?.start} max={available?.end} disabled={busy || !available} onChange={event => setSelection({ start: event.target.value, end })} className="min-h-11 min-w-0 max-w-full rounded-xl border border-[#cfd7e4] bg-white px-3 text-sm" /></label>

@@ -120,22 +120,22 @@ export function TicketInbox({ tickets, setTickets, onTicketUpdated, initialQuery
     <section className={styles.workspace} aria-label="Warranty ticket workspace">
       {deleteResult && <TicketDeleteResultDialog result={deleteResult} onClose={() => { setDeleteResult(null); setShowDetail(false); requestAnimationFrame(() => searchInput.current?.focus()); }} />}
       <div className={showDetail && activeTicket ? "hidden xl:block" : ""}>
-        <div className="flex flex-wrap items-start justify-between gap-4 rounded-3xl border border-[#dce4f2] bg-white p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-[#dce4f2] bg-white p-4 sm:gap-4 sm:rounded-3xl sm:p-6">
           <div className="flex min-w-0 items-start gap-4">
             <span className="hidden size-12 shrink-0 place-items-center rounded-2xl bg-[#0035b9] text-white sm:grid"><ShieldCheck aria-hidden="true" className="size-6" /></span>
-            <div><p className="text-xs font-extrabold tracking-widest text-[#0035b9]">WARRANTY CLAIMS</p><h2 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">Ticket Inbox</h2><p className="mt-2 max-w-xl text-sm leading-6 text-[#626d79]">Review each claim, check the evidence, and choose the next step.</p></div>
+            <div><p className="hidden text-xs font-extrabold tracking-widest text-[#0035b9] sm:block">WARRANTY CLAIMS</p><h2 className="text-xl font-extrabold tracking-tight sm:mt-2 sm:text-3xl">Ticket Inbox</h2><p className="mt-2 hidden max-w-xl text-sm leading-6 text-[#626d79] sm:block">Review each claim, check the evidence, and choose the next step.</p></div>
           </div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#fff3d6] px-3 py-2 text-xs font-bold text-[#825510]"><Clock3 aria-hidden="true" className="size-4" />{pendingCount} Pending</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fff3d6] px-2.5 py-1.5 text-xs font-bold text-[#825510] sm:gap-2 sm:px-3 sm:py-2"><Clock3 aria-hidden="true" className="size-4" />{pendingCount} Pending</span>
         </div>
         <TicketExport tickets={tickets} />
       </div>
       {notice && !(activeTicket && showDetail) && <p role="status" className="mt-4 rounded-xl border border-[#c8e5d4] bg-[#edf8f1] p-4 text-sm font-semibold text-[#216540]">{notice}</p>}
       {error && !(activeTicket && showDetail) && <p role="alert" className="mt-4 rounded-xl border border-[#f2ccc8] bg-[#fff0ef] p-4 text-sm font-semibold text-[#ad4037]">{error}</p>}
-      <div className="mt-5 grid items-start gap-5 xl:grid-cols-[340px_minmax(0,1fr)]">
-        <div ref={list} className={`min-w-0 rounded-3xl border border-[#dfe4ed] bg-white xl:sticky xl:top-24 xl:max-h-[calc(100dvh-7rem)] xl:overflow-y-auto ${showDetail && activeTicket ? "hidden xl:block" : ""}`}>
+      <div className="mt-3 grid items-start gap-5 sm:mt-5 xl:grid-cols-[340px_minmax(0,1fr)]">
+        <div ref={list} className={`min-w-0 rounded-2xl border border-[#dfe4ed] bg-white sm:rounded-3xl xl:sticky xl:top-24 xl:max-h-[calc(100dvh-7rem)] xl:overflow-y-auto ${showDetail && activeTicket ? "hidden xl:block" : ""}`}>
           <div className="border-b border-[#e6e9ef] p-4">
             <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-extrabold">All Claims <span className="ml-1 text-[#626d79]">({tickets.length})</span></h3><button type="button" disabled={busy || !tickets.length} aria-pressed={bulkMode} onClick={() => { setBulkMode(!bulkMode); setSelected(new Set()); }} className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-xs font-bold text-[#536273] hover:bg-[#edf4ff] disabled:opacity-40"><ListChecks aria-hidden="true" className="size-4" />{bulkMode ? "Exit Selection" : "Select Tickets"}</button></div>
-            <label htmlFor="ticket-search" className="mt-3 block text-xs font-bold text-[#536273]">Search Tickets</label>
+            <label htmlFor="ticket-search" className="sr-only text-xs font-bold text-[#536273] sm:not-sr-only sm:mt-3 sm:block">Search Tickets</label>
             <div className="mt-2 flex min-h-12 items-center gap-2 rounded-xl border border-[#cfd7e4] bg-[#f8faff] px-3 focus-within:border-[#0035b9] focus-within:ring-2 focus-within:ring-[#0035b9]/15">
               <Search aria-hidden="true" className="size-4 shrink-0 text-[#626d79]" />
               <input id="ticket-search" ref={searchInput} type="search" name="ticket-search" autoComplete="off" spellCheck={false} value={query} disabled={busy} onChange={(event) => { setQuery(event.target.value); resetSelection(); }} placeholder="Name, ticket, SKU, or order…" className="min-w-0 flex-1 bg-transparent py-3 text-sm" />

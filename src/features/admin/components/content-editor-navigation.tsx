@@ -23,7 +23,7 @@ export function ContentEditorNavigation({ activeTab, onSelect, product }: { acti
   return <div className="border-b border-[#e3e8ef] bg-[#fafbfd] px-4 py-3 sm:px-5">
     <div className="sm:hidden">
       <label htmlFor="content-editor-section" className="block text-xs font-bold text-[#53657c]">Editor Section</label>
-      <select id="content-editor-section" value={activeTab} onChange={(event) => onSelect(event.target.value as EditorTab)} className="mt-2 h-11 w-full min-w-0 rounded-xl border border-[#cbd5e1] bg-white px-3 text-sm font-semibold text-[#172b4d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0035b9]">
+      <select id="content-editor-section" value={activeTab} onChange={(event) => onSelect(event.target.value as EditorTab)} className="mt-2 h-11 w-full min-w-0 rounded-xl border border-[#cbd5e1] bg-white px-3 text-base font-semibold text-[#172b4d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0035b9]">
         <optgroup label="Product content">{contentSections.map(([tab, , label]) => <option key={tab} value={tab}>{label}{counts[tab] !== undefined ? ` (${counts[tab]})` : ""}</option>)}</optgroup>
         <optgroup label="Customer support">{supportSections.map(([tab, , label]) => <option key={tab} value={tab}>{label}</option>)}</optgroup>
       </select>

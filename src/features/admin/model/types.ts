@@ -1,1 +1,1 @@
-export type MainView = "overview" | "content" | "tickets" | "settings";
+export type MainView = "overview" | "content" | "tickets" | "care" | "settings";

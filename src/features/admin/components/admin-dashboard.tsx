@@ -18,6 +18,7 @@ import type { EditorTab } from "@/features/catalog/model/editor-types";
 import { AdminSidebar } from "@/features/admin/components/admin-sidebar";
 import { Overview } from "@/features/admin/components/overview";
 import { TicketInbox } from "@/features/warranty/components/ticket-inbox";
+import { CareAdmin } from "@/features/gascomp-care/components/care-admin";
 import { WarrantyNotifications } from "@/features/warranty/components/warranty-notifications";
 import { DetailsEditor } from "@/features/catalog/components/details-editor";
 import { TicketServiceCard } from "@/features/catalog/components/ticket-service-card";
@@ -31,6 +32,8 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
   const { content, updateContent, saveContent, cancelContent, resetContent, storageMode, saveState, hasUnsavedChanges, saveError } = useContent();
   const [tickets, setTickets] = useState(initialTickets);
   const [view, setView] = useState<MainView>(initialTicketId ? "tickets" : "overview");
+  const compactTicketHeader = view === "tickets" && !hasUnsavedChanges && saveState !== "saving" && saveState !== "error";
+  const hideCatalogControls = view === "care" && !hasUnsavedChanges && saveState !== "saving" && saveState !== "error" && !saveError;
   const [editorTab, setEditorTab] = useState<EditorTab>("details");
   const [selectedId, setSelectedId] = useState(content.products[0]?.id ?? "");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -129,15 +132,15 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
 
       <div className="lg:pl-[244px]">
         <header className="sticky top-0 z-30 flex min-h-[68px] flex-wrap items-center justify-between gap-3 border-b border-[#2c3038]/8 bg-white/95 px-4 py-3 backdrop-blur-xl sm:h-[68px] sm:flex-nowrap sm:px-7 sm:py-0">
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center ${view === "tickets" ? "gap-2 sm:gap-3" : "gap-3"}`}>
             <button type="button" onClick={() => setSidebarOpen(true)} className="grid size-9 place-items-center rounded-xl border border-[#2c3038]/10 lg:hidden" aria-label="Open menu"><Menu className="size-4" /></button>
             <div>
               <p className="text-[10px] font-bold text-[#8c9498]">DASHBOARD GASCOMP</p>
-              <h1 className="text-sm font-extrabold">{view === "overview" ? "Overview" : view === "content" ? "Help Content" : view === "tickets" ? "Warranty tickets" : "Settings"}</h1>
+              <h1 className={`${compactTicketHeader ? "text-xs min-[360px]:text-sm" : "text-sm"} font-extrabold`}>{view === "overview" ? "Overview" : view === "content" ? "Help Content" : view === "tickets" ? "Warranty tickets" : view === "care" ? "GascompCare" : "Settings"}</h1>
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
-            <span aria-live="polite" className={`hidden items-center gap-1.5 text-[10px] font-bold transition sm:flex ${saveState === "error" ? "text-[#b33b31]" : hasUnsavedChanges ? "text-[#9a6a2f]" : saveState === "saved" ? "text-[#3f8759]" : "text-[#90979b]"}`}>{!hasUnsavedChanges && saveState === "saved" ? <Check className="size-3.5" /> : <Save className="size-3.5" />}{saveState === "saving" ? "Saving changes..." : saveState === "error" ? "Save failed" : hasUnsavedChanges ? "Unsaved changes" : saveState === "saved" ? "Changes saved" : storageMode === "supabase" ? "Supabase active" : "Local storage ready"}</span>
+            <span aria-live="polite" className={`${hideCatalogControls ? "hidden" : "hidden sm:flex"} items-center gap-1.5 text-[10px] font-bold transition ${saveState === "error" ? "text-[#b33b31]" : hasUnsavedChanges ? "text-[#9a6a2f]" : saveState === "saved" ? "text-[#3f8759]" : "text-[#90979b]"}`}>{!hasUnsavedChanges && saveState === "saved" ? <Check className="size-3.5" /> : <Save className="size-3.5" />}{saveState === "saving" ? "Saving changes..." : saveState === "error" ? "Save failed" : hasUnsavedChanges ? "Unsaved changes" : saveState === "saved" ? "Changes saved" : storageMode === "supabase" ? "Supabase active" : "Local storage ready"}</span>
             <WarrantyNotifications
               tickets={tickets}
               setTickets={setTickets}
@@ -147,8 +150,8 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
                 setSidebarOpen(false);
               }}
             />
-            <button type="button" onClick={() => { cancelContent(); setEditorVersion((version) => version + 1); }} disabled={saveState === "saving" || !hasUnsavedChanges} className="inline-flex h-9 items-center rounded-full border border-[#2c3038]/15 px-4 text-xs font-extrabold disabled:opacity-40">Cancel</button>
-            <button type="button" onClick={() => void saveContent()} disabled={saveState === "saving" || !hasUnsavedChanges} className="inline-flex h-9 items-center gap-2 rounded-full bg-[#0035b9] px-4 text-xs font-extrabold text-white transition hover:bg-[#002c98] disabled:cursor-not-allowed disabled:opacity-50">
+            <button type="button" onClick={() => { cancelContent(); setEditorVersion((version) => version + 1); }} disabled={saveState === "saving" || !hasUnsavedChanges} className={`${hideCatalogControls ? "hidden" : compactTicketHeader ? "hidden sm:inline-flex" : "inline-flex"} h-9 items-center rounded-full border border-[#2c3038]/15 px-4 text-xs font-extrabold disabled:opacity-40`}>Cancel</button>
+            <button type="button" onClick={() => void saveContent()} disabled={saveState === "saving" || !hasUnsavedChanges} className={`${hideCatalogControls ? "hidden" : compactTicketHeader ? "hidden sm:inline-flex" : "inline-flex"} h-9 items-center gap-2 rounded-full bg-[#0035b9] px-4 text-xs font-extrabold text-white transition hover:bg-[#002c98] disabled:cursor-not-allowed disabled:opacity-50`}>
               {saveState === "saving" ? <LoaderCircle className="size-3.5 animate-spin" /> : !hasUnsavedChanges && saveState === "saved" ? <Check className="size-3.5" /> : <Save className="size-3.5" />}
               <span>{saveState === "saving" ? "Saving..." : saveState === "error" ? "Retry save" : !hasUnsavedChanges && saveState === "saved" ? "Saved" : "Save"}</span>
             </button>
@@ -161,9 +164,9 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
           </div>
         </header>
 
-        <main className="px-4 py-6 sm:px-7 sm:py-8">
+        <main className={`px-4 ${view === "tickets" || view === "content" ? "py-4" : "py-6"} sm:px-7 sm:py-8`}>
           <div className="mx-auto max-w-[1220px]">
-            <div className={`mb-6 flex items-start gap-3 rounded-2xl border p-4 text-xs leading-5 ${backendError || saveError ? "border-[#d65d50]/30 bg-[#fff0ef] text-[#a23f36]" : storageMode === "supabase" ? "border-[#79ab8a]/35 bg-[#edf8f0] text-[#3e7652]" : "border-[#e5b895]/40 bg-[#fff5ec] text-[#8c4a2d]"}`}>
+            <div className={`${view === "content" ? "mb-4 sm:mb-6" : "mb-6"} ${hideCatalogControls && !backendError ? "hidden" : compactTicketHeader && !backendError && !saveError ? "hidden sm:flex" : "flex"} items-start gap-3 rounded-2xl border ${view === "content" ? "p-3 sm:p-4" : "p-4"} text-xs leading-5 ${backendError || saveError ? "border-[#d65d50]/30 bg-[#fff0ef] text-[#a23f36]" : storageMode === "supabase" ? "border-[#79ab8a]/35 bg-[#edf8f0] text-[#3e7652]" : "border-[#e5b895]/40 bg-[#fff5ec] text-[#8c4a2d]"}`}>
               <MonitorPlay className="mt-0.5 size-4 shrink-0" />
               <p>{backendError || saveError ? <><strong>{saveError ? "Save failed." : "Storage connection issue."}</strong> {saveError || backendError}</> : storageMode === "supabase" ? <><strong>Supabase connected.</strong> Changes remain in the editor until you select Save.</> : <><strong>Local mode.</strong> Changes remain in this browser and are committed only when you select Save.</>}</p>
             </div>
@@ -199,17 +202,17 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
 
                 {selectedProduct ? (
                   <section aria-label="Product content editor" className={`${showEditor ? "block" : "hidden xl:block"} min-w-0 scroll-mt-40 overflow-hidden rounded-2xl border border-[#dfe4eb] bg-white shadow-sm sm:scroll-mt-24`}>
-                    <div className="border-b border-[#e3e8ef] p-4 sm:p-6">
-                      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                        <button type="button" onClick={browseProducts} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[#dfe4eb] px-3 text-xs font-bold text-[#0035b9] hover:bg-[#edf4ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0035b9] xl:hidden"><ArrowLeft aria-hidden="true" className="size-4" /> Back to Products</button>
+                    <div className="border-b border-[#e3e8ef] p-3 sm:p-6">
+                      <div className="mb-3 flex flex-wrap items-center justify-between gap-1 sm:mb-4 sm:gap-2">
+                        <button type="button" onClick={browseProducts} className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-[#dfe4eb] px-2 text-xs sm:gap-2 sm:px-3 font-bold text-[#0035b9] hover:bg-[#edf4ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0035b9] xl:hidden"><ArrowLeft aria-hidden="true" className="size-4" /> Back to Products</button>
                         <p className="hidden text-[10px] font-bold uppercase tracking-[0.13em] text-[#637086] sm:block">Editing Product</p>
                         {(selectedProduct.published || selectedProduct.archived) && <Link href={`/produk/${selectedProduct.slug}`} target="_blank" className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-xs font-bold text-[#0035b9] hover:bg-[#edf4ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0035b9]">Open Guide <ExternalLink aria-hidden="true" className="size-3.5" /></Link>}
                       </div>
                       <div className="flex min-w-0 items-start gap-3">
                         <span aria-hidden="true" className="hidden size-12 shrink-0 place-items-center rounded-xl bg-[#edf4ff] text-[#0035b9] sm:grid"><Package className="size-6" /></span>
-                        <div className="min-w-0 flex-1"><h2 ref={editorHeading} tabIndex={-1} translate="no" className="scroll-mt-40 break-words text-xl font-extrabold leading-7 tracking-[-0.025em] text-[#172b4d] outline-none sm:scroll-mt-28">{selectedProduct.name}</h2><p translate="no" className="mt-1 break-words text-xs leading-5 text-[#53657c]">SKU: {selectedProduct.sku}{selectedProduct.model ? ` · ${selectedProduct.model}` : ""}</p></div>
+                        <div className="min-w-0 flex-1"><h2 ref={editorHeading} tabIndex={-1} translate="no" className="scroll-mt-40 break-words text-lg font-extrabold leading-6 sm:text-xl sm:leading-7 tracking-[-0.025em] text-[#172b4d] outline-none sm:scroll-mt-28">{selectedProduct.name}</h2><p translate="no" className="mt-1 break-words text-xs leading-5 text-[#53657c]">SKU: {selectedProduct.sku}{selectedProduct.model ? ` · ${selectedProduct.model}` : ""}</p></div>
                       </div>
-                      <div className="mt-5 grid gap-3 rounded-xl border border-[#e3e8ef] bg-[#f8fafc] p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,220px)] sm:items-center">
+                      <div className="mt-3 grid gap-2 rounded-xl border border-[#e3e8ef] bg-[#f8fafc] p-2.5 sm:mt-5 sm:gap-3 sm:p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,220px)] sm:items-center">
                         <div><p className="text-xs font-bold text-[#34445e]">Publication Status</p><p className="mt-1 text-[11px] leading-5 text-[#637086]">{selectedProduct.archived ? "Hidden from the catalog. Existing QR links remain active." : selectedProduct.published ? "Visible in the public product catalog." : "Only your team can see this draft."} Select Save to apply changes.</p></div>
                         <label className="min-w-0"><span className="sr-only">Product status</span><select value={selectedProduct.archived ? "archived" : selectedProduct.published ? "published" : "draft"} onChange={(event) => updateProduct(selectedProduct.id, (product) => ({ ...product, published: event.target.value === "published", archived: event.target.value === "archived" && product.everPublished, everPublished: product.everPublished || event.target.value === "published" }))} className="h-11 w-full min-w-0 rounded-lg border border-[#cbd5e1] bg-white px-3 text-xs font-bold text-[#34445e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0035b9]"><option value="draft">Draft</option><option value="published">Published</option><option value="archived" disabled={!selectedProduct.everPublished}>Archived · QR remains active</option></select></label>
                       </div>
@@ -217,7 +220,7 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
 
                     <ContentEditorNavigation activeTab={editorTab} onSelect={setEditorTab} product={selectedProduct} />
 
-                    <div key={editorVersion} className="p-5 sm:p-7">
+                    <div key={editorVersion} className="p-3 sm:p-7 max-sm:[&_input:not([type=checkbox]):not([type=radio])]:text-base max-sm:[&_textarea]:text-base max-sm:[&_select]:text-base">
                       {editorTab === "details" && <DetailsEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} onDelete={() => deleteProduct(selectedProduct)} />}
                       {editorTab === "images" && <ProductImageEditor product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
                       {editorTab === "videos" && <VideosEditor key={selectedProduct.id} product={selectedProduct} update={(updater) => updateProduct(selectedProduct.id, updater)} />}
@@ -235,6 +238,8 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
 
             {ticketError && <p role="alert" className="mb-6 rounded-2xl border border-[#d65d50]/30 bg-[#fff0ef] p-4 text-xs leading-5 text-[#a23f36]">{ticketError}</p>}
             {view === "tickets" && !ticketError && <TicketInbox initialQuery={initialTicketId} tickets={tickets} setTickets={setTickets} onTicketUpdated={(ticket) => setAcknowledgedTickets((current) => ({ ...current, [ticket.ticketId]: ticket }))} />}
+
+            {view === "care" && <CareAdmin />}
 
             {view === "settings" && (
               <SettingsEditor

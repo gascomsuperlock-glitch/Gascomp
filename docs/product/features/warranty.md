@@ -72,6 +72,14 @@ combined with search. Results show 20 rows initially with Show More Tickets for
 additional results. Empty results offer Clear Filters; a new inbox explains where
 claims will appear. Dates and times use Asia/Jakarta consistently.
 
+On phones below 640 px, the inbox uses a compact heading and Pending badge,
+collapsed export summary, and tighter spacing so ticket rows appear sooner.
+Search retains an accessible label, and text inputs and selects use 16 px text.
+The mobile ticket header hides idle catalog Save/Cancel controls and the normal
+storage notice. Unsaved catalog changes, saving, and save failures keep those
+controls available; storage errors remain visible. Wider layouts retain the
+existing dashboard controls and workspace presentation.
+
 Ticket details group the reported issue, customer contact, purchase information,
 private evidence, and resolution. Evidence cards show file names, type, and size;
 video previews load on request. Unsubmitted solution selections remain available

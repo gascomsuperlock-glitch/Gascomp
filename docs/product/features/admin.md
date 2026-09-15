@@ -4,6 +4,10 @@
 
 ## Content management
 
+The separate **GascompCare** workspace manages customer member accounts and
+virtual card previews. See [GascompCare](gascomp-care.md) for account creation,
+password resets, immediate persistence, and the deferred purchase integration.
+
 The Gascomp team can create, view, update, archive, and delete product content. The workflow is draft → review → publish. Drafts are private; published products appear in the public catalog. A product that has ever been published should be archived so its printed QR URL remains valid. Permanent deletion is intended for drafts or incorrect entries.
 
 One administrator role is sufficient for the initial release. `/admin` is protected on the server and redirects visitors without a valid session to `/admin/login`. Credentials come from environment variables; the signed HTTP-only session cookie expires after eight hours.
@@ -42,6 +46,14 @@ On smaller screens, the workspace shows one pane at a time. Selecting a product 
 The default picker emphasizes search and opening a guide. **Bulk Actions** reveals selection checkboxes and publication/archive controls; **Done Selecting** closes them and clears the selection. Search changes also clear selection. Opening a product does not alter the bulk selection. Existing bulk scope, eligibility, counts, and staged-save rules continue to apply.
 
 The editor header shows the full product name, SKU, model, publication status, and an **Open Guide** link for published or archived products. Status copy reminds administrators that changes require Save. Information, Images, Video, Issues, FAQ, and Product QR are grouped separately from customer support actions. Image, video, issue-guide, and FAQ counts appear beside their section labels. On narrow phones, a labeled **Editor Section** selector exposes every section without horizontal scrolling.
+
+On phones below 640 px, Help Content uses tighter spacing around the storage
+notice, editor header, publication controls, and form. Save and Cancel remain
+available in the dashboard header. Product names occupy up to two lines in the
+picker; the editor retains the full name. The section selector and editor form
+fields use 16 px text. FAQ fields span their card below the number and delete
+control. Troubleshooting step inputs span their row below the number and action
+buttons, leaving enough room to read and edit the text.
 
 The **Issues** section explains that each issue guide represents one customer symptom shown under **What is happening?** on the public product page. Administrators provide a title, short explanation, ordered troubleshooting steps, and an optional safety warning. Issue guides and individual steps can be reordered or removed. All edits remain staged until Save.
 
