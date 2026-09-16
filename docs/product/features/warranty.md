@@ -12,6 +12,42 @@ The admin workflow displays Pending and Done. Stored statuses remain compatible:
 
 ## Claim submission
 
+### Product search for shared legacy QR codes
+
+The existing `/klaim-garansi` form also supports entry without product parameters,
+including the shared legacy QR destination. Product name and SKU are linked,
+searchable selectors backed by the same catalog as the public home page. Only
+published, non-archived products appear; drafts become selectable after publication
+and loading the updated catalog. Search matches name, model, or SKU in either
+field. Every result displays both name and SKU. Selecting either field fills both;
+typing a unique exact name or SKU also resolves the pair. Duplicate names require
+an explicit result selection. Editing or clearing a selected value clears the old
+pair until another product is resolved, and unselected search text cannot be
+submitted as a product.
+
+Existing product links resolve their SKU to the current published catalog name.
+Name-only links resolve only unique exact names. Unknown, unpublished, or archived
+linked products show a selection notice rather than accepting arbitrary URL text.
+Selection survives failed submission with the rest of the form. The selectors
+support keyboard navigation and localized loading, empty, and validation feedback.
+Other claim fields, evidence processing, and submission behavior stay unchanged.
+
+The form header and success screen use a **Back to home** link to `/`, which is
+`https://support.gascompsuperlock.com/` in production. After the claim page mounts,
+a same-URL history entry also routes one-step browser/phone Back to home instead
+of the referring product page or legacy website. Existing framework history state
+is preserved, remounts/reloads do not stack extra entries, and the visible home
+link consumes the same entry. The home destination replaces the original claim
+entry so another Back from home can leave normally. Listeners are removed when
+leaving the claim page. This behavior requires JavaScript and a browser that
+honors the added history entry; closing the scan app or jumping multiple history
+entries is outside the page's control.
+The intended Cloudflare redirect for the printed `/dll/` URL is
+`https://support.gascompsuperlock.com/klaim-garansi`. Activating that external rule
+and deploying the application are separate operations.
+
+### Claim processing
+
 Each product page links to `/klaim-garansi` with the product name and SKU prefilled. A claim is created only after the form and every evidence file are stored successfully. After successful submission, the browser opens the configured admin WhatsApp number in the same tab with the opening message `kak, aku sudah claim garansi`, followed by the saved ticket number and an absolute link to `/admin/login?ticket=...` on the current website origin. The link retains its ticket selection through login and opens the protected Warranty Tickets view with that number prefilled in search and its details visible. Invalid ticket parameters fall back to the normal dashboard; unmatched tickets show the inbox empty state. The customer sends the message in WhatsApp. Failed or rejected submissions remain on the form. The success screen retains the ticket number and a manual WhatsApp link if automatic navigation is blocked; without a configured number, it keeps the ticket confirmation.
 
 | Required data | Rule |

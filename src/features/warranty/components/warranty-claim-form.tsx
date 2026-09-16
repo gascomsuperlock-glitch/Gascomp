@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { ticketLoginUrl } from "@/shared/lib/ticket-links";
 import { useContent } from "@/features/catalog/hooks/use-content";
 import { getWarrantyWhatsappUrl } from "@/shared/lib/whatsapp";
@@ -24,6 +23,8 @@ import { submitClaim, type ClaimProgress } from "./claim-transport";
 import { dictionaries, localizeMessage } from "@/shared/i18n/dictionaries";
 import { useLanguage } from "@/shared/i18n/language-context";
 import type { AppLanguage } from "@/shared/i18n/language";
+import { ClaimProductFields } from "./claim-product-fields";
+import { ClaimHomeLink } from "./claim-home-link";
 
 const initialState: WarrantyClaimState = {};
 const inputClass = "mt-2 h-12 w-full rounded-xl border border-[#2c3038]/10 bg-white px-4 text-sm font-semibold text-[#2c3038] outline-none transition placeholder:text-[#a1a8ac] focus:border-[#0035b9]/45 focus:ring-4 focus:ring-[#0035b9]/8";
@@ -38,7 +39,7 @@ export function WarrantyClaimForm({
 }) {
   const { language } = useLanguage();
   const copy = dictionaries[language].warranty;
-  const { content } = useContent();
+  const { content, hydrated } = useContent();
 
   const errorSummary = useRef<HTMLDivElement>(null);
   const redirectedTicket = useRef<string | null>(null);
@@ -136,7 +137,7 @@ export function WarrantyClaimForm({
           <strong className="mt-1 block text-xl tracking-[0.04em] text-[#0035b9]">{state.ticketId}</strong>
         </div>
         {whatsappUrl && <div className="mt-6"><p className="text-sm text-[#707a80]">{copy.whatsappRedirect}</p><a href={whatsappUrl} className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full bg-[#2e8250] px-5 text-sm font-bold text-white">{copy.openWhatsapp}</a></div>}
-        <Link href="/" className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#2c3038] px-5 text-xs font-extrabold text-white"><ArrowLeft className="size-4" /> {copy.backToHelp}</Link>
+        <ClaimHomeLink className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#2c3038] px-5 text-xs font-extrabold text-white"><ArrowLeft className="size-4" /> {copy.backToHelp}</ClaimHomeLink>
       </div>
     );
   }
@@ -158,8 +159,7 @@ export function WarrantyClaimForm({
         <ClaimField label={copy.whatsapp} error={localizeMessage(state.fieldErrors?.whatsapp, language)}><input name="whatsapp" required maxLength={30} inputMode="tel" autoComplete="tel" placeholder={copy.examplePhone} className={inputClass} /></ClaimField>
         <ClaimField label={copy.email} error={localizeMessage(state.fieldErrors?.email, language)}><input name="email" required maxLength={180} type="email" autoComplete="email" placeholder="name@example.com" className={inputClass} /></ClaimField>
         <ClaimField label={copy.purchaseDate} error={localizeMessage(state.fieldErrors?.purchaseDate, language)}><input name="purchaseDate" required type="date" max={formatJakartaDate()} className={inputClass} /></ClaimField>
-        <ClaimField label={copy.productName} error={localizeMessage(state.fieldErrors?.product, language)}><input name="product" required maxLength={180} defaultValue={defaultProduct} placeholder={copy.productNamePlaceholder} className={inputClass} /></ClaimField>
-        <ClaimField label={copy.productSku} error={localizeMessage(state.fieldErrors?.sku, language)}><input name="sku" required maxLength={80} defaultValue={defaultSku} placeholder={copy.skuPlaceholder} className={inputClass} /></ClaimField>
+        <ClaimProductFields defaultProduct={defaultProduct} defaultSku={defaultSku} pending={pending} fieldErrors={state.fieldErrors} inputClass={inputClass} />
         <ClaimField label={copy.store} error={localizeMessage(state.fieldErrors?.store, language)}><input name="store" required maxLength={160} placeholder={copy.storePlaceholder} className={inputClass} /></ClaimField>
         <ClaimField label={copy.orderNumber} error={localizeMessage(state.fieldErrors?.orderNumber, language)}><input name="orderNumber" required maxLength={120} placeholder={copy.orderExample} className={inputClass} /></ClaimField>
         <div className="sm:col-span-2"><ClaimField label={copy.purchasePrice} hint={copy.purchasePriceHint} error={localizeMessage(state.fieldErrors?.purchasePrice, language)}><div className="relative"><span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-extrabold text-[#69747b]">Rp</span><input name="purchasePrice" required maxLength={16} inputMode="numeric" pattern="[0-9]+" placeholder="250000" className={`${inputClass} pl-12`} /></div></ClaimField></div>
@@ -187,7 +187,7 @@ export function WarrantyClaimForm({
         <p className="mt-2 leading-5">{copy.uploadHint}</p>
         {elapsed >= 20 && <p className="mt-2 leading-5">{copy.slowConnection}</p>}
       </div>}
-      <button type="submit" disabled={pending} className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(0,53,185,0.22)] transition hover:bg-[#002b96] disabled:cursor-not-allowed disabled:opacity-60">
+      <button type="submit" disabled={pending || !hydrated} className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(0,53,185,0.22)] transition hover:bg-[#002b96] disabled:cursor-not-allowed disabled:opacity-60">
         {pending ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}
         {pending ? copy.submitting : copy.submit}
       </button>

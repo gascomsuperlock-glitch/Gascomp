@@ -1,14 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { ArrowLeft, CheckCircle2, Clock3, FileText, ShieldCheck } from "lucide-react";
 import { WarrantyClaimForm } from "@/features/warranty/components/warranty-claim-form";
 import { Brand } from "@/shared/components/brand";
 import { LanguageSelector } from "@/shared/components/language-selector";
 import { dictionaries } from "@/shared/i18n/dictionaries";
 import { useLanguage } from "@/shared/i18n/language-context";
+import { ClaimHomeLink } from "./claim-home-link";
+import { installClaimHomeNavigation } from "@/features/warranty/model/claim-home-navigation";
 
 export function WarrantyClaimPage({ defaultProduct, defaultSku }: { defaultProduct: string; defaultSku: string }) {
+  useEffect(() => installClaimHomeNavigation(window), []);
   const { language } = useLanguage();
   const copy = dictionaries[language].warranty;
   const steps = [
@@ -25,7 +29,7 @@ export function WarrantyClaimPage({ defaultProduct, defaultSku }: { defaultProdu
           <div className="flex flex-wrap items-center gap-2">
             <Link href="/gascomp-care" prefetch={false} className="inline-flex min-h-10 items-center rounded-full bg-[#0035b9]/10 px-3 text-xs font-bold text-[#0035b9] focus-visible:outline-2 focus-visible:outline-offset-4">GascompCare</Link>
             <LanguageSelector />
-            <Link href="/" className="inline-flex items-center gap-2 text-xs font-extrabold text-[#647077] hover:text-[#0035b9]"><ArrowLeft className="size-4" /> {copy.helpCenter}</Link>
+            <ClaimHomeLink className="inline-flex min-h-11 items-center gap-2 text-xs font-extrabold text-[#647077] hover:text-[#0035b9]"><ArrowLeft className="size-4" /> {copy.backToHelp}</ClaimHomeLink>
           </div>
         </div>
       </header>
