@@ -42,7 +42,7 @@ export function WarrantyClaimForm({
   const { content, hydrated } = useContent();
 
   const errorSummary = useRef<HTMLDivElement>(null);
-  const redirectedTicket = useRef<string | null>(null);
+  const [showWhatsappFallback, setShowWhatsappFallback] = useState(false);
   const [preparingSubmission, setPreparingSubmission] = useState(false);
   const videoValidationTask = useRef<Promise<string | null>>(Promise.resolve(null));
   const submissionEpoch = useRef(0);
@@ -78,9 +78,10 @@ export function WarrantyClaimForm({
   const whatsappUrl = state.whatsappUrl;
 
   useEffect(() => {
-    if (!state.success || !state.ticketId || !whatsappUrl || redirectedTicket.current === state.ticketId) return;
-    redirectedTicket.current = state.ticketId;
-    window.location.assign(whatsappUrl);
+    if (!state.success || !state.ticketId || !whatsappUrl) return;
+    // Keep a manual recovery path if the browser blocks external navigation.
+    const timer = setTimeout(() => setShowWhatsappFallback(true), 2500);
+    return () => clearTimeout(timer);
   }, [state.success, state.ticketId, whatsappUrl]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -95,6 +96,7 @@ export function WarrantyClaimForm({
     setPending(true);
     setPreparingSubmission(videoBusy.current);
     setState({});
+    setShowWhatsappFallback(false);
     setElapsed(0);
     try {
       // A single click owns preparation and upload. Never ask for another click
@@ -111,9 +113,21 @@ export function WarrantyClaimForm({
       }
       const result = await submitClaim(formData, setProgress);
       if (epoch !== submissionEpoch.current) return;
-      setState(result.success && result.ticketId
-        ? { ...result, whatsappUrl: getWarrantyWhatsappUrl(content.whatsappNumber, result.ticketId, ticketLoginUrl(window.location.origin, result.ticketId)) }
-        : result);
+      if (!result.success || !result.ticketId) {
+        setState(result);
+        return;
+      }
+      const destination = getWarrantyWhatsappUrl(content.whatsappNumber, result.ticketId, ticketLoginUrl(window.location.origin, result.ticketId));
+      // Confirm the saved ticket before navigating. A blocked handoff must never
+      // turn a successful claim into a submission error or invite resubmission.
+      setState({ ...result, whatsappUrl: destination });
+      if (destination) {
+        try {
+          window.location.assign(destination);
+        } catch {
+          setShowWhatsappFallback(true);
+        }
+      }
     } catch {
       if (epoch === submissionEpoch.current) setState({ error: copy.submitError });
     } finally {
@@ -136,7 +150,12 @@ export function WarrantyClaimForm({
           <span className="block text-[9px] font-extrabold tracking-[0.13em] text-[#7b8899]">{copy.ticketNumber}</span>
           <strong className="mt-1 block text-xl tracking-[0.04em] text-[#0035b9]">{state.ticketId}</strong>
         </div>
-        {whatsappUrl && <div className="mt-6"><p className="text-sm text-[#707a80]">{copy.whatsappRedirect}</p><a href={whatsappUrl} className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full bg-[#2e8250] px-5 text-sm font-bold text-white">{copy.openWhatsapp}</a></div>}
+        {whatsappUrl && <div className="mt-6">
+          <p role="status" className="text-sm text-[#707a80]">{showWhatsappFallback ? copy.whatsappFallback : copy.whatsappRedirect}</p>
+          {showWhatsappFallback
+            ? <a href={whatsappUrl} className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full bg-[#2e8250] px-5 text-sm font-bold text-white">{copy.openWhatsapp}</a>
+            : <LoaderCircle aria-hidden="true" className="mx-auto mt-3 size-5 animate-spin text-[#2e8250]" />}
+        </div>}
         <ClaimHomeLink className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#2c3038] px-5 text-xs font-extrabold text-white"><ArrowLeft className="size-4" /> {copy.backToHelp}</ClaimHomeLink>
       </div>
     );
