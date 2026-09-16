@@ -291,3 +291,14 @@ Hostinger hosting tools are unavailable in this session, so provider build
 settings and logs cannot be inspected directly. The GitHub API exposes no
 repository hooks, Actions runs, or deployment records for the current mapping.
 Verify the public route after the push before reporting the release as live.
+
+Commit `afea6bc5031a38c4cb3e3e14e7df2607b4822e93` was pushed to `main`.
+At 02:52 UTC, the public `/service-center` route returned HTTP 200 with the new
+directory. Production Chromium checks verified the empty state, all 38 province
+options, filter reset, interactive map controls, successful OpenStreetMap tile
+responses, English/Indonesian switching, and mobile layout. Administrator login
+and a real Google Maps short-link import succeeded on the production host.
+The imported draft was not saved; a subsequent database query confirmed zero
+location rows. The checks recorded no page JavaScript errors. The home page,
+admin login, and Care login also returned HTTP 200. Local evidence is stored in
+`.data/service-center-release/production-verification.json`.
