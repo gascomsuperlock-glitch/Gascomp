@@ -2,6 +2,46 @@
 
 [Specification index](../spec.md)
 
+## Automated releases
+
+The September 16 release workflow preserves Hostinger's existing `main` source
+branch. Push reviewed candidates to `release`. GitHub Actions runs lint,
+typecheck, all Node/isolated PGlite SQL tests, and the production build before
+using the Supabase Management API to preview, apply, and verify migrations.
+Only then does it fast-forward `main` to the exact verified candidate, triggering
+the existing Hostinger integration. Pull requests run checks without production
+credentials. Manual workflow runs release only when the selected branch is
+`release`; a run on `main` only verifies code.
+
+The workflow uses `SUPABASE_ACCESS_TOKEN` and `SUPABASE_PROJECT_ID` repository
+secrets. It does not use `SUPABASE_DB_PASSWORD`, application service keys, or
+MCP OAuth credentials. The token needs migration read/write permission for the
+configured project. The Actions job needs `contents: write` to advance `main`.
+Do not push application changes directly to `main`, because that bypasses the
+database-before-hosting sequence. Make changes on `release` or merge reviewed
+feature branches into it. Hostinger must continue tracking `main`.
+
+Concurrent production releases are serialized and never canceled during a
+database write. Before migration and promotion, the candidate must still be the
+latest `release` revision and descend from current `main`. A newer candidate
+supersedes queued work. A failed migration or non-fast-forward branch update
+prevents promotion; additive database changes remain if hosting subsequently
+fails. No database reset, rollback of customer data, fixture import, or Storage
+upload is part of the workflow.
+
+The [migration baseline](../integrations/supabase.md#automated-migration-baseline)
+defines the intentional boundary around historical manual changes. The script
+defaults to preview; `--apply` is explicit. Provider errors are summarized
+without printing credentials, customer records, or SQL response bodies.
+
+A successful Actions run proves code verification, migration verification, and
+GitHub promotion. It does not prove Hostinger deployment. Confirm the same
+commit in hPanel and test the affected production flows before reporting live
+success. Hostinger remains responsible for its own dependency install and build.
+
+References: [Supabase migration API](https://supabase.com/docs/reference/api/v1-apply-a-migration),
+[Hostinger GitHub deployments](https://www.hostinger.com/support/how-to-redeploy-a-node-js-application/).
+
 - Connect the Gascomp Help Center to `support.gascompsuperlock.com`, replacing `bantuan.gascompsuperlock.com` to follow the English language standard. Confirm the deployment target before changing DNS.
 - The deployment needs a server runtime for admin authentication, Server Actions, Supabase access, and warranty claims.
 - Configure production Supabase, admin-authentication, and `GASCOMP_PUBLIC_BASE_URL` environment variables in the application host.

@@ -1,0 +1,42 @@
+{
+  "projectRef": "eizbzgvkzqapzjbmjssw",
+  "firstAutomatedVersion": "202609160002",
+  "legacyFiles": {
+    "202609100001_catalog.sql": "40d734c2e4377cc91da3824c07da44df83897bef7eb775a68103a38d453fb7cf",
+    "202609100002_warranty.sql": "dae323fdecb4d84f1b6f448e592d599501e55108d71e4b0fbe28faa815340a78",
+    "202609110001_english_system_defaults.sql": "dfddba29e706d7999dafc01f8fd9705e4bf271c782c92e7e5dc767d9477ca0c9",
+    "202609110002_tutorial_video_sources.sql": "39285261b897973580b17f16f7e93ddff6a650c6cd176a90fd14ea34fad88195",
+    "202609110004_warranty_video_upload_limit.sql": "4a0c3edd2836755abffd85ef8a73e845d58c6f518cee23922aa2b48459efff68",
+    "202609140001_warranty_video_formats.sql": "eb4c04c823c4daf9d84e436b7810080d78a1a268887de534974b377324cd714b",
+    "202609140002_tutorial_video_thumbnails.sql": "9478c0de3440b9de85872bbb647f1e2ec2d69a75b78f3761de92796ffe695acb",
+    "202609140003_warranty_claim_eligibility.sql": "00eca28b79a7fa16e7d6189abf0d43f82b95fbe10ca2d8fe2d8dcdb8d11b0245",
+    "202609150001_warranty_ticket_deletion.sql": "cab1b834a4147efad163dae521ec370982f4b7e3e1980e19933633af59de6d7e",
+    "202609150002_warranty_ticket_solution.sql": "04cec9539c735277859e7f29b46eba12bf6ed42f2d5c81c4f3d9cfb0e5f5a5ca",
+    "202609150003_gascomp_care_accounts.sql": "e98a0d24c56b480d5fdedde59cedd03290abba44590ca32ed10f0ef3e40ad5b5",
+    "202609150004_gascomp_care_coverage.sql": "727f71f808c67c18ac894561d0723f53a268a6d706a39965d9266719eb9c4aaf",
+    "202609150005_gascomp_care_member_deletion.sql": "173a9c43346f9f862d4cdb061d92d3d216da2e4a9c10470ef28f8970fb2c31ae",
+    "202609160001_service_centers.sql": "ab497ce7bc3710bddd84c806ea0d0c73466971662e71345512e79b750f2e135d"
+  },
+  "legacyRemoteHistory": [
+    {
+      "version": "202609140002",
+      "name": "tutorial_video_thumbnails"
+    },
+    {
+      "version": "202609150003",
+      "name": "gascomp_care_accounts"
+    },
+    {
+      "version": "202609150004",
+      "name": "gascomp_care_coverage"
+    },
+    {
+      "version": "202609150005",
+      "name": "gascomp_care_member_deletion"
+    },
+    {
+      "version": "202609160001",
+      "name": "service_centers"
+    }
+  ]
+}

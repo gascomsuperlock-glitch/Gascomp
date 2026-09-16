@@ -1,0 +1,92 @@
+name: Verify and release
+
+on:
+  push:
+    branches: [release]
+  pull_request:
+    branches: [main, release]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Never cancel a release during a database write. Only one release can migrate
+# and promote at a time; newer candidates replace queued (not running) work.
+concurrency:
+  group: gascomp-${{ github.event_name == 'pull_request' && github.ref || 'production-release' }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Install isolated SQL test engine
+        run: npm install --prefix "$RUNNER_TEMP/gascomp-sql-tests" --no-audit --no-fund @electric-sql/pglite@0.5.8
+      - run: npm run lint
+      - run: npm run typecheck
+      - name: Run application and SQL regression tests
+        env:
+          CARE_PGLITE_MODULE: ${{ runner.temp }}/gascomp-sql-tests/node_modules/@electric-sql/pglite/dist/index.js
+          WARRANTY_PGLITE_MODULE: ${{ runner.temp }}/gascomp-sql-tests/node_modules/@electric-sql/pglite/dist/index.js
+        run: npm run test
+      - run: npm run build
+
+  release:
+    needs: verify
+    if: github.ref == 'refs/heads/release' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm candidate is current and extends production
+        id: candidate
+        shell: bash
+        run: |
+          git fetch origin main release
+          if [ "$(git rev-parse origin/release)" != "$GITHUB_SHA" ]; then
+            echo 'A newer release candidate exists; skipping this candidate.'
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git merge-base --is-ancestor origin/main "$GITHUB_SHA"
+          echo 'current=true' >> "$GITHUB_OUTPUT"
+      - name: Preview database migrations
+        if: steps.candidate.outputs.current == 'true'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: node scripts/supabase/release-migrations.mjs --preview
+      - name: Apply and verify database migrations
+        if: steps.candidate.outputs.current == 'true'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: node scripts/supabase/release-migrations.mjs --apply
+      - name: Promote verified code to Hostinger source branch
+        if: steps.candidate.outputs.current == 'true'
+        shell: bash
+        run: |
+          git fetch origin main release
+          if [ "$(git rev-parse origin/release)" != "$GITHUB_SHA" ]; then
+            echo 'Database is ready; newer candidate will promote after verification.'
+            exit 0
+          fi
+          git merge-base --is-ancestor origin/main "$GITHUB_SHA"
+          git push origin "$GITHUB_SHA:refs/heads/main"
+          echo 'Verified code promoted to main. Hostinger must build and deploy this commit; promotion alone does not confirm a live deployment.' >> "$GITHUB_STEP_SUMMARY"

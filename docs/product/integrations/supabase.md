@@ -26,6 +26,37 @@ Data flow: **Duoke or warehouse → validation/normalization → Supabase → ad
 
 Status: catalog, help-content, import-history, warranty-ticket, and evidence tables are implemented. The `product-images` and `warranty-evidence` buckets are configured. See [Supabase setup](../../setup/supabase.md).
 
+## Automated migration baseline
+
+`supabase/release-baseline.json` pins the existing project, hashes of SQL files
+before `202609160002`, and the five migration-history entries observed during
+release setup on September 16. Historical files are frozen and excluded from
+automatic execution. This does **not** mark untracked migrations as applied:
+some changes were applied manually, and the optional tutorial source-column
+migration remains deferred. Do not use a blanket `supabase db push` against
+this history. Reconcile a legacy change separately if it becomes required.
+
+New ordered SQL files from `202609160002` onward are applied through the
+Management API by `scripts/supabase/release-migrations.mjs`. The remote name is
+`release_<local-version>_<full-SHA256-of-SQL>`, while Supabase assigns the remote
+version. This preserves a verifiable local-file identity without changing
+Supabase's historical version records. Editing/deleting an applied file,
+introducing a migration before an already applied automated migration, changing
+legacy SQL, selecting another project, or encountering unexpected remote
+history stops the release for review.
+
+Each successful POST must be confirmed in remote history before the next file
+or application promotion. No failed POST is automatically retried. After an
+ambiguous network failure, inspect remote history and schema before rerunning;
+if the recorded name matches, the next run skips it. Database writes through
+other clients must not run concurrently with a release. Local and remote CLI
+version identifiers intentionally differ for automated releases; the API runner
+is the production release mechanism.
+
+The first automated migration expands only the existing warranty solution
+constraint to accept `usage_guidance`. Its isolated SQL test verifies historical
+row preservation, old/new values, rejected invalid values, and existing RLS.
+
 ## Product image diagnosis on September 11, 2026
 
 The live website contains the image URLs recorded in `product_images`, but
