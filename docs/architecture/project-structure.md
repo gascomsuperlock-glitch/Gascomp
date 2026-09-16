@@ -10,6 +10,7 @@ src/
     catalog/                      # Public catalog, product help, editors, QR, content
     warranty/                     # Claims, tickets, status, and evidence
     gascomp-care/                 # Member accounts, sessions, and virtual cards
+    service-center/               # Indonesian locations, public map, and location administration
     admin/                        # Dashboard, navigation, cross-feature overview
   shared/
     components/                   # Brand, header, and reusable UI
@@ -38,7 +39,7 @@ supabase/migrations/              # Ordered database migrations; stable location
 ## Placement and dependency rules
 
 - `app` composes features and owns Next.js route contracts. Business logic and Server Actions belong to their owning feature.
-- `admin` may compose catalog, warranty, and authentication modules. Features must not import `app` or `admin`.
+- `admin` may compose catalog, warranty, GascompCare, service-center, and authentication modules. Features must not import `app` or `admin`.
 - `shared` must not import features or routes. ESLint enforces the main alias dependency boundaries.
 - A feature may use `components`, `hooks`, `model`, and `server` when those folders contain real modules. Do not create empty convention folders.
 - Import client and server modules directly. Do not combine them in a barrel export. Database and filesystem modules use `server-only`; Server Actions use `use server`.

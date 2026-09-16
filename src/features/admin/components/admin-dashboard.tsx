@@ -18,6 +18,7 @@ import type { EditorTab } from "@/features/catalog/model/editor-types";
 import { AdminSidebar } from "@/features/admin/components/admin-sidebar";
 import { Overview } from "@/features/admin/components/overview";
 import { TicketInbox } from "@/features/warranty/components/ticket-inbox";
+import { ServiceCenterAdmin } from "@/features/service-center/components/service-center-admin";
 import { CareAdmin } from "@/features/gascomp-care/components/care-admin";
 import { WarrantyNotifications } from "@/features/warranty/components/warranty-notifications";
 import { DetailsEditor } from "@/features/catalog/components/details-editor";
@@ -31,9 +32,14 @@ import { ContentEditorNavigation } from "@/features/admin/components/content-edi
 export function AdminDashboard({ initialTicketId, initialTickets = [], backendError, ticketError, publicBaseUrl }: { initialTicketId?: string; initialTickets?: WarrantyTicket[]; backendError?: string; ticketError?: string; publicBaseUrl?: string }) {
   const { content, updateContent, saveContent, cancelContent, resetContent, storageMode, saveState, hasUnsavedChanges, saveError } = useContent();
   const [tickets, setTickets] = useState(initialTickets);
-  const [view, setView] = useState<MainView>(initialTicketId ? "tickets" : "overview");
+  const [view, setViewState] = useState<MainView>(initialTicketId ? "tickets" : "overview");
+  const [serviceCentersVisited, setServiceCentersVisited] = useState(false);
+  function setView(nextView: MainView) {
+    if (nextView === "service-centers") setServiceCentersVisited(true);
+    setViewState(nextView);
+  }
   const compactTicketHeader = view === "tickets" && !hasUnsavedChanges && saveState !== "saving" && saveState !== "error";
-  const hideCatalogControls = view === "care" && !hasUnsavedChanges && saveState !== "saving" && saveState !== "error" && !saveError;
+  const hideCatalogControls = (view === "care" || view === "service-centers") && !hasUnsavedChanges && saveState !== "saving" && saveState !== "error" && !saveError;
   const [editorTab, setEditorTab] = useState<EditorTab>("details");
   const [selectedId, setSelectedId] = useState(content.products[0]?.id ?? "");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -136,7 +142,7 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
             <button type="button" onClick={() => setSidebarOpen(true)} className="grid size-9 place-items-center rounded-xl border border-[#2c3038]/10 lg:hidden" aria-label="Open menu"><Menu className="size-4" /></button>
             <div>
               <p className="text-[10px] font-bold text-[#8c9498]">DASHBOARD GASCOMP</p>
-              <h1 className={`${compactTicketHeader ? "text-xs min-[360px]:text-sm" : "text-sm"} font-extrabold`}>{view === "overview" ? "Overview" : view === "content" ? "Help Content" : view === "tickets" ? "Warranty tickets" : view === "care" ? "GascompCare" : "Settings"}</h1>
+              <h1 className={`${compactTicketHeader ? "text-xs min-[360px]:text-sm" : "text-sm"} font-extrabold`}>{view === "overview" ? "Overview" : view === "content" ? "Help Content" : view === "tickets" ? "Warranty tickets" : view === "care" ? "GascompCare" : view === "service-centers" ? "Service Centers" : "Settings"}</h1>
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
@@ -240,6 +246,7 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
             {view === "tickets" && !ticketError && <TicketInbox initialQuery={initialTicketId} tickets={tickets} setTickets={setTickets} onTicketUpdated={(ticket) => setAcknowledgedTickets((current) => ({ ...current, [ticket.ticketId]: ticket }))} />}
 
             {view === "care" && <CareAdmin />}
+            {serviceCentersVisited && <div hidden={view !== "service-centers"}><ServiceCenterAdmin /></div>}
 
             {view === "settings" && (
               <SettingsEditor

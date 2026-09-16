@@ -11,6 +11,7 @@ import {
   Clock3,
   Home,
   LifeBuoy,
+  MapPin,
   MessageCircle,
   Play,
   ShieldCheck,
@@ -213,6 +214,7 @@ export function ProductHelpPage({ slug }: { slug: string }) {
                 <p className="mt-2 text-xs leading-5 text-[#6a757b]">{copy.warrantyTerms}</p>
               </div>
             </div>
+            <Link href={`/service-center?${new URLSearchParams({ sku: product.sku, product: product.name }).toString()}`} className="mt-6 mr-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-[#0035b9]/20 bg-white px-5 py-3 text-sm font-extrabold text-[#0035b9] focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-auto"><MapPin aria-hidden="true" className="size-4" />Service Center</Link>
             <Link href={warrantyUrl} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] px-5 py-3 text-center text-sm font-extrabold text-white transition hover:bg-[#002b96] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0035b9] sm:w-auto">
               <ShieldCheck className="size-4 shrink-0" /> {copy.warrantyAction}
             </Link>

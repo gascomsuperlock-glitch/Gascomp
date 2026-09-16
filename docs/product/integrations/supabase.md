@@ -13,6 +13,7 @@ Supabase PostgreSQL is the primary shared database; Supabase Storage holds produ
 | Image metadata and product/variation relationships | PostgreSQL |
 | Warranty tickets and evidence metadata | Private PostgreSQL tables |
 | GascompCare accounts, sessions, and login limits | Private PostgreSQL tables; server-only access |
+| Service center locations | PostgreSQL; public reads limited to active locations |
 | Warranty evidence files | Private `warranty-evidence` bucket; video files up to 50 MB |
 | Duoke source identity and import history | PostgreSQL |
 | Product/knowledge graph notes | Project Obsidian vault |
@@ -206,3 +207,38 @@ files were verified against unchanged remote metadata and local SHA-256 backups.
 Data restoration and both migrations passed on a disposable database before the
 production changes. Private records are in `.data/gascomp-care-release-2/`.
 Application hosting deployment still requires separate verification.
+
+## Service center directory
+
+`202609160001_service_centers.sql` creates an initially empty `service_centers`
+table with the location, contact details, opening hours, optional Google Maps
+link, required coordinates, and active status. Province codes follow the
+[BPS province classification](https://sirusa.web.bps.go.id/metadata/variabel/326536)
+covering all 38 Indonesian provinces. Coordinate bounds provide a coarse
+Indonesia-area validation; administrators remain responsible for placing pins
+at the correct address and province.
+
+RLS is enabled and anonymous/authenticated table grants are revoked for both
+reads and writes. The application server uses the server-only service key and
+returns only active locations to the directory. Admin mutations verify the
+admin session and request origin. Reads are paginated so directories beyond the API row limit
+remain complete. Deactivation retains the record for future editing.
+
+When Supabase is entirely unconfigured, single-process local development uses
+the ignored `.data/service-centers.json` file, initially absent and treated as an
+empty list. File writes are serialized within the process and atomically
+replaced. A partially configured database, missing migration, or database error
+returns an explicit unavailable state and never switches to local data.
+
+On September 16, 2026, the owner authorized database-backed testing through
+localhost. This migration was applied to the configured Supabase project and
+aligned with history version `202609160001`. Direct public API access remains
+denied, including for active rows. The application has not been deployed; the
+live `/service-center` route still returns 404.
+
+Database-backed browser checks used only the local application. The two temporary
+location records were removed by exact ID, leaving `service_centers` empty.
+Before/after checksums confirmed all 247 existing rows across 16 application and
+Storage metadata tables unchanged. Anonymous and authenticated API reads were
+verified as denied. Local verification records are in
+`.data/service-center-validation/`.

@@ -23,6 +23,7 @@ The public home page header includes an **Admin login** link on desktop and mobi
 | Issue guide | Add, edit, reorder, and remove issue titles, summaries, ordered troubleshooting steps, and optional safety warnings |
 | FAQ | Add, edit, reorder, and remove questions and answers |
 | Settings | Manage the WhatsApp destination and support hours |
+| Service Center | Add, edit, activate, and deactivate Indonesian locations; see [support](support.md) |
 | Warranty ticket | Review private submissions and update status |
 
 Images accept JPG, PNG, or WebP up to 8 MB each and six images per product. The browser compresses them to WebP before upload. Admin-managed images and content are preserved when Duoke or warehouse data is imported again.
@@ -36,6 +37,8 @@ Bulk archive skips products that have never been published and keeps existing sl
 Save uses the stable `POST /admin/content` JSON endpoint, which verifies the request origin and admin session before reading up to 40 MB and invoking catalog persistence. This avoids tying the browser save request to a build-specific Server Action identifier. Save failures retain edits in the current tab and distinguish expired sessions, rejected origins, unavailable deployments, oversized uploads, and hosting timeouts. A lost response does not prove that the server failed to save; check the product before retrying.
 
 The dashboard can download one QR code per product when `GASCOMP_PUBLIC_BASE_URL` is configured with a production HTTPS origin. It also exposes Warranty Claim, Gascomp Care, and Service Center actions with the current product and SKU context.
+
+The separate **Service Centers** workspace uses an explicit **Save location** action for each location. Its edits and persistence are independent of catalog Save/Cancel. See [Service Center administration](support.md#service-center-administration) for required fields, map selection, and visibility.
 
 ## Help content workspace
 

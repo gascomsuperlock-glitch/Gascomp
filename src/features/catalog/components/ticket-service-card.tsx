@@ -35,7 +35,7 @@ export const ticketServices: Record<TicketService, {
     title: "Service Center",
     eyebrow: "PRODUCT REPAIR",
     description: "Find after-sales service and request support before bringing the product to a service center.",
-    url: "https://gascompsuperlock.com/kontak/?layanan=service-center",
+    url: "/service-center",
     icon: MapPin,
     accent: "bg-[#fff3e8] text-[#a65b27]",
   },
@@ -62,9 +62,9 @@ export function TicketServiceCard({ product, service }: { product: Product; serv
               <div className="mt-4 flex flex-wrap gap-2 text-[10px] font-bold text-[#69747b]"><span className="rounded-full bg-white px-3 py-1.5 shadow-sm">SKU: {product.sku}</span><span className="rounded-full bg-white px-3 py-1.5 shadow-sm">Product: {product.name}</span></div>
             </div>
           </div>
-          <a href={ticketUrl} target={isInternal ? undefined : "_blank"} rel={isInternal ? undefined : "noreferrer"} className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-[#0035b9] px-5 text-xs font-extrabold text-white shadow-[0_10px_24px_rgba(0,53,185,0.2)]"><TicketCheck className="size-4" /> Submit ticket</a>
+          <a href={ticketUrl} target={isInternal ? undefined : "_blank"} rel={isInternal ? undefined : "noreferrer"} className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-[#0035b9] px-5 text-xs font-extrabold text-white shadow-[0_10px_24px_rgba(0,53,185,0.2)]"><TicketCheck className="size-4" /> {service === "service-center" ? "Find a location" : "Submit ticket"}</a>
         </div>
-        <div className="border-t border-[#2c3038]/8 bg-white px-6 py-4 text-[10px] leading-4 text-[#858e93] sm:px-8">{isInternal ? "The button opens the Warranty Claim form on the Gascomp Help Center." : "The button opens an official Gascomp channel in a new tab. Customer data is not stored in this admin panel."}</div>
+        <div className="border-t border-[#2c3038]/8 bg-white px-6 py-4 text-[10px] leading-4 text-[#858e93] sm:px-8">{service === "service-center" ? "The button opens the Gascomp Service Center directory." : isInternal ? "The button opens the Warranty Claim form on the Gascomp Help Center." : "The button opens an official Gascomp channel in a new tab. Customer data is not stored in this admin panel."}</div>
       </article>
     </div>
   );

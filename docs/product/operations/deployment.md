@@ -270,3 +270,24 @@ existing data preservation is recorded in the
 No fixture accounts or purchases were copied to production. Hostinger hosting
 access was still unavailable in this session; the plugin search found only
 Hostinger Mail for that provider. A push is not proof of hosting deployment.
+
+### Service Center release on September 16, 2026
+
+The owner authorized pushing the Service Center directory, interactive map,
+administrator location management, and Google Maps link import without an API
+key to `main`, and confirmed that Hostinger automatic deployment is configured.
+The release targets the existing `support.gascompsuperlock.com` application.
+Lint, typecheck, the production build, and 146 Node tests passed; three unrelated
+optional tests were skipped. Local browser checks covered real Google Maps
+imports, explicit field replacement, stale responses, database persistence,
+administrator authentication, and mobile layout without horizontal overflow.
+
+The additive migration `202609160001` is already applied. The release readiness
+query confirmed zero service center rows, enabled RLS, and no table read access
+for `anon` or `authenticated`. No migration or fixture import is required during
+deployment. Administrators populate locations after release.
+
+Hostinger hosting tools are unavailable in this session, so provider build
+settings and logs cannot be inspected directly. The GitHub API exposes no
+repository hooks, Actions runs, or deployment records for the current mapping.
+Verify the public route after the push before reporting the release as live.

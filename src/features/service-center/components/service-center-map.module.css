@@ -1,0 +1,59 @@
+.wrapper {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid #dce3ea;
+  border-radius: 1rem;
+  background: #f1f5f9;
+}
+
+.map {
+  z-index: 0;
+  width: 100%;
+  height: 420px;
+  min-height: 320px;
+  background: #e6edf1;
+  font-family: inherit;
+}
+
+.marker {
+  display: grid;
+  place-items: center;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #155ab6;
+  box-shadow: 0 2px 7px #0f172a55;
+}
+
+.marker span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.selected {
+  background: #e0441b;
+  outline: 4px solid #e0441b40;
+}
+
+.marker:focus-visible {
+  outline: 4px solid #111827;
+  outline-offset: 3px;
+}
+
+.status,
+.hint {
+  margin: 0;
+  padding: 0.7rem 1rem;
+  color: #334155;
+  background: #fff;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .map {
+    height: 350px;
+  }
+}

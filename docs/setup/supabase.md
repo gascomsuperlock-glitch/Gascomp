@@ -15,6 +15,7 @@
    - `supabase/migrations/202609150003_gascomp_care_accounts.sql`
    - `supabase/migrations/202609150004_gascomp_care_coverage.sql`
    - `supabase/migrations/202609150005_gascomp_care_member_deletion.sql`
+   - `supabase/migrations/202609160001_service_centers.sql`
 3. Copy the project URL, publishable key, and secret key into `.env.local`. Keep the secret server-only and never give it a `NEXT_PUBLIC_` prefix. The code also accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` name when required.
 4. Restart the development server after changing environment variables.
 5. Create a draft product, upload an image, and publish it. Confirm that public visitors cannot read drafts and another browser can read the published product.
@@ -101,3 +102,23 @@ migration leaves every seeded row unchanged and that reapplying it fails without
 changing existing Care accounts or the older data. It also tests account isolation,
 role access, rate limits, expiry, and password-transaction rollback. This verifies
 migration behavior locally; it does not back up or inspect a production project.
+
+
+## Service Center local database preview
+
+The Service Center directory uses the existing `.env.local` Supabase URL and
+server secret. Migration `202609160001_service_centers.sql` is applied to the
+configured project. It creates an initially empty, server-only table; direct
+anonymous and authenticated Supabase API reads and writes are denied.
+
+Run `npm run dev -- --hostname 127.0.0.1`, then open
+`http://localhost:3000/service-center` and the **Service Centers** workspace at
+`http://localhost:3000/admin`. Use the existing local admin credentials.
+Changes made here persist in Supabase, even though the web application runs
+locally. They appear on the hosted directory only after the application is
+deployed. Keep test locations clearly identified and remove only their exact
+records after verification; do not reset the shared database.
+
+Local testing does not authorize pushing the branch or deploying the application.
+Do not change hosting settings or expose the development server through a public
+tunnel. The local file fallback is used only when Supabase is unconfigured.
