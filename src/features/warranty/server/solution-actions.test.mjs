@@ -25,4 +25,8 @@ test('solution actions require authentication and validate before writes', async
   assert.deepEqual(state.updates.pop(), [id, 'closed', 'spare_part']);
   assert.equal((await update(id, 'partial_refund', false)).success, true);
   assert.deepEqual(state.updates.pop(), [id, undefined, 'partial_refund']);
+  assert.equal((await update(id, 'usage_guidance', true)).success, true);
+  assert.deepEqual(state.updates.pop(), [id, 'closed', 'usage_guidance']);
+  assert.equal((await update(id, 'usage_guidance', false)).success, true);
+  assert.deepEqual(state.updates.pop(), [id, undefined, 'usage_guidance']);
 });

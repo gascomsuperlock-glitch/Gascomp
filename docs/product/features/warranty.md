@@ -70,6 +70,41 @@ requests address the previously opaque waiting state; parallel storage reduces
 sequential provider round trips. Connection bandwidth and video decoding complexity
 still affect total submission time.
 
+### Video compression before upload
+
+Video selection starts optional compression on the customer's device, while the
+rest of the form stays editable. The original selection must pass the existing
+50 MB size and container/playback checks first. Files up to 2 MiB are already
+small and skip compression. Larger supported files run in a dedicated worker
+using Mediabunny and the browser's WebCodecs encoders; the media library is loaded
+only when the worker starts. No video is uploaded during preparation.
+
+Compression preserves the full duration, orientation, aspect ratio, and audio.
+The output fits within 1280 by 720 pixels (or 720 by 1280 for portrait), without
+upscaling, with a 1.2 Mbps target video bitrate. Compatible AAC audio is copied;
+otherwise audio is encoded with a 96 kbps target. MP4/H.264 is preferred, with
+WebM/VP8 as a supported-device alternative. HDR, unsupported codecs/containers,
+and multiple video/audio tracks retain the original rather than losing evidence.
+Tracks may not be silently discarded. Output duration and track counts are
+checked, and a compressed file is used only when it is non-empty and at least
+10% smaller. Fragmented MP4 writes media incrementally, allowing the output size
+guard to stop conversions that grow beyond the useful size before finalization.
+
+The form shows preparation percentage and before/after size in both languages.
+Customers can skip compression and send the original. Preparation is limited to
+60 seconds; worker errors, unsupported browsers, and unavailable worker assets
+also fall back to the original with an explicit notice. Replacing a selection
+or leaving the form terminates its worker; stale results cannot replace a newer
+file. Small or fallback files remain subject to full server validation.
+
+Only the multipart upload uses the prepared copy. The original file stays in the
+picker, and both the form and prepared copy survive a failed submission so retry
+does not require another compression. The server still fully decodes the uploaded
+video before saving the ticket and evidence in private Storage; only metadata is
+stored in the database. WhatsApp opens only after successful saving. Compression
+reduces transferred/stored bytes when supported; total time and compression ratio
+depend on the recording, device and network. No universal speed guarantee applies.
+
 ## Admin video preview
 
 Ticket Inbox opens video previews inline with native playback controls and mobile inline playback. A preview is prepared only after selecting **Preview video**, with loading, retry, expired-session, and playback-error states. Closing the preview cancels its request and releases the browser object URL. Videos do not autoplay.
@@ -133,9 +168,10 @@ After an individual or bulk deletion finishes, a modal reports success, failure,
 
 ## Solutions and spreadsheet export
 
-Administrators select one of six owner-requested solution labels: `Klaim Garansi`,
-`Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`, or
-`Refund dana sebagian`. These exact labels are explicitly requested exceptions to
+Administrators select one of seven owner-requested solution labels: `Klaim Garansi`,
+`Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`,
+`Refund dana sebagian`, or `Edukasi cara pemakaian/kendala`. These exact labels are
+explicitly requested exceptions to
 English operator copy; database values remain English. Done is the only primary
 save action: it saves the selected solution and sets the stored status to `closed`,
 confirming completion. Done remains available without a selected solution.
@@ -154,6 +190,16 @@ that all seven existing tickets and 19 evidence metadata records were unchanged;
 all historical solutions remain null. Only this migration's SQL was executed;
 no other migration or migration-history update was applied. Verification records
 are stored locally in `.data/warranty-solution-migration/`.
+
+Migration `202609160002_warranty_usage_guidance_solution.sql` expands the existing
+solution constraint with the English stored value `usage_guidance`. The admin
+dropdown, saved solution, and spreadsheet export display its exact owner-requested
+label `Edukasi cara pemakaian/kendala`. All six previous values, null solutions,
+ticket statuses, and historical records remain unchanged. This additive migration
+is prepared locally and has not been applied to production; apply it before
+saving the new option in a Supabase-backed deployment. A read-only check of the
+configured Supabase database confirmed the expected constraint name and its six
+existing values; no production schema or ticket data was changed.
 
 The inbox exports UTF-8 CSV compatible with Excel and Google Sheets through the
 protected `/admin/warranty-tickets/export?start=YYYY-MM-DD&end=YYYY-MM-DD` endpoint.
@@ -201,3 +247,31 @@ Evidence is stored locally under `.data/warranty-speed/`. The owner subsequently
 authorized pushing this change to GitHub and deploying it to Hostinger. See the
 [release record](../operations/deployment.md#warranty-submission-performance-release-on-september-16-2026)
 for production verification scope.
+
+
+## Compression and usage guidance verification on September 16, 2026
+
+Lint, typecheck, production build, and all 197 Node tests passed, including the
+new solution migration exercised in isolated PGlite PostgreSQL. Chromium verified
+nine local browser flows, including compression, actual multipart upload to the
+production-build route, full server decoding, private-storage simulation, success
+before WhatsApp navigation, failure retention, skip, stale-selection cancellation,
+50 MB validation, both languages, and unsupported-browser fallback. WebKit also
+compressed the same source and enabled submission without JavaScript errors.
+
+An eight-second synthetic 1080p recording with audible tone measured 22,196,824
+bytes before compression and approximately 1.3 MB after Chromium compression
+(1280 by 720, with AAC audio retained). Preparation took approximately one second
+on the test computer. On a simulated 256 KiB/s upload connection, submission and
+local server/storage confirmation took approximately 7.4 seconds. These are local
+measurements, not a production or phone speed guarantee. A separate padded
+46.4 MiB file verified compatibility with the originally reported upload size.
+
+The admin browser saved and reloaded `usage_guidance` and exported its exact label
+against the local service simulation. SQL tests separately verified the real
+constraint migration and preservation of existing values, statuses, and rows.
+All synthetic claims and admin writes stayed local; WhatsApp navigation was
+intercepted without sending a message. Reports and screenshots are stored under
+`.data/warranty-compression/`. The owner authorized pushing the verified change
+to GitHub after local verification. The production solution migration remains
+pending, and deployment must be verified separately from the GitHub push.

@@ -16,7 +16,7 @@ Use Indonesian when conversing with the project owner, including progress update
 
 ## Owner-requested interface labels
 
-- Warranty solution options retain `Klaim Garansi`, `Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`, and `Refund dana sebagian`, including spreadsheet values.
+- Warranty solution options retain `Klaim Garansi`, `Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`, `Refund dana sebagian`, and `Edukasi cara pemakaian/kendala`, including spreadsheet values.
 - The claim order field retains `order number/No.Resi/No Pesanan` in both languages.
 
 ## Compatibility exceptions

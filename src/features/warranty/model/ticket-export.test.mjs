@@ -7,6 +7,7 @@ const hooks = registerHooks({ resolve(specifier, context, next) {
 } });
 const { dateRangeBounds, availableTicketDates, ticketCsv } = await import('./ticket-export.ts');
 const { isWarrantySolution } = await import('./types.ts');
+const { normalizeLocalTicket } = await import('./ticket-mappers.ts');
 hooks.deregister();
 test('date ranges include both days in Jakarta across leap years and year changes', () => {
   assert.deepEqual(dateRangeBounds('2024-02-01', '2024-02-29'), { start: '2024-01-31T17:00:00.000Z', end: '2024-02-29T17:00:00.000Z' });
@@ -33,4 +34,13 @@ test('CSV preserves delimiters and newlines and neutralizes formulas', () => {
   assert.equal(ticketCsv([]).split('\r\n').length, 2);
   assert.equal(isWarrantySolution('toString'), false);
   assert.equal(isWarrantySolution('warranty_claim'), true);
+});
+test('usage guidance survives ticket normalization and exports the owner-requested label', () => {
+  assert.equal(isWarrantySolution('usage_guidance'), true);
+  assert.equal(isWarrantySolution('Edukasi cara pemakaian/kendala'), false);
+  const ticket = normalizeLocalTicket({ ticketId: 'GWC-20260916-AAAAAA',
+    status: 'closed', solution: 'usage_guidance', submittedAt: '2026-09-16T00:00:00Z' });
+  assert.equal(ticket.solution, 'usage_guidance');
+  assert.ok(ticketCsv([ticket]).includes('"Done","Edukasi cara pemakaian/kendala"'));
+  assert.equal(normalizeLocalTicket({ ...ticket, solution: undefined }).solution, null);
 });
