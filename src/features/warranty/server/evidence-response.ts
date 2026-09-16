@@ -4,7 +4,7 @@ type EvidenceFile = { bytes: Uint8Array; name: string; mimeType: string };
 
 // A single byte range covers browser metadata probes and seeking. Unsupported
 // range units and multipart requests fall back to the complete representation.
-function byteRange(value: string | null, size: number) {
+export function byteRange(value: string | null, size: number) {
   const match = /^bytes=(\d*)-(\d*)$/.exec(value ?? "");
   if (!match || (!match[1] && !match[2])) return null;
   const first = match[1] ? Number(match[1]) : null;
@@ -18,8 +18,8 @@ function byteRange(value: string | null, size: number) {
   };
 }
 
-export function evidenceResponse(request: Request, evidence: EvidenceFile) {
-  const size = evidence.bytes.byteLength;
+export function evidenceHeaders(request: Request, evidence: { name: string; mimeType: string; size: number }) {
+  const size = evidence.size;
   const disposition = new URL(request.url).searchParams.get("download") === "1" ? "attachment" : "inline";
   const safeName = evidence.name.replace(/[\r\n"\\]/g, "_");
   const asciiName = safeName.replace(/[^\x20-\x7e]/g, "_");
@@ -32,6 +32,12 @@ export function evidenceResponse(request: Request, evidence: EvidenceFile) {
     "Cache-Control": "private, no-store",
     "X-Content-Type-Options": "nosniff",
   });
+  return headers;
+}
+
+export function evidenceResponse(request: Request, evidence: EvidenceFile) {
+  const size = evidence.bytes.byteLength;
+  const headers = evidenceHeaders(request, { ...evidence, size });
   if (request.method === "HEAD") return new Response(null, { headers });
 
   // No validator is emitted, so an If-Range condition cannot be satisfied.

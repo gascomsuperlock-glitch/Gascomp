@@ -42,12 +42,17 @@ export function WarrantyClaimForm({
 
   const errorSummary = useRef<HTMLDivElement>(null);
   const redirectedTicket = useRef<string | null>(null);
-  const [checkingVideo, setCheckingVideo] = useState(false);
+  const [preparingSubmission, setPreparingSubmission] = useState(false);
+  const videoValidationTask = useRef<Promise<string | null>>(Promise.resolve(null));
+  const submissionEpoch = useRef(0);
+  useEffect(() => () => { submissionEpoch.current++; }, []);
+  const onVideoValidationTask = useCallback((task: Promise<string | null>) => {
+    videoValidationTask.current = task;
+  }, []);
   const videoBusy = useRef(false);
   const preparedVideo = useRef<{ source: File; result: PreparedVideo } | null>(null);
   const onVideoBusy = useCallback((busy: boolean) => {
     videoBusy.current = busy;
-    setCheckingVideo(busy);
   }, []);
   const onPreparedVideo = useCallback((value: { source: File; result: PreparedVideo } | null) => {
     preparedVideo.current = value;
@@ -80,26 +85,42 @@ export function WarrantyClaimForm({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Keep the form mounted so failed transport never discards selected files.
     event.preventDefault();
-    if (submitting.current || videoBusy.current) return;
+    if (submitting.current) return;
     const formData = new FormData(event.currentTarget);
     const selectedVideo = (event.currentTarget.elements.namedItem("damageVideo") as HTMLInputElement).files?.[0];
-    if (preparedVideo.current && preparedVideo.current.source === selectedVideo) {
-      formData.set("damageVideo", preparedVideo.current.result.file);
-    }
+    const epoch = submissionEpoch.current;
+    const validationTask = videoValidationTask.current;
     submitting.current = true;
     setPending(true);
+    setPreparingSubmission(videoBusy.current);
     setState({});
     setElapsed(0);
     try {
+      // A single click owns preparation and upload. Never ask for another click
+      // when the selected video's background work finishes.
+      const videoError = await validationTask;
+      if (epoch !== submissionEpoch.current) return;
+      setPreparingSubmission(false);
+      if (videoError) {
+        setState({ error: copy.evidenceError, fieldErrors: { damageVideo: videoError } });
+        return;
+      }
+      if (preparedVideo.current && preparedVideo.current.source === selectedVideo) {
+        formData.set("damageVideo", preparedVideo.current.result.file);
+      }
       const result = await submitClaim(formData, setProgress);
+      if (epoch !== submissionEpoch.current) return;
       setState(result.success && result.ticketId
         ? { ...result, whatsappUrl: getWarrantyWhatsappUrl(content.whatsappNumber, result.ticketId, ticketLoginUrl(window.location.origin, result.ticketId)) }
         : result);
     } catch {
-      setState({ error: copy.submitError });
+      if (epoch === submissionEpoch.current) setState({ error: copy.submitError });
     } finally {
-      submitting.current = false;
-      setPending(false);
+      if (epoch === submissionEpoch.current) {
+        submitting.current = false;
+        setPreparingSubmission(false);
+        setPending(false);
+      }
     }
   }
 
@@ -150,7 +171,7 @@ export function WarrantyClaimForm({
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
           <EvidenceField language={language} checkingLabel={copy.checkingPlayback} name="invoice" kind="invoice" label={copy.invoice} hint={copy.invoiceHint} accept="image/jpeg,image/png,image/webp,application/pdf" serverErrors={state.fieldErrors} disabled={pending} />
           <EvidenceField language={language} checkingLabel={copy.checkingPlayback} name="damagePhotos" kind="photo" label={copy.photos} hint={copy.photosHint} accept="image/jpeg,image/png,image/webp" serverErrors={state.fieldErrors} disabled={pending} />
-          <div className="sm:col-span-2"><EvidenceField language={language} checkingLabel={copy.checkingPlayback} name="damageVideo" kind="video" label={copy.video} hint={copy.videoHint.replace("{size}", String(MAX_VIDEO_MB))} accept={VIDEO_ACCEPT} serverErrors={state.fieldErrors} disabled={pending} onCheckingChange={onVideoBusy} onPreparedVideo={onPreparedVideo} /></div>
+          <div className="sm:col-span-2"><EvidenceField language={language} checkingLabel={copy.checkingPlayback} name="damageVideo" kind="video" label={copy.video} hint={copy.videoHint.replace("{size}", String(MAX_VIDEO_MB))} accept={VIDEO_ACCEPT} serverErrors={state.fieldErrors} disabled={pending} onCheckingChange={onVideoBusy} onPreparedVideo={onPreparedVideo} onValidationTask={onVideoValidationTask} /></div>
         </div>
       </div>
 
@@ -161,21 +182,21 @@ export function WarrantyClaimForm({
       {state.fieldErrors?.agreement && <p className="mt-2 text-[10px] font-semibold text-[#b33b31]">{localizeMessage(state.fieldErrors.agreement, language)}</p>}
 
       {pending && <div className="mt-6 rounded-xl bg-[#edf4ff] p-4 text-xs text-[#0035b9]">
-        <p role="status" className="font-bold">{progress.phase === "uploading" ? copy.uploading.replace("{percent}", String(progress.percent)) : copy.processing}</p>
-        {progress.phase === "uploading" && <progress aria-label={copy.uploadProgress} value={progress.percent} max={100} className="mt-3 h-2 w-full accent-[#0035b9]" />}
+        <p role="status" className="font-bold">{preparingSubmission ? copy.preparingSubmission : progress.phase === "uploading" ? copy.uploading.replace("{percent}", String(progress.percent)) : copy.processing}</p>
+        {!preparingSubmission && progress.phase === "uploading" && <progress aria-label={copy.uploadProgress} value={progress.percent} max={100} className="mt-3 h-2 w-full accent-[#0035b9]" />}
         <p className="mt-2 leading-5">{copy.uploadHint}</p>
         {elapsed >= 20 && <p className="mt-2 leading-5">{copy.slowConnection}</p>}
       </div>}
-      <button type="submit" disabled={pending || checkingVideo} className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(0,53,185,0.22)] transition hover:bg-[#002b96] disabled:cursor-not-allowed disabled:opacity-60">
-        {pending || checkingVideo ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}
-        {pending ? copy.submitting : checkingVideo ? copy.checking : copy.submit}
+      <button type="submit" disabled={pending} className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(0,53,185,0.22)] transition hover:bg-[#002b96] disabled:cursor-not-allowed disabled:opacity-60">
+        {pending ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}
+        {pending ? copy.submitting : copy.submit}
       </button>
       <p className="mt-3 text-center text-[10px] leading-4 text-[#92999d]"><Upload className="mr-1 inline size-3" /> {copy.privateEvidence}</p>
     </form>
   );
 }
 
-function EvidenceField({ name, kind, label, hint, accept, serverErrors, disabled, onCheckingChange, onPreparedVideo, language, checkingLabel }: {
+function EvidenceField({ name, kind, label, hint, accept, serverErrors, disabled, onCheckingChange, onPreparedVideo, onValidationTask, language, checkingLabel }: {
   name: "invoice" | "damagePhotos" | "damageVideo";
   kind: WarrantyEvidenceKind;
   label: string;
@@ -185,6 +206,7 @@ function EvidenceField({ name, kind, label, hint, accept, serverErrors, disabled
   disabled: boolean;
   onCheckingChange?: (checking: boolean) => void;
   onPreparedVideo?: (value: { source: File; result: PreparedVideo } | null) => void;
+  onValidationTask?: (task: Promise<string | null>) => void;
   language: AppLanguage;
   checkingLabel: string;
 }) {
@@ -204,7 +226,12 @@ function EvidenceField({ name, kind, label, hint, accept, serverErrors, disabled
     : localizeMessage(serverErrors?.[name], language);
   const errorId = `${name}-error`;
 
-  async function validate(input: HTMLInputElement) {
+  function validate(input: HTMLInputElement) {
+    const task = validateAndPrepare(input);
+    onValidationTask?.(task);
+  }
+
+  async function validateAndPrepare(input: HTMLInputElement): Promise<string | null> {
     const id = ++validationId.current;
     compression.current?.abort();
     compression.current = null;
@@ -217,10 +244,10 @@ function EvidenceField({ name, kind, label, hint, accept, serverErrors, disabled
     setChecking(needsPlaybackCheck);
     onCheckingChange?.(needsPlaybackCheck);
     setValidation({ error: nextError, serverErrors });
-    input.setCustomValidity(nextError ?? (needsPlaybackCheck ? checkingLabel : ""));
+    input.setCustomValidity(nextError ?? "");
     if (needsPlaybackCheck) {
       nextError = localizeMessage((await validateVideoPlayback(files[0])) ?? undefined, language) ?? null;
-      if (id !== validationId.current) return;
+      if (id !== validationId.current) return null;
     }
     if (needsPlaybackCheck && !nextError) {
       const controller = new AbortController();
@@ -228,12 +255,12 @@ function EvidenceField({ name, kind, label, hint, accept, serverErrors, disabled
       setCompressionPercent(0);
       let result: PreparedVideo = { file: files[0], outcome: "original" };
       try {
-        if (id !== validationId.current) return;
+        if (id !== validationId.current) return null;
         result = await prepareVideo(files[0], controller.signal, (percent) => {
           if (id === validationId.current) setCompressionPercent(percent);
         });
       } catch { /* Keep the original if video preparation fails. */ }
-      if (id !== validationId.current) return;
+      if (id !== validationId.current) return null;
       const value = { source: files[0], result };
       setPrepared(value);
       onPreparedVideo?.(value);
@@ -244,6 +271,7 @@ function EvidenceField({ name, kind, label, hint, accept, serverErrors, disabled
     setValidation({ error: nextError, serverErrors });
     setChecking(false);
     onCheckingChange?.(false);
+    return nextError;
   }
 
   return (
@@ -264,7 +292,7 @@ function EvidenceField({ name, kind, label, hint, accept, serverErrors, disabled
     {compressionPercent !== null && <div className="mt-3 rounded-xl bg-[#edf4ff] p-3 text-xs text-[#0035b9]">
       <p role="status">{copy.compressing.replace("{percent}", String(compressionPercent))}</p>
       <progress aria-label={copy.compressionProgress} value={compressionPercent} max={100} className="mt-2 h-2 w-full accent-[#0035b9]" />
-      <p className="mt-2 leading-5">{copy.compressionHint}</p>
+      {!disabled && <p className="mt-2 leading-5">{copy.compressionHint}</p>}
       <button type="button" onClick={() => compression.current?.abort()} className="mt-2 min-h-11 font-bold underline">{copy.useOriginalVideo}</button>
     </div>}
     {prepared && <p role="status" className="mt-2 text-xs leading-5 text-[#53657c]">

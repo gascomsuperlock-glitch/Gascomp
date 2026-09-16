@@ -91,6 +91,15 @@ checked, and a compressed file is used only when it is non-empty and at least
 guard to stop conversions that grow beyond the useful size before finalization.
 
 The form shows preparation percentage and before/after size in both languages.
+Submit remains available while the selected video is being prepared. One valid
+click locks submission, retains that form snapshot, waits for the current video
+validation/compression task, and automatically uploads its result. Preparation
+status is shown separately from upload percentage; preparation must never display
+an upload percentage before a request starts. Invalid evidence stops the queued
+submission with an error and preserves the form. Further clicks cannot enqueue
+another request, and leaving the form cancels continuation before upload starts.
+The pending notice asks customers to wait until completion and explains that
+WhatsApp opens after the claim is saved; a second click is unnecessary.
 Customers can skip compression and send the original. Preparation is limited to
 60 seconds; worker errors, unsupported browsers, and unavailable worker assets
 also fall back to the original with an explicit notice. Replacing a selection
@@ -107,11 +116,39 @@ depend on the recording, device and network. No universal speed guarantee applie
 
 ## Admin video preview
 
-Ticket Inbox opens video previews inline with native playback controls and mobile inline playback. A preview is prepared only after selecting **Preview video**, with loading, retry, expired-session, and playback-error states. Closing the preview cancels its request and releases the browser object URL. Videos do not autoplay.
+Ticket Inbox opens video previews inline with native playback controls and mobile
+inline playback. Selecting **Preview video** immediately attaches the existing
+protected evidence URL to the browser player with metadata preloading; there is
+no initial full-file JavaScript fetch or server conversion. Initial loading ends
+when metadata is available, including on browsers that defer media frames until
+Play. Videos do not autoplay. Native seeking uses authenticated single byte ranges.
+Closing or switching the preview releases the player and cancels its media request.
 
-The authenticated evidence endpoint accepts `preview=1` to prepare a private MP4 copy in memory using the installed FFmpeg worker. Compatible H.264 video is remuxed without re-encoding; other video codecs are converted to H.264 with a maximum 1280-pixel dimension, and the first audio track is converted to AAC. MP4 metadata is placed before media data for browser playback. Conversion is limited to one concurrent job per server process, 30 seconds, and 64 MB output. When conversion cannot finish, the administrator can retry or download the original file. Preview generation never overwrites evidence or writes to Storage.
+Supabase evidence streams through the application without buffering the complete
+object. Every request checks the admin session and ticket deletion state, including
+HEAD and range requests. Private Storage credentials remain on the server; no
+signed URL or provider redirect is exposed. Metadata calls have 15-second deadlines
+and Storage streaming has a 120-second bound. Incorrect content lengths, invalid
+upstream ranges, and truncated or oversized streams are rejected. Local evidence
+retains the existing in-memory range response. Original downloads remain unchanged.
 
-Original attachment URLs remain stable. Downloads return the original bytes, filename, and MIME type. Evidence responses support single byte ranges (`206`, `Content-Range`, and `Accept-Ranges`), unsatisfiable ranges (`416`), and `HEAD`; every request checks the admin session and uses `private, no-store` caching. The browser fetches each prepared preview once and uses a temporary object URL for playback and seeking.
+If the browser reports an unsupported or undecodable format, the client first
+checks access with HEAD, then automatically requests `preview=1` once. HTTP access
+and network failures show appropriate errors without triggering conversion. An
+expired session asks the administrator to sign in again. The fallback creates a
+private MP4 copy in memory with FFmpeg: compatible H.264 video is remuxed; other
+codecs are converted to H.264 within a 1280-pixel maximum dimension, with AAC audio
+and metadata before media. Reading the full original is limited to 30 seconds,
+and conversion to one concurrent job per server process, 30 seconds, and 64 MB
+output. Client fallback fetch has a 75-second deadline, after an access check of
+at most 10 seconds. Original metadata loading has a 30-second deadline. Errors
+provide Retry preview and Download video; retry starts with the original again.
+
+The converted fallback uses a temporary object URL which is revoked on close,
+retry, or failure. Conversion never overwrites original evidence or writes to
+Storage. All evidence responses use private, no-store caching; original responses
+support single byte ranges (`206`, `Content-Range`, and `Accept-Ranges`), unsatisfiable
+ranges (`416`), and HEAD without downloading a Storage object body.
 
 Video inspection and preview workers run as native Node entrypoints in development and production. Their `node:worker_threads` constructors are imported at runtime with `webpackIgnore: true`; output tracing still includes the worker files and FFmpeg assets. This lets FFmpeg initialize its own WASM imports rather than having the bundler resolve the WASM import namespace as an npm package.
 
@@ -275,3 +312,33 @@ intercepted without sending a message. Reports and screenshots are stored under
 `.data/warranty-compression/`. The owner authorized pushing the verified change
 to GitHub after local verification. The production solution migration remains
 pending, and deployment must be verified separately from the GitHub push.
+
+
+## Single-click submission and direct preview verification on September 16, 2026
+
+The owner reported clicking Submit while video preparation was still active and
+needing to click again afterwards. Submission now waits for that same preparation
+task and continues automatically. Local Chromium checks confirmed exactly one
+multipart request even after additional submit events, retained the compressed
+upload copy, and reached WhatsApp only after successful server validation/saving.
+Network failures preserved the original selection and all form details. Navigating
+away during preparation prevented any claim request from being sent.
+
+Production-build browser checks also covered direct MP4 preview, seeking, closing,
+legacy AVI conversion, expired-session errors without conversion, and mobile
+layout. A local 21 MB recording reached native preview before full transfer;
+these local timings do not establish production speed. WebKit loaded metadata
+without a lingering spinner and played the same MP4 after Play. Its HTTP-only
+loopback check used a short-lived session signed with the local simulation secret;
+production Secure-cookie settings were not changed.
+
+Lint, typecheck, production build, and all 206 Node tests passed. New streaming
+regressions exercise the installed Supabase SDK, ranges, HEAD, deleted-ticket
+access, upstream failures, bounded byte counts, and cancellation before headers
+and during transfer. A read-only check through the local app against configured
+Supabase returned anonymous 401, authenticated HEAD 200 with no body, and Range
+206 with exactly two bytes. Private caching and absence of redirects were verified.
+No customer records or Storage objects were written. Synthetic browser writes
+stayed in a loopback simulation and WhatsApp navigation was intercepted without
+sending a message. Reports are under `.data/warranty-preview/` and
+`.data/warranty-preview-speed/`. This fix has not been pushed or deployed.

@@ -6,6 +6,8 @@ import type { WarrantyTicketInput } from "../model/input";
 import type { WarrantyTicketStatus, WarrantySolution } from "../model/types";
 import { deleteLocalTicket, saveLocalTicket, listLocalTickets, updateLocalTicketStatus, readLocalEvidence } from "./local-ticket-store";
 import { deleteSupabaseTicket, saveSupabaseTicket, listSupabaseTickets, updateSupabaseTicketStatus, readSupabaseEvidence } from "./supabase-ticket-store";
+import { supabaseEvidenceResponse } from "./supabase-evidence";
+import { evidenceResponse } from "./evidence-response";
 
 function createTicketId() {
   const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
@@ -33,6 +35,12 @@ export async function updateWarrantyTicketStatus(ticketId: string, status: Warra
 
 export async function readWarrantyEvidence(ticketId: string, evidenceId: string) {
   return isSupabaseConfigured() ? readSupabaseEvidence(ticketId, evidenceId) : readLocalEvidence(ticketId, evidenceId);
+}
+
+export async function warrantyEvidenceResponse(request: Request, ticketId: string, evidenceId: string) {
+  if (isSupabaseConfigured()) return supabaseEvidenceResponse(request, ticketId, evidenceId);
+  const evidence = await readLocalEvidence(ticketId, evidenceId);
+  return evidence ? evidenceResponse(request, evidence) : null;
 }
 
 export async function deleteWarrantyTicket(ticketId: string) {

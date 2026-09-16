@@ -8,7 +8,7 @@ const mock = (source) => ({ url: `data:text/javascript,${encodeURIComponent(sour
 const hooks = registerHooks({ resolve(specifier, context, nextResolve) {
   if (specifier === "server-only") return mock("export {};");
   if (specifier.endsWith("/auth/server/session")) return mock("export const getAdminSession = async () => globalThis.evidenceRouteTest.authorized;");
-  if (specifier.endsWith("/warranty/server/ticket-service")) return mock("export const readWarrantyEvidence = async () => { const s = globalThis.evidenceRouteTest; s.reads++; return s.missing ? null : { bytes: new Uint8Array([1,2,3]), name: 'original.mov', mimeType: 'video/quicktime' }; };");
+  if (specifier.endsWith("/warranty/server/ticket-service")) return mock("export const warrantyEvidenceResponse = async (request) => { const s = globalThis.evidenceRouteTest; s.reads++; return s.missing ? null : new Response(request.method === 'HEAD' ? null : new Uint8Array([1,2,3]), {headers: {'content-type':'video/quicktime','content-length':'3','content-disposition':'attachment; filename=\"original.mov\"'}}); };");
   if (specifier.endsWith("/warranty/server/video-preview")) return mock("export const createVideoPreview = async () => { const s = globalThis.evidenceRouteTest; s.conversions++; return s.failPreview ? null : new Uint8Array([4,5]); };");
   if (specifier.endsWith("/warranty/server/evidence-response")) return { url: new URL("./evidence-response.ts", import.meta.url).href, shortCircuit: true };
   return nextResolve(specifier, context);
