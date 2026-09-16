@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ticketLoginUrl } from "@/shared/lib/ticket-links";
 import { useContent } from "@/features/catalog/hooks/use-content";
 import { getWarrantyWhatsappUrl } from "@/shared/lib/whatsapp";
-import { startTransition, useActionState, useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { formatJakartaDate } from "@/features/warranty/model/claim-eligibility";
 import { MAX_VIDEO_MB, VIDEO_ACCEPT, validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyEvidenceKind } from "@/features/warranty/model/types";
@@ -18,10 +18,8 @@ import {
   ShieldCheck,
   Upload,
 } from "lucide-react";
-import {
-  createWarrantyClaim,
-  type WarrantyClaimState,
-} from "@/features/warranty/server/claim-actions";
+import type { WarrantyClaimState } from "@/features/warranty/server/claim-actions";
+import { submitClaim, type ClaimProgress } from "./claim-transport";
 import { dictionaries, localizeMessage } from "@/shared/i18n/dictionaries";
 import { useLanguage } from "@/shared/i18n/language-context";
 import type { AppLanguage } from "@/shared/i18n/language";
@@ -41,17 +39,25 @@ export function WarrantyClaimForm({
   const copy = dictionaries[language].warranty;
   const { content } = useContent();
 
+  const errorSummary = useRef<HTMLDivElement>(null);
   const redirectedTicket = useRef<string | null>(null);
   const [checkingVideo, setCheckingVideo] = useState(false);
-  const [state, action, pending] = useActionState<WarrantyClaimState & { whatsappUrl?: string | null }, FormData>(async (previousState: WarrantyClaimState, formData: FormData) => {
-    try {
-      const result = await createWarrantyClaim(previousState, formData);
-      if (!result.success || !result.ticketId) return result;
-      return { ...result, whatsappUrl: getWarrantyWhatsappUrl(content.whatsappNumber, result.ticketId, ticketLoginUrl(window.location.origin, result.ticketId)) };
-    } catch {
-      return { error: copy.submitError };
-    }
-  }, initialState);
+  const [state, setState] = useState<WarrantyClaimState & { whatsappUrl?: string | null }>(initialState);
+  const [pending, setPending] = useState(false);
+  const submitting = useRef(false);
+  const [progress, setProgress] = useState<ClaimProgress>({ phase: "uploading", percent: 0 });
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    if (!pending) return;
+    const started = Date.now();
+    const timer = setInterval(() => setElapsed(Math.floor((Date.now() - started) / 1000)), 1000);
+    return () => clearInterval(timer);
+  }, [pending]);
+
+  useEffect(() => {
+    if (state.error) errorSummary.current?.focus();
+  }, [state.error]);
 
   const whatsappUrl = state.whatsappUrl;
 
@@ -61,12 +67,26 @@ export function WarrantyClaimForm({
     window.location.assign(whatsappUrl);
   }, [state.success, state.ticketId, whatsappUrl]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    // Dispatch manually so a failed action does not reset text or file inputs.
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    // Keep the form mounted so failed transport never discards selected files.
     event.preventDefault();
-    if (pending || checkingVideo) return;
+    if (submitting.current || checkingVideo) return;
     const formData = new FormData(event.currentTarget);
-    startTransition(() => action(formData));
+    submitting.current = true;
+    setPending(true);
+    setState({});
+    setElapsed(0);
+    try {
+      const result = await submitClaim(formData, setProgress);
+      setState(result.success && result.ticketId
+        ? { ...result, whatsappUrl: getWarrantyWhatsappUrl(content.whatsappNumber, result.ticketId, ticketLoginUrl(window.location.origin, result.ticketId)) }
+        : result);
+    } catch {
+      setState({ error: copy.submitError });
+    } finally {
+      submitting.current = false;
+      setPending(false);
+    }
   }
 
   if (state.success && state.ticketId) {
@@ -94,7 +114,7 @@ export function WarrantyClaimForm({
       </div>
 
       <p className="mt-4 text-xs leading-5 text-[#53657c]">{copy.eligibility}</p>
-      {state.error && <div role="alert" className="mt-5 rounded-xl bg-[#fff0ef] p-4 text-xs font-semibold text-[#ad4037]">{localizeMessage(state.error, language)}</div>}
+      {state.error && <div ref={errorSummary} tabIndex={-1} role="alert" className="mt-5 rounded-xl bg-[#fff0ef] p-4 text-xs font-semibold text-[#ad4037]">{localizeMessage(state.error, language)}</div>}
 
       <input name="company" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
@@ -126,6 +146,12 @@ export function WarrantyClaimForm({
       </label>
       {state.fieldErrors?.agreement && <p className="mt-2 text-[10px] font-semibold text-[#b33b31]">{localizeMessage(state.fieldErrors.agreement, language)}</p>}
 
+      {pending && <div className="mt-6 rounded-xl bg-[#edf4ff] p-4 text-xs text-[#0035b9]">
+        <p role="status" className="font-bold">{progress.phase === "uploading" ? copy.uploading.replace("{percent}", String(progress.percent)) : copy.processing}</p>
+        {progress.phase === "uploading" && <progress aria-label={copy.uploadProgress} value={progress.percent} max={100} className="mt-3 h-2 w-full accent-[#0035b9]" />}
+        <p className="mt-2 leading-5">{copy.uploadHint}</p>
+        {elapsed >= 20 && <p className="mt-2 leading-5">{copy.slowConnection}</p>}
+      </div>}
       <button type="submit" disabled={pending || checkingVideo} className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(0,53,185,0.22)] transition hover:bg-[#002b96] disabled:cursor-not-allowed disabled:opacity-60">
         {pending || checkingVideo ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}
         {pending ? copy.submitting : checkingVideo ? copy.checking : copy.submit}

@@ -302,3 +302,20 @@ The imported draft was not saved; a subsequent database query confirmed zero
 location rows. The checks recorded no page JavaScript errors. The home page,
 admin login, and Care login also returned HTTP 200. Local evidence is stored in
 `.data/service-center-release/production-verification.json`.
+
+
+### Warranty submission performance release on September 16, 2026
+
+The owner authorized pushing the verified warranty submission changes to `main`
+and deploying through the existing Hostinger automatic release path. The release
+adds upload percentage, separate processing feedback, bounded transport and
+provider requests, concurrent evidence uploads, and batched evidence metadata.
+No schema migration or hosting environment change is required. Existing public
+routes and private evidence access remain unchanged.
+
+Local verification passed lint, typecheck, the production build, and 160 Node
+tests; four optional SQL tests were skipped. Chromium verified a synthetic
+46.4 MiB upload against a local storage simulation, including throttled upload
+progress, full video decoding, failure feedback and file retention. Production
+verification will use an intentionally invalid customer name so transport and
+validation can be checked without creating a ticket or storing evidence.

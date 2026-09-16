@@ -18,12 +18,13 @@ export function isSupabaseConfigured() {
   return Boolean(getSupabaseUrl() && getSupabaseSecret());
 }
 
-export function createAdminSupabaseClient(): SupabaseClient | null {
+export function createAdminSupabaseClient(fetchImplementation?: typeof fetch): SupabaseClient | null {
   const url = getSupabaseUrl();
   const secret = getSupabaseSecret();
   if (!url || !secret) return null;
 
   return createClient(url, secret, {
+    ...(fetchImplementation ? { global: { fetch: fetchImplementation } } : {}),
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }

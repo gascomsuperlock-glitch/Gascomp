@@ -30,7 +30,45 @@ Video selection and drag-and-drop use the same validation. The browser checks th
 
 Before creating a ticket or storing evidence, the server uses FFmpeg compiled to WebAssembly in an isolated Node worker to decode the entire video and its audio, rejecting decoder errors, truncated media, audio-only files, and files without video frames. The verification output preserves input time bases and variable frame timestamps so valid MOV screen recordings do not fail because of output timestamp rounding. Verification has a 30-second processing limit; a timeout asks for a shorter copy, and a missing decoder reports a temporary verification failure. The check uses memory only, with no native executable or disk temporary files; the worker is terminated after each check. These checks cannot restore damaged evidence that was already stored; the customer must supply an intact replacement. A successful decode does not guarantee that every browser supports the video's codec. The admin inbox provides a private Download video link so evidence can also be opened in a compatible device player.
 
-The Server Action accepts up to 72 MB per request to accommodate a 50 MB video, a 4 MB invoice, four 4 MB photos, and multipart overhead. Per-file limits still apply.
+The claim form sends multipart evidence to the Node Route Handler at
+`POST /warranty/claims`, which reuses the existing claim validation and ticket
+service. The endpoint checks the request origin and enforces a 72 MB body limit,
+including streamed requests without a Content-Length header. The legacy Server
+Action retains the same limit. This accommodates a 50 MB video, a 4 MB invoice,
+four 4 MB photos, and multipart overhead. Per-file limits still apply.
+
+### Submission progress and bounded storage
+
+The browser reports actual upload percentage, then switches to video verification
+and saving. Reaching 100% upload does not imply a saved claim. A longer-running
+submission explains that large files can take several minutes on mobile networks.
+The form remains mounted and retains details, consent, and selected files after
+validation or transport failure. Errors receive focus so customers submitting from
+the bottom of a long form can immediately see the explanation. Duplicate clicks
+are blocked synchronously.
+
+A stalled upload stops after 45 seconds without progress; the complete browser
+request is limited to ten minutes. After upload, confirmation has a 105-second
+limit. A lost response or timeout reports that the submission outcome is unknown
+and asks the customer to check with support before retrying. The browser never
+automatically resubmits or invents a successful ticket. The endpoint also limits
+incoming upload inactivity to 45 seconds and total upload duration to ten minutes.
+
+Server-side full video decoding and evidence privacy remain unchanged. Supabase
+storage starts the largest evidence first and uploads at most three files at once.
+Evidence metadata is inserted in one batch after every upload succeeds. Provider
+requests have individual deadlines (15 seconds for database calls, 40 seconds for
+Storage) within a 50-second total save budget. Failure waits for started uploads
+to settle before attempting cleanup of this submission's paths and ticket, with
+an independent eight-second cleanup budget. Cleanup failures log a generic
+operator diagnostic without customer data and may require reconciliation.
+
+This change needs an application release and no database migration. A 46.4 MB
+customer video prompted the investigation; without the original recording and
+request logs, its exact failure stage is unconfirmed. Upload progress and bounded
+requests address the previously opaque waiting state; parallel storage reduces
+sequential provider round trips. Connection bandwidth and video decoding complexity
+still affect total submission time.
 
 ## Admin video preview
 
@@ -138,3 +176,28 @@ escaped. Import phone and order columns as text to retain leading zeros and long
 The claim form's order field uses the owner's exact label
 `order number/No.Resi/No Pesanan` in both interface languages. The field retains its
 existing key and claim identity rules.
+
+## Submission performance verification on September 16, 2026
+
+Local verification passed lint, typecheck, the production build, and 160 Node
+tests; four optional SQL tests were skipped because their test runtime was not
+configured. Regression coverage includes upload/processing timeouts, transport
+failures, case-sensitive browser multipart boundaries, streamed body limits,
+origin checks, bounded provider requests, concurrent uploads, and failure cleanup.
+
+Chromium exercised the production build against a loopback-only Supabase
+simulation. A synthetic 46.4 MiB MP4 passed the existing full decoder and completed
+all six evidence uploads before confirmation. Browser network throttling verified
+partial upload percentages and the separate processing stage. The synthetic file
+uses a short valid recording plus an MP4 free box to test transport size; it does
+not reproduce the customer's recording, duration, or decoding cost. Mobile and
+desktop checks covered error focus, preservation of all fields and selected files,
+video field errors, and no horizontal overflow or page JavaScript errors.
+
+A separate read-only check reached the configured Supabase database and confirmed
+the private evidence bucket's 50 MiB limit. All synthetic writes stayed in the
+local simulation; no customer records or production Storage objects were changed.
+Evidence is stored locally under `.data/warranty-speed/`. The owner subsequently
+authorized pushing this change to GitHub and deploying it to Hostinger. See the
+[release record](../operations/deployment.md#warranty-submission-performance-release-on-september-16-2026)
+for production verification scope.

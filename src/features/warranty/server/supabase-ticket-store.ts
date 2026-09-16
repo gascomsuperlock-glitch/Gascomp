@@ -7,10 +7,12 @@ import type { WarrantyEvidence, WarrantyEvidenceKind, WarrantyTicket, WarrantyTi
 import type { WarrantyTicketInput } from "../model/input";
 import { allowedExtension, evidenceInputs } from "../model/evidence";
 
+import { claimStorageFetch, uploadClaimEvidence } from "./claim-storage";
+
 const WARRANTY_BUCKET = "warranty-evidence";
 
 export async function saveSupabaseTicket(input: WarrantyTicketInput, ticketId: string, submittedAt: string) {
-  const client = createAdminSupabaseClient();
+  const client = createAdminSupabaseClient(claimStorageFetch());
   if (!client) throw new Error("Supabase is not configured.");
   // Check existing tickets before uploading evidence, including legacy records.
   for (let offset = 0; ; offset += 500) {
@@ -23,35 +25,41 @@ export async function saveSupabaseTicket(input: WarrantyTicketInput, ticketId: s
   const productResult = await client.from("products").select("id").eq("sku", input.sku).limit(1).maybeSingle();
   if (productResult.error) throw productResult.error;
   const productId = (productResult.data as { id: string } | null)?.id ?? null;
-  const insertTicket = await client.from("warranty_tickets").insert({
-    ticket_id: ticketId, status: "new", submitted_at: submittedAt,
-    customer_name: input.name, customer_email: input.email, customer_whatsapp: input.whatsapp,
-    product_id: productId, product_name: input.product, sku: input.sku,
-    store: input.store, purchase_date: input.purchaseDate, order_number: input.orderNumber,
-    purchase_price: input.purchasePrice, problem: input.problem,
-  });
-  if (insertTicket.error) {
-    if (insertTicket.error.message.includes("duplicate_warranty_claim")) throw new Error(DUPLICATE_CLAIM_ERROR);
-    if (insertTicket.error.message.includes("expired_warranty_claim")) throw new Error(EXPIRED_CLAIM_ERROR);
-    throw insertTicket.error;
-  }
-
-  const uploadedPaths: string[] = [];
+  const evidence: WarrantyEvidence[] = evidenceInputs(input).map((item) => ({
+    id: `${ticketId}-${item.id}`, kind: item.kind, originalName: path.basename(item.file.name),
+    storagePath: `tickets/${ticketId}/${item.id}-${randomBytes(5).toString("hex")}${allowedExtension(item.file, item.kind)}`,
+    mimeType: item.file.type, size: item.file.size,
+  }));
+  const attemptedPaths: string[] = [];
+  let inserted = false;
   try {
-    const evidence: WarrantyEvidence[] = [];
-    for (const item of evidenceInputs(input)) {
-      const storagePath = `tickets/${ticketId}/${item.id}-${randomBytes(5).toString("hex")}${allowedExtension(item.file, item.kind)}`;
-      const upload = await client.storage.from(WARRANTY_BUCKET).upload(storagePath, new Uint8Array(await item.file.arrayBuffer()), { contentType: item.file.type, upsert: false });
-      if (upload.error) throw upload.error;
-      uploadedPaths.push(storagePath);
-      const evidenceId = `${ticketId}-${item.id}`;
-      const metadata = await client.from("warranty_evidence").insert({
-        id: evidenceId, ticket_id: ticketId, kind: item.kind, original_name: path.basename(item.file.name),
-        storage_path: storagePath, mime_type: item.file.type, size_bytes: item.file.size,
-      });
-      if (metadata.error) throw metadata.error;
-      evidence.push({ id: evidenceId, kind: item.kind, originalName: path.basename(item.file.name), storagePath, mimeType: item.file.type, size: item.file.size });
+    const insertTicket = await client.from("warranty_tickets").insert({
+      ticket_id: ticketId, status: "new", submitted_at: submittedAt,
+      customer_name: input.name, customer_email: input.email, customer_whatsapp: input.whatsapp,
+      product_id: productId, product_name: input.product, sku: input.sku,
+      store: input.store, purchase_date: input.purchaseDate, order_number: input.orderNumber,
+      purchase_price: input.purchasePrice, problem: input.problem,
+    });
+    if (insertTicket.error) {
+      if (insertTicket.error.message.includes("duplicate_warranty_claim")) throw new Error(DUPLICATE_CLAIM_ERROR);
+      if (insertTicket.error.message.includes("expired_warranty_claim")) throw new Error(EXPIRED_CLAIM_ERROR);
+      throw insertTicket.error;
     }
+    inserted = true;
+    const items = evidenceInputs(input).map((item, index) => ({ ...item, metadata: evidence[index] }))
+      .sort((a, b) => b.file.size - a.file.size);
+    await uploadClaimEvidence(items, async (item) => {
+      const storagePath = item.metadata.storagePath!;
+      // Include uncertain uploads in cleanup if their response is lost.
+      attemptedPaths.push(storagePath);
+      const upload = await client.storage.from(WARRANTY_BUCKET).upload(storagePath, item.file, { contentType: item.file.type, upsert: false });
+      if (upload.error) throw upload.error;
+    });
+    const metadata = await client.from("warranty_evidence").insert(evidence.map((item) => ({
+      id: item.id, ticket_id: ticketId, kind: item.kind, original_name: item.originalName,
+      storage_path: item.storagePath, mime_type: item.mimeType, size_bytes: item.size,
+    })));
+    if (metadata.error) throw metadata.error;
     return {
       ticketId, status: "new" as const, submittedAt, updatedAt: submittedAt,
       customer: { name: input.name, email: input.email, whatsapp: input.whatsapp },
@@ -60,8 +68,16 @@ export async function saveSupabaseTicket(input: WarrantyTicketInput, ticketId: s
       problem: input.problem, evidence,
     };
   } catch (error) {
-    if (uploadedPaths.length) await client.storage.from(WARRANTY_BUCKET).remove(uploadedPaths);
-    await client.from("warranty_tickets").delete().eq("ticket_id", ticketId);
+    if (inserted) {
+      const cleanup = createAdminSupabaseClient(claimStorageFetch(8_000));
+      if (cleanup) {
+        const results = await Promise.allSettled([
+          ...(attemptedPaths.length ? [cleanup.storage.from(WARRANTY_BUCKET).remove(attemptedPaths)] : []),
+          cleanup.from("warranty_tickets").delete().eq("ticket_id", ticketId),
+        ]);
+        if (results.some((result) => result.status === "rejected" || result.value.error)) console.error("Warranty claim cleanup failed; reconcile incomplete evidence.");
+      }
+    }
     throw error;
   }
 }
