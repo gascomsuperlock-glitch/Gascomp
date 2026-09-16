@@ -29,8 +29,8 @@ const hooks = registerHooks({ resolve(specifier, context, next) {
 } });
 const previousCwd = process.cwd();
 process.chdir(directory);
-const { loadPublicServiceCenters, loadServiceCenters, saveServiceCenter } = await import('./store.ts');
-const { listServiceCentersAction, saveServiceCenterAction } = await import('./actions.ts');
+const { loadPublicServiceCenters, loadServiceCenters, saveServiceCenter, deleteServiceCenter } = await import('./store.ts');
+const { listServiceCentersAction, saveServiceCenterAction, deleteServiceCenterAction } = await import('./actions.ts');
 process.chdir(previousCwd);
 hooks.deregister();
 after(async () => { await rm(directory, { recursive: true, force: true }); delete globalThis.serviceCenterTest; });
@@ -97,4 +97,65 @@ test('empty local directory persists concurrent additions, edits and deactivatio
   await writeFile(path.join(directory, '.data', 'service-centers.json'), 'invalid-json');
   assert.ok((await loadPublicServiceCenters()).error);
   assert.ok((await saveServiceCenter(input)).error);
+});
+
+
+test('deletion requires an administrator, matching origin and a valid single UUID before any database access', async () => {
+  assert.match((await deleteServiceCenterAction(id)).error, /session has expired/);
+  state.admin = true;
+  for (const origin of ['', 'https://foreign.example', 'null', 'ftp://gascomp.example', 'https://gascomp.example/path']) {
+    state.headers.set('origin', origin);
+    assert.ok((await deleteServiceCenterAction(id)).error);
+  }
+  state.headers.set('origin', 'https://gascomp.example');
+  for (const invalid of ['', null, undefined, {}, [id], '../private', `${id},${id}`]) {
+    assert.match((await deleteServiceCenterAction(invalid)).error, /identifier/);
+  }
+  assert.deepEqual(state.queries, []);
+  assert.deepEqual(state.revalidated, []);
+});
+
+test('database deletion targets only the requested location, refreshes the public route and tolerates retries', async () => {
+  state.admin = true;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    state.results.push({ data: null, error: null });
+    assert.deepEqual(await deleteServiceCenterAction(id), { deletedId: id });
+  }
+  for (const query of state.queries) {
+    assert.equal(query.table, 'service_centers');
+    assert.deepEqual(query.operations, [['delete'], ['eq', 'id', id]]);
+  }
+  assert.deepEqual(state.revalidated, ['/service-center', '/service-center']);
+});
+
+test('failed deletion exposes no database details, does not report success, and does not revalidate', async () => {
+  state.admin = true;
+  state.results.push({ data: null, error: { code: '08006', message: 'private database information' } });
+  assert.deepEqual(await deleteServiceCenterAction(id), { error: 'The service center could not be deleted. Please try again later.' });
+  state.results.push({ data: null, error: { code: 'PGRST205' } });
+  assert.match((await deleteServiceCenterAction(id)).error, /migration/);
+  assert.deepEqual(state.revalidated, []);
+  state.configured = false;
+  process.env.SUPABASE_URL = 'https://incomplete.example';
+  assert.ok((await deleteServiceCenter(id)).error);
+});
+
+test('local deletion and concurrent edits preserve other locations and never recreate a deleted identity', async () => {
+  state.configured = false;
+  await rm(path.join(directory, '.data', 'service-centers.json'), { force: true });
+  const first = (await saveServiceCenter(input)).center;
+  const second = (await saveServiceCenter({ ...input, name: 'Retained location' })).center;
+  const results = await Promise.all([
+    deleteServiceCenter(first.id.toUpperCase()),
+    saveServiceCenter({ ...second, city: 'Updated city' }),
+    saveServiceCenter({ ...input, name: 'New inactive location', active: false }),
+  ]);
+  assert.ok(results.every(result => !result.error));
+  assert.deepEqual((await loadServiceCenters()).centers.map(center => center.name).sort(), ['New inactive location', 'Retained location']);
+  assert.equal((await loadPublicServiceCenters()).centers[0].city, 'Updated city');
+  assert.equal((await loadPublicServiceCenters()).centers.length, 1);
+  assert.match((await saveServiceCenter({ ...first, name: 'Stale editor' })).error, /no longer exists/);
+  assert.deepEqual(await deleteServiceCenter(first.id), { deletedId: first.id });
+  await writeFile(path.join(directory, '.data', 'service-centers.json'), 'invalid-json');
+  assert.ok((await deleteServiceCenter(second.id)).error);
 });

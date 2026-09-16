@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createAdminSupabaseClient } from "@/shared/integrations/supabase/server";
-import { validateServiceCenterInput } from "../model/input";
+import { isServiceCenterId, validateServiceCenterInput } from "../model/input";
 import type { ServiceCenter, ServiceCenterInput } from "../model/types";
 
 const columns = "id,name,province_code,city,address,phone,whatsapp,hours,maps_url,latitude,longitude,active";
@@ -45,6 +45,15 @@ async function readLocal(): Promise<ServiceCenter[]> {
     if (!validated.value?.id) throw new Error("Invalid stored service center.");
     return validated.value as ServiceCenter;
   });
+}
+
+async function writeLocal(centers: ServiceCenter[]) {
+  await mkdir(path.dirname(localPath), { recursive: true });
+  const temporaryPath = `${localPath}.${randomUUID()}.tmp`;
+  try {
+    await writeFile(temporaryPath, JSON.stringify(centers, null, 2), { encoding: "utf8", mode: 0o600 });
+    await rename(temporaryPath, localPath);
+  } finally { await unlink(temporaryPath).catch(() => undefined); }
 }
 
 export async function loadServiceCenters(activeOnly = false): Promise<{ centers: ServiceCenter[]; error?: string }> {
@@ -94,15 +103,31 @@ export async function saveServiceCenter(input: ServiceCenterInput): Promise<{ ce
       if (value.id && index < 0) return { error: "This service center no longer exists. Reload the list and try again." };
       const center: ServiceCenter = { ...value, id: value.id ?? randomUUID() };
       if (index < 0) centers.push(center); else centers[index] = center;
-      await mkdir(path.dirname(localPath), { recursive: true });
-      const temporaryPath = `${localPath}.${randomUUID()}.tmp`;
-      try {
-        await writeFile(temporaryPath, JSON.stringify(centers, null, 2), { encoding: "utf8", mode: 0o600 });
-        await rename(temporaryPath, localPath);
-      } finally { await unlink(temporaryPath).catch(() => undefined); }
+      await writeLocal(centers);
       return { center };
     });
     localWriteQueue = operation.catch(() => undefined);
     return await operation;
   } catch { return { error: "The service center could not be saved. Please try again later." }; }
+}
+
+export async function deleteServiceCenter(id: string): Promise<{ deletedId?: string; error?: string }> {
+  if (!isServiceCenterId(id)) return { error: "Invalid service center identifier." };
+  try {
+    const db = database();
+    if (db) {
+      const { error } = await db.from("service_centers").delete().eq("id", id);
+      if (error) return { error: ["42P01", "PGRST205"].includes(error.code) ? migrationRequired : "The service center could not be deleted. Please try again later." };
+      // Retrying an already-completed deletion confirms the location is absent.
+      return { deletedId: id };
+    }
+    const operation = localWriteQueue.then(async () => {
+      const centers = await readLocal();
+      const remaining = centers.filter(center => center.id.toLowerCase() !== id.toLowerCase());
+      if (remaining.length !== centers.length) await writeLocal(remaining);
+      return { deletedId: id };
+    });
+    localWriteQueue = operation.catch(() => undefined);
+    return await operation;
+  } catch { return { error: "The service center could not be deleted. Please try again later." }; }
 }

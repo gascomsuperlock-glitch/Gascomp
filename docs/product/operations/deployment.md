@@ -319,3 +319,20 @@ tests; four optional SQL tests were skipped. Chromium verified a synthetic
 progress, full video decoding, failure feedback and file retention. Production
 verification will use an intentionally invalid customer name so transport and
 validation can be checked without creating a ticket or storing evidence.
+
+
+### Service Center deletion release on September 16, 2026
+
+The owner authorized pushing the verified Service Center deletion feature to
+`main` and deploying through the existing Hostinger automatic release path at
+`support.gascompsuperlock.com`. No migration or environment change is required.
+The feature adds a permanent, single-location delete action with confirmation,
+admin authentication, origin and ID validation, public directory revalidation,
+and error feedback that preserves the current draft.
+
+Lint, typecheck, the production build, 164 Node tests, and local desktop/mobile
+browser checks passed; four optional SQL tests were skipped. Local database
+verification removed only two temporary inactive locations and preserved the
+existing location. Production verification checks the rendered button and
+cancels confirmation so existing locations remain untouched. Deployment evidence
+is kept locally under `.data/service-center-delete-release/`.

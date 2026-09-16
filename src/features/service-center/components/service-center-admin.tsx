@@ -2,13 +2,13 @@
 
 import dynamic from "next/dynamic";
 import { startTransition, useEffect, useRef, useState } from "react";
-import { LoaderCircle, MapPin, Plus, Save, Search, X } from "lucide-react";
+import { LoaderCircle, MapPin, Plus, Save, Search, Trash2, X } from "lucide-react";
 import { INDONESIA_PROVINCES } from "../model/provinces";
 import { isGoogleMapsUrl, validateServiceCenterInput } from "../model/input";
 import type { ServiceCenter, ServiceCenterInput } from "../model/types";
 import { importGoogleMapsAction } from "../server/maps-actions";
 import type { GoogleMapsImportData } from "../model/google-maps-import";
-import { listServiceCentersAction, saveServiceCenterAction } from "../server/actions";
+import { deleteServiceCenterAction, listServiceCentersAction, saveServiceCenterAction } from "../server/actions";
 
 const ServiceCenterMap = dynamic(() => import("./service-center-map"), {
   ssr: false,
@@ -43,6 +43,7 @@ export function ServiceCenterAdmin() {
   const [draft, setDraft] = useState<Draft>();
   const [baseline, setBaseline] = useState("");
   const [busy, setBusy] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [feedback, setFeedback] = useState<{ error?: string; success?: string }>();
   const [importing, setImporting] = useState(false);
   const [importFeedback, setImportFeedback] = useState<{ error?: string; message?: string }>();
@@ -51,6 +52,7 @@ export function ServiceCenterAdmin() {
   const lastImportUrl = useRef("");
   const saving = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
+  const errorNotice = useRef<HTMLParagraphElement>(null);
   const addButton = useRef<HTMLButtonElement>(null);
   const loading = result?.revision !== revision;
   const dirty = Boolean(draft && JSON.stringify(draft) !== baseline);
@@ -85,6 +87,10 @@ export function ServiceCenterAdmin() {
   }, [dirty]);
 
   useEffect(() => () => { importVersion.current++; }, []);
+
+  useEffect(() => {
+    if (feedback?.error) errorNotice.current?.focus();
+  }, [feedback]);
 
   function resetImport() {
     importVersion.current++;
@@ -198,6 +204,37 @@ export function ServiceCenterAdmin() {
     }
   }
 
+  async function deleteLocation() {
+    if (!draft?.id || saving.current || loading || result?.error) return;
+    const id = draft.id;
+    const name = centers.find(center => center.id === id)?.name ?? draft.name;
+    const message = `Permanently delete "${name}"? It will be removed from the admin list and public directory. This cannot be undone.${dirty ? " Unsaved changes to this location will also be discarded." : ""}`;
+    if (!window.confirm(message)) return;
+    saving.current = true;
+    setBusy(true);
+    setDeleting(true);
+    resetImport();
+    setFeedback(undefined);
+    try {
+      const response = await deleteServiceCenterAction(id);
+      if (response.error || response.deletedId !== id) {
+        setFeedback({ error: errorMessage(response.error) });
+        return;
+      }
+      setResult(current => ({ revision, centers: (current?.centers ?? []).filter(center => center.id !== id) }));
+      setDraft(undefined);
+      setBaseline("");
+      setFeedback({ success: `"${name}" has been deleted from the service center directory.` });
+      requestAnimationFrame(() => addButton.current?.focus());
+    } catch {
+      setFeedback({ error: "Deletion could not be confirmed. Your draft is preserved. Refresh the location list before retrying." });
+    } finally {
+      saving.current = false;
+      setBusy(false);
+      setDeleting(false);
+    }
+  }
+
   const latitude = Number(draft?.latitude);
   const longitude = Number(draft?.longitude);
   const hasCoordinates = Boolean(draft?.latitude.trim() && draft.longitude.trim()) && Number.isFinite(latitude) && Number.isFinite(longitude) && latitude >= -11.1 && latitude <= 6.2 && longitude >= 94.9 && longitude <= 141.1;
@@ -213,6 +250,7 @@ export function ServiceCenterAdmin() {
         <button ref={addButton} type="button" disabled={busy || loading || Boolean(result?.error)} className={primaryButton} onClick={() => openDraft()}><Plus aria-hidden="true" className="size-4" /> Add location</button>
       </div>
 
+      {!draft && feedback?.success && <p role="status" className="rounded-xl bg-green-50 p-4 text-sm leading-6 text-green-800">{feedback.success}</p>}
       <div className="grid min-w-0 items-start gap-6 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
         <section aria-label="Service center locations" className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6">
           <label className="block text-sm font-bold text-slate-700">
@@ -227,7 +265,7 @@ export function ServiceCenterAdmin() {
 
         {draft ? <section aria-label="Location editor" className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6">
           <div className="flex items-start justify-between gap-3"><div><h3 ref={heading} tabIndex={-1} className="text-lg font-extrabold text-[#172b4d] outline-none">{draft.id ? "Edit location" : "Add location"}</h3><p className="mt-2 text-xs text-slate-500">{dirty ? "Unsaved changes" : "Fields marked * are required."}</p></div><button type="button" disabled={busy} aria-label="Close location editor" className={`${button} px-3`} onClick={() => { if (!canLeaveDraft()) return; resetImport(); setDraft(undefined); setFeedback(undefined); addButton.current?.focus(); }}><X aria-hidden="true" className="size-4" /></button></div>
-          {feedback?.error && <p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-sm leading-6 text-red-800">{feedback.error}</p>}
+          {feedback?.error && <p ref={errorNotice} tabIndex={-1} role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-sm leading-6 text-red-800">{feedback.error}</p>}
           {feedback?.success && <p role="status" className="mt-4 rounded-xl bg-green-50 p-3 text-sm leading-6 text-green-800">{feedback.success}</p>}
           <form className="mt-5" onSubmit={(event) => { event.preventDefault(); startTransition(() => saveLocation()); }}>
             <fieldset disabled={busy} className="min-w-0 space-y-4">
@@ -280,7 +318,7 @@ export function ServiceCenterAdmin() {
                 </div>
               </div>
               <label className="flex min-h-11 items-start gap-3 rounded-xl bg-slate-50 p-4"><input type="checkbox" checked={draft.active} onChange={(event) => updateDraft("active", event.target.checked)} className="mt-0.5 size-4 accent-[#0035b9]" /><span className="text-sm font-bold text-slate-700">Active location<span className="mt-1 block text-xs font-normal leading-5 text-slate-600">Visible to customers after saving. Uncheck and save to hide this location.</span></span></label>
-              <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4"><button type="submit" disabled={busy || importing || loading || Boolean(result?.error)} className={primaryButton}>{busy ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" /> : <Save aria-hidden="true" className="size-4" />}{busy ? "Saving..." : "Save location"}</button>{dirty && <button type="button" className={button} onClick={() => { if (!canLeaveDraft()) return; resetImport(); setDraft(JSON.parse(baseline) as Draft); setFeedback(undefined); }}>Discard changes</button>}</div>
+              <div className="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4"><button type="submit" disabled={busy || importing || loading || Boolean(result?.error)} className={primaryButton}>{busy && !deleting ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" /> : <Save aria-hidden="true" className="size-4" />}{busy && !deleting ? "Saving..." : "Save location"}</button>{dirty && <button type="button" className={button} onClick={() => { if (!canLeaveDraft()) return; resetImport(); setDraft(JSON.parse(baseline) as Draft); setFeedback(undefined); }}>Discard changes</button>}{draft.id && <button type="button" disabled={busy || loading || Boolean(result?.error)} className={`${button} border-red-200 text-red-700 hover:bg-red-50 sm:ml-auto`} onClick={() => startTransition(() => deleteLocation())}>{deleting ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" /> : <Trash2 aria-hidden="true" className="size-4" />}{deleting ? "Deleting..." : "Delete location"}</button>}</div>
             </fieldset>
           </form>
         </section> : <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center"><MapPin aria-hidden="true" className="mx-auto size-9 text-slate-400" /><h3 className="mt-3 font-bold text-[#172b4d]">Manage a service location</h3><p className="mt-2 text-sm leading-6 text-slate-600">Choose a location to update its details, or add a new service center.</p></section>}

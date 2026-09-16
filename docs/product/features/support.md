@@ -31,11 +31,22 @@ The September 16, 2026 implementation introduces `/service-center`, accessible f
 
 ## Service Center administration
 
-The protected admin sidebar includes **Service Centers** as a separate workspace. Administrators can list/search, add, edit, deactivate, and reactivate locations. There is no permanent delete action.
+The protected admin sidebar includes **Service Centers** as a separate workspace. Administrators can list/search, add, edit, deactivate, reactivate, and permanently delete locations.
 
 Required fields are name, province, city/regency, address, latitude, and longitude. Phone, WhatsApp, opening hours, and Google Maps URL are optional. The map picker and coordinate inputs refer to the same location. New forms start without coordinates. Server validation checks known Indonesian province codes, finite coordinates within Indonesia's bounding range, field limits, phone formatting, and HTTPS Google Maps destinations. The bounding range is a coarse geographic guard, not a province boundary or land-boundary verification; administrators must verify each point and address.
 
 **Save location** persists only the current location immediately and makes its active status effective publicly. Catalog Save/Cancel does not apply to this workspace. Failures preserve form values. Switching admin workspaces retains the mounted form, and abandoning a changed location inside this workspace asks the operator to discard changes. The UI supports desktop and mobile editing.
+
+**Delete location** appears in the editor for saved locations, including inactive
+ones. Confirmation names the saved location and warns that deletion is permanent;
+any unsaved edits to that location are also discarded only after confirmation and
+a successful response. Deletion immediately removes the record from the admin
+list and public directory and closes the editor. It does not require catalog
+Save. Cancelling leaves the draft unchanged. Failed or unconfirmed requests retain
+the draft and show an error; a transport failure asks the administrator to refresh
+the list before retrying. Repeating a completed deletion safely confirms absence.
+Pending saves and deletions block other location mutations. Google Maps import
+responses that arrive after a confirmed deletion starts are ignored.
 
 Every admin list request checks the existing admin session; mutations additionally verify the request origin. Supabase is the primary store with a separate ordered migration and server-only reads and writes. Anonymous and Supabase-authenticated API clients cannot access the table; the application server returns only active locations to directory pages. A missing or failed configured database reports unavailability instead of silently using local data. Development without Supabase uses an initially absent `.data/service-centers.json` file shared by the local admin and public server. This file mode is for single-process development only. See [Supabase storage](../integrations/supabase.md) for migration status.
 
@@ -125,3 +136,23 @@ reloaded, and removed by exact ID. Existing location identities and visibility
 were unchanged. No location is saved during lookup. The real public Monas response
 also verified extraction of current-format weekly opening hours. Reports and the
 local browser script are under `.data/service-center-maps/`.
+
+## Service Center deletion verification on September 16, 2026
+
+Deletion passed lint, typecheck, the production build, and 164 Node tests; four
+optional SQL tests were skipped. Regression tests cover authentication, origin
+and ID validation, exact-ID database deletion, safe retries, database failures,
+public revalidation, and concurrent local edits without recreating deleted rows.
+
+Chromium used localhost with the configured Supabase database to verify cancel,
+transport failure, successful deletion, expired sessions, reload persistence,
+mobile layout, and absence of the action on unsaved new locations. Two temporary
+inactive records were created and removed; the pre-existing location remained
+unchanged. No test location was made public. Browser checks reported no page
+JavaScript errors or horizontal overflow. Local evidence is recorded in
+`.data/service-center-delete/browser-report.json`.
+
+No migration is needed. The owner authorized pushing the verified deletion change
+to GitHub and deploying through the existing Hostinger automatic release path.
+See the [release record](../operations/deployment.md#service-center-deletion-release-on-september-16-2026)
+for production verification scope.

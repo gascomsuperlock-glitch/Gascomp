@@ -23,7 +23,7 @@ The public home page header includes an **Admin login** link on desktop and mobi
 | Issue guide | Add, edit, reorder, and remove issue titles, summaries, ordered troubleshooting steps, and optional safety warnings |
 | FAQ | Add, edit, reorder, and remove questions and answers |
 | Settings | Manage the WhatsApp destination and support hours |
-| Service Center | Add, edit, activate, and deactivate Indonesian locations; see [support](support.md) |
+| Service Center | Add, edit, activate, deactivate, and delete Indonesian locations; see [support](support.md) |
 | Warranty ticket | Review private submissions and update status |
 
 Images accept JPG, PNG, or WebP up to 8 MB each and six images per product. The browser compresses them to WebP before upload. Admin-managed images and content are preserved when Duoke or warehouse data is imported again.

@@ -4,6 +4,10 @@ import type { ServiceCenterInput } from "./types";
 const provinceCodes = new Set<string>(INDONESIA_PROVINCES.map(({ code }) => code));
 const uuidPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 
+export function isServiceCenterId(value: unknown): value is string {
+  return typeof value === "string" && uuidPattern.test(value);
+}
+
 export function isGoogleMapsUrl(value: string): boolean {
   if (!value) return true;
   try {
@@ -45,7 +49,7 @@ export function validateServiceCenterInput(input: unknown): { value?: ServiceCen
     return { error: "Enter valid coordinates within Indonesia (latitude -11.1 to 6.2, longitude 94.9 to 141.1)." };
   }
   if (typeof candidate.active !== "boolean") return { error: "Select the service center visibility." };
-  if (candidate.id !== undefined && (typeof candidate.id !== "string" || !uuidPattern.test(candidate.id))) return { error: "Invalid service center identifier." };
+  if (candidate.id !== undefined && !isServiceCenterId(candidate.id)) return { error: "Invalid service center identifier." };
   return { value: { ...values, latitude: candidate.latitude, longitude: candidate.longitude, active: candidate.active,
     ...(candidate.id ? { id: candidate.id as string } : {}) } };
 }
