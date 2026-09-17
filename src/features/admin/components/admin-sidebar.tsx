@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, ChevronRight, HelpCircle, Inbox, LayoutDashboard, MapPin, Settings, ShieldCheck, X } from "lucide-react";
+import { BookOpen, ChevronRight, HelpCircle, Inbox, LayoutDashboard, MapPin, MessageCircle, Settings, ShieldCheck, X } from "lucide-react";
 import { Brand } from "@/shared/components/brand";
 import type { MainView } from "@/features/admin/model/types";
 import type { IconType } from "@/shared/lib/icon-types";
@@ -13,6 +13,7 @@ export function AdminSidebar({ view, setView, open, close }: { view: MainView; s
     ["tickets", Inbox, "Warranty tickets"],
     ["care", ShieldCheck, "GascompCare"],
     ["service-centers", MapPin, "Service Centers"],
+    ["ai-assistance", MessageCircle, "AI Assistance"],
     ["settings", Settings, "Settings"],
   ];
 

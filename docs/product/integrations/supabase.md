@@ -16,6 +16,7 @@ Supabase PostgreSQL is the primary shared database; Supabase Storage holds produ
 | Service center locations | PostgreSQL; public reads limited to active locations |
 | Warranty evidence files | Private `warranty-evidence` bucket; video files up to 50 MB |
 | Duoke source identity and import history | PostgreSQL |
+| AI assistance sessions, jobs, knowledge snapshots, and runtime status | Private PostgreSQL tables; server and worker access through the application |
 | Product/knowledge graph notes | Project Obsidian vault |
 
 Public clients can read only published products and their related content. Archived products that were published remain readable by their stable URL. Drafts, tickets, evidence, import runs, and all writes require the server-side secret key. Server Actions and the admin content-save endpoint verify the admin session before protected changes. The content-save endpoint also verifies the request origin.
@@ -273,3 +274,29 @@ Before/after checksums confirmed all 247 existing rows across 16 application and
 Storage metadata tables unchanged. Anonymous and authenticated API reads were
 verified as denied. Local verification records are in
 `.data/service-center-validation/`.
+
+## AI assistance product context migration
+
+`202609170002_ai_assistance_resolved_sku.sql` extends authenticated worker
+completion with `resolvedSku` for a uniquely inferred product name or SKU. An
+explicit job SKU cannot be overridden. The selected entry must match the
+effective context; snapshot, language, lease, and deadline checks remain in
+force. The local AI preview applies migrations in order without deleting
+conversations. Production application uses the authorized release workflow.
+
+## AI assistance generated response migration
+
+`202609170003_ai_assistance_grounded_responses.sql` adds the grounded response
+contract alongside legacy answer-ID completion. Source IDs and response basis
+are retained with generated assistant messages. Claims carry a bounded history
+from the same session only; customer requests cannot supply a different session
+or arbitrary trusted history. Ambiguous product context remains explicit and
+permits general clarification without publishing guessed product facts.
+
+Generated completion validates response shape, plain text, active provenance,
+product context, readiness, snapshot version, job lease, and deadline. Only
+handoff-kind responses enable the contextual WhatsApp link. Existing opaque
+cookie access, RLS, private worker credentials, retention, and retry protections
+remain in force. The local preview applies this migration after the previous two
+AI migrations without deleting stored conversations. Production remains subject
+to the authorized release workflow.

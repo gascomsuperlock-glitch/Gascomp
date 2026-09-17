@@ -18,6 +18,12 @@ WhatsApp links use the configured support number and include a short English pro
 
 A logo-only WhatsApp button remains fixed in the bottom-right corner on public application routes. It is hidden on `/admin` and all `/admin/` subroutes, including admin login. It opens a chat with the configured Gascomp admin number in a new tab. The button respects mobile safe areas and is hidden when no support number is configured.
 
+When the optional server-side `GASCOMP_AI_ASSISTANCE_ENABLED` flag is enabled,
+the [Gascomp Assistant panel](ai-assistance.md) replaces this floating button.
+The panel supplies the WhatsApp admin action inside a handoff response or service
+failure notice, rather than permanently below the chat composer. The flag defaults to off;
+other WhatsApp links and warranty redirects are unchanged.
+
 ## Service Center directory
 
 The September 16, 2026 implementation introduces `/service-center`, accessible from the shared public navigation, product support, and existing admin product service action. The directory starts empty: no sample or inferred business locations are seeded.

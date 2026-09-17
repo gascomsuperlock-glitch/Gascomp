@@ -2,6 +2,18 @@
 
 [Specification index](../spec.md)
 
+## AI assistance activation
+
+AI assistance is disabled by default. Its migration and feature release must use
+the existing verified release sequence; preparing source files does not apply a
+production migration or enable the public panel. Configure a distinct worker
+token on the website and Mac, publish validated bilingual Obsidian knowledge,
+verify the owner-installed local model, and complete the synthetic endurance
+checks before enabling `GASCOMP_AI_ASSISTANCE_ENABLED=true`. See
+[AI assistance setup](../../setup/ai-assistance.md). Restore the flag to false
+and redeploy to return to the original floating WhatsApp button. macOS worker
+activation is separate from Hostinger deployment.
+
 ## Automated releases
 
 The September 16 release workflow preserves Hostinger's existing `main` source

@@ -11,6 +11,7 @@ Specifications are grouped by topic to keep each working context small. Read the
 | Admin panel | [admin](features/admin.md) | Authentication, CRUD, drafts/publication, images, dashboard |
 | Product QR codes and URLs | [qr](features/qr.md) | Per-SKU QR, stable URLs, archived-guide retention |
 | Customer support channels | [support](features/support.md) | WhatsApp, Gascomp Care, Service Center |
+| AI assistance | [ai-assistance](features/ai-assistance.md) | Obsidian-grounded conversational chat, Hermes worker, WhatsApp handoff, runtime controls |
 | Warranty claims and tickets | [warranty](features/warranty.md) | Form, evidence, ticket number, status, private access, policy |
 | GascompCare membership | [gascomp-care](features/gascomp-care.md) | Member accounts, login, virtual cards, planned paid warranty extensions |
 | Duoke catalog synchronization | [duoke-catalog](integrations/duoke-catalog.md) | Scrapling, source fields, idempotent import, Obsidian product graph |

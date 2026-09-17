@@ -6,6 +6,12 @@
 
 Published admin content is the primary approved source. Historical Duoke conversations may create anonymized review candidates, but old support replies never become active answers automatically.
 
+The website AI assistance can also preview and extract existing Obsidian
+conversation exports from the sibling `douke-chat` vault into its own private
+review artifacts. This does not activate the Duoke reply runner or change its
+approval pipeline. See [AI assistance setup](../../setup/ai-assistance.md#reuse-existing-duoke-conversation-notes)
+for the separate transcript review workflow.
+
 ```text
 Published product content ────────────────┐
                                          ├→ approved runtime knowledge → retrieval → Duoke runner
@@ -52,3 +58,59 @@ npm run duoke:reply:dry-run
 The operator must select the correct store and history period, configure selectors from the authorized account, inspect the private audit, and verify the dry run before enabling delivery.
 
 Status: the data pipeline, Obsidian review flow, approval path, retrieval engine, audit, stop control, and headless runner are implemented. Production history capture, selector verification, and real delivery require a refreshed authorized Duoke session. No customer message was sent during implementation.
+
+## Full conversation archive
+
+`scraping/duoke/chat/archive_duoke_chats.py` exports the conversations available
+to an authorized account using HTTPX. The verified read endpoints are
+`POST /api/v1/im/conversation/queryConversationList` and
+`GET /api/v1/im/message/list` on `https://web.duoke.com`. This transport allows
+only those method/path pairs. It follows conversation cursors until `hasMore`
+is false, requests every message page, deduplicates source message IDs, and
+compares the unique count against `totalSize`. Unexpected pagination, changing
+totals, or mismatched conversation identities cannot produce a complete result.
+
+The session configuration stays in the ignored
+`scraping/.private/chat-archive/session.json`. It contains `headers`, `list_url`,
+`list_body`, and `message_url` obtained from verified browser requests; never
+commit or print these credentials. Refresh this file from a newly authorized
+session if authentication expires. Raw history, the list snapshot, and the
+content-free completion manifest remain under the centralized `CHAT_ARCHIVE_DIR`.
+Capture defaults to three concurrent conversations, with globally paced requests
+and bounded retries for transport errors, HTTP 429, and server errors.
+
+```bash
+scraping/.venv/bin/python -m scraping.duoke.chat.archive_duoke_chats \
+  --vault "/absolute/path/to/existing/Obsidian vault"
+```
+
+Add `--resume` to reuse the previous completed list snapshot and unchanged,
+complete history files. Omit it for a fresh enumeration that includes newly
+created conversations. Resume does not discover conversations created since
+the saved list snapshot.
+
+Notes and `Conversation archive index.md` are written directly to
+`Duoke/Percakapan/` inside the specified vault. The distinct index name avoids
+colliding with owner-authored notes in that directory.
+Source conversation/shop/platform identities produce stable hashed filenames;
+manually written content below the archive marker is retained on subsequent
+runs. Use a private vault whose archive directory is ignored by Git. The owner's
+existing `douke-chat` vault already ignores its entire `Duoke/Percakapan/` tree.
+
+Transcripts retain the source language. Generated headings and metadata use
+English, with UTC timestamps. Sender code 1 maps to customer and 2 to seller;
+other codes remain unknown. Notes apply automated redaction, which is not a
+guarantee that every identifier is removed. Attachment binaries are not
+downloaded, and full source payloads remain in the private JSON archive.
+These notes are unreviewed historical sources; exporting them does not approve
+answers, import them into the application, or activate automated replies.
+
+Verified capture on 2026-09-17: the unfiltered list ended after 18 pages with
+881 conversations across seven stores (596 Shopee, 281 TikTok, four Lazada).
+All 901 history pages were read, yielding 13,449 unique messages. Each history
+matched the source total; all 881 transcript notes and index links were checked.
+The returned messages span 2026-04-14 through 2026-09-17 UTC. This describes the
+history returned to this account during the run, not deleted or inaccessible
+provider history. The notes are in the owner's existing Obsidian vault under
+`Duoke/Percakapan/`, and local verification counts are saved in
+`scraping/.private/chat-archive/verification.json`.

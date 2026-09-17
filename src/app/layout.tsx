@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { ContentProvider } from "@/features/catalog/components/content-provider";
+import { AssistantPanel } from "@/features/ai-assistance/components/assistant-panel";
 import { FloatingWhatsappButton } from "@/features/catalog/components/floating-whatsapp-button";
 import { loadPublicSiteContent } from "@/features/catalog/server/content-store";
 import { LanguageProvider } from "@/shared/i18n/language-context";
@@ -25,7 +26,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <LanguageProvider initialLanguage={language}>
           <ContentProvider initialContent={loaded.content} storageMode={loaded.storageMode}>
             {children}
-            <FloatingWhatsappButton />
+            {process.env.GASCOMP_AI_ASSISTANCE_ENABLED === "true" ? <AssistantPanel /> : <FloatingWhatsappButton />}
           </ContentProvider>
         </LanguageProvider>
       </body>

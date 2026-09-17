@@ -11,12 +11,14 @@ src/
     warranty/                     # Claims, tickets, status, and evidence
     gascomp-care/                 # Member accounts, sessions, and virtual cards
     service-center/               # Indonesian locations, public map, and location administration
+    ai-assistance/                # Grounded customer chat, worker contracts, and runtime controls
     admin/                        # Dashboard, navigation, cross-feature overview
   shared/
     components/                   # Brand, header, and reusable UI
     lib/                          # IDs, class names, YouTube/WhatsApp helpers, icon types
     integrations/supabase/        # Server-only client creation
 scraping/
+  ai_assistance/                  # Dedicated Obsidian index and local Hermes worker
   duoke/{catalog,chat,knowledge,reply}/
   warehouse/                      # XLSX reading and normalization
   shared/                         # Paths, JSON, environment, privacy helpers
