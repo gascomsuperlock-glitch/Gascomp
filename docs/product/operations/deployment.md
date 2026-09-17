@@ -14,6 +14,46 @@ checks before enabling `GASCOMP_AI_ASSISTANCE_ENABLED=true`. See
 and redeploy to return to the original floating WhatsApp button. macOS worker
 activation is separate from Hostinger deployment.
 
+## AI assistance deployment on September 17, 2026
+
+The owner authorized public deployment of commit
+`c41d5d60a1c3dfe23c654b157c620617decc9cb4`. GitHub Actions run
+[35206731571](https://github.com/gascomsuperlock-glitch/Gascomp/actions/runs/35206731571)
+passed verification, applied the three ordered AI migrations, and promoted the
+same commit to `main`.
+
+Hostinger's automatic Git build `01a0aec2-af81-714d-95ab-4ac9c5824b83`
+failed and returned no build log. A source-only `git archive` of that exact
+verified commit was uploaded through Hostinger's JavaScript deployment API.
+Archive build `01a0aec8-071a-7306-a975-b02fd622a5d9` completed successfully.
+This restored delivery without identifying the cause of the automatic Git
+failure; future automatic builds still need monitoring. Archive auto-detection
+used Node 20; the stored Git build settings remain Node 22.
+
+Hostinger's environment API replaces the entire set. The seven existing keys
+were preserved using the local configuration; the local admin password and
+session signing configuration were verified against production first. A distinct
+production worker token and the enabled AI flag were added. Secret values and
+rollback environment data remain in owner-only, ignored local files.
+
+The public assistant and admin status endpoint reported enabled, knowledge ready,
+worker online, and no pending jobs. Real HTTPS tests covered product facts,
+same-session recall, GRS-01 troubleshooting clarification and follow-up, and
+explicit WhatsApp handoff. Desktop/mobile checks through local Chrome CDP passed
+session reset, reload persistence, keyboard dismissal, and layout checks without
+page errors. Only the synthetic sessions created for these checks were removed.
+Evidence is stored locally under `.data/ai-deployment/`.
+
+Production Mac supervision uses the dedicated
+`com.gascomp.ai-assistance.production.worker` and
+`com.gascomp.ai-assistance.production.chrome` user LaunchAgents. The worker uses
+Hermes with local Ollama, and `caffeinate -i` prevents idle system sleep while it
+runs. Login, power, network, and model availability remain operational
+dependencies. The 24-hour endurance evaluation and independent database Cron
+schedule verification have not been completed; deployment smoke checks do not
+establish those results. See the [AI setup](../../setup/ai-assistance.md) for
+retention scheduling and rollback procedures.
+
 ## Automated releases
 
 The September 16 release workflow preserves Hostinger's existing `main` source
