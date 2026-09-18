@@ -8,9 +8,11 @@ import { resolve } from "node:path";
 
 // All database writes run in disposable PostgreSQL; Storage is mocked.
 const db = new PGlite();
+await db.exec("create role anon; create role authenticated; create role service_role bypassrls;");
 const schema = (await readFile(new URL("../../../../supabase/migrations/202609100001_catalog.sql", import.meta.url), "utf8")).split("alter table public.products enable")[0].replace("begin;", "");
 await db.exec(schema);
 await db.exec("alter table tutorial_videos add column video_url text, add column storage_path text, add column thumbnail_url text, add column thumbnail_storage_path text;");
+await db.exec(await readFile(new URL("../../../../supabase/migrations/202609180001_catalog_save_snapshot.sql", import.meta.url), "utf8"));
 const tables = ["products", "site_settings", "product_variations", "product_images", "tutorial_videos", "product_issues", "faq_items"];
 const columns = {};
 for (const table of tables) columns[table] = (await db.query("select column_name,data_type from information_schema.columns where table_name=$1", [table])).rows;
@@ -75,6 +77,14 @@ class Query {
 }
 globalThis.catalogDiagnosticClient = {
   from: table => new Query(table),
+  rpc: async name => {
+    operations.push({ table: name, op: "select", params: [] });
+    if (failRead) return { error: new Error("Read unavailable") };
+    try {
+      const result = await db.query(`select public.${name}() as snapshot`);
+      return { data: result.rows[0].snapshot, error: null };
+    } catch (error) { return { error }; }
+  },
   storage: { from: () => ({
     upload: async () => ({ error: null }),
     getPublicUrl: path => ({ data: { publicUrl: "https://example.test/" + path } }),
@@ -100,6 +110,23 @@ after(async () => { delete globalThis.catalogDiagnosticClient; await db.close();
 
 const newProduct = (id) => ({ id, slug: id, sku: id.toUpperCase(), name: "New product", model: "", description: "", tone: "orange", published: false, archived: false, everPublished: false, variations: [], images: [], videos: [], issues: [], faqs: [] });
 const mutations = () => operations.filter(item => item.op !== "select");
+
+test("catalog save snapshot is denied to public roles and readable by the service role", async () => {
+  try {
+    await db.exec("set role anon;");
+    await assert.rejects(() => db.query("select public.catalog_admin_save_snapshot()"), /permission denied/i);
+  } finally {
+    await db.exec("reset role;");
+  }
+  try {
+    await db.exec("set role service_role;");
+    const result = await db.query("select public.catalog_admin_save_snapshot() as snapshot");
+    assert.deepEqual(result.rows[0].snapshot.products, []);
+  } finally {
+    await db.exec("reset role;");
+  }
+});
+
 async function reset() {
   failRead = false;
   await db.exec("truncate products, site_settings cascade;");
@@ -128,6 +155,7 @@ test("adding a product without photos performs one write and preserves existing 
   const input = {...original, products:[...original.products,newProduct("new")]};
   operations.length = 0;
   const saved = await persistSiteContent(input);
+  assert.deepEqual(operations.filter(item => item.op === "select").map(item => item.table), ["catalog_admin_save_snapshot"]);
   assert.deepEqual(mutations().map(item => [item.table,item.op,item.rows.map(row=>row.id)]), [["products","upsert",["new"]]]);
   assert.deepEqual(await snapshotExisting(), before);
   assert.deepEqual(removedPaths, []);

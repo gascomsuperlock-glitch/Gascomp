@@ -58,6 +58,12 @@ The first automated migration expands only the existing warranty solution
 constraint to accept `usage_guidance`. Its isolated SQL test verifies historical
 row preservation, old/new values, rejected invalid values, and existing RLS.
 
+`202609180001_catalog_save_snapshot.sql` adds a stable, read-only catalog snapshot
+function for the admin Save path. It combines settings, products, child content,
+and optional video-column capabilities in one database response. Execute permission
+is limited to `service_role`; anonymous and authenticated clients cannot call it.
+The function does not store another catalog copy or change existing rows.
+
 ## Product image diagnosis on September 11, 2026
 
 The live website contains the image URLs recorded in `product_images`, but

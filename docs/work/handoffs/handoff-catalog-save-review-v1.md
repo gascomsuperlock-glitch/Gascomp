@@ -1,7 +1,7 @@
 # Online catalog save diagnosis and persistence change
 
 Updated: 2026-09-18
-Status: Awaiting verification
+Status: Recovery deployment and owner retry required
 
 ## Objective
 
@@ -28,10 +28,31 @@ The owner reports an interrupted save response that persists after retrying.
   Extensive pre-existing workspace changes were preserved.
 - No production catalog Save, upload, deployment, database mutation, or migration
   was performed. No schema migration is needed for this change.
-- Runtime logs remain unavailable: the existing Hostinger OAuth refresh requires
-  sign-in. The exact transport failure has not been reproduced or attributed to
-  a specific hosting timeout. This is a verified persistence improvement, not
-  proof that the live incident is resolved.
+- Initial runtime-log access was unavailable because Hostinger OAuth required a
+  fresh sign-in. The first persistence improvement alone did not resolve the
+  owner's interrupted response, as the reproduction below supersedes that state.
+
+### Reproduction after the first persistence release
+
+The owner retried after commit `406abc3` reached Hostinger and reported the same
+interrupted response. An authenticated production no-op Save then returned HTTP
+200 but required approximately 33 seconds before response headers arrived. The
+112,134-byte JSON confirmation crossed LiteSpeed over HTTP/2 with Brotli encoding;
+the encoded body was about 22 KB. An earlier identical check had taken 6 seconds,
+confirming large latency variance before any catalog mutation.
+
+The deployed persistence implementation still made nine Supabase HTTP reads to
+assemble the existing catalog and detect optional video columns. Runtime logs
+contained no application save error, and a read-only database check found no new
+product from the failed attempt. A recovery change replaces those reads with one
+service-role-only SQL snapshot and sends an identity-encoded response with an
+explicit UTF-8 byte length. It also logs an opaque request ID, status, duration,
+request size, and product count without catalog values or credentials.
+
+Hostinger archive builds use Node 20. A manual build of the same verified source
+on the configured Node 22 runtime failed before producing build logs, matching the
+automatic Git-build failure. Runtime alignment alone therefore did not provide a
+deployable recovery.
 
 ### Follow-up: HTTP/2 transport error
 

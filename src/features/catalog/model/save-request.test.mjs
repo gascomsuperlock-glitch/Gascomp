@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { requestContentSave } from "./save-request.ts";
 import { readSaveRequest } from "./save-request-body.ts";
+import { createSaveResponse } from "./save-response.ts";
 
 const content = { products: [], whatsappNumber: "123", supportHours: "Monday" };
 
@@ -65,4 +66,15 @@ test("save body enforces byte limits with and without a content-length header", 
   const bytes = new TextEncoder().encode(body).length;
   assert.equal((await readSaveRequest(request(body), bytes)).success, true);
   assert.equal((await readSaveRequest(request(body), bytes - 1)).status, 413);
+});
+
+test("save responses have an exact identity-encoded length for hosting proxies", async () => {
+  const body = { success: false, error: "Sambungan terputus." };
+  const response = createSaveResponse(body, 422);
+  assert.equal(response.status, 422);
+  assert.equal(response.headers.get("cache-control"), "no-store, no-transform");
+  assert.equal(response.headers.get("content-encoding"), "identity");
+  const text = await response.text();
+  assert.equal(response.headers.get("content-length"), String(new TextEncoder().encode(text).byteLength));
+  assert.deepEqual(JSON.parse(text), body);
 });

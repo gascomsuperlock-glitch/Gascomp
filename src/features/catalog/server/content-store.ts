@@ -3,7 +3,7 @@ import { isDeepStrictEqual } from "node:util";
 import { DEFAULT_CONTENT } from "@/features/catalog/model/default-content";
 import type { Product, SiteContent } from "@/features/catalog/model/types";
 import { createAdminSupabaseClient, createPublicSupabaseClient, isSupabaseConfigured } from "@/shared/integrations/supabase/server";
-import { type Row, text, statusFromProduct, mapProduct } from "@/features/catalog/model/product-mappers";
+import { jsonArray, type Row, text, statusFromProduct, mapProduct } from "@/features/catalog/model/product-mappers";
 
 import { videoRecords } from "@/features/catalog/model/video-records";
 import { getVideoUrl, parseVideoSource } from "@/features/catalog/model/video-source";
@@ -17,6 +17,31 @@ export type LoadedSiteContent = {
   storageMode: StorageMode;
   error?: string;
 };
+
+type CatalogRows = {
+  settings: Row | null;
+  products: Row[];
+  variations: Row[];
+  images: Row[];
+  videos: Row[];
+  issues: Row[];
+  faqs: Row[];
+};
+
+type AdminSaveSnapshot = {
+  content: SiteContent;
+  extendedVideoSchema: boolean;
+  thumbnailSchema: boolean;
+};
+
+function contentFromRows(rows: CatalogRows, includeDrafts: boolean): SiteContent {
+  const productRows = rows.products.filter((product) => includeDrafts || product.status === "published" || (product.status === "archived" && product.ever_published === true));
+  return {
+    whatsappNumber: text(rows.settings?.whatsapp_number, DEFAULT_CONTENT.whatsappNumber),
+    supportHours: text(rows.settings?.support_hours, DEFAULT_CONTENT.supportHours),
+    products: productRows.map((product) => mapProduct(product, rows.variations, rows.images, rows.videos, rows.issues, rows.faqs)),
+  };
+}
 
 export async function loadFromSupabase(includeDrafts: boolean): Promise<SiteContent> {
   const client = includeDrafts
@@ -41,20 +66,15 @@ export async function loadFromSupabase(includeDrafts: boolean): Promise<SiteCont
     .find((result) => result.error)?.error;
   if (firstError) throw firstError;
 
-  const productRows = ((productsResult.data ?? []) as Row[]).filter((product) => includeDrafts || product.status === "published" || (product.status === "archived" && product.ever_published === true));
-  const settings = settingsResult.data as Row | null;
-  return {
-    whatsappNumber: text(settings?.whatsapp_number, DEFAULT_CONTENT.whatsappNumber),
-    supportHours: text(settings?.support_hours, DEFAULT_CONTENT.supportHours),
-    products: productRows.map((product) => mapProduct(
-      product,
-      (variationsResult.data ?? []) as Row[],
-      (imagesResult.data ?? []) as Row[],
-      (videosResult.data ?? []) as Row[],
-      (issuesResult.data ?? []) as Row[],
-      (faqsResult.data ?? []) as Row[],
-    )),
-  };
+  return contentFromRows({
+    settings: settingsResult.data as Row | null,
+    products: (productsResult.data ?? []) as Row[],
+    variations: (variationsResult.data ?? []) as Row[],
+    images: (imagesResult.data ?? []) as Row[],
+    videos: (videosResult.data ?? []) as Row[],
+    issues: (issuesResult.data ?? []) as Row[],
+    faqs: (faqsResult.data ?? []) as Row[],
+  }, includeDrafts);
 }
 
 export async function loadPublicSiteContent(): Promise<LoadedSiteContent> {
@@ -123,21 +143,64 @@ function comparableProduct(product: Product) {
   }));
 }
 
-export async function persistSiteContent(input: SiteContent): Promise<SiteContent> {
-  assertContent(input);
-  const client = createAdminSupabaseClient();
-  if (!client) throw new Error("Supabase is not configured.");
+function snapshotRows(value: unknown): CatalogRows | null {
+  if (!value || typeof value !== "object") return null;
+  const snapshot = value as Record<string, unknown>;
+  const settings = snapshot.settings;
+  if (settings !== null && (typeof settings !== "object" || Array.isArray(settings))) return null;
+  for (const key of ["products", "variations", "images", "videos", "issues", "faqs"]) {
+    if (!Array.isArray(snapshot[key])) return null;
+  }
+  return {
+    settings: settings as Row | null,
+    products: jsonArray<Row>(snapshot.products),
+    variations: jsonArray<Row>(snapshot.variations),
+    images: jsonArray<Row>(snapshot.images),
+    videos: jsonArray<Row>(snapshot.videos),
+    issues: jsonArray<Row>(snapshot.issues),
+    faqs: jsonArray<Row>(snapshot.faqs),
+  };
+}
 
-  // Support deployment before or after the optional video metadata migration.
-  const [existingContent, videoSchema, thumbnailSchema] = await Promise.all([
+async function loadAdminSaveSnapshot(client: ReturnType<typeof createAdminSupabaseClient>): Promise<AdminSaveSnapshot> {
+  if (!client) throw new Error("Supabase is not configured.");
+  const snapshotResult = await client.rpc("catalog_admin_save_snapshot");
+  if (!snapshotResult.error) {
+    const rows = snapshotRows(snapshotResult.data);
+    if (!rows) throw new Error("The catalog save snapshot is invalid.");
+    const raw = snapshotResult.data as Record<string, unknown>;
+    return {
+      content: contentFromRows(rows, true),
+      extendedVideoSchema: raw.extended_video_schema === true,
+      thumbnailSchema: raw.thumbnail_schema === true,
+    };
+  }
+  // Permit a rolling deployment before the additive snapshot migration reaches PostgREST.
+  if (!["42883", "PGRST202"].includes(snapshotResult.error.code)) throw snapshotResult.error;
+  const [content, videoSchema, thumbnailSchema] = await Promise.all([
     loadFromSupabase(true),
     client.from("tutorial_videos").select("video_url, storage_path").limit(0),
     client.from("tutorial_videos").select("thumbnail_url, thumbnail_storage_path").limit(0),
   ]);
   if (videoSchema.error && !["42703", "PGRST204"].includes(videoSchema.error.code)) throw videoSchema.error;
-  const extendedVideoSchema = !videoSchema.error;
   if (thumbnailSchema.error && !["42703", "PGRST204"].includes(thumbnailSchema.error.code)) throw thumbnailSchema.error;
-  const hasThumbnailSchema = !thumbnailSchema.error;
+  return {
+    content,
+    extendedVideoSchema: !videoSchema.error,
+    thumbnailSchema: !thumbnailSchema.error,
+  };
+}
+
+export async function persistSiteContent(input: SiteContent): Promise<SiteContent> {
+  assertContent(input);
+  const client = createAdminSupabaseClient();
+  if (!client) throw new Error("Supabase is not configured.");
+
+  // One protected RPC snapshot replaces nine independent HTTP reads on each Save.
+  const snapshot = await loadAdminSaveSnapshot(client);
+  const existingContent = snapshot.content;
+  const extendedVideoSchema = snapshot.extendedVideoSchema;
+  const hasThumbnailSchema = snapshot.thumbnailSchema;
   if (!hasThumbnailSchema && input.products.some((product) => product.videos.some((video) => video.thumbnailUrl || video.thumbnailStoragePath))) {
     throw new Error("Tutorial thumbnails cannot be saved until the tutorial thumbnail migration is applied.");
   }
