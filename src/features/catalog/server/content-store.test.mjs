@@ -219,3 +219,42 @@ test("settings changes do not rewrite products and failed reads prevent all writ
   assert.deepEqual(mutations(),[]);
   failRead = false;
 });
+
+test("compact new-product saves use one snapshot and one write while preserving all existing content", async () => {
+  await reset();
+  const before = await snapshotExisting();
+  operations.length = 0;
+  const saved = await persistSiteContent({ mode: "changes", products: [newProduct("compact-new")], removedProductIds: [], settings: {} });
+  assert.deepEqual(operations.filter(item => item.op === "select").map(item => item.table), ["catalog_admin_save_snapshot"]);
+  assert.deepEqual(mutations().map(item => [item.table,item.op]), [["products","upsert"]]);
+  assert.deepEqual(await snapshotExisting(), before);
+  assert.equal(saved.products.length, 2);
+  assert.equal(saved.supportHours, "Monday");
+  operations.length = 0;
+  await persistSiteContent({ mode: "changes", products: [newProduct("compact-new")], removedProductIds: [], settings: {} });
+  assert.deepEqual(mutations(), []);
+});
+
+test("compact saves retain unrelated additions and settings and preserve archive/delete semantics", async () => {
+  await reset();
+  await persistSiteContent({ mode: "changes", products: [newProduct("another-admin"),newProduct("remove-draft")], removedProductIds: [], settings: { whatsappNumber: "456" } });
+  await persistSiteContent({ mode: "changes", products: [], removedProductIds: ["existing","remove-draft"], settings: { supportHours: "Tuesday" } });
+  const loaded = await loadFromSupabase(true);
+  assert.deepEqual(loaded.products.map(p=>p.id).sort(), ["another-admin","existing"]);
+  assert.equal(loaded.whatsappNumber, "456");
+  assert.equal(loaded.supportHours, "Tuesday");
+  assert.equal(loaded.products.find(p=>p.id==="existing").archived, true);
+  assert.equal(loaded.products.find(p=>p.id==="existing").images.length, 1);
+  assert.deepEqual(removedPaths, []);
+});
+
+test("compact changes cannot write over a failed snapshot or introduce duplicate product URLs", async () => {
+  await reset();
+  operations.length = 0;
+  await assert.rejects(() => persistSiteContent({ mode: "changes", products: [{...newProduct("duplicate"),slug:"existing"}], removedProductIds: [], settings: {} }), /duplicated/);
+  assert.deepEqual(mutations(), []);
+  failRead = true;
+  await assert.rejects(() => persistSiteContent({ mode: "changes", products: [newProduct("unread")], removedProductIds: [], settings: {} }), /Read unavailable/);
+  assert.deepEqual(mutations(), []);
+  failRead = false;
+});

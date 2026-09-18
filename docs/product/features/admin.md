@@ -34,7 +34,24 @@ The **Manage content** product list supports bulk publication and archiving. Adm
 
 Bulk archive skips products that have never been published and keeps existing slugs and QR destinations intact. Bulk publish can restore archived products. These actions only stage status changes, preserve all other product content, and report the changed count with a reminder to select **Save**. The existing save flow handles persistence and retains staged edits if saving fails.
 
-Save uses the stable `POST /admin/content` JSON endpoint, which verifies the request origin and admin session before reading up to 40 MB and invoking catalog persistence. This avoids tying the browser save request to a build-specific Server Action identifier. Save failures retain edits in the current tab and distinguish expired sessions, rejected origins, unavailable deployments, oversized uploads, and hosting timeouts. A lost response does not prove that the server failed to save; check the product before retrying.
+Save uses the stable `POST /admin/content` JSON endpoint, which verifies the request origin and admin session before reading up to 40 MB and invoking catalog persistence. This avoids tying the browser save request to a build-specific Server Action identifier. Save failures retain edits in the current tab and distinguish expired sessions, rejected origins, unavailable deployments, oversized uploads, and hosting timeouts. A lost response does not prove that the server failed to save. After a transport
+failure, gateway error, or invalid response, the client makes one authenticated,
+uncached, read-only database check with a ten-second deadline. It reports Saved
+only when all submitted content matches the stored catalog, including settings and
+ordered help content. The check never automatically repeats a write and never uses
+local fallback data. Missing products, partial saves, pending image uploads whose
+bytes cannot be verified, and unavailable readback retain edits and an uncertainty
+message. Diagnose the specific product ID/SKU reported by the owner; successful
+saving of another product does not establish success for the failing request.
+
+The editor sends only new or edited products, explicit removed product IDs, and
+changed settings relative to its last successful Save. The server merges these
+changes into its current protected snapshot, preserving untouched products and
+settings, including unrelated additions from another session. It returns only the
+saved changed products and settings, which the editor merges into its submitted
+content. Existing tabs can still send the original full-content protocol. No write
+is retried automatically and same-product concurrent edits still have no conflict
+resolution.
 
 Persistence compares incoming content with stored content and writes only new or
 changed products and changed settings. A service-role-only database function returns

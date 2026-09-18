@@ -3,6 +3,7 @@ import { getAdminSession } from "@/features/auth/server/session";
 import { saveAdminContentAction } from "@/features/catalog/server/actions";
 import { readSaveRequest } from "@/features/catalog/model/save-request-body";
 import { createSaveResponse } from "@/features/catalog/model/save-response";
+import { isContentChanges } from "@/features/catalog/model/content-changes";
 
 export async function handleContentSave(request: Request) {
   const startedAt = Date.now();
@@ -39,5 +40,13 @@ export async function handleContentSave(request: Request) {
   const parsed = await readSaveRequest(request);
   if (!parsed.success) return reply(parsed, parsed.status);
   const result = await saveAdminContentAction(parsed.content);
+  if (result.success && isContentChanges(parsed.content)) {
+    const changedIds = new Set(parsed.content.products.map((product) => product.id));
+    return reply({
+      success: true,
+      mode: "changes",
+      content: { ...result.content, products: result.content.products.filter((product) => changedIds.has(product.id)) },
+    }, 200, changedIds.size);
+  }
   return reply(result, result.success ? 200 : 422, parsed.content.products.length);
 }

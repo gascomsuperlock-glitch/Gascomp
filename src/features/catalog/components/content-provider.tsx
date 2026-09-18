@@ -50,7 +50,7 @@ export function ContentProvider({
     setSaveError(undefined);
 
     try {
-      const result = await requestContentSave(contentToSave);
+      const result = await requestContentSave(contentToSave, undefined, savedContent.current);
       if (!result.success) {
         setSaveState("error");
         setSaveError(result.error);

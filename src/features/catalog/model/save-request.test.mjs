@@ -1,8 +1,18 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { requestContentSave } from "./save-request.ts";
-import { readSaveRequest } from "./save-request-body.ts";
+import { registerHooks } from "node:module";
+import { savedContentMatches } from "./save-readback.ts";
+import { createContentChanges, applyContentChanges } from "./content-changes.ts";
 import { createSaveResponse } from "./save-response.ts";
+
+const hooks = registerHooks({ resolve(specifier, context, next) {
+  if (specifier === "./save-readback") return { url: new URL("./save-readback.ts", import.meta.url).href, shortCircuit: true };
+  if (specifier === "./content-changes") return { url: new URL("./content-changes.ts", import.meta.url).href, shortCircuit: true };
+  return next(specifier, context);
+} });
+const { requestContentSave } = await import("./save-request.ts");
+const { readSaveRequest } = await import("./save-request-body.ts");
+hooks.deregister();
 
 const content = { products: [], whatsappNumber: "123", supportHours: "Monday" };
 
@@ -30,8 +40,101 @@ test("hosting HTML errors produce actionable messages without exposing response 
 test("failed transport does not assert that the save never reached the server", async () => {
   let calls = 0;
   const result = await requestContentSave(content, async () => { calls++; throw new TypeError("Failed to fetch"); });
-  assert.equal(calls, 1);
+  assert.equal(calls, 2);
   assert.match(result.error, /may have reached the server/);
+});
+
+const product = {
+  id: "new-product", slug: "new-product", name: "New product", sku: "TEST-NEW",
+  model: "", description: "A new guide", tone: "orange", published: true,
+  archived: false, everPublished: false, variations: [], images: [], videos: [],
+  issues: [], faqs: [{ id: "faq-1", question: "How?", answer: "Follow the guide." }],
+};
+
+test("adding one product sends only that product and reconstructs a compact response", async () => {
+  const existing = { ...product, id: "existing", name: "Existing guide", description: "x".repeat(100_000) };
+  const baseline = { ...content, products: [existing] };
+  const submitted = { ...baseline, products: [existing, product] };
+  const result = await requestContentSave(submitted, async (_url, init) => {
+    const changes = JSON.parse(init.body);
+    assert.deepEqual(changes, { mode: "changes", products: [product], removedProductIds: [], settings: {} });
+    assert.ok(init.body.length < 1000);
+    return Response.json({ success: true, mode: "changes", content: { ...content, products: [{ ...product, everPublished: true }] } });
+  }, baseline);
+  assert.equal(result.success, true);
+  assert.deepEqual(result.content.products[0], existing);
+  assert.equal(result.content.products[1].everPublished, true);
+});
+
+test("changes include explicit removals and only edited settings, preserving concurrent untouched products", () => {
+  const baseline = { ...content, products: [product] };
+  const submitted = { ...content, supportHours: "Tuesday", products: [] };
+  const changes = createContentChanges(submitted, baseline);
+  assert.deepEqual(changes, { mode: "changes", products: [], removedProductIds: [product.id], settings: { supportHours: "Tuesday" } });
+  const other = { ...product, id: "added-elsewhere" };
+  const current = { ...baseline, whatsappNumber: "456", products: [product, other] };
+  assert.deepEqual(applyContentChanges(current, changes), { products: [other], whatsappNumber: "456", supportHours: "Tuesday" });
+});
+
+test("compact responses missing a changed product cannot discard unsaved edits", async () => {
+  const submitted = { ...content, products: [product] };
+  const result = await requestContentSave(submitted, async (_url, init) =>
+    Response.json({ success: true, ...(init.method === "POST" ? { mode: "changes" } : {}), content }), content);
+  assert.equal(result.success, false);
+});
+
+test("an interrupted save is confirmed by matching database readback without another write", async () => {
+  const submitted = { ...content, products: [product] };
+  const stored = { ...content, products: [{ ...product, everPublished: true, attributes: [] }] };
+  const methods = [];
+  const result = await requestContentSave(submitted, async (url, init) => {
+    assert.equal(url, "/admin/content");
+    methods.push(init.method);
+    if (init.method === "POST") throw new TypeError("Failed to fetch");
+    assert.equal(init.cache, "no-store");
+    assert.equal(init.credentials, "same-origin");
+    assert.ok(init.signal instanceof AbortSignal);
+    return Response.json({ success: true, content: stored });
+  });
+  assert.deepEqual(methods, ["POST", "GET"]);
+  assert.deepEqual(result, { success: true, content: stored });
+});
+
+test("readback cannot mistake a missing product, partial write, or different settings for success", async () => {
+  const submitted = { ...content, products: [product] };
+  for (const stored of [content, { ...submitted, supportHours: "Different" }, { ...content, products: [{ ...product, faqs: [] }] }]) {
+    const result = await requestContentSave(submitted, async (_url, init) => {
+      if (init.method === "POST") throw new TypeError("Failed to fetch");
+      return Response.json({ success: true, content: stored });
+    });
+    assert.equal(result.success, false);
+    assert.match(result.error, /could not confirm all edits/);
+  }
+});
+
+test("truncated and gateway responses recover only from a successful matching readback", async () => {
+  for (const failed of [new Response("{", { headers: { "content-type": "application/json" } }), new Response("Bad gateway", { status: 502 }), new Response("Timeout", { status: 504 })]) {
+    const result = await requestContentSave(content, async (_url, init) => init.method === "POST" ? failed : Response.json({ success: true, content }));
+    assert.equal(result.success, true);
+  }
+  for (const failedRead of [new Response("Expired", { status: 401 }), Response.json({ success: true, content }, { status: 503 }), Response.json({ success: true, content: null })]) {
+    const result = await requestContentSave(content, async (_url, init) => {
+      if (init.method === "POST") throw new TypeError("Failed to fetch");
+      return failedRead;
+    });
+    assert.equal(result.success, false);
+  }
+});
+
+test("readback ignores object key and catalog order but preserves child order and pending image bytes", () => {
+  const second = { ...product, id: "second", sku: "SECOND" };
+  assert.equal(savedContentMatches({ ...content, products: [product, second] }, { products: [second, product], supportHours: content.supportHours, whatsappNumber: content.whatsappNumber }), true);
+  const original = { ...content, products: [{ ...product, faqs: [product.faqs[0], { id: "faq-2", question: "When?", answer: "Now." }] }] };
+  const reversed = structuredClone(original); reversed.products[0].faqs.reverse();
+  assert.equal(savedContentMatches(original, reversed), false);
+  const pending = { ...content, products: [{ ...product, images: [{ id: "image", dataUrl: "data:image/png;base64,AAAA" }] }] };
+  const uploaded = { ...content, products: [{ ...product, images: [{ id: "image", url: "https://example.com/photo.png" }] }] };
+  assert.equal(savedContentMatches(pending, uploaded), false);
 });
 
 test("invalid or truncated responses never report a successful save", async () => {
@@ -57,6 +160,18 @@ test("save body accepts valid content and rejects malformed content", async () =
     assert.equal((await readSaveRequest(request(body))).status, 400);
   }
   assert.equal((await readSaveRequest(request("{}", { "Content-Type": "text/plain" }))).status, 415);
+});
+
+test("save body validates compact changes before persistence", async () => {
+  const changes = { mode: "changes", products: [product], removedProductIds: [], settings: {} };
+  assert.deepEqual(await readSaveRequest(request(JSON.stringify(changes))), { success: true, content: changes });
+  for (const invalid of [
+    { ...changes, mode: "unknown" }, { ...changes, products: [product, product] },
+    { ...changes, products: [null] }, { ...changes, removedProductIds: [product.id] },
+    { ...changes, removedProductIds: [false] }, { ...changes, removedProductIds: ["old", "old"] },
+    { ...changes, settings: [] }, { ...changes, settings: { supportHours: false } },
+    { ...changes, settings: { unexpected: "value" } },
+  ]) assert.equal((await readSaveRequest(request(JSON.stringify(invalid)))).status, 400);
 });
 
 test("save body enforces byte limits with and without a content-length header", async () => {

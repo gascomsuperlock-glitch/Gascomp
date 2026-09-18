@@ -3,9 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { getAdminSession } from "@/features/auth/server/session";
 import type { SiteContent } from "@/features/catalog/model/types";
+import type { ContentSaveInput } from "@/features/catalog/model/content-changes";
 import { persistSiteContent } from "@/features/catalog/server/content-store";
 
-export async function saveAdminContentAction(content: SiteContent): Promise<
+export async function saveAdminContentAction(content: ContentSaveInput): Promise<
   { success: true; content: SiteContent } | { success: false; error: string }
 > {
   if (!(await getAdminSession())) return { success: false, error: "Your admin session has expired. Sign in again." };

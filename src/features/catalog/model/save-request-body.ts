@@ -1,9 +1,9 @@
-import type { SiteContent } from "./types";
+import { isContentChanges, type ContentSaveInput } from "./content-changes";
 
 const MAX_SAVE_BYTES = 40 * 1024 * 1024;
 
 export async function readSaveRequest(request: Request, maxBytes = MAX_SAVE_BYTES): Promise<
-  { success: true; content: SiteContent } | { success: false; error: string; status: number }
+  { success: true; content: ContentSaveInput } | { success: false; error: string; status: number }
 > {
   if (request.headers.get("content-type")?.split(";")[0].trim() !== "application/json") {
     return { success: false, status: 415, error: "The save request must contain JSON." };
@@ -29,6 +29,11 @@ export async function readSaveRequest(request: Request, maxBytes = MAX_SAVE_BYTE
     let offset = 0;
     for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
     const content = JSON.parse(new TextDecoder().decode(bytes));
+    if (content && typeof content === "object" && "mode" in content) {
+      return isContentChanges(content)
+        ? { success: true, content }
+        : { success: false, status: 400, error: "Content changes are invalid." };
+    }
     if (!content || !Array.isArray(content.products) || typeof content.whatsappNumber !== "string" || typeof content.supportHours !== "string") {
       return { success: false, status: 400, error: "Content data is invalid." };
     }

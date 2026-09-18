@@ -9,6 +9,7 @@ import { videoRecords } from "@/features/catalog/model/video-records";
 import { getVideoUrl, parseVideoSource } from "@/features/catalog/model/video-source";
 
 import { uploadNewImages } from "@/features/catalog/server/product-images";
+import { applyContentChanges, isContentChanges, type ContentSaveInput } from "@/features/catalog/model/content-changes";
 
 export type StorageMode = "local" | "supabase" | "static";
 
@@ -191,14 +192,17 @@ async function loadAdminSaveSnapshot(client: ReturnType<typeof createAdminSupaba
   };
 }
 
-export async function persistSiteContent(input: SiteContent): Promise<SiteContent> {
-  assertContent(input);
+export async function persistSiteContent(requested: ContentSaveInput): Promise<SiteContent> {
+  const changes = isContentChanges(requested) ? requested : null;
+  if (!changes) assertContent(requested as SiteContent);
   const client = createAdminSupabaseClient();
   if (!client) throw new Error("Supabase is not configured.");
 
   // One protected RPC snapshot replaces nine independent HTTP reads on each Save.
   const snapshot = await loadAdminSaveSnapshot(client);
   const existingContent = snapshot.content;
+  const input = changes ? applyContentChanges(existingContent, changes) : requested as SiteContent;
+  assertContent(input);
   const extendedVideoSchema = snapshot.extendedVideoSchema;
   const hasThumbnailSchema = snapshot.thumbnailSchema;
   if (!hasThumbnailSchema && input.products.some((product) => product.videos.some((video) => video.thumbnailUrl || video.thumbnailStoragePath))) {

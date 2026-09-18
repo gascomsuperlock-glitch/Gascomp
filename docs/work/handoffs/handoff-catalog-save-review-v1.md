@@ -1,178 +1,105 @@
-# Online catalog save diagnosis and persistence change
+# Catalog Save performance and confirmation handoff
 
 Updated: 2026-09-18
-Status: Owner retry is blocked before the application handler; browser origin required
+Status: Awaiting verification
 
 ## Objective
 
-Restore new-product Save at `https://support.gascompsuperlock.com/admin`.
-The owner reports an interrupted save response that persists after retrying.
+Reduce new-product Save transfer time and distinguish interrupted responses from
+confirmed persistence while preserving the owner's edits and existing catalog.
 
-## Current evidence
+## EMRC-01 successful retry and Save performance follow-up
 
-- The owner confirmed that the failing new product has **no photos**. This
-  supersedes the image-upload hypothesis. Experimental direct-image-upload
-  changes made during diagnosis were completely removed from the final diff.
-- The live browser sends catalog JSON to `/admin/content`; a new blank product
-  produces approximately 112 KB. Small invalid requests return expected HTTP
-  400 before persistence. A 128 KB padding probe returned in 2.8 seconds; a
-  2 MB probe hit the diagnostic client's 60-second timeout. These timings do
-  not establish the cause of the owner's photo-free failure.
-- Production catalog reads and disposable PGlite persistence tests succeeded.
-  The prior implementation rewrote all products and all five child tables on
-  every Save. In the disposable copy, adding a blank product performed 11
-  database mutations. The new implementation performs one product upsert for
-  that same scenario, with prerequisite reads running concurrently.
-- The recovery diff is confined to catalog persistence and response handling,
-  focused regression tests, one Supabase migration, and the owning documents.
-  Extensive pre-existing workspace changes were preserved.
-- The recovery release is deployed from commit `ffd37cdbdfc383082826e8fa37037752a48f9e33`.
-  GitHub Actions run `35322095226` passed verification, migration preview/apply/
-  verification, and main promotion. Hostinger Git deployment
-  `01a0b389-1689-7275-9c0a-54f51536f68f` completed successfully on Node 22.
-- Migration `202609180001_catalog_save_snapshot.sql` is applied and verified.
-  The service-role-only snapshot function returns the complete persistence
-  snapshot through one database request; anonymous and authenticated roles are
-  denied. No catalog values were changed by deployment or verification.
+The owner identified EMRC-01 as the failing product; earlier EHC-01 success was
+not evidence for this request. EMRC-01 was absent during the failed retry, while
+a small control request proved arrival logging was functional. The subsequent
+owner retry succeeded: request arrival was 2026-09-18 09:38:48.750 UTC, completion
+was HTTP 200 after 2,770 ms, and request size was 214,981 bytes. Database readback
+confirmed the published EMRC-01 row created at 09:38:51.073 UTC and 44 products.
+The owner then reported that Save was too slow. No local patch had been deployed,
+so that success is not attributed to the prepared changes. The exact cause of
+the earlier transport interruption remains unproven.
 
-### Reproduction after the first persistence release
+A scoped implementation is ready in `/private/tmp/douke-web-save-readback`, branch
+`fix/catalog-save-readback`, based on `5486035`. The editor sends changed products,
+explicit removals, and changed settings instead of the entire catalog. The server
+merges these into its existing protected snapshot, preserves unrelated content,
+and returns only changed products/settings for client reconciliation. Legacy full
+Save requests remain supported. Interrupted responses use authenticated readback
+and confirm success only for matching complete content. No automatic write retry
+or migration is introduced. Same-product concurrent edits remain last-writer wins;
+readback conservatively cannot confirm newly uploaded image bytes.
 
-The owner retried after commit `406abc3` reached Hostinger and reported the same
-interrupted response. An authenticated production no-op Save then returned HTTP
-200 but required approximately 33 seconds before response headers arrived. The
-112,134-byte JSON confirmation crossed LiteSpeed over HTTP/2 with Brotli encoding;
-the encoded body was about 22 KB. An earlier identical check had taken 6 seconds,
-confirming large latency variance before any catalog mutation.
+Read-only measurement of the current 44-product database snapshot, treating the
+persisted EMRC-01 as the added product, produced 115,144 full-request bytes versus
+1,112 changed-request bytes (99.0% smaller). Full response was 115,171 bytes versus
+1,189 compact-response bytes. These are snapshot measurements, not a reconstruction
+of every byte in the owner's 214,981-byte request.
 
-The deployed persistence implementation still made nine Supabase HTTP reads to
-assemble the existing catalog and detect optional video columns. Runtime logs
-contained no application save error, and a read-only database check found no new
-product from the failed attempt. A recovery change replaces those reads with one
-service-role-only SQL snapshot and sends an identity-encoded response with an
-explicit UTF-8 byte length. It also logs an opaque request ID, status, duration,
-request size, and product count without catalog values or credentials.
+Verification: lint, typecheck, production build passed. Node suite: 255 passed,
+6 optional skipped, 0 failed. Real disposable PGlite tests cover one-snapshot,
+one-upsert new-product saves, retry no-op, unrelated additions/settings, explicit
+removal, archive/media preservation, duplicate-URL rejection, and failed reads
+before writes. Six production-build Chromium flows passed at desktop/mobile widths
+1440/390: real application save into a loopback-only storage simulation, interrupted
+response with matching readback, and missing readback retaining edits. Each sent
+one POST; blank new-product bodies were 395 bytes. There were no page errors or
+horizontal overflow. Browser recovery responses are mocked; real database behavior
+is covered separately by disposable PostgreSQL. No production writes were made.
 
-Hostinger archive builds use Node 20. A manual build of the same verified source
-on the configured Node 22 runtime failed before producing build logs, matching the
-automatic Git-build failure. Runtime alignment alone therefore did not provide a
-deployable recovery.
+A separate local Chromium network test at 16 KiB/s upload and 50 ms latency measured
+7,229 ms for a 116,323-byte full request and 68 ms for a 399-byte compact request.
+Both went through the real application route into simulated local storage. These
+numbers isolate transport overhead and do not promise production latency or prove
+that Hostinger's intermittent protocol error is fixed. Evidence is in the worktree's
+ignored `.data/save-readback/` folder.
 
-### Follow-up: HTTP/2 transport error
+Release authorized on 2026-09-18: the owner explicitly approved pushing through
+the release branch and deploying this prepared Save change to Hostinger. At this
+recording, the candidate is locally verified and awaiting release execution.
+Before release, reconcile latest `main` because separate QR work is active. After an
+authorized release, verify the exact Hostinger revision and real Save timing, preserve
+any still-unsaved old tab, and check product readback before retrying writes.
 
-The owner subsequently reported `net::ERR_HTTP2_PROTOCOL_ERROR` on
-`/admin/warranty-tickets`. This endpoint performs a read for warranty notifications
-(every 30 seconds and when the tab becomes visible); it is separate from the
-catalog Save endpoint. Its rejected request is caught by the notification UI and
-does not directly disable catalog Save. The report is evidence of a transport
-failure, not proof of a product validation error or of the earlier write-volume
-hypothesis.
+Decision/correction source: owner clarification on 2026-09-18 identified EMRC-01 and
+then requested faster saving. Scope: catalog Save. Acceptance: adding one product
+transfers only its changes, preserves other catalog rows, and confirms the result;
+a different product's successful Save is never treated as the failing product's
+success. The owning behavior is in the isolated worktree's admin specification.
 
-Read-only live checks on 2026-09-18 returned HTTP 200 for all four combinations of
-HTTP/1.1 versus HTTP/2 and identity versus compressed responses. All connections
-resolved directly to `145.223.108.57`; those probes do not establish that
-Cloudflare is proxying requests. Three subsequent authenticated Chromium reads
-also returned valid successful JSON from the ticket endpoint. The reported
-HTTP/2 error was not reproduced, so an intermittent hosting/proxy/connection or
-client-specific issue remains possible. No app or hosting configuration was
-changed for this follow-up, and no deployment authorization was given.
-Protocol comparison results are in the ignored local file
-`.data/catalog-save-diagnosis/http-protocol.json`; no customer payloads were
-included in its output. The pending changes in the primary workspace belong to
-another task and remain preserved there.
+## EKEF-01 follow-up and release preparation
 
-### Access blocker and support packet
+On 2026-09-18 the owner reported another failed new-product Save for EKEF-01.
+Read-only queries at 10:00:13, 10:00:34, and 10:01:16 UTC found no matching product
+or variation, and the owner confirmed the browser showed an error. No catalog Save
+entry appeared in the current runtime log. No successful duration can be assigned
+to that failed request.
 
-A further read-only attempt to retrieve the last hour of Hostinger runtime logs
-still failed with an OAuth refresh/sign-in requirement. No Hostinger connector
-was available in the current tool catalog. A credential-free support packet was
-prepared at `.data/catalog-save-diagnosis/hostinger-support.txt` for the owner to
-send to Hostinger or use when providing the requested runtime/proxy logs. No
-message was sent to any external party. This access blocker was later resolved,
-as recorded below.
+Hostinger reports an archive deployment completed at 09:46:10 UTC following a
+failed Git build for `5486035`. GitHub `main` and `release` are at `5486035`.
+The changes since the prior base concern QR rendering only; the compact Save and
+readback implementation is not in production. The isolated branch was advanced
+without conflicts to `5486035`, preserving those QR changes, and verification
+was repeated before preparing the Save release. Access to the owner's edit-bearing
+browser tab was unavailable; no matching admin tab was exposed by the local Chrome
+or Safari session. Preserve that tab until its unsaved fields can be recovered or
+copied into a newly loaded editor after an authorized release.
 
-### Recovery deployment and latest owner retry
+The owner subsequently explicitly authorized the prepared release. No release
+execution had occurred at the time these diagnostic observations were recorded.
 
-Runtime-log access was restored before the recovery release. Direct production
-snapshot RPC completed in approximately 1.5 seconds and returned 42 products.
-Four authenticated no-op browser Saves completed with HTTP 200 in 2.8 to 10.4
-seconds. The application handler itself took 0.6 to 3.6 seconds and logged only
-opaque request IDs, duration, request bytes, and product count. Responses used
-identity encoding, an exact UTF-8 content length, and `no-store, no-transform`.
+## Remaining work and next action
 
-The owner then retried Save from the existing tab and reported the same
-interrupted-response message. Two immediate Hostinger runtime-log reads, including
-one after an additional wait, contained no new catalog-save request. The last
-save entry remained the controlled verification request. An unauthenticated POST
-to `https://support.gascompsuperlock.com/admin/content` reaches the deployed route
-and returns the expected HTTP 401 with the new request headers. This narrows the
-current failure to the browser, connection, request upload, or an unexpected
-origin/redirect before the Next.js handler. It is not evidence of a Supabase
-persistence failure. The exact address-bar URL of the edit-bearing tab is now
-required. The tab must remain open and unrefreshed so its React-only edits survive.
-
-## Remaining work and decisions
-
-- Obtain the exact address-bar URL from the owner's edit-bearing tab and compare
-  it with the canonical production origin before changing server routing.
-- Preserve the tab while diagnosing. Do not ask the owner to refresh, navigate,
-  sign out, or close it until the unsaved catalog state is recovered.
-- If the origin is canonical, reset only the browser connection and correlate the
-  next retry with runtime logs. If it differs, make its POST path reach the save
-  handler without a redirect before retrying.
-- After the request reaches the handler, verify the owner's product by readback;
-  an interrupted response alone does not prove rollback.
-- The existing full-content request protocol has no durable client-side draft.
-  Add recovery storage after the current tab is rescued so later reloads cannot
-  discard an edit-bearing payload.
-
-## Decisions and corrections
-
-Source: owner clarification on 2026-09-18, “no photos.” Scope: this incident.
-Decision: investigate photo-free persistence and remove the unrelated experimental
-image-upload change. Reason: images are not present in the failing workflow.
-Agent inference: unnecessary sequential whole-catalog mutations can increase
-exposure to hosting timeouts; the exact live failure remains unconfirmed.
-The durable behavior is recorded in the [admin specification](../../product/features/admin.md).
-
-Acceptance: adding a new blank product persists that product without deleting or
-rewriting existing product guides. Retry without further edits performs no writes.
-
-## Verification
-
-- `npm run lint`: passed.
-- `npm run typecheck`: passed after the final build.
-  An intermediate run encountered stale generated types from the removed
-  experimental image route; the subsequent build regenerated those artifacts.
-- `npm run test`: 242 passed, 6 optional tests skipped, 0 failed. The new
-  PGlite tests cover new products, preserved existing rows, child content and
-  order, unchanged retry, settings, archive/media retention, draft deletion,
-  and read failures before writes. Supabase transport and Storage are mocked;
-  relational constraints and readback use real disposable PostgreSQL.
-- `npm run build`: passed for the final persistence implementation.
-- Read-only production snapshot persistence in disposable PGlite passed with and
-  without a synthetic image; image Storage was mocked. No writes were sent to
-  the live project.
-- Live authenticated Chromium no-op Saves returned HTTP 200 after deployment;
-  no catalog values were changed. The owner's later retry did not reach the
-  application handler and remains unresolved.
-- Scoped diff, documentation links, and whitespace checked. Local verification
-  logs, source hashes, and a three-file release patch are under
-  `.data/catalog-save-diagnosis/` (ignored). Do not publish private diagnostics.
-
-## Next action
-
-Get the full URL shown in the address bar of the still-open admin tab. Use that
-origin to choose a connection reset or a redirect-free server route, then monitor
-the owner's next Save attempt and verify the stored product by readback.
-
-The owner confirmed the exact canonical URL. Add request-arrival logging before
-session and body handling, deploy it, then correlate one retry from the preserved
-tab. This separates a request that never reaches Next.js from an interrupted body
-upload or later handler failure without logging catalog values.
+Use the owner-authorized production release workflow for the reviewed change.
+The candidate has been reconciled with `5486035`; inspect Hostinger
+build state, and measure the affected production Save and database readback.
+Local verification is complete; no production speed improvement is claimed yet.
+The historical protocol failure still lacks a definitive transport root cause.
 
 ## References
 
 - [Admin specification](../../product/features/admin.md)
-- [Persistence](../../../src/features/catalog/server/content-store.ts)
-- [Database regression tests](../../../src/features/catalog/server/content-store.test.mjs)
+- [Release workflow](../../product/operations/deployment.md)
+- [Change envelope](../../../src/features/catalog/model/content-changes.ts)
 - [Save transport](../../../src/features/catalog/model/save-request.ts)
+- [Persistence](../../../src/features/catalog/server/content-store.ts)
