@@ -48,7 +48,8 @@ permanently deleted products; archiving retains their images and tutorial thumbn
 The save response uses an explicit UTF-8 byte length and disables intermediary
 transformation so the Hostinger HTTP/2 proxy does not have to recompress the catalog
 confirmation. Server logs identify each attempt by an opaque request ID and record
-only status, timing, request size, and product count.
+request arrival before session or body processing, followed by status, timing, request
+size, and product count on completion. They do not record catalog values or credentials.
 
 The dashboard can download one QR code per product when `GASCOMP_PUBLIC_BASE_URL` is configured with a production HTTPS origin. It also exposes Warranty Claim, Gascomp Care, and Service Center actions with the current product and SKU context.
 

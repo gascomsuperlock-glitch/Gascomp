@@ -165,6 +165,11 @@ Get the full URL shown in the address bar of the still-open admin tab. Use that
 origin to choose a connection reset or a redirect-free server route, then monitor
 the owner's next Save attempt and verify the stored product by readback.
 
+The owner confirmed the exact canonical URL. Add request-arrival logging before
+session and body handling, deploy it, then correlate one retry from the preserved
+tab. This separates a request that never reaches Next.js from an interrupted body
+upload or later handler failure without logging catalog values.
+
 ## References
 
 - [Admin specification](../../product/features/admin.md)

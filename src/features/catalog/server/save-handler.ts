@@ -7,12 +7,17 @@ import { createSaveResponse } from "@/features/catalog/model/save-response";
 export async function handleContentSave(request: Request) {
   const startedAt = Date.now();
   const requestId = crypto.randomUUID();
+  const requestBytes = Number(request.headers.get("content-length")) || undefined;
+  console.info("Admin content save received", {
+    requestId,
+    requestBytes,
+  });
   const reply = (body: unknown, status: number, products?: number) => {
     console.info("Admin content save completed", {
       requestId,
       status,
       durationMs: Date.now() - startedAt,
-      requestBytes: Number(request.headers.get("content-length")) || undefined,
+      requestBytes,
       products,
     });
     const response = createSaveResponse(body, status);
