@@ -1,0 +1,3 @@
+interface:
+  display_name: "GitHub Push"
+  short_description: "Review and push scoped changes using GitHub guidance"
