@@ -1,7 +1,7 @@
 # Online catalog save diagnosis and persistence change
 
 Updated: 2026-09-18
-Status: Awaiting verification
+Status: Deployed; owner retry pending
 
 ## Objective
 
@@ -56,11 +56,46 @@ Protocol comparison results are in the ignored local file
 included in its output. Prior pending changes are now staged by another actor;
 preserve the index and do not infer that they have been deployed.
 
+### Access blocker and support packet
+
+A further read-only attempt to retrieve the last hour of Hostinger runtime logs
+still failed with an OAuth refresh/sign-in requirement. No Hostinger connector
+was available in the current tool catalog. A credential-free support packet was
+prepared at `.data/catalog-save-diagnosis/hostinger-support.txt` for the owner to
+send to Hostinger or use when providing the requested runtime/proxy logs. No
+message was sent to any external party. At this follow-up, Git reported the
+previous handoff and catalog persistence files clean; that does not establish
+whether another actor deployed them. Reconcile release state before deploying.
+
+### Production release on September 18, 2026
+
+The owner's repeated GitHub and Hostinger deployment requests authorized this
+release. The prepared persistence change had been pushed only to the feature
+branch, while production `main` still ended before that commit. Release commit
+`406abc32cedcd66b6611ab8a02079cb5de5aa8e1` rebased the scoped four-file change
+onto the current production history. GitHub Actions run `35320069160` passed the
+full verification and migration gate, then promoted that exact commit to both
+`release` and `main`.
+
+Hostinger's automatic Git deployment
+`01a0b371-95ac-71f6-a567-7fda3dc9e85a` detected the correct commit but failed
+before producing any build log. A source-only Git archive of the same commit,
+with SHA-256 `3891b4594b461bdf2743f520fdc1d83fea5f9bf55bd10aea10349c5fb6b0bfa6`,
+was deployed through the Hostinger JavaScript deployment API. Archive deployment
+`01a0b374-2a88-705c-bb09-87ab898e7ca3` completed successfully.
+
+A separate authenticated production Chromium session then submitted the current
+catalog unchanged. `POST /admin/content` returned HTTP 200 JSON in approximately
+6 seconds, the dashboard reported Saved, reload readback remained identical, and
+no page error occurred. This no-op verification performed no catalog mutation.
+It confirms the deployed transport and unchanged-content path; the owner's
+specific staged new product still needs a retry from the original tab.
+
 ## Remaining work and decisions
 
-- Deploy only the scoped change after owner authorization under root AGENTS.md.
-- Check the owner's product before retrying, because an interrupted response
-  does not prove rollback. Verify the deployed photo-free Save flow and readback.
+- The owner should retry Save in the original tab without refreshing it. Check
+  for the product in another authenticated tab first because the earlier lost
+  response may already have persisted it.
 - If transport failure persists, obtain failed-request Network status/timing and
   hosting runtime logs; restore Hostinger authentication as needed.
 - The existing full-content request protocol and nontransactional writes remain.
@@ -91,6 +126,12 @@ rewriting existing product guides. Retry without further edits performs no write
   and read failures before writes. Supabase transport and Storage are mocked;
   relational constraints and readback use real disposable PostgreSQL.
 - `npm run build`: passed for the final persistence implementation.
+- GitHub Actions run `35320069160`: passed verification, migration checks, and
+  promotion of release commit `406abc3` to `main`.
+- Hostinger archive deployment `01a0b374-2a88-705c-bb09-87ab898e7ca3`:
+  completed after the automatic Git build failed without logs.
+- Authenticated production no-op Save: HTTP 200 JSON in about 6 seconds; Saved
+  state and reload readback passed without changing catalog values.
 - Read-only production snapshot persistence in disposable PGlite passed with and
   without a synthetic image; image Storage was mocked. No writes were sent to
   the live project.
@@ -104,10 +145,10 @@ rewriting existing product guides. Retry without further edits performs no write
 
 ## Next action
 
-Correlate the reported HTTP/2 failure with hosting logs and the failing browser
-request before treating the prepared persistence optimization as an incident fix.
-Deployment of that scoped change still requires owner authorization and online
-verification; preserve staged work from other actors. Production success is pending.
+Retry the staged new-product Save from the owner's existing tab. If the same
+browser still reports an interrupted response, capture that `/admin/content`
+request's Network status and timing and compare it with the verified production
+no-op request before changing the persistence protocol again.
 
 ## References
 
