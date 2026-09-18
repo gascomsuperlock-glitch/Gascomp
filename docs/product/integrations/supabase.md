@@ -9,7 +9,7 @@ Supabase PostgreSQL is the primary shared database; Supabase Storage holds produ
 | Products, variations, help content, publication state | PostgreSQL |
 | Tutorial video files | Public `product-videos` bucket; signed admin uploads, MP4/WebM up to 50 MB |
 | Tutorial video thumbnails | Public `product-images` bucket under `tutorial-thumbnails/`; signed admin uploads, generated WebP/JPEG/PNG up to 1 MB |
-| Product image files | Public `product-images` bucket |
+| Product image files | Public `product-images` bucket; signed admin uploads under `products/{productId}/`, followed by explicit metadata Save |
 | Image metadata and product/variation relationships | PostgreSQL |
 | Warranty tickets and evidence metadata | Private PostgreSQL tables |
 | GascompCare accounts, sessions, and login limits | Private PostgreSQL tables; server-only access |

@@ -1,6 +1,7 @@
 import type { SiteContent } from "./types";
 import { savedContentMatches } from "./save-readback";
 import { applyContentChanges, createContentChanges } from "./content-changes";
+import { uploadProductImages, type ImageUploadCache } from "./upload-product-images";
 
 export type SaveResult = { success: true; content: SiteContent } | { success: false; error: string };
 
@@ -26,7 +27,13 @@ async function verifyInterruptedSave(content: SiteContent, send: typeof fetch, e
   return { success: false, error };
 }
 
-export async function requestContentSave(content: SiteContent, send: typeof fetch = fetch, baseline?: SiteContent): Promise<SaveResult> {
+export async function requestContentSave(content: SiteContent, send: typeof fetch = fetch, baseline?: SiteContent, imageUploads: ImageUploadCache = new Map()): Promise<SaveResult> {
+  try {
+    content = await uploadProductImages(content, imageUploads, send);
+  } catch (failure) {
+    const message = failure instanceof Error ? failure.message : "The image upload was interrupted.";
+    return { success: false, error: `Image upload failed: ${message} Your edits are still in this tab. Retry Save after the connection recovers.` };
+  }
   let response: Response;
   try {
     response = await send("/admin/content", {

@@ -8,6 +8,7 @@ import { createSaveResponse } from "./save-response.ts";
 const hooks = registerHooks({ resolve(specifier, context, next) {
   if (specifier === "./save-readback") return { url: new URL("./save-readback.ts", import.meta.url).href, shortCircuit: true };
   if (specifier === "./content-changes") return { url: new URL("./content-changes.ts", import.meta.url).href, shortCircuit: true };
+  if (specifier.startsWith(".") && !/\.[a-z]+$/.test(specifier)) return next(specifier + ".ts", context);
   return next(specifier, context);
 } });
 const { requestContentSave } = await import("./save-request.ts");

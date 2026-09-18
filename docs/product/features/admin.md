@@ -28,6 +28,17 @@ The public home page header includes an **Admin login** link on desktop and mobi
 
 Images accept JPG, PNG, or WebP up to 8 MB each and six images per product. The browser compresses them to WebP before upload. Admin-managed images and content are preserved when Duoke or warehouse data is imported again.
 
+In Supabase mode, Save first requests a single-path signed upload from the protected
+`POST /admin/images/upload` endpoint and sends each new photo directly to Storage.
+Only the resulting URL and storage path enter the catalog Save JSON, avoiding large
+base64 request bodies through the application host. Authorization accepts safe new
+product/image IDs without creating database rows, requires an admin session and
+trusted origin, and bounds the JSON body to 4 KB. Image transfer failure stops before
+catalog persistence and preserves edits. Completed uploads are reused on retries
+in the same tab; changed image bytes require a new upload. The server still accepts
+legacy inline images from older tabs. Unreferenced uploads may remain after Cancel.
+
+
 The dashboard header provides a visible **Save** button. Edits remain staged in the admin form and do not affect the customer website until the administrator selects Save. The button then persists the current product and settings content and reports saving, success, or failure. There is no automatic content save.
 
 The **Manage content** product list supports bulk publication and archiving. Administrators can use **Publish all** or **Archive all**, search by name/model/SKU to act on all matching results, or select individual products with checkboxes. The select-all checkbox selects the current results and shows a mixed state for partial selection. Changing the search clears selection; opening an editor does not change it. With a selection, actions apply only to selected products; otherwise they apply to the full visible result set. Button counts show products whose status will change. Empty results and actions with no eligible products are disabled, and bulk controls are disabled while saving.

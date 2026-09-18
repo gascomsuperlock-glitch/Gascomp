@@ -7,6 +7,7 @@ import { startTransition, useCallback, useEffect, useMemo, useRef, useState, typ
 import { DEFAULT_CONTENT } from "@/features/catalog/model/default-content";
 import type { SiteContent } from "@/features/catalog/model/types";
 import { requestContentSave } from "@/features/catalog/model/save-request";
+import type { ImageUploadCache } from "@/features/catalog/model/upload-product-images";
 
 const STORAGE_KEY = "gascomp-help-content-v1";
 
@@ -26,6 +27,7 @@ export function ContentProvider({
   const [saveError, setSaveError] = useState<string>();
   const latestRevision = useRef(0);
   const savedContent = useRef(initialContent);
+  const imageUploads = useRef<ImageUploadCache>(new Map());
 
   useEffect(() => {
     if (storageMode !== "local") return;
@@ -50,7 +52,7 @@ export function ContentProvider({
     setSaveError(undefined);
 
     try {
-      const result = await requestContentSave(contentToSave, undefined, savedContent.current);
+      const result = await requestContentSave(contentToSave, undefined, savedContent.current, imageUploads.current);
       if (!result.success) {
         setSaveState("error");
         setSaveError(result.error);

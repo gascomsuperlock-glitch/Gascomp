@@ -30,7 +30,7 @@ async function requestUpload(endpoint: string, productId: string, file: Blob, si
   return result;
 }
 
-async function uploadToSignedUrl(file: Blob, signedUrl: string, signal: AbortSignal, onProgress: (percent: number) => void, label: string) {
+export async function uploadToSignedUrl(file: Blob, signedUrl: string, signal: AbortSignal, onProgress: (percent: number) => void, label: string) {
   await new Promise<void>((resolve, reject) => {
     const request = new XMLHttpRequest();
     const abort = () => request.abort();
