@@ -36,6 +36,14 @@ Bulk archive skips products that have never been published and keeps existing sl
 
 Save uses the stable `POST /admin/content` JSON endpoint, which verifies the request origin and admin session before reading up to 40 MB and invoking catalog persistence. This avoids tying the browser save request to a build-specific Server Action identifier. Save failures retain edits in the current tab and distinguish expired sessions, rejected origins, unavailable deployments, oversized uploads, and hosting timeouts. A lost response does not prove that the server failed to save; check the product before retrying.
 
+Persistence compares incoming content with stored content and writes only new or
+changed products and changed settings. Adding a new product without help content
+requires one product upsert, with no child-record deletion or rewriting of other
+products. Required catalog reads and optional video-schema checks run concurrently.
+Existing deletion/archive rules and the explicit Save/Cancel workflow still apply.
+Storage cleanup is scoped to replaced or permanently deleted products; archiving
+retains their images and tutorial thumbnails.
+
 The dashboard can download one QR code per product when `GASCOMP_PUBLIC_BASE_URL` is configured with a production HTTPS origin. It also exposes Warranty Claim, Gascomp Care, and Service Center actions with the current product and SKU context.
 
 The separate **Service Centers** workspace uses an explicit **Save location** action for each location. Its edits and persistence are independent of catalog Save/Cancel. See [Service Center administration](support.md#service-center-administration) for required fields, map selection, and visibility.

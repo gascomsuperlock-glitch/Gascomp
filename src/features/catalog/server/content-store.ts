@@ -1,6 +1,7 @@
 import "server-only";
+import { isDeepStrictEqual } from "node:util";
 import { DEFAULT_CONTENT } from "@/features/catalog/model/default-content";
-import type { SiteContent } from "@/features/catalog/model/types";
+import type { Product, SiteContent } from "@/features/catalog/model/types";
 import { createAdminSupabaseClient, createPublicSupabaseClient, isSupabaseConfigured } from "@/shared/integrations/supabase/server";
 import { type Row, text, statusFromProduct, mapProduct } from "@/features/catalog/model/product-mappers";
 
@@ -107,51 +108,71 @@ export async function runInBatches<T>(
   }
 }
 
+function comparableProduct(product: Product) {
+  return JSON.parse(JSON.stringify({
+    ...product,
+    attributes: product.attributes ?? [],
+    everPublished: product.everPublished || product.published,
+    variations: product.variations.map((variation) => ({ ...variation, attributes: variation.attributes ?? [] })),
+    videos: product.videos.map((video) => ({
+      ...video,
+      youtubeUrl: video.videoUrl ?? video.youtubeUrl ?? "",
+      videoUrl: video.videoUrl ?? video.youtubeUrl ?? "",
+    })),
+    issues: product.issues.map((issue) => ({ ...issue, warning: issue.warning || undefined })),
+  }));
+}
+
 export async function persistSiteContent(input: SiteContent): Promise<SiteContent> {
   assertContent(input);
   const client = createAdminSupabaseClient();
   if (!client) throw new Error("Supabase is not configured.");
 
   // Support deployment before or after the optional video metadata migration.
-  const videoSchema = await client.from("tutorial_videos").select("video_url, storage_path").limit(0);
+  const [existingContent, videoSchema, thumbnailSchema] = await Promise.all([
+    loadFromSupabase(true),
+    client.from("tutorial_videos").select("video_url, storage_path").limit(0),
+    client.from("tutorial_videos").select("thumbnail_url, thumbnail_storage_path").limit(0),
+  ]);
   if (videoSchema.error && !["42703", "PGRST204"].includes(videoSchema.error.code)) throw videoSchema.error;
   const extendedVideoSchema = !videoSchema.error;
-  const thumbnailSchema = await client.from("tutorial_videos").select("thumbnail_url, thumbnail_storage_path").limit(0);
   if (thumbnailSchema.error && !["42703", "PGRST204"].includes(thumbnailSchema.error.code)) throw thumbnailSchema.error;
   const hasThumbnailSchema = !thumbnailSchema.error;
   if (!hasThumbnailSchema && input.products.some((product) => product.videos.some((video) => video.thumbnailUrl || video.thumbnailStoragePath))) {
     throw new Error("Tutorial thumbnails cannot be saved until the tutorial thumbnail migration is applied.");
   }
 
-  const existingProductsResult = await client.from("products").select("id, ever_published");
-  const existingImagesResult = await client.from("product_images").select("storage_path");
-  const existingThumbnailsResult = hasThumbnailSchema
-    ? await client.from("tutorial_videos").select("thumbnail_storage_path")
-    : { data: [], error: null };
-  throwOnError(existingProductsResult);
-  throwOnError(existingImagesResult);
-  throwOnError(existingThumbnailsResult);
-
-  const content = await uploadNewImages(input);
+  const existingProducts = existingContent.products;
+  const existingById = new Map(existingProducts.map((product) => [product.id, product]));
+  // Compare the JSON representation received by the browser, ignoring object key order
+  // and optional undefined fields. Array order remains meaningful for help content.
+  const changed = input.products.filter((product) => {
+    const existing = existingById.get(product.id);
+    return !existing || !isDeepStrictEqual(comparableProduct(product), comparableProduct(existing));
+  });
+  const uploaded = await uploadNewImages({ ...input, products: changed });
+  const changedById = new Map(uploaded.products.map((product) => [product.id, product]));
+  const content = { ...input, products: input.products.map((product) => changedById.get(product.id) ?? product) };
   const currentIds = new Set(content.products.map((product) => product.id));
-  const existingProducts = (existingProductsResult.data ?? []) as Array<{ id: string; ever_published: boolean }>;
 
-  throwOnError(await client.from("site_settings").upsert({
-    id: true,
-    whatsapp_number: content.whatsappNumber.slice(0, 30),
-    support_hours: content.supportHours.slice(0, 160),
-  }));
+  if (content.whatsappNumber !== existingContent.whatsappNumber || content.supportHours !== existingContent.supportHours) {
+    throwOnError(await client.from("site_settings").upsert({
+      id: true,
+      whatsapp_number: content.whatsappNumber.slice(0, 30),
+      support_hours: content.supportHours.slice(0, 160),
+    }));
+  }
 
   for (const oldProduct of existingProducts) {
     if (currentIds.has(oldProduct.id)) continue;
-    if (oldProduct.ever_published) {
+    if (oldProduct.everPublished) {
       throwOnError(await client.from("products").update({ status: "archived" }).eq("id", oldProduct.id));
     } else {
       throwOnError(await client.from("products").delete().eq("id", oldProduct.id));
     }
   }
 
-  const productRows = content.products.map((product) => ({
+  const productRows = uploaded.products.map((product) => ({
       id: product.id,
       slug: product.slug,
       sku: product.sku,
@@ -169,16 +190,17 @@ export async function persistSiteContent(input: SiteContent): Promise<SiteConten
     }));
   await runInBatches(productRows, 250, (batch) => client.from("products").upsert(batch));
 
-  const productIds = content.products.map((product) => product.id);
+  // New products have no child records to replace. Never rewrite an unchanged guide.
+  const productIds = uploaded.products.filter((product) => existingById.has(product.id)).map((product) => product.id);
   for (const table of ["product_images", "product_variations", "tutorial_videos", "product_issues", "faq_items"] as const) {
     await runInBatches(productIds, 250, (batch) => client.from(table).delete().in("product_id", batch));
   }
 
-  const variationRows = content.products.flatMap((product) => product.variations.map((item, position) => ({ id: item.id, product_id: product.id, name: item.name, sku: item.sku, source_variation_id: item.sourceId ?? null, attributes: item.attributes ?? [], position })));
-  const imageRows = content.products.flatMap((product) => product.images.map((item, position) => ({ id: item.id, product_id: product.id, variation_id: item.variationId ?? null, name: item.name, storage_path: item.storagePath, public_url: item.url, alt: item.alt, is_primary: item.isPrimary, position })));
-  const videoRows = videoRecords(content.products, extendedVideoSchema, hasThumbnailSchema);
-  const issueRows = content.products.flatMap((product) => product.issues.map((item, position) => ({ id: item.id, product_id: product.id, title: item.title, summary: item.summary, steps: item.steps, warning: item.warning ?? null, position })));
-  const faqRows = content.products.flatMap((product) => product.faqs.map((item, position) => ({ id: item.id, product_id: product.id, question: item.question, answer: item.answer, position })));
+  const variationRows = uploaded.products.flatMap((product) => product.variations.map((item, position) => ({ id: item.id, product_id: product.id, name: item.name, sku: item.sku, source_variation_id: item.sourceId ?? null, attributes: item.attributes ?? [], position })));
+  const imageRows = uploaded.products.flatMap((product) => product.images.map((item, position) => ({ id: item.id, product_id: product.id, variation_id: item.variationId ?? null, name: item.name, storage_path: item.storagePath, public_url: item.url, alt: item.alt, is_primary: item.isPrimary, position })));
+  const videoRows = videoRecords(uploaded.products, extendedVideoSchema, hasThumbnailSchema);
+  const issueRows = uploaded.products.flatMap((product) => product.issues.map((item, position) => ({ id: item.id, product_id: product.id, title: item.title, summary: item.summary, steps: item.steps, warning: item.warning ?? null, position })));
+  const faqRows = uploaded.products.flatMap((product) => product.faqs.map((item, position) => ({ id: item.id, product_id: product.id, question: item.question, answer: item.answer, position })));
 
   await runInBatches(variationRows, 500, (batch) => client.from("product_variations").insert(batch));
   await runInBatches(imageRows, 500, (batch) => client.from("product_images").insert(batch));
@@ -187,7 +209,9 @@ export async function persistSiteContent(input: SiteContent): Promise<SiteConten
   await runInBatches(faqRows, 500, (batch) => client.from("faq_items").insert(batch));
 
   const referencedPaths = new Set(content.products.flatMap((product) => product.images.map((image) => image.storagePath).filter(Boolean)));
-  const abandonedPaths = ((existingImagesResult.data ?? []) as Array<{ storage_path: string }>).map((item) => item.storage_path).filter((item) => item && !referencedPaths.has(item));
+  const replacedProducts = existingProducts.filter((product) => changedById.has(product.id) || (!currentIds.has(product.id) && !product.everPublished));
+  const abandonedPaths = replacedProducts.flatMap((product) => product.images.map((image) => image.storagePath))
+    .filter((path): path is string => Boolean(path) && !referencedPaths.has(path));
   if (abandonedPaths.length) {
     const removal = await client.storage.from("product-images").remove(abandonedPaths);
     if (removal.error) console.error("Unused product images could not be removed", removal.error);
@@ -196,8 +220,7 @@ export async function persistSiteContent(input: SiteContent): Promise<SiteConten
   const referencedThumbnailPaths = new Set(content.products.flatMap((product) => product.videos
     .map((video) => video.thumbnailStoragePath)
     .filter((path): path is string => Boolean(path))));
-  const abandonedThumbnailPaths = ((existingThumbnailsResult.data ?? []) as Array<{ thumbnail_storage_path: string | null }>)
-    .map((item) => item.thumbnail_storage_path)
+  const abandonedThumbnailPaths = replacedProducts.flatMap((product) => product.videos.map((video) => video.thumbnailStoragePath))
     .filter((item): item is string => typeof item === "string" && item.length > 0 && !referencedThumbnailPaths.has(item));
   if (abandonedThumbnailPaths.length) {
     const removal = await client.storage.from("product-images").remove(abandonedThumbnailPaths);
