@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Authorized Duoke catalog sync and Gascomp support knowledge automation"
 requires-python = ">=3.11"
 dependencies = [
+  "mcp>=1.30,<2",
   "httpx>=0.28.1,<0.29",
   "playwright>=1.55,<2",
   "scrapling[fetchers]>=0.4.8,<0.5",

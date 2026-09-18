@@ -389,3 +389,9 @@ No customer records or Storage objects were written. Synthetic browser writes
 stayed in a loopback simulation and WhatsApp navigation was intercepted without
 sending a message. Reports are under `.data/warranty-preview/` and
 `.data/warranty-preview-speed/`. This fix has not been pushed or deployed.
+
+## Restored status controls
+
+Ticket details expose an immediate-save **Ticket status** dropdown with New, Under review, Approved, Rejected, and Closed. The same detailed labels appear on ticket badges, notifications, and CSV exports. Existing All/Pending/Done filters remain completion groups: Pending contains every non-closed status, and Done contains Closed.
+
+Changing status preserves saved solutions and unsaved solution selections, including when reopening a closed ticket. Resolution's Done action still saves the selected solution and closes the claim. Status controls are disabled during ticket mutations, show success or error feedback, and keep the previous saved value if the request fails. Status updates require an authenticated administrator and server-side validation; no database migration is required.

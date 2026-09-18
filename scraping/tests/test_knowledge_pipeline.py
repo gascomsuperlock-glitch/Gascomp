@@ -164,11 +164,12 @@ class BrowserRunnerTests(unittest.TestCase):
         )
         audit: list[dict] = []
         state: set[str] = set()
-        with sync_playwright() as playwright:
+        with tempfile.TemporaryDirectory() as directory, sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True)
             page = browser.new_page()
             page.set_content(html)
             with (
+                patch.object(auto_reply, "STOP_FILE", Path(directory) / "STOP_AUTOREPLY"),
                 patch.object(auto_reply, "read_state", return_value=state),
                 patch.object(auto_reply, "save_state", side_effect=lambda value: state.update(value)),
                 patch.object(auto_reply, "append_audit", side_effect=audit.append),

@@ -27,6 +27,8 @@ Exact external values must remain unchanged when translation would damage identi
 - Imported product names, SKUs, category values, filenames, and provider-specific IDs.
 - Warehouse XLSX headers such as `Nomor SKU`, `Judul`, and `Kode Produk` because they are source-schema keys.
 - Captured customer messages and Indonesian tokens used by privacy filters or retrieval matching.
+- Exact Obsidian source answers delivered by the Duoke Hermes Desktop bridge retain their source language, as requested by the owner; see the [Duoke contract](../product/integrations/duoke-support.md#desktop-implementation-and-owner-corrections).
+- The owner-requested Indonesian support introduction is `Saya Ayu dari Gascomp, ada yang bisa saya bantu?`; see the [customer-facing identity contract](../product/integrations/duoke-support.md#customer-facing-identity).
 - Stable public routes and fragments such as `/produk`, `/klaim-garansi`, `/tiket`, `/lampiran`, and `#kendala`.
 - Third-party URLs, selector values, protocol values, locale codes, and time-zone identifiers.
 - Migration predicates may contain exact legacy non-English values solely to replace them with English equivalents.

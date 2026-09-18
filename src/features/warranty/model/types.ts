@@ -59,5 +59,8 @@ export function isWarrantySolution(value: unknown): value is WarrantySolution {
   return typeof value === "string" && Object.hasOwn(WARRANTY_SOLUTIONS, value);
 }
 export function ticketStatusLabel(status: WarrantyTicketStatus) {
-  return status === "closed" ? "Done" : "Pending";
+  const labels: Record<WarrantyTicketStatus, string> = {
+    new: "New", reviewing: "Under review", approved: "Approved", rejected: "Rejected", closed: "Closed",
+  };
+  return labels[status];
 }

@@ -131,6 +131,15 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Working with an agent
+
+Start with [AGENTS.md](AGENTS.md), the [task map](docs/product/spec.md), and the
+[folder context map](CONTEXT.md). Each owning area defines its inputs, tasks,
+expected outputs, and verification in a focused context document.
+For ongoing work, read the [handoff index](docs/work/README.md) and follow the
+[continuity workflow](docs/work/workflow.md). Ask to resume a named topic or save
+its progress; the workflow defines what to read and record.
+
 ## Verification
 
 ```bash
