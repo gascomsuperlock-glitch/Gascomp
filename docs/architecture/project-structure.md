@@ -33,6 +33,7 @@ scripts/
   scratch/                        # Manual experiments; never application entrypoints
 data/{catalog,knowledge,reports}/
 docs/{architecture,product,reference,setup,brand}/
+Skill/<skill-name>/                # Repository skill sources; see Skill/CONTEXT.md
 obsidian/                         # Knowledge vault; stable location
 public/                           # Public URL assets; stable location
 supabase/migrations/              # Ordered database migrations; stable location
