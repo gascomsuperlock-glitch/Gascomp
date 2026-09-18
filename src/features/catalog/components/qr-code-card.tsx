@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { generateBrandedQr } from "../model/branded-qr";
+import QRCode from "qrcode";
 import { Check, Copy, Download, ExternalLink, LoaderCircle, QrCode } from "lucide-react";
 
 export function QrCodeCard({ slug, name, sku, published, archived, publicBaseUrl }: { slug: string; name: string; sku: string; published: boolean; archived: boolean; publicBaseUrl?: string }) {
@@ -18,7 +18,12 @@ export function QrCodeCard({ slug, name, sku, published, archived, publicBaseUrl
   useEffect(() => {
     if (!productUrl) return;
     let cancelled = false;
-    generateBrandedQr(productUrl).then((url) => {
+    QRCode.toDataURL(productUrl, {
+      width: 640,
+      margin: 4,
+      color: { dark: "#2c3038", light: "#ffffff" },
+      errorCorrectionLevel: "H",
+    }).then((url) => {
       if (!cancelled) setResult({ productUrl, dataUrl: url });
     }).catch(() => {
       if (!cancelled) setResult({ productUrl, error: "Unable to generate this QR code. Please try again." });

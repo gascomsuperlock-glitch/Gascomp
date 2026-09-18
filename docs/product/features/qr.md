@@ -7,7 +7,8 @@
 - Switching products clears the previous QR image before generating the next one. Downloads stay disabled while generation is pending or fails; failures offer a retry action.
 - QR images include a four-module quiet zone. Draft products show a reminder to publish and save before distribution, and administrators should verify the destination before printing.
 - Administrators can download the QR code as PNG for product or packaging use.
-- The preview and downloaded PNG include the official Gascomp wordmark in the center on a white backing. The wordmark keeps its aspect ratio at 26% of the image width, with padding of 1.25% on each side; generation retains level H error correction and the four-module quiet zone. Logo loading failures use the existing generation error/retry state.
+- Product QR previews and downloaded PNGs remain plain, without a centered logo. They retain level H error correction and the four-module quiet zone. Existing product destinations and previously exported QR files remain unchanged.
+- A separate, single homepage QR points to exactly `https://support.gascompsuperlock.com`. Only this QR includes the official centered Gascomp wordmark on white backing, at 26% of the image width with 1.25% padding and its original aspect ratio. It is a standalone PNG export, not a replacement for product QR codes.
 - QR codes use the HTTPS origin configured in `GASCOMP_PUBLIC_BASE_URL`; localhost QR generation is disabled.
 - A product page URL remains stable when tutorials, FAQs, images, or issue guides change.
 - Products that are no longer sold remain available at the same URL after archiving so older printed QR codes keep working.
@@ -19,9 +20,12 @@ DNS, and HTTPS before printing QR codes. Preserve old links with a redirect from
 
 ## Centered logo decision
 
-Recorded: 2026-09-18. The owner explicitly requested a centered logo after discussing
-scan reliability; placing it outside the QR does not meet that request. The existing
-official wordmark is the implementation choice. Acceptance requires the logo in both
-the preview and downloaded PNG, with unchanged product destinations and successful
-digital decoding. Error correction is not a guarantee of physical scan reliability:
-check printed samples at the intended size on multiple phones before distribution.
+Corrected: 2026-09-18. After requesting one separate homepage QR and preserving
+existing product QRs, the owner clarified that the centered logo is only for the QR
+pointing to `https://support.gascompsuperlock.com`. This supersedes the earlier
+implementation that added the logo to every product QR. No additional reason was
+stated. Acceptance: product previews/downloads contain no logo and retain their
+product URLs; the standalone homepage PNG retains its logo and decodes to the exact
+homepage URL. Existing printed codes and saved exports are not modified or deleted.
+Error correction is not a guarantee of physical scan reliability: check printed
+samples at the intended size on multiple phones before distribution.
