@@ -1,50 +1,41 @@
-# Knowledge handoff
+<a id="knowledge-handoff"></a>
+# Penyerahan pengetahuan
 
-Updated: 2026-09-18
-Status: Awaiting verification
+Diperbarui: 2026-09-18
+Status: Menunggu verifikasi
 
-## Objective
+<a id="objective"></a>
+## Tujuan
 
-Preserve the existing knowledge and product-note changes until their provenance and
-intended publication state can be reviewed. No new knowledge refresh or publication
-was requested during the documentation organization task.
+Pertahankan perubahan pengetahuan dan catatan produk yang ada hingga asal-usul dan keadaan publikasi yang direncanakan dapat ditinjau. Tidak ada permintaan untuk refresh pengetahuan baru atau publikasi selama tugas organisasi dokumentasi ini.
 
-## Current evidence
+<a id="current-evidence"></a>
+## Bukti saat ini
 
-Git status shows a modified runtime knowledge index, vault index, and existing
-product note; a deleted approved tutorial note; and untracked FAQ, issue, and product
-notes. These changes were present before this task. Their content was not audited,
-regenerated, renamed, or imported during this task. File naming and placement alone
-do not establish approval or correctness.
+Status Git menunjukkan indeks pengetahuan runtime, indeks vault, dan catatan produk yang ada telah dimodifikasi; sebuah catatan tutorial yang disetujui telah dihapus; serta catatan FAQ, isu, dan produk yang belum dilacak. Perubahan ini hadir sebelum tugas ini. Kontennya tidak diaudit, diregenerasi, dibaru nama, atau diimpor selama tugas ini. Penamaan dan penempatan file saja tidak menetapkan persetujuan atau kebenaran.
 
-## Remaining work and decisions
+<a id="remaining-work-and-decisions"></a>
+## Pekerjaan dan keputusan yang tersisa
 
-Determine which existing workflow produced the changes and whether the note deletion
-and additions match the intended source changes. Verify stable identities, links,
-and approval metadata using the owning specifications. Do not assume these are
-manual notes or disposable output. Publication and production state are unverified.
+Tentukan alur kerja mana yang menghasilkan perubahan dan apakah penghapusan dan penambahan catatan cocok dengan perubahan sumber yang direncanakan. Verifikasi identitas stabil, tautan, dan metadata persetujuan menggunakan spesifikasi milikannya. Jangan anggap ini adalah catatan manual atau output yang dapat dibuang. Keadaan publikasi dan produksi belum diverifikasi.
 
-## Verification
+<a id="verification"></a>
+## Verifikasi
 
-Only the working-tree inventory and integration specifications were inspected.
-Knowledge content, generated links, and pipeline behavior remain unverified.
-If Python workflow code changes, run `npm run duoke:test` using the repository
-virtual environment; follow the root checks for any JavaScript changes. Prefer
-local previews when available and inspect command behavior before running exporters
-that may access services or overwrite files.
+Hanya inventaris pohon kerja dan spesifikasi integrasi yang ditinjau. Konten pengetahuan, tautan yang dihasilkan, dan perilaku pipa tetap belum diverifikasi. Jika kode alur kerja Python berubah, jalankan `npm run duoke:test` menggunakan lingkungan virtual repositori; ikuti pemeriksaan akar untuk perubahan JavaScript manapun. Lebih baik prefer pratinjau lokal jika tersedia dan periksa perilaku perintah sebelum menjalankan eksporter yang mungkin mengakses layanan atau menimpa file.
 
-## Next action
+<a id="next-action"></a>
+## Tindakan selanjutnya
 
-When asked to resume knowledge work, review the current diff and the producing
-export/import workflow to establish provenance and the intended change, then
-validate the affected records without exposing customer data in reports.
+Ketika diminta melanjutkan pekerjaan pengetahuan, tinjau selisih saat ini dan alur kerja ekspor/impor yang menghasilkan untuk menetapkan asal-usul dan perubahan yang direncanakan, lalu validasi catatan yang terpengaruh tanpa mengekspos data pelanggan dalam laporan.
 
-## References
+<a id="references"></a>
+## Referensi
 
-- [Knowledge and replies specification](../../product/integrations/duoke-support.md)
-- [Catalog synchronization specification](../../product/integrations/duoke-catalog.md)
-- [Knowledge exporter](../../../scripts/duoke/export-duoke-knowledge.mjs)
-- [Runtime knowledge directory](../../../data/knowledge/)
-- [Knowledge vault](../../../obsidian/)
-- [Centralized Node paths](../../../scripts/shared/paths.mjs)
-- [Centralized Python paths](../../../scraping/shared/paths.py)
+- [Spesifikasi pengetahuan dan balasan](../../product/integrations/duoke-support.md)
+- [Spesifikasi sinkronisasi katalog](../../product/integrations/duoke-catalog.md)
+- [Ekspor pengetahuan](../../../scripts/duoke/export-duoke-knowledge.mjs)
+- [Direktori pengetahuan runtime](../../../data/knowledge/)
+- [Vault pengetahuan](../../../obsidian/)
+- [Rute Node terpusat](../../../scripts/shared/paths.mjs)
+- [Rute Python terpusat](../../../scraping/shared/paths.py)

@@ -1,53 +1,32 @@
-# Duoke automatic replies in Hermes Desktop
+<a id="duoke-automatic-replies-in-hermes-desktop"></a>
+# Balasan otomatis Duoke di Hermes Desktop
 
-[Product contract](../product/integrations/duoke-support.md#target-automatic-replies-through-hermes-desktop) · [Current verification](../work/handoffs/handoff-duoke-hermes-active-v2.md)
+[Kontrak produk](../product/integrations/duoke-support.md#target-automatic-replies-through-hermes-desktop) · [Verifikasi saat ini](../work/handoffs/handoff-duoke-hermes-active-v2.md)
 
-Scope: the commands below operate the existing exact-source bridge. The owner's
-[corrected target](../product/integrations/duoke-support.md#reference-based-replies-and-continuous-operation)
-is full Obsidian admin Q&A reference matching under Hermes with headless Chrome
-for 24/7 service. Reference matching coverage and unattended service supervision
-still require verification. These foreground startup steps do not establish
-24/7 readiness or complete reference coverage for actual replies.
+Cakupan: perintah di bawah ini mengoperasikan jembatan sumber asli yang ada. Pemilik
+[tujuan yang telah diperbaiki](../product/integrations/duoke-support.md#reference-based-replies-and-continuous-operation)
+adalah referensi tanya jawab admin penuh Obsidian dengan headless Chrome di bawah Hermes untuk layanan 24/7. Jangkauan penyesuaian referensi dan pengawasan layanan tanpa pengawasan masih memerlukan verifikasi. Langkah startup latar depan ini tidak menetapkan kesiapan 24/7 atau cakupan referensi lengkap untuk balasan aktual.
 
-The `duoke-support` Hermes profile exposes four MCP tools: `duoke_status`,
-`duoke_search`, `duoke_poll`, and `duoke_reply`. Search reads local Obsidian
-references; poll/reply use headless Chrome. Qwen `qwen3.5:4b` chooses
-an eligible answer from the connected Obsidian corpus. The bridge sends the exact
-answer in its source language. Eligible extracted admin Q&A can supply references;
-context, privacy, conflicting-fact, and volatile-claim filters still apply.
-All connected stores are in scope.
+Profil `duoke-support` Hermes mengekspos empat alat MCP: `duoke_status`,
+`duoke_search`, `duoke_poll`, dan `duoke_reply`. Pencarian membaca referensi lokal Obsidian; polling/balas menggunakan headless Chrome. Qwen `qwen3.5:4b` memilih jawaban yang layak dari korpus Obsidian yang terhubung. Jembatan mengirim jawaban tepat dalam bahasa sumbernya. Referensi admin tanya jawab yang dapat dipertahankan dapat menyediakan referensi; filter konteks, privasi, fakta bertentangan, dan klaim volatil masih berlaku. Semua toko yang terhubung berada dalam cakupan.
 
-## Refresh an existing agent
+<a id="refresh-an-existing-agent"></a>
+## Perbarui agen yang ada
 
 ```sh
 npm run duoke:desktop -- refresh
 ```
 
-This synchronizes the owned profile's SOUL and scheduled prompt while preserving
-custom settings, paused/running job state, and delivery controls. An old generated
-working directory inside the repository is migrated to the profile's private
-`workspace/` so the coding repository's AGENTS.md does not override support
-behavior. Old instructions and the migrated config are
-backed up privately. Reopen the **duoke-support** profile and start a **new chat**.
-The new interactive instructions handle greetings as Ayu without tool calls and
-use `duoke_search` for knowledge questions. They do not poll the customer inbox
-merely because the operator types a greeting or product question.
+Ini juga mengekspos empat skema alat Duoke yang konkret langsung ke Qwen dengan mengatur `tools.tool_search.enabled: off` dan menonaktifkan alat sumber daya/prompt MCP yang tidak digunakan. Ini menghapus pembungkus penemuan umum Hermes, bukan pencarian Obsidian. Konfigurasi yang ada dibackup sebelum migrasi ini. Filter alat eksplisit tetap ada.
 
-The primary conversation source is the configured source vault's `Percakapan/`
-folder, including its descendants. `duoke_search` reports scanned files,
-extracted pairs, exclusions, and available references. It now ranks paired admin
-Q&A independently of the website publication pipeline. Historical references
-marked `referenceOnly` are context for previews, not automatic delivery candidates.
-When only historical return cases match, `historicalMatches` retains source
-metadata and `customerReply` supplies a concise WhatsApp handoff without replaying
-old processing promises. A contact link still requires a verified official number.
-After a bridge code update, fully quit and reopen Hermes Desktop so its MCP
-process loads the updated code, then start a fresh `duoke-support` chat.
+Ini sinkronisasi SOUL profil yang dimiliki dan prompt terjadwal sambil mempertahankan pengaturan kustom, status tugas jeda/berjalan, dan kontrol pengiriman. Direktori kerja lama yang dihasilkan di dalam repositori dimigrasikan ke `workspace/` pribadi profil sehingga AGENTS.md repositori pemrograman tidak menimpa perilaku dukungan. Instruksi lama dan konfigurasi yang dimigrasikan dibackup secara pribadi. Buka kembali **duoke-support** profil dan mulai **new chat**. Instruksi interaktif baru menangani sapaan sebagai Ayu tanpa panggilan alat dan menggunakan `duoke_search` untuk pertanyaan pengetahuan. Mereka tidak memeriksa kotak masuk pelanggan hanya karena operator mengetik sapaan atau pertanyaan produk.
 
-## Prepare and verify
+Sumber percakapan utama adalah folder `Percakapan/` dari sumber vault yang dikonfigurasi, termasuk turunan-bawahnya. `duoke_search` melaporkan file yang dipindai, pasangan yang diekstraksi, pengecualian, dan referensi yang tersedia. Sekarang ia meranking pasangan admin Q&A secara independen dari pipeline publikasi website. Referensi historis ditandai `referenceOnly` adalah konteks untuk pratinjau, bukan kandidat pengiriman otomatis. Ketika hanya kasus pengembalian historis yang cocok, `historicalMatches` mempertahankan metadata sumber dan `customerReply` menyediakan transfer WhatsApp ringkas tanpa memutar kembali janji pemrosesan lama. Link kontak masih memerlukan nomor resmi yang diverifikasi. Setelah update kode jembatan, keluar sepenuhnya dan buka kembali Hermes Desktop sehingga proses MCP memuat kode yang diperbarui, lalu mulai chat `duoke-support` baru.
 
-Run these commands from the repository root. Keep Ollama running with
-`qwen3.5:4b` installed, and keep the computer awake while automation is active.
+<a id="prepare-and-verify"></a>
+## Persiapkan dan verifikasi
+
+Jalankan perintah-perintah ini dari akar repositori. Pertahankan Ollama berjalan dengan `qwen3.5:4b` terpasang, dan cegah komputer masuk mode tidur saat otomasi aktif.
 
 ```sh
 uv sync --directory scraping
@@ -57,105 +36,66 @@ npm run duoke:desktop -- session --headed
 npm run duoke:desktop -- check
 ```
 
-Sign in in the Chrome window opened by `session --headed`. Wait for
-`Private browser session saved. No message was sent.` The check must report
-`session: accepted`, `chrome: ready`, and `sendAction: available`. The initial
-mode is `preview`. Session files are private and must not be shared.
+Masuk di jendela Chrome yang dibuka oleh `session --headed`. Tunggu hingga `Private browser session saved. No message was sent.` pemeriksaan harus melaporkan `session: accepted`, `chrome: ready`, dan `sendAction: available`. Mode awal adalah `preview`. File sesi bersifat pribadi dan tidak boleh dibagikan.
 
-Setup creates a dedicated local Hermes profile and the paused job
-**Duoke automatic replies**. Re-running setup refreshes this generated profile's
-configuration and operator prompt; it does not activate delivery or resume jobs.
-Do not use it to maintain a manually customized profile.
+Setup membuat profil Hermes lokal khusus dan tugas jeda **Duoke automatic replies**. Menjalankan ulang setup memperbarui konfigurasi dan prompt operator dari profil yang dihasilkan ini; ia tidak mengaktifkan pengiriman atau melanjutkan tugas. Jangan gunakan untuk memelihara profil yang disesuaikan secara manual.
 
-## Preview in Desktop
+<a id="preview-in-desktop"></a>
+## Pratinjau di Desktop
 
-Product/support questions should receive customer-ready wording under the
-[resolution and WhatsApp contract](../product/integrations/duoke-support.md#customer-problem-resolution-and-whatsapp-handoff).
-Verify a known FAQ, a differently worded question, a return request with applicable
-policy, and an unresolved issue. Replies must not mention tools, preview/jobs,
-source IDs, or internal continuation messages. A verified WhatsApp handoff must
-use the configured official contact. A prompt refresh alone does not establish
-complete source coverage or enable an outgoing handoff candidate.
+Pertanyaan produk/dukungan harus menerima penulisan siap pelanggan di bawah [perjanjian kontrak resolusi dan WhatsApp](../product/integrations/duoke-support.md#customer-problem-resolution-and-whatsapp-handoff).
+Verifikasi FAQ yang dikenal, pertanyaan dengan penulisan berbeda, permintaan pengembalian dengan kebijakan yang berlaku, dan masalah yang belum diselesaikan. Balasan tidak boleh menyebutkan alat, pratinjau/tugas, ID sumber, atau pesan lanjutan internal. Transfer WhatsApp yang diverifikasi harus menggunakan kontak resmi yang dikonfigurasi. Refresh prompt saja tidak menetapkan cakupan sumber lengkap atau memungkinkan kandidat transfer keluar.
 
-Customer introductions must follow the
-[Ayu from Gascomp identity contract](../product/integrations/duoke-support.md#customer-facing-identity).
-The interactive SOUL implements the named persona; deterministic outgoing
-introductions remain pending in the active task. Before treating delivery as ready, verify an introduction,
-an identity question, and a product question in preview. Updating documentation
-does not update an existing Desktop session, source answer, or scheduled prompt.
+Perkenalan pelanggan harus mengikuti [perjanjian kontrak identitas Ayu dari Gascomp](../product/integrations/duoke-support.md#customer-facing-identity).
+SOUL interaktif mengimplementasikan persona yang dinamai; pengenalan keluar deterministik tetap menunda dalam tugas aktif. Sebelum memperlakukan pengiriman sebagai siap, verifikasi pengenalan, pertanyaan identitas, dan pertanyaan produk di pratinjau. Memperbarui dokumentasi tidak memperbarui sesi Desktop yang ada, jawaban sumber, atau prompt terjadwal.
 
-1. Open Hermes Desktop and choose the **duoke-support** profile. If it is absent,
-   reopen the app so it refreshes its profile list. Start a new chat after setup.
-2. Verify the selected model is **qwen3.5:4b** with the local custom provider
-   `http://127.0.0.1:11434/v1`.
-3. Ask: `Call duoke_status once and report mode and knowledge counts.` The tool
-   result must say `preview`; a model's unsupported claim is not verification.
-4. Send the operator prompt in
-   `scraping/.private/duoke-desktop/desktop-prompt.txt` to process one inbox page.
-   The bridge can return previews but cannot send while its delivery gate is off.
-   `needsReview` or no eligible jobs is a valid result; it does not prove a reply
-   was sent. Do not enable delivery if tools report errors.
+1. Buka Hermes Desktop dan pilih profil **duoke-support**. Jika tidak ada, buka ulang aplikasi agar daftar profilnya diperbarui. Mulai percakapan baru setelah setup.
+2. Verifikasi model yang dipilih adalah **qwen3.5:4b** dengan penyedia kustom lokal `http://127.0.0.1:11434/v1`.
+3. Tanyakan: `Call duoke_status once and report mode and knowledge counts.` Alat hasil harus mengatakan `preview`; klaim tidak didukung oleh model bukan verifikasi.
+4. Kirim prompt operator di `scraping/.private/duoke-desktop/desktop-prompt.txt` untuk memproses satu halaman inbox. Jembatan dapat mengembalikan pratinjau tetapi tidak dapat mengirim saat gerbang pengirimannya mati. `needsReview` atau tidak ada tugas yang layak adalah hasil yang valid; itu tidak membuktikan bahwa balasan telah dikirim. Jangan aktifkan pengiriman jika alat melaporkan kesalahan.
 
-The MCP process retains opaque tickets for five minutes. Poll and reply must
-happen in the same agent run. Restarting an MCP process invalidates its tickets.
+Proses MCP menyimpan tiket opaque selama lima menit. Poll dan balasan harus terjadi dalam run agen yang sama. Memulai ulang proses MCP menginvalidasi tiketnya.
 
-## Recover from truncated responses
+<a id="recover-from-truncated-responses"></a>
+## Pemulihan dari respons terpotong
 
-If Hermes reports `Response remained truncated after 4 continuation attempts`,
-compare Ollama's active context (`ollama ps`) with Hermes `model.context_length`.
-The Qwen training maximum is not the window allocated by the local runtime.
-The observed failing configuration allocated 4,096 tokens while Hermes discovered
-a much larger maximum. The failing Desktop request resumed an old conversation.
+Jika Hermes melaporkan `Response remained truncated after 4 continuation attempts`, bandingkan konteks aktif Ollama (`ollama ps`) dengan Hermes `model.context_length`. Pelatihan maksimum Qwen bukan jendela yang dialokasikan oleh runtime lokal. Konfigurasi gagal yang diamati mengalokasikan 4.096 token sementara Hermes menemukan maksimum yang jauh lebih besar. Permintaan Desktop gagal melanjutkan percakapan lama.
 
 ```sh
 npm run duoke:desktop -- model-context
 ```
 
-This pins both Ollama `num_ctx` and the dedicated Hermes profile context to
-65,536 for the same installed `qwen3.5:4b` weights. Other model parameters are
-preserved. The installed Hermes version requires at least 64,000 tokens, so
-merely increasing Ollama to 8K or 16K is insufficient for this harness.
-A backup alias and the previous config are recorded privately in
-`scraping/.private/duoke-desktop/context-backup.json`. Other local clients using
-this same model tag also inherit its larger default. No delivery controls or
-schedules are activated. `check` rejects a missing or mismatched model override.
+Ini menyetel Ollama `num_ctx` dan profil konteks Hermes khusus ke 65.536 untuk bobot `qwen3.5:4b` yang sama yang terinstal. Parameter model lainnya dipertahankan. Versi Hermes yang terinstal memerlukan setidaknya 64.000 token, sehingga sekadar meningkatkan Ollama menjadi 8K atau 16K tidak cukup untuk alat ini.
+Alias cadangan dan konfigurasi sebelumnya dicatat secara pribadi di `scraping/.private/duoke-desktop/context-backup.json`. Pelanggan lokal lain yang menggunakan tag model yang sama juga mewarisi default yang lebih besar. Tidak ada kontrol pengiriman atau jadwal yang diaktifkan. `check` menolak penolakan atau ketidakcocokan penimpa model yang hilang.
 
-Reopen Hermes Desktop, select **duoke-support**, and create a **new chat** rather
-than retrying the failing old conversation. Old history is retained. This fixes
-context alignment; it does not guarantee faster generation or unlimited history.
+Buka kembali Hermes Desktop, pilih **duoke-support**, dan buat **new chat** daripada mencoba ulang percakapan lama yang gagal. Riwayat lama dipertahankan. Ini memperbaiki keselarasan konteks; ini tidak menjamin generasi lebih cepat atau riwayat tanpa batas.
 
-Ollama documents context settings for compatible clients in its
-[compatibility guide](https://docs.ollama.com/api/openai-compatibility); the repair
-uses its [model creation API](https://docs.ollama.com/api/create).
+Dokumentasi Ollama mengatur pengaturan konteks untuk klien kompatibel dalam panduan kompatibilitasnya [compatibility guide](https://docs.ollama.com/api/openai-compatibility); perbaikan menggunakan [model creation API](https://docs.ollama.com/api/create).
 
-## Enable automatic delivery
+<a id="enable-automatic-delivery"></a>
+## Aktifkan pengiriman otomatis
 
-After the successful preview, run:
+Setelah pratinjau berhasil, jalankan:
 
 ```sh
 npm run duoke:desktop -- enable --send
 ```
 
-This checks the session/model/corpus and enables the bridge's delivery gate.
-It does not itself start a polling process. From this point, manually invoking
-`duoke_reply` in Desktop can send an eligible customer reply.
+Ini memeriksa sesi/model/korpus dan mengaktifkan gerbang pengiriman jembatan.
+Hal ini tidak memulai proses polling secara langsung. Dari titik ini, pemanggilan manual `duoke_reply` di Desktop dapat mengirim balasan pelanggan yang memenuhi syarat.
 
-Hermes scheduled jobs need an active scheduler. The installed Desktop backend
-was observed starting its built-in scheduler for this profile. A separate gateway
-is not always required; verify Desktop job runs before starting another process.
-If that scheduler is unavailable, the foreground alternative is:
+Tugas terjadwal Hermes memerlukan penjadwal aktif. Backend Desktop terpasang diamati memulai penjadwal bawaannya untuk profil ini. Gerbang terpisah tidak selalu diperlukan; pastikan tugas Desktop berjalan sebelum memulai proses lain.
+Jika penjadwal tersebut tidak tersedia, alternatif di depan adalah:
 
 ```sh
 hermes -p duoke-support gateway run
 ```
 
-If using the foreground gateway, leave that window running. In Hermes Desktop, under the same profile, open
-**Cron**, select **Duoke automatic replies**, and choose **Resume**. The job
-checks one page of up to five conversations every minute. Runs can take longer
-than a minute with the local model; do not create additional copies to speed it
-up. Pagination continues from a private saved cursor across runs.
+Jika menggunakan gateway di terminal, biarkan jendela tersebut tetap berjalan. Di Hermes Desktop, di bawah profil yang sama, buka **Cron**, pilih **Duoke automatic replies**, dan pilih **Resume**. Pekerjaan ini memeriksa satu halaman hingga lima percakapan setiap menit. Eksekusi dapat memakan waktu lebih dari satu menit dengan model lokal; jangan buat salinan tambahan untuk mempercepatnya. Paginasi berlanjut dari kursor privat yang dipertahankan antar eksekusi.
 
-In another Terminal window, verify:
+Untuk pekerjaan berulang, ekuivalen CLI-nya adalah `hermes -p duoke-support cron resume <job-id>` tanpa `--run-now`. Dalam versi Hermes terpasang ini, **`resume --run-now`** dan **`resume --at`** hanya mengaktifkan kembali pekerjaan satu kali (one-shot) dan menolak pekerjaan interval. Gunakan **`cron run <job-id>`** untuk eksekusi tunggal segera yang disengaja; jangan menjalankannya secara bersamaan dengan upaya terjadwal yang sudah berjalan. Dapatkan ID dari **`cron list --all`** saat pekerjaan sedang dihentikan.
+
+Di jendela Terminal lainnya, verifikasi:
 
 ```sh
 hermes -p duoke-support cron status
@@ -163,46 +103,37 @@ hermes -p duoke-support cron list
 hermes -p duoke-support cron runs
 ```
 
-The scheduler must be running and the job must be active. A resumed job without
-either a Desktop or gateway scheduler will not execute. CLI gateway status alone
-may not establish Desktop scheduler health; check actual job runs too. Keep the
-Mac awake and Ollama active.
+Penjadwalan harus berjalan dan tugas harus aktif. Tugas yang ditunda tanpa penjadwal Desktop atau gateway tidak akan dieksekusi. Status CLI gateway saja mungkin tidak dapat menetapkan kesehatan penjadwal Desktop; periksa juga eksekusi tugas aktual. Cegah Mac masuk mode tidur dan Ollama aktif.
 
-## Monitor and stop
+<a id="monitor-and-stop"></a>
+## Monitor dan hentikan
 
-Check Cron run results in Desktop. Private `status.json` and `audit.jsonl` under
-`scraping/.private/duoke-desktop/` record polling counts and delivery outcomes.
-Only an audit event with `action: sent` and `sent: true` means the bridge observed
-the outgoing answer in the conversation history. Confirm the first such answer
-in Duoke. A model summary alone is insufficient.
+Periksa hasil jalankan Cron di Desktop. Private `status.json` dan `audit.jsonl` di bawah `scraping/.private/duoke-desktop/` merekam jumlah polling dan hasil pengiriman.
+Hanya peristiwa audit dengan `action: sent` dan `sent: true` berarti jembatan mengamati jawaban keluar dalam riwayat percakapan. Konfirmasi jawaban pertama tersebut di Duoke. Ringkasan model saja tidak cukup.
 
-- `preview`: delivery gate is off; nothing sent.
-- `needsReview`: no eligible source answer; handle the conversation manually.
-- `conversation_changed` / `knowledge_changed`: recheck invalidated the reply.
-- `uncertain`: an attempt was reserved, but delivery could not be verified. Review
-  Duoke manually. The bridge will not retry that incoming message automatically.
-- `error`: inspect the session and local services. Do not clear deduplication
-  state to recover from a network or authentication error.
+- `preview`: gerbang pengiriman mati; tidak ada yang dikirim.
+- `needsReview`: tidak ada jawaban sumber yang layak; atasi percakapan secara manual.
+- `conversation_changed` / `knowledge_changed`: pengecekan ulang telah membatalkan balasan.
+- `not_ready`: persiapan chat SDK gagal sebelum pengiriman; periksa autentikasi dan koneksi chat. Tidak ada upaya yang dipertahankan untuk kegagalan preflight ini.
+- `uncertain`: sebuah upaya telah dipertahankan, tetapi pengiriman tidak dapat diverifikasi. Tinjau Duoke secara manual. Jembatan tidak akan mencoba pesan masuk tersebut secara otomatis. `reason` terbatas membedakan `sdk_rejected`, `sdk_not_acknowledged`, `chat_not_ready`, `account_restricted`, kesalahan transport/verifikasi, dan tiket yang cocok yang tidak diamati. Ini tidak mengekspos kesalahan provider mentah.
+- `error`: periksa sesi dan layanan lokal. Jangan hapus keadaan deduplikasi untuk pulih dari kesalahan jaringan atau autentikasi.
 
-To stop new delivery immediately:
+Untuk menghentikan pengiriman baru segera:
 
 ```sh
 npm run duoke:desktop -- disable
 ```
 
-Then **Pause** the job in Desktop and press **Ctrl+C** in its gateway Terminal.
-Disabling cannot retract a message already dispatched. The existing shared
-`STOP_AUTOREPLY` marker also blocks this bridge. The legacy
-`DUOKE_AUTOREPLY_ENABLED` setting does not enable this separate Desktop bridge.
+Lalu **Pause** pekerjaan di Desktop dan tekan **Ctrl+C** di gateway Terminal-nya.
+Menonaktifkan tidak dapat menarik kembali pesan yang sudah dikirim. Marker bersama `STOP_AUTOREPLY` yang ada juga memblokir jembatan ini. Pengaturan legacy `DUOKE_AUTOREPLY_ENABLED` tidak mengaktifkan jembatan Desktop terpisah ini.
 
-If authentication expires, disable delivery, pause the job, repeat
-`session --headed` and `check`, preview again, and then enable and resume.
-Never delete `delivery-state.json` to restart: it prevents duplicate or ambiguous
-attempts from being repeated.
+Jika autentikasi kadaluarsa, nonaktifkan pengiriman dan jeda pekerjaan. Keluar sepenuhnya dari Hermes Desktop sebelum mengulang `session --headed` dan `check`, sehingga MCP browser yang dikuncinya ditutup selama pemulihan. Buka kembali Desktop, pratinjau lagi, lalu aktifkan dan lanjutkan hanya setelah pemeriksaan lolos. Menutup Desktop adalah tindakan pencegahan pemulihan; penyebab invalidasi sesi berulang belum ditetapkan.
 
-## Verification boundary
+`authentication_required` berarti sesi disimpan mencapai layar login Duoke. Setelah memperbarui jembatan, jalankan `npm run duoke:desktop -- refresh` sementara pengiriman dinonaktifkan dan pekerjaan dijeda, lalu keluar sepenuhnya dan buka kembali Desktop untuk memuat kode baru. Snapshot sesi yang diperbarui menginvalidasi konteks browser yang dikunci; mereka tidak memperbaiki login yang ditolak oleh penyedia. Sekarang prompt terjadwal melaporkan kesalahan alat daripada menganggapnya sebagai kotak masuk kosong. Verifikasi hasil alat aktual karena penyelesaian jalanan atau respons model diam saja bukan bukti dari polling sukses.
+`navigation_timeout` dan `application_not_ready` mengidentifikasi kegagalan pemuat halaman sebelumnya; `chat_not_ready` mengidentifikasi kegagalan kesiapan SDK. Jembatan membuka rute obrolan dilindungi untuk menguji sesi disimpan daripada mengandalkan redirect akar situs. Instalasi Node Playwright tidak memperbaiki autentikasi: jembatan ini menggunakan Python Playwright dari lingkungan virtual repositori. Pemeriksaan enable yang gagal tidak membuat gerbang pengiriman; melanjutkan cron saja tidak dapat mengaktifkan pengiriman.
+Jangan pernah menghapus `delivery-state.json` untuk memulai ulang: itu mencegah upaya duplikat atau ambigu diulang.
 
-The current dated evidence is in the handoff. Synthetic delivery tests exercise
-state checks and a real Chrome page with a simulated Duoke store. These tests do
-not prove a real customer message was delivered. The first owner-started live
-reply and recurring Desktop schedule are separate acceptance steps.
+<a id="verification-boundary"></a>
+## Batasan verifikasi
+
+Bukti bertanggal saat ini ada di serah terima. Uji pengiriman sintetis memeriksa pengecekan keadaan dan halaman Chrome asli dengan toko Duoke disimulasikan. Uji ini tidak membuktikan pesan pelanggan asli telah dikirim. Balasan langsung pertama yang dimulai pemilik dan jadwal Desktop berulang adalah langkah penerimaan terpisah.

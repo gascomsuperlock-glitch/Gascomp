@@ -10,19 +10,19 @@ generated: true
 
 # Halo kak, kepala knop regulatornya terbuat dari plastik atau besi, dan bagian body-nya dari apa?
 
-Product: [[../../products/grs-925-d2a7488|Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman]]
+Produk: [[../../products/grs-925-d2a7488|Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman]]
 
-## Question
+## Pertanyaan
 
 Halo kak, kepala knop regulatornya terbuat dari plastik atau besi, dan bagian body-nya dari apa?
 
-## Approved answer
+## Jawaban disetujui
 
 Halo Kak! Untuk knop pemutarannya plastik ya kak, sedangkan untuk body regulatornya menggunakan zinc alloy yang kuat dan tahan lama. Produk ini dilengkapi dengan body besar dan kuat yang antipecah dan rusak, serta sistem pengunci putar yang mudah dipasang hanya dengan satu jari.
 
-Product guide: https://support.gascompsuperlock.com/produk/grs-925-d2a7488
+Panduan produk: https://support.gascompsuperlock.com/produk/grs-925-d2a7488
 
-## Search triggers
+## Pemicu pencarian
 
 - Halo kak, kepala knop regulatornya terbuat dari plastik atau besi, dan bagian body-nya dari apa?
 - Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman

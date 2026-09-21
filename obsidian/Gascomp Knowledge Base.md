@@ -4,11 +4,11 @@ approved_entries: 55
 generated: true
 ---
 
-# Gascomp Knowledge Base
+# Basis Pengetahuan Gascomp
 
-This index contains only approved FAQs, issues, tutorials, and reviewed entries.
+Indeks ini hanya memuat FAQ, panduan masalah, tutorial, dan entri tinjauan yang sudah disetujui.
 
-## Products
+## Produk
 
 - [[products/produk-baru-v8lp35|GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium · GRS-915]]
 - [[products/grs-925-d2a7488|Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman · GRS-925]]
@@ -28,7 +28,7 @@ This index contains only approved FAQs, issues, tutorials, and reviewed entries.
 - [[products/new-product-5be8g9|GASCOMP Paket Regulator Meter + Selang (GRT-924E) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik · GRT-924E]]
 - [[products/new-product-5bnxu5|GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock · GRP-2D]]
 
-## Active answers
+## Jawaban aktif
 
 - [[knowledge/approved/admin-faq-faq-1789027787646-imiwo|Mengapa regulator ini tidak bisa digunakan?~]] · GRS-915
 - [[knowledge/approved/admin-faq-faq-1789117426641-pgjiu|Yg tipe 915f bisa utk semua tabung jg?]] · GRS-915F

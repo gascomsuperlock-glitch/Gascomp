@@ -10,19 +10,19 @@ generated: true
 
 # New question
 
-Product: [[../../products/grp-934e-b2c4ed5|GASCOMP Paket Regulator Gas LPG Premium GRP-934E + Selang Flexible 1.8M Anti Tikus & Bocor Garansi 1 Tahun SNI]]
+Produk: [[../../products/grp-934e-b2c4ed5|GASCOMP Paket Regulator Gas LPG Premium GRP-934E + Selang Flexible 1.8M Anti Tikus & Bocor Garansi 1 Tahun SNI]]
 
-## Question
+## Pertanyaan
 
 New question
 
-## Approved answer
+## Jawaban disetujui
 
 Write an answer for the customer.
 
-Product guide: https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5
+Panduan produk: https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5
 
-## Search triggers
+## Pemicu pencarian
 
 - New question
 - GASCOMP Paket Regulator Gas LPG Premium GRP-934E + Selang Flexible 1.8M Anti Tikus & Bocor Garansi 1 Tahun SNI

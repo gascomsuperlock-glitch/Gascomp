@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRT-2D
 - **Model:** Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789367738977-o1985|Kalau rusak, bisa klaim garansi nggak Kak?]]
 - [[../knowledge/approved/admin-faq-faq-1789367833647-wheyq|Bagaimana cara melepas karet seal di regulator?]]

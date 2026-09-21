@@ -1,44 +1,50 @@
-# Product overview and scope
+<a id="product-overview-and-scope"></a>
+# Tinjauan produk dan cakupan
 
-[Specification index](spec.md)
+[Indeks spesifikasi](spec.md)
 
-## Purpose
+<a id="purpose"></a>
+## Tujuan
 
-Gascomp customers need clear usage guidance, embedded tutorial videos, troubleshooting, FAQs, warranty claims, and access to support after purchase. The Help Center aims to reduce avoidable returns caused by setup or usage confusion and makes help easy to reach through a QR code on the product or packaging.
+Pelanggan Gascomp membutuhkan panduan penggunaan yang jelas, video tutorial terintegrasi, pemecahan masalah, FAQ, klaim garansi, dan akses dukungan setelah pembelian. Pusat Bantuan bertujuan mengurangi pengembalian yang dapat dihindari akibat kebingungan dalam pemasangan atau penggunaan dan memudahkan akses bantuan melalui kode QR pada produk atau kemasan.
 
-Primary users are customers who already own a Gascomp product. Gascomp staff use the admin panel to maintain product help and review warranty tickets.
+Pengguna utama adalah pelanggan yang sudah memiliki produk Gascomp. Staf Gascomp menggunakan panel admin untuk memelihara bantuan produk dan meninjau tiket garansi.
 
-English is the standard language for project-owned source content, documentation, generated content, operator-facing copy, and database defaults. Customer-facing experiences support Indonesian and English through a language selector. Exact external source values and stable public URLs follow the compatibility rules in the [language standard](../architecture/language-standard.md).
+Dokumen Markdown milik proyek menggunakan bahasa Indonesia. Kode, keluaran sistem non-Markdown, dan nilai database tetap mengikuti kontrak teknis yang berlaku. Pengalaman pelanggan mendukung bahasa Indonesia dan Inggris melalui pemilih bahasa. Nilai sumber eksternal dan URL publik yang stabil mengikuti aturan kompatibilitas dalam [standar bahasa](../architecture/language-standard.md).
 
-## Language requirement
+<a id="language-requirement"></a>
+## Kebutuhan bahasa
 
-Use English as the standard language for every task and all project-owned output, including code, configuration, documentation, comments, tests, logs, generated content, and operator-facing copy. Customer-facing pages must provide a language selector with Indonesian and English, persist the customer's choice, and fall back to English when no choice or translation is available. Preserve exact external values only when they are listed as compatibility exceptions in the [language standard](../architecture/language-standard.md).
+Gunakan bahasa Indonesia untuk semua dokumen Markdown (`.md`) milik proyek. Pertahankan nama database, folder, file, path, perintah, pengenal, dan nilai kompatibilitas. Kode, konfigurasi, komentar, pengujian, log, serta keluaran non-Markdown tetap menggunakan bahasa Inggris sesuai konteksnya. Halaman pelanggan menyediakan pilihan bahasa Indonesia dan Inggris, menyimpan pilihan pelanggan, dan menggunakan bahasa Inggris sebagai cadangan bila belum ada pilihan atau terjemahan. Pertahankan nilai eksternal yang tercantum sebagai pengecualian dalam [standar bahasa](../architecture/language-standard.md).
 
-## Initial scope
+<a id="initial-scope"></a>
+## Cakupan awal
 
-- Dynamic product catalog with name, model, and SKU search.
-- One stable help page and one reusable QR code per SKU.
-- Product identity, image gallery, embedded YouTube tutorials, issue guides, and FAQs.
-- WhatsApp, Gascomp Care, and Service Center access.
-- Warranty claim form, private evidence, ticket number, and admin status review.
-- Protected admin tools for products, variations, images, tutorials, issues, FAQs, settings, QR codes, and tickets.
-- Shared Supabase storage with local development fallbacks.
-- Duoke catalog import, reviewed knowledge export, and guarded reply automation.
+- Katalog produk dinamis dengan pencarian nama, model, dan SKU.
+- Satu halaman bantuan stabil dan satu kode QR yang dapat digunakan kembali per SKU.
+- Identitas produk, galeri gambar, tutorial YouTube terintegrasi, panduan masalah, dan FAQ.
+- Akses WhatsApp, Gascomp Care, dan Pusat Layanan.
+- Formulir klaim garansi, bukti pribadi, nomor tiket, dan tinjauan status admin.
+- Alat admin terlindungi untuk produk, variasi, gambar, tutorial, masalah, FAQ, pengaturan, kode QR, dan tiket.
+- Penyimpanan Supabase bersama dengan fallback pengembangan lokal.
+- Impor katalog Duoke, ekspor pengetahuan yang ditinjau, dan otomatisasi balasan yang dilindungi.
 
-Customers do not need an account. The initial release does not include a public forum, customer-to-customer questions, real-time content updates, or automatic warranty decisions. Tutorial videos use YouTube; warranty evidence videos use private file upload.
+Pelanggan tidak memerlukan akun. Pelepasan awal tidak mencakup forum publik, pertanyaan antar pelanggan, pembaruan konten waktu nyata, atau keputusan garansi otomatis. Video tutorial menggunakan YouTube; video bukti garansi menggunakan unggah file pribadi.
 
-## Success indicators
+<a id="success-indicators"></a>
+## Indikator keberhasilan
 
-- Fewer returns related to setup or usage confusion.
-- Fewer repetitive support questions.
+- Pengembalian lebih sedikit terkait kebingungan dalam pemasangan atau penggunaan.
+- Pertanyaan dukungan berulang lebih sedikit.
 
-Numeric targets, baseline data, evaluation period, and measurement method still require a business decision.
+Target numerik, data baseline, periode evaluasi, dan metode pengukuran masih memerlukan keputusan bisnis.
 
-## Open content and business inputs
+<a id="open-content-and-business-inputs"></a>
+## Konten terbuka dan masukan bisnis
 
-- Verified product names, photos, SKUs, tutorial links, FAQs, and troubleshooting instructions.
-- Final WhatsApp number and external support destinations.
-- Official warranty duration, start date, coverage, one-time-use basis, and post-decision process.
-- Final production hostname, deployment service, and approved brand assets.
+- Nama produk yang diverifikasi, foto, SKU, link tutorial, FAQ, dan instruksi pemecahan masalah.
+- Nomor WhatsApp akhir dan tujuan dukungan eksternal.
+- Durasi garansi resmi, tanggal mulai, cakupan, dasar penggunaan sekali pakai, dan proses pasca-keputusan.
+- Hostname produksi akhir, layanan deployment, dan aset merek yang disetujui.
 
-Status: the initial catalog, product help, admin, Supabase, QR, warranty, import, and knowledge workflows are implemented. Production content, credentials, selectors, warranty policy, hostname, and deployment still require final operational values.
+Status: katalog awal, bantuan produk, admin, Supabase, QR, garansi, impor, dan alur kerja pengetahuan telah diimplementasikan. Konten produksi, kredensial, selektor, kebijakan garansi, hostname, dan deployment masih memerlukan nilai operasional akhir.

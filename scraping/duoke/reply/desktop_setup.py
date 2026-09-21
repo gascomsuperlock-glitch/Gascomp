@@ -10,10 +10,10 @@ import subprocess
 from pathlib import Path
 
 import httpx
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright, Error as BrowserError
 
 from scraping.duoke.chat.archive_duoke_chats import private_json
-from scraping.duoke.reply.desktop_browser import DesktopBrowser
+from scraping.duoke.reply.desktop_browser import DesktopBrowser, DeliveryAdapterError, DUOKE_WORKSPACE_URL
 from scraping.duoke.reply.desktop_service import DesktopService
 from scraping.duoke.reply.desktop_prompts import PROMPT, SOUL
 from scraping.duoke.reply.desktop_model import CONTEXT_LENGTH, context_length, repair_context
@@ -33,10 +33,12 @@ def profile_config():
                   "disabled_toolsets": ["kanban"]},
         "terminal": {"cwd": str(Path.home() / ".hermes/profiles" / PROFILE_NAME / "workspace")},
         "platform_toolsets": {"cli": ["duoke"], "cron": ["duoke"]},
+        "tools": {"tool_search": {"enabled": "off"}},
         "cron": {"model": "qwen3.5:4b", "model_provider": "custom"},
         "mcp_servers": {"duoke": {"command": str(ROOT / "scraping/.venv/bin/python"),
                                    "args": ["-m", "scraping.duoke.reply.desktop_mcp"],
-                                   "env": {"PYTHONPATH": str(ROOT)}, "timeout": 120}},
+                                   "env": {"PYTHONPATH": str(ROOT)}, "timeout": 120,
+                                   "tools": {"resources": False, "prompts": False}}},
     }
 
 
@@ -109,6 +111,19 @@ def refresh_instructions():
         (target / "workspace").mkdir(exist_ok=True, mode=0o700)
         config["terminal"]["cwd"] = str(target / "workspace")
         private_json(config_path, config)
+    server = config.get("mcp_servers", {}).get("duoke", {})
+    if server.get("args") == ["-m", "scraping.duoke.reply.desktop_mcp"]:
+        before = json.dumps(config, sort_keys=True)
+        # The small local model must see the four concrete MCP schemas rather
+        # than first discover them through Hermes' generic tool-call bridge.
+        config.setdefault("tools", {}).setdefault("tool_search", {})["enabled"] = "off"
+        server.setdefault("tools", {}).update({"resources": False, "prompts": False})
+        if json.dumps(config, sort_keys=True) != before:
+            destination = backup / "config-before-direct-tools.yaml"
+            if not destination.exists():
+                shutil.copy2(config_path, destination)
+                destination.chmod(0o600)
+            private_json(config_path, config)
     for job in owned:
         if job.get("prompt") != PROMPT:
             subprocess.run([hermes, "-p", PROFILE_NAME, "cron", "edit", job["id"],
@@ -134,12 +149,15 @@ async def capture_session(headed=False):
         try:
             async def capture(request):
                 if is_duoke_url(request.url):
-                    headers = await request.all_headers()
+                    try:
+                        headers = await request.all_headers()
+                    except BrowserError:
+                        return
                     if headers.get("x-access-token"):
                         session["headers"] = headers
             context.on("request", capture)
             page = context.pages[0] if context.pages else await context.new_page()
-            await page.goto(DEFAULT_DUOKE_URL, wait_until="domcontentloaded", timeout=60000)
+            await page.goto(DUOKE_WORKSPACE_URL, wait_until="domcontentloaded", timeout=60000)
             if headed:
                 print("Sign in in the Duoke window. Waiting for the authenticated workspace...", flush=True)
             await page.wait_for_function("() => !!document.querySelector('#app')?.__vue__?.$store?.state.System?.user?.uid",
@@ -173,7 +191,7 @@ async def check():
     try:
         service = DesktopService(browser)
         status = await service.status()
-        await browser.open()
+        await browser.prepare_send()
         data = await browser.read("POST", browser.session["list_url"], json={**browser.session["list_body"],
                                   "size": 1, "offset": 0, "shopIdList": [], "filterGroups": []})
         if not isinstance(data.get("list"), list):
@@ -214,7 +232,13 @@ def main():
         return 0
     except Exception as error:
         print(f"Desktop setup failed ({type(error).__name__}).")
-        if isinstance(error, ValueError):
+        if isinstance(error, DeliveryAdapterError):
+            print(f"Duoke readiness failed: {error.reason}.")
+            if error.reason == "authentication_required":
+                print("Quit Hermes Desktop before running session --headed to refresh the saved login. Run check before enabling or resuming.")
+            else:
+                print("Duoke page or chat connection is not ready. Inspect connectivity and the browser before resuming.")
+        elif isinstance(error, ValueError):
             print(str(error))
         else:
             print("Check Ollama and run session --headed to sign in again. Then run check before enabling delivery.")

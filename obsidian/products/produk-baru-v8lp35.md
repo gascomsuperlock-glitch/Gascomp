@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRS-915
 - **Model:** Regulator
-- **Help page:** https://support.gascompsuperlock.com/produk/produk-baru-v8lp35
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/produk-baru-v8lp35
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789027787646-imiwo|Mengapa regulator ini tidak bisa digunakan?~]]
 - [[../knowledge/approved/admin-faq-faq-1789360552185-ggzdb|Apa fungsi dan keunggulan selang berwarna oranye pada regulator GASCOMP Superlock GRS-915?]]

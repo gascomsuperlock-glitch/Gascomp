@@ -103,47 +103,47 @@ class ImportDuokeTests(unittest.TestCase):
         (archive_dir / "Index.md").write_text("# Archive index\n", encoding="utf-8")
         (archive_dir / "malformed.md").write_text("missing frontmatter\n", encoding="utf-8")
         path = archive_dir / "Conversation fixture.md"
-        path.write_text(archive_note("""### 2026-09-15T03:02:20+00:00 — Customer
+        path.write_text(archive_note("""### 2026-09-15T03:02:20+00:00 — Pelanggan
 
-Type: item
+Tipe: item
 
     {
       "skuValue": "GRS-01"
     }
 
-### 2026-09-15T03:02:21+00:00 — Customer
+### 2026-09-15T03:02:21+00:00 — Pelanggan
 
-Type: text
+Tipe: text
 
 > The chat has been assigned to Customer Service5309
 
-### 2026-09-15T03:02:22+00:00 — Seller
+### 2026-09-15T03:02:22+00:00 — Penjual
 
-Type: text
+Tipe: text
 
 > The chat timed out due to customer inactivity
 
-### 2026-09-15T03:02:32+00:00 — Customer
+### 2026-09-15T03:02:32+00:00 — Pelanggan
 
-Type: text
+Tipe: text
 
 > Apakah selang lama masih bisa dipakai?
 
-### 2026-09-15T03:03:00+00:00 — Seller
+### 2026-09-15T03:03:00+00:00 — Penjual
 
-Type: unknown
+Tipe: unknown
 
     {"unknownData": "untrusted embedded text"}
 
-### 2026-09-15T03:04:00+00:00 — Customer
+### 2026-09-15T03:04:00+00:00 — Pelanggan
 
-Type: text
+Tipe: text
 
 > Berapa panjang selangnya?
 
-### 2026-09-15T03:05:00+00:00 — Seller
+### 2026-09-15T03:05:00+00:00 — Penjual
 
-Type: text
+Tipe: text
 
 > Panjang selangnya 1,8 meter.
 > Pastikan sambungannya rapat."""), encoding="utf-8")
@@ -356,7 +356,7 @@ Type: text
         self.assertIn("](candidates/", index)
         self.assertNotIn("[[candidates/", index)
         self.assertIn("GC-1 · Bagaimana cara pemasangannya?", index)
-        self.assertIn("overwritten on rerun", index)
+        self.assertIn("ditimpa saat dijalankan ulang", index)
 
     def test_source_and_destination_symlinks_fail_closed(self):
         outside = self.root / "outside.md"

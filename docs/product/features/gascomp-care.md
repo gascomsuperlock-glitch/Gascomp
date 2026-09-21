@@ -1,317 +1,136 @@
-# GascompCare membership and warranty extensions
+<a id="gascompcare-membership-and-warranty-extensions"></a>
+# Perpanjangan anggota GascompCare dan garansi produk
 
-[Specification index](../spec.md)
+[Spesifikasi indeks](../spec.md)
 
-## Product agreement
+<a id="product-agreement"></a>
+## Kesepakatan produk
 
-GascompCare is paid additional protection for one specific purchased item, separate
-from the product's included warranty. One Care unit provides one year of coverage
-and up to three additional claims. Two units provide two years and up to six
-additional claims; N units provide N years and up to 3 × N additional claims.
-The Care purchase date starts coverage, not the login date or the date an operator
-enters the purchase. One account has one virtual member card; each coverage
-record identifies the specific item being protected.
+GascompCare adalah perlindungan tambahan yang dibayar untuk satu item tertentu yang dibeli, terpisah dari garansi produk yang disertakan. Satu unit Care memberikan satu tahun perlindungan dan hingga tiga klaim tambahan. Dua unit memberikan dua tahun dan hingga enam klaim tambahan; N unit memberikan N tahun dan hingga 3 × N klaim tambahan. Tanggal pembelian Care memulai periode perlindungan, bukan tanggal login atau tanggal operator memasukkan pembelian. Satu akun memiliki satu kartu anggota virtual; setiap catatan perlindungan mengidentifikasi item spesifik yang dilindungi.
 
-The owner's latest description of the included product warranty allows one to
-three claims. Its exact policy remains to be defined separately. The existing
-[Warranty Claim](warranty.md) implementation still enforces its documented
-one-claim rule and is unchanged by this feature.
+Deskripsi terbaru pemilik tentang garansi produk yang disertakan memungkinkan satu hingga tiga klaim. Kebijakan pastinya masih akan didefinisikan secara terpisah. Implementasi [Klaim Garansi](warranty.md) tetap mematuhi aturan satu-klaim yang didokumentasikan dan tidak berubah oleh fitur ini.
 
-Administrators record verified Care purchases and approved claim usage manually.
-A purchase identifies one protected item, its Care order reference, actual purchase
-date, and number of units (1–10 per record). Each purchase has its own coverage
-period and claim balance. Purchases on different dates remain separate; the system
-does not combine their periods or reassign claims between purchases. Account
-creation alone does not activate coverage.
+Administrator mencatat pembelian Care yang diverifikasi dan penggunaan klaim yang disetujui secara manual. Sebuah pembelian mengidentifikasi satu item dilindungi, referensi pesanan Care, tanggal pembelian aktual, dan jumlah unit (1–10 per catatan). Setiap pembelian memiliki periode perlindungan sendiri dan saldo klaim. Pembelian pada tanggal yang berbeda tetap terpisah; sistem tidak menggabungkan periode mereka atau mengalokasikan kembali klaim antar pembelian. Pembuatan akun saja tidak mengaktifkan perlindungan.
 
-Marketplace synchronization, working QR codes, refunds, purchase corrections,
-and automatic allocation between included warranty tickets and Care remain
-deferred. An approved claim is recorded manually against its Care purchase; the
-ordinary warranty ticket workflow does not automatically consume Care quota.
+Sinkronisasi pasar, kode QR yang berfungsi, pengembalian dana, koreksi pembelian, dan alokasi otomatis antara tiket garansi disertakan dan Care ditangguhkan. Sebuah klaim yang disetujui dicatat secara manual terhadap pembelian Care-nya; alur kerja tiket garansi biasa tidak secara otomatis mengonsumsi kuota Care.
 
-## Customer access
+<a id="customer-access"></a>
+## Akses pelanggan
 
-The public header provides a visible **GascompCare** menu on desktop and mobile,
-including the home, product guide, and warranty form pages. Existing public routes,
-printed product QR destinations, and legacy support-contact links remain stable.
+Header publik menyediakan menu **GascompCare** yang terlihat di desktop dan mobile, termasuk halaman beranda, panduan produk, dan formulir garansi. Rute publik yang ada, tujuan QR produk yang dicetak, dan tautan kontak dukungan legacy tetap stabil.
 
-- `/gascomp-care` requires a member session and shows only that member's profile
-  and virtual card.
-- `/gascomp-care/login` accepts username and password. Accounts are created by an
-  administrator; there is no public signup or automatic message delivery.
-- `/gascomp-care/change-password` requires the current password and confirmation
-  of the replacement. Temporary credentials require this step before member access.
-- Customers can sign out and change their password. Forgotten passwords are
-  handled by an administrator after the customer contacts support.
+- `/gascomp-care` memerlukan sesi anggota dan hanya menampilkan profil anggota tersebut dan kartu virtualnya.
+- `/gascomp-care/login` menerima nama pengguna dan kata sandi. Akun dibuat oleh administrator; tidak ada pendaftaran publik atau pengiriman pesan otomatis.
+- `/gascomp-care/change-password` memerlukan kata sandi saat ini dan konfirmasi penggantian. Kredensial sementara memerlukan langkah ini sebelum akses anggota.
+- Pelanggan dapat keluar dan mengubah kata sandi mereka. Kata sandi yang dilupakan ditangani oleh administrator setelah pelanggan menghubungi dukungan.
 
-Customer pages support English and Indonesian using the existing language
-preference. Metadata, validation and accessibility labels are localized. Account
-pages are excluded from indexing and member data is not publicly cached.
+Halaman pelanggan mendukung Bahasa Inggris dan Bahasa Indonesia menggunakan preferensi bahasa yang ada. Metadata, validasi, dan label aksesibilitas dilokalisasi. Halaman akun dikecualikan dari indeksing dan data anggota tidak dikunci secara publik.
 
-The member page shows the official Gascomp identity, customer name, permanent
-member number, and a coverage section for each recorded purchase. Each section
-shows its protected item, start date, inclusive end date,
-active/expired/exhausted status and remaining usable claims. Used counts, internal
-claim references, and history are reserved for the admin detail view and are
-not sent to the customer page. Expired coverage
-shows zero usable claims even if part of the original quota was unused.
+Halaman anggota menampilkan identitas resmi Gascomp, nama pelanggan, nomor anggota permanen, dan bagian perlindungan untuk setiap pembelian yang dicatat. Setiap bagian menampilkan item dilindungi, tanggal mulai, tanggal akhir inklusif, status aktif/habis/terhabis dan klaim yang tersisa yang dapat digunakan. Jumlah yang digunakan, referensi klaim internal, dan riwayat disimpan untuk tampilan detail admin dan tidak dikirim ke halaman pelanggan. Perlindungan yang kadaluarsa menampilkan nol klaim yang dapat digunakan meskipun sebagian kuota asli belum terpakai.
 
-Coverage begins on the actual Care purchase date in Asia/Jakarta and runs through
-the day before its N-year calendar anniversary. February 29 anniversaries clamp
-to February 28 in non-leap years, then subtract one day for the inclusive end.
-For example, a one-unit purchase on September 15, 2026 covers through September
-14, 2027 and permits up to three approved claims; two units cover through
-September 14, 2028 with up to six claims.
+Tanggal cakupan dimulai pada tanggal pembelian Care yang sebenarnya di zona waktu Asia/Jakarta dan berjalan hingga hari sebelum ulang tahun kalender N-nya. Ulang tahun 29 Februari dibulatkan menjadi 28 Februari pada tahun non-kabisat, lalu dikurangi satu hari untuk akhir inklusif. Sebagai contoh, pembelian satu unit pada 15 September 2026 mencakup hingga 14 September 2027 dan mengizinkan hingga tiga klaim disetujui; dua unit mencakup hingga 14 September 2028 dengan hingga enam klaim.
 
-An account without recorded purchases shows an explicit empty state, not a made-up
-expiry or zero balance. Unavailable coverage data shows a retryable error, not
-an empty purchase list. Customers can refresh details; visible pages refresh every
-minute and on focus to update usage and expiry. Reads derive ownership exclusively
-from the member session, and accounts awaiting password replacement cannot read
-coverage. No usable QR is issued.
+Akun tanpa pembelian yang tercatat menampilkan status kosong eksplisit, bukan kedaluwarsa dibuat-buat atau saldo nol. Data cakupan yang tidak tersedia menampilkan kesalahan yang dapat dicoba ulang, bukan daftar pembelian kosong. Pelanggan dapat memperbarui detail; halaman yang terlihat diperbarui setiap menit dan saat fokus untuk memperbarui penggunaan dan kedaluwarsa. Bacaan memperoleh kepemilikan secara eksklusif dari sesi anggota, dan akun yang menunggu penggantian kata sandi tidak dapat membaca cakupan. Tidak ada QR yang berguna yang diterbitkan.
 
-## Admin account management
+<a id="admin-account-management"></a>
+## Manajemen akun admin
 
-**GascompCare** appears after **Warranty tickets**. Administrators can search
-members by name, username, or member number, browse 20 results per page, create
-accounts, inspect a member, reset passwords, and delete accounts. The initial list is empty.
+**GascompCare** muncul setelah **Warranty tickets**. Administrator dapat mencari anggota berdasarkan nama, nama pengguna, atau nomor anggota, menelusuri 20 hasil per halaman, membuat akun, memeriksa anggota, mereset kata sandi, dan menghapus akun. Daftar awal kosong.
 
-Creation collects name, username, WhatsApp number, and an optional Shopee order
-reference. That reference is an operator note, not a verified purchase or an
-entitlement. Usernames are unique after lowercase normalization and use 3–32
-ASCII letters, digits, dots, underscores, or hyphens.
+Pembuatan mengumpulkan nama, nama pengguna, nomor WhatsApp, dan referensi pesanan Shopee opsional. Referensi tersebut adalah catatan operator, bukan pembelian yang diverifikasi atau hak akses. Nama pengguna unik setelah normalisasi huruf kecil dan menggunakan 3–32 huruf ASCII, angka, titik, garis bawah, atau tanda hubung.
 
-The server generates a stable member number and random temporary password. The
-temporary password is returned only after creation or reset so an administrator
-can copy it for manual delivery through WhatsApp or marketplace chat. Dismissal
-or navigation clears the visible credentials. Existing passwords cannot be read.
-If a successful response is lost, an administrator can find the account and reset
-the password rather than create another account.
+Server menghasilkan nomor anggota stabil dan kata sandi sementara acak. Kata sandi sementara hanya dikembalikan setelah pembuatan atau reset sehingga administrator dapat menyalinnya untuk pengiriman manual melalui WhatsApp atau obrolan pasar. Penolakan atau navigasi menghapus kredensial yang terlihat. Kata sandi yang ada tidak dapat dibaca. Jika respons sukses hilang, administrator dapat menemukan akun dan mereset kata sandi daripada membuat akun lain.
 
-Password reset requires confirmation, revokes existing sessions, and requires a
-password change at the next login. Member operations persist immediately and do
-not use the catalog's Save/Cancel workflow. Unsaved catalog edits survive moving
-between dashboard views.
+Reset kata sandi memerlukan konfirmasi, mencabut sesi yang ada, dan memerlukan perubahan kata sandi pada login berikutnya. Operasi anggota bertahan segera dan tidak menggunakan alur Simpan/Batalkan katalog. Perubahan katalog yang belum disimpan bertahan saat berpindah antara tampilan dashboard.
 
-### Selection and deletion
+<a id="selection-and-deletion"></a>
+### Pemilihan dan penghapusan
 
-**Select Members** enables checkboxes in the member list. **Select all on this
-page** selects only the visible page, and **Delete Selected** deletes those
-explicitly selected accounts. Selection clears when searching, changing pages,
-or leaving selection mode, so hidden results are never implicitly deleted.
-The member detail also offers **Delete Member** for one account.
+**Select Members** mengaktifkan kotak centang dalam daftar anggota. **Select all on this page** hanya memilih anggota pada halaman yang terlihat, dan **Delete Selected** menghapus akun yang secara eksplisit dipilih. Pemilihan dibersihkan saat mencari, mengubah halaman, atau meninggalkan mode pemilihan, sehingga hasil tersembunyi tidak pernah dihapus secara implisit. Detail anggota juga menawarkan **Delete Member** untuk satu akun.
 
-Deletion requires confirmation, hides the accounts from the active member list,
-and immediately ends customer access. It marks `deleted_at` and revokes sessions;
-it does not physically remove members, purchases, claims, or other customer data.
-Member numbers and usernames remain reserved. Deleted accounts cannot log in,
-reset or change passwords, create a purchase, or confirm a claim. Existing
-purchase and claim references remain reserved to preserve duplicate protection.
-There is no restoration UI in this release.
+Penghapusan memerlukan konfirmasi, menyembunyikan akun dari daftar anggota aktif, dan segera mengakhiri akses pelanggan. Ini menandai `deleted_at` dan mencabut sesi; ini tidak menghapus fisik anggota, pembelian, klaim, atau data pelanggan lainnya. Nomor anggota dan nama pengguna tetap dipertahankan sebagai cadangan. Akun yang dihapus tidak dapat login, mereset atau mengubah kata sandi, membuat pembelian, atau mengonfirmasi klaim. Referensi pembelian dan klaim yang ada tetap dipertahankan sebagai cadangan untuk melindungi duplikasi. Tidak ada antarmuka pemulihan dalam rilis ini.
 
-The server accepts 1–100 explicit UUIDs, validates the entire batch, and performs
-an atomic deletion. Unknown IDs reject the batch; retrying an already-deleted
-account is safe. Database locks serialize deletion with credential and coverage
-changes. Failed or uncertain requests do not show a false success. Successful
-deletion clears affected detail and temporary credentials and refreshes the list.
+Server menerima 1–100 UUID eksplisit, memvalidasi seluruh batch, dan melakukan penghapusan atomik. ID yang tidak dikenal menolak batch; mencoba ulang akun yang sudah dihapus aman. Kunci database serialisasi penghapusan dengan perubahan kredensial dan cakupan. Permintaan gagal atau tidak pasti tidak menampilkan kesuksesan palsu. Penghapusan sukses menghapus detail terpengaruh dan kredensial sementara serta memperbarui daftar.
 
-The selected member also has a **Coverage and claims** panel. **Add Care Purchase**
-persists an operator-verified purchase immediately. **Confirm Claim** is a single button in the card detail view, with a confirmation
-dialog; one successful confirmation uses one claim. Admins see used/total claims
-and dated history. The server determines today in Asia/Jakarta and uses an internal
-request identifier, so admins do not enter a reference or usage date. Expired or
-exhausted coverage cannot accept new confirmations. References are normalized
-case-insensitively and unique across members to prevent duplicate purchases or
-claims. Retrying the same request identifier is idempotent; the admin keeps that identifier
-after an ambiguous network error and replaces it only after confirmed success. Claim quota checks and inserts hold a purchase-row lock.
+Anggota yang dipilih juga memiliki panel **Coverage and claims**. **Add Care Purchase** mempertahankan pembelian yang diverifikasi oleh operator secara langsung. **Confirm Claim** adalah satu tombol dalam tampilan detail kartu, dengan dialog konfirmasi; satu konfirmasi sukses menggunakan satu klaim. Admin melihat klaim terpakai/total dan riwayat berhari-hari. Server menentukan hari ini di Asia/Jakarta dan menggunakan identifikasi permintaan internal, sehingga admin tidak memasukkan tanggal referensi atau penggunaan. Jaminan yang kadaluarsa atau habis tidak dapat menerima konfirmasi baru. Referensi dinormalisasi secara case-insensitif dan unik antar anggota untuk mencegah pembelian atau klaim ganda. Mengulang identifikasi permintaan yang sama bersifat idempoten; admin mempertahankan identifikasi tersebut setelah kesalahan jaringan ambigu dan menggantinya hanya setelah sukses dikonfirmasi. Cek kuota klaim dan insert memegang kunci baris pembelian.
 
-A separate card preview is labeled **Sample** and uses fictional data, one year,
-up to three claims, and a nonfunctional QR placeholder. It never represents a
-customer's actual purchase or coverage.
+Kartu pratinjau terpisah diberi label **Sample** dan menggunakan data fiktif, satu tahun, hingga tiga klaim, dan placeholder QR non-fungsional. Itu tidak pernah mewakili pembelian atau jaminan aktual pelanggan.
 
-## Authentication and storage
+<a id="authentication-and-storage"></a>
+## Autentikasi dan penyimpanan
 
-### One local website
+<a id="one-local-website"></a>
+### Satu situs web lokal
 
-Use `npm run dev` at `http://localhost:3000` for all application features. The
-development command explicitly reserves port 3000; a second invocation must not
-silently create a different local website. The earlier website on port 3100 is
-retired. Administrator credentials come from the normal project configuration.
+Gunakan `npm run dev` di `http://localhost:3000` untuk semua fitur aplikasi. Perintah pengembangan secara eksplisit mendedikasikan port 3000; invokasi kedua tidak boleh menciptakan situs web lokal yang berbeda secara diam-diam. Situs web sebelumnya pada port 3100 sudah usang. Kredensial administrator berasal dari konfigurasi proyek normal.
 
-Optional `GASCOMP_CARE_PREVIEW_URL` and `GASCOMP_CARE_PREVIEW_KEY` variables in
-the ignored `.env.local` connect only GascompCare to the existing loopback test
-database. The catalog, ordinary warranty workflow, and their configured Supabase
-connection remain unchanged. The database listener is a background service, not
-a second website. The local gateway persists test accounts, sessions, purchases, and claims in an
-ignored private data directory so restarting it retains the existing records.
+Variabel `GASCOMP_CARE_PREVIEW_URL` dan `GASCOMP_CARE_PREVIEW_KEY` opsional dalam `.env.local` yang diabaikan hanya menghubungkan GascompCare ke database uji coba loopback yang ada. Katalog, alur kerja garansi biasa, dan koneksi Supabase yang dikonfigurasi tetap tidak berubah. Pengecer database adalah layanan latar belakang, bukan situs web kedua. Gerbang lokal mempertahankan akun uji coba, sesi, pembelian, dan klaim dalam direktori data pribadi yang diabaikan sehingga menyalinkannya menyimpan catatan yang ada.
 
-This override is available only in development and permits only an HTTP loopback
-database. Invalid or incomplete settings, or an unavailable preview database,
-report unavailability without falling back to the primary database. Production
-builds and `npm run start` ignore both preview variables and use the configured
-Supabase project. Local test members are never copied to production by a Git push,
-build, or migration. See [Supabase setup](../../setup/supabase.md) for preserving
-existing database and Storage content during an explicitly authorized rollout.
+Penyimpangan ini tersedia hanya dalam pengembangan dan mengizinkan hanya database loopback HTTP. Pengaturan yang tidak valid atau tidak lengkap, atau database pratinjau yang tidak tersedia, melaporkan ketidaktersediaan tanpa jatuh kembali ke database utama. Pembangun produksi dan `npm run start` mengabaikan kedua variabel pratinjau dan menggunakan proyek Supabase yang dikonfigurasi. Anggota uji coba lokal tidak pernah disalin ke produksi oleh push Git, build, atau migrasi. Lihat [Supabase setup](../../setup/supabase.md) untuk mempertahankan konten database dan Storage yang ada selama rollout yang secara eksplisit diotorisasi.
 
-### Sessions
+<a id="sessions"></a>
+### Sesi
 
-Member authentication is separate from the existing admin authentication. Supabase
-stores accounts, hashed sessions and shared login-attempt counters. There is no
-local-storage or mock-auth fallback when Supabase is unavailable. The interface
-reports temporary unavailability and does not issue credentials or a session.
+Autentikasi anggota terpisah dari autentikasi admin yang ada. Supabase menyimpan akun, sesi terhash dan penghitung percobaan login bersama. Tidak ada fallback penyimpanan lokal atau mock-auth ketika Supabase tidak tersedia. Antarmuka melaporkan ketidaktersediaan sementara dan tidak mengeluarkan kredensial atau sesi.
 
-Passwords use asynchronous Node scrypt with N=32768, r=8, p=3, a random salt per
-password, and a 64 MiB memory bound. Customer passwords use 8–128 characters.
-Only the password hash and parameters are stored. Passwords and session tokens
-must not appear in logs or member-list responses.
+Kata sandi menggunakan Node scrypt asinkron dengan N=32768, r=8, p=3, garam acak per kata sandi, dan batas memori 64 MiB. Kata sandi pelanggan menggunakan 8–128 karakter. Hanya hash kata sandi dan parameter yang disimpan. Kata sandi dan token sesi tidak boleh muncul dalam log atau respons daftar anggota.
 
-Sessions use random tokens stored as hashes in the database and expire after
-eight hours. The separate member cookie is HTTP-only, SameSite=Lax, scoped to
-`/gascomp-care`, and Secure in production. Logout revokes the server session.
-Password changes and resets atomically invalidate old sessions. A session awaiting
-password replacement can only change the password or sign out.
+Sesi menggunakan token acak disimpan sebagai hash di database dan kadaluarsa setelah delapan jam. Cookie anggota terpisah adalah HTTP-only, SameSite=Lax, berskala ke `/gascomp-care`, dan aman dalam produksi. Logout mencabut sesi server. Perubahan kata sandi dan reset secara atomik membuat sesi lama tidak valid. Sesi yang menunggu penggantian kata sandi hanya dapat mengubah kata sandi atau keluar.
 
-Normal local development supports HTTP cookies without an extra flag. For a
-separate production-build check on loopback, `GASCOMP_LOCAL_HTTP_PREVIEW=true`
-allows WebKit/Safari to retain sessions over HTTP; the current development
-launcher does not set this flag.
-Both admin and member cookie writes omit Secure only when that flag is enabled
-and the request has an exact matching HTTP Origin/Host on `localhost`, `127.0.0.1`,
-or `[::1]`. HTTPS, non-loopback hosts, malformed/mismatched origins, and deployments
-without the flag retain Secure. Cookie path, HTTP-only, SameSite, expiration,
-password verification, and database session revocation remain unchanged.
+Pengembangan lokal normal mendukung HTTP cookies tanpa flag tambahan. Untuk memeriksa loopback pada build produksi terpisah, `GASCOMP_LOCAL_HTTP_PREVIEW=true` memungkinkan WebKit/Safari mempertahankan sesi melalui HTTP; peluncur pengembangan saat ini tidak mengatur flag ini.
+Penulisan cookie admin dan anggota mengabaikan Secure hanya ketika flag tersebut aktif dan permintaan memiliki HTTP Origin/Host yang cocok secara tepat pada `localhost`, `127.0.0.1`, atau `[::1]`. HTTPS, host non-loopback, asal yang rusak/tidak cocok, dan deployment tanpa flag mempertahankan Secure. Jalur cookie, HTTP-only, SameSite, kadaluarsa, verifikasi password, dan pembatalan sesi database tetap tidak berubah.
 
-Every protected read and mutation verifies the current server-side session.
-Member identity comes from that session, not a client-supplied member ID. Admin
-account operations verify an admin session; mutations also verify request origin.
-Row-level security and database grants restrict member tables and functions to
-server-side access. Database operations enforce credential-version checks to
-prevent concurrent logins from restoring access after a reset.
+Setiap pembacaan dan mutasi dilindungi memverifikasi sesi sisi server saat ini. Identitas anggota berasal dari sesi tersebut, bukan ID anggota yang disuplai klien. Operasi akun admin memverifikasi sesi admin; mutasi juga memverifikasi asal permintaan. Keamanan tingkat baris dan hak akses database membatasi tabel dan fungsi anggota untuk akses sisi server. Operasi database menerapkan pemeriksaan versi kredensial untuk mencegah login bersamaan mengembalikan akses setelah reset.
 
-Login attempts are limited across server instances using database counters:
-five attempts per username and 30 per IP in 15 minutes. Local development
-(`NODE_ENV=development`) skips login and password-change counters for exact
-matching loopback Origin/Host requests (`localhost`, `127.0.0.1`, or `[::1]`).
-Existing local counters do not block these requests. All production requests,
-including `support.gascompsuperlock.com`, retain database-backed limits. Password
-verification, origin checks, and session requirements still apply locally. Invalid credentials use
-the same public response whether the username exists or not.
-Password-change attempts use separate counters so a successful fifth login does
-not prevent the mandatory first password change. The trusted reverse proxy must
-append or replace `X-Forwarded-For`; the application uses its final validated IP.
-Missing or invalid IPs share a conservative `unknown` bucket.
+Upaya login dibatasi di seluruh instance server menggunakan counter database: lima upaya per nama pengguna dan 30 per IP dalam 15 menit. Pengembangan lokal (`NODE_ENV=development`) melewatkan counter login dan perubahan password untuk permintaan loopback Origin/Host yang cocok secara tepat (`localhost`, `127.0.0.1`, atau `[::1]`). Counter lokal yang ada tidak memblokir permintaan ini. Semua permintaan produksi, termasuk `support.gascompsuperlock.com`, mempertahankan batasan berbasis database. Verifikasi password, pemeriksaan asal, dan persyaratan sesi tetap berlaku secara lokal. Kredensial tidak valid menggunakan respons publik yang sama baik nama pengguna ada atau tidak.
+Upaya perubahan password menggunakan counter terpisah sehingga login kelima yang berhasil tidak mencegah perubahan password wajib pertama. Proxy balik terpercaya harus menambahkan atau mengganti `X-Forwarded-For`; aplikasi menggunakan IP akhir yang diverifikasi.
+IP yang hilang atau tidak valid berbagi bucket `unknown` yang konservatif.
 
-Migration `202609150003_gascomp_care_accounts.sql` prepares this storage without
-altering warranty tickets, catalog data, evidence, or existing admin sessions.
-It must be applied before functional member authentication is available. The
-authorized production migration is recorded in the
-[Supabase integration specification](../integrations/supabase.md#gascompcare-member-accounts).
+Migrasi `202609150003_gascomp_care_accounts.sql` menyiapkan penyimpanan ini tanpa mengubah tiket garansi, data katalog, bukti, atau sesi admin yang ada. Harus diterapkan sebelum autentikasi anggota fungsional tersedia. Migrasi produksi yang diotorisasi dicatat dalam [Spesifikasi integrasi Supabase](../integrations/supabase.md#gascompcare-member-accounts).
 
-Coverage migration `202609150004_gascomp_care_coverage.sql` adds private
-`care_purchases` and `care_claims` tables and three RPCs. Server-only read access
-uses the service role; authenticated and anonymous database roles have no access.
-The service role can mutate coverage only through restricted functions that
-enforce dates, ownership, references, and quota. This migration preserves existing
-accounts, warranty data, and Storage; it does not backfill purchases from account
-creation dates or optional order notes.
+Migrasi cakupan `202609150004_gascomp_care_coverage.sql` menambahkan tabel `care_purchases` dan `care_claims` privat serta tiga RPC. Akses pembacaan sisi server menggunakan peran layanan; peran database yang terautentikasi dan anonim tidak memiliki akses. Peran layanan dapat mengubah cakupan hanya melalui fungsi terbatas yang menerapkan tanggal, kepemilikan, referensi, dan kuota. Migrasi ini mempertahankan akun yang ada, data garansi, dan Penyimpanan; tidak mengisi pembelian dari tanggal pembuatan akun atau catatan pesanan opsional.
 
-Deletion migration `202609150005_gascomp_care_member_deletion.sql` adds the
-nullable marker and protected batch deletion function, and updates authentication
-and coverage functions to reject deleted accounts. Apply it after the coverage
-migration before deploying the updated application. Existing data is retained.
+Migrasi penghapusan `202609150005_gascomp_care_member_deletion.sql` menambahkan penanda nullable dan fungsi penghapusan batch dilindungi, serta memperbarui fungsi autentikasi dan cakupan untuk menolak akun yang dihapus. Terapkan setelah migrasi cakupan sebelum memuatkan aplikasi yang diperbarui. Data yang ada dipertahankan.
 
-## Verification
+<a id="verification"></a>
+## Verifikasi
 
-Run lint, typecheck, Node tests, and production build. Cover account creation and
-duplicates; valid/invalid credentials; shared rate limits; mandatory password
-replacement; expiry/logout/reset; concurrent credential changes; cross-member
-isolation; and separation of member/admin access. Exercise SQL against a disposable
-test database and check anonymous database grants.
+Jalankan lint, typecheck, uji Node, dan build produksi. Tutupi pembuatan akun dan duplikasi; kredensial valid/invalid; batas laju bersama; penggantian password wajib; kadaluarsa/logout/reset; perubahan kredensial bersamaan; isolasi antar anggota; dan pemisahan akses anggota/admin. Lakukan latihan SQL terhadap database uji yang dapat dibuang dan periksa hak akses database anonim.
 
-Browser verification covers desktop/mobile, both languages, empty/loading/error
-states, temporary credential dismissal, public navigation, password workflows,
-and preservation of staged catalog edits. Use fictional members in an isolated
-test database, never production customer records.
+Verifikasi browser mencakup desktop/mobile, kedua bahasa, keadaan kosong/loading/error, penolakan kredensial sementara, navigasi publik, alur password, dan pelestarian pengeditan katalog bertahap. Gunakan anggota fiktif dalam database uji terisolasi, bukan catatan pelanggan produksi.
 
-### Local verification on September 15, 2026
+<a id="local-verification-on-september-15-2026"></a>
+### Verifikasi lokal pada 15 September 2026
 
-Lint, typecheck, the production build, and 93 Node tests passed. The optional SQL
-suite was run separately with `CARE_PGLITE_MODULE` pointing to a temporary PGlite
-installation: all eight tests passed against a disposable PostgreSQL engine,
-including role grants, session expiry, stale credential rejection, limits, and
-transaction rollback. This engine uses a single connection; live multi-connection
-contention and hosting proxy behavior remain deployment checks.
+Lint, typecheck, build produksi, dan 93 uji Node berhasil. Suite SQL opsional dijalankan terpisah dengan `CARE_PGLITE_MODULE` menunjuk ke instalasi PGlite sementara: semua delapan uji berhasil terhadap mesin PostgreSQL yang dapat dibuang, termasuk hak peran, kadaluarsa sesi, penolakan kredensial usang, batas, dan rollback transaksi. Mesin ini menggunakan satu koneksi; kontensi multi-koneksi langsung dan perilaku proxy hosting tetap menjadi pemeriksaan deployment.
 
-Chromium checks passed against the production Next build connected to the
-disposable database through a local REST adapter. They exercised account creation,
-duplicates, search/pagination, login, mandatory password replacement, reset,
-logout, expiry, ownership isolation, rate limits, outages/retry, both languages,
-metadata, mobile/desktop navigation, and preservation of staged catalog edits.
-No browser page errors occurred. Reports and fictional-account screenshots are
-under `.data/gascomp-care-validation/`, ignored by Git. The production database
-and website were not changed.
+Pemeriksaan Chromium berhasil terhadap build produksi Next yang terhubung ke database yang dapat dibuang melalui adapter REST lokal. Mereka melakukan uji pembuatan akun, duplikasi, pencarian/paginasi, login, penggantian password wajib, reset, logout, kadaluarsa, isolasi kepemilikan, batas laju, gangguan/penyimpanan ulang, kedua bahasa, metadata, navigasi mobile/desktop, dan pelestarian pengeditan katalog bertahap. Tidak terjadi kesalahan halaman browser. Laporan dan tangkapan layar akun fiktif berada di `.data/gascomp-care-validation/`, diabaikan oleh Git. Database produksi dan website tidak diubah.
 
-### HTTP preview session regression
+<a id="http-preview-session-regression"></a>
+### Regresi sesi pratinjau HTTP
 
-WebKit reproduced a loopback preview failure: the production build returned a
-Secure cookie over HTTP, which WebKit discarded. The action response displayed
-the password-change form, but its next submission had no session and reported
-expiry. Chromium accepted the loopback cookie, so the initial Chromium-only
-verification missed this browser difference.
+WebKit mereproduksi kegagalan pratinjau loopback: build produksi mengembalikan cookie Aman melalui HTTP, yang WebKit buang. Respons aksi menampilkan formulir perubahan password, tetapi pengiriman berikutnya tidak memiliki sesi dan melaporkan kadaluarsa. Chromium menerima cookie loopback, sehingga verifikasi awal hanya Chromium melewatkan perbedaan browser ini.
 
-The explicit loopback-only cookie policy above fixes the preview for both admin
-and member login. Four regression tests cover opt-in behavior, matching origins,
-HTTPS/external-host protection, and malformed origins. Lint, typecheck, build, and
-97 application tests passed. Chromium and WebKit both retained the session through
-first password replacement, page reload, logout, and login with the new password;
-admin login also passed in both engines. Local diagnostic records are stored in
-`.data/gascomp-care-validation/session-probe-before.json` and `session-probe.json`.
-Existing preview member accounts and the production database were preserved.
+Kebijakan cookie loopback-hanya eksplisit di atas memperbaiki pratinjau untuk login admin dan anggota. Empat uji regresi mencakup perilaku opt-in, asal yang cocok, perlindungan HTTPS/external-host, dan asal yang rusak. Lint, typecheck, build, dan 97 uji aplikasi berhasil. Chromium dan WebKit keduanya mempertahankan sesi melalui penggantian password pertama, reload halaman, logout, dan login dengan password baru; login admin juga berhasil di kedua mesin. Catatan diagnostik lokal disimpan di `.data/gascomp-care-validation/session-probe-before.json` dan `session-probe.json`. Akun anggota pratinjau yang ada dan database produksi dipertahankan.
 
-### Unified local website verification
+<a id="unified-local-website-verification"></a>
+### Verifikasi website lokal terpadu
 
-The website now runs only on `http://localhost:3000`; the former port 3100
-process was stopped. The existing disposable Care gateway remains running to
-retain manual test accounts. Chromium and WebKit passed admin login, member
-creation, mandatory password replacement, reload, logout, and subsequent login
-on port 3000. The updated session probe waits for rendered forms rather than a
-fixed delay, accommodating development compilation.
+Website sekarang hanya berjalan di `http://localhost:3000`; proses port 3100 sebelumnya dihentikan. Gerbang Care yang dapat dibuang yang ada tetap berjalan untuk mempertahankan akun uji manual. Chromium dan WebKit berhasil login admin, pembuatan anggota, penggantian password wajib, reload, logout, dan login berikutnya di port 3000. Probe sesi yang diperbarui menunggu formulir yang dirender daripada jeda tetap, mengakomodasi kompilasi pengembangan.
 
-Lint, typecheck, build, and all 113 Node tests passed with the optional SQL engine
-enabled. Tests cover production ignoring preview variables, invalid or unavailable
-preview connections never falling back to the primary database, and preservation
-of existing rows when adding or accidentally repeating the Care migration.
-No production migration, push, or deployment was performed.
+Lint, typecheck, build, dan semua 113 uji Node berhasil dengan mesin SQL opsional diaktifkan. Uji mencakup produksi mengabaikan variabel preview, koneksi preview yang tidak valid atau tidak tersedia tidak pernah kembali ke database utama, dan pelestarian baris yang ada saat menambahkan atau secara tidak sengaja mengulang migrasi Care.
+Tidak ada migrasi produksi, push, atau deployment yang dilakukan.
 
+<a id="coverage-and-confirmation-verification"></a>
+### Verifikasi cakupan dan konfirmasi
 
-### Coverage and confirmation verification
+Lint, typecheck, build, dan semua 134 uji Node berhasil dengan mesin SQL opsional diaktifkan. Uji mencakup kepemilikan, batas tanggal, idempotensi, kehabitan kuota, akses database dilindungi, tanggal konfirmasi yang dihasilkan oleh server, dan DTO pelanggan mengecualikan bidang penggunaan/sejarah admin. Chromium memverifikasi tombol Konfirmasi Klaim Admin, cakupan dua unit menampilkan 1/6 untuk admin dan lima tersisa untuk pelanggan, kehabitan satu unit setelah tiga konfirmasi, konfirmasi dinonaktifkan pada cakupan kadaluarsa, tata letak mobile bilingual, akun kosong, dan gangguan/pulih cakupan. Rekam berada di `.data/gascomp-care-validation/coverage-browser.json`.
 
-Lint, typecheck, build, and all 134 Node tests passed with the optional SQL engine
-enabled. Tests cover ownership, date boundaries, idempotency, quota exhaustion,
-protected database access, server-generated confirmation dates, and the customer
-DTO excluding admin usage/history fields. Chromium verified the admin Confirm
-Claim button, two-unit coverage showing 1/6 to the admin and five remaining to the
-customer, one-unit exhaustion after three confirmations, disabled confirmation
-on expired coverage, bilingual mobile layouts, empty accounts, and coverage
-outage/recovery. Records are in `.data/gascomp-care-validation/coverage-browser.json`.
+Gerbang lokal sekarang mempertahankan basis datanya. Konversinya melestarikan seluruh 16 anggota yang ada, 13 sesi, dan 13 baris percobaan secara tepat sebelum uji lebih lanjut. Migrasi cakupan baru dan perubahan aplikasi hanya telah dilakukan uji secara lokal; tindak lanjut ini belum dipush atau dideploy ke produksi.
 
-The local gateway now persists its database. Its conversion preserved all 16
-existing members, 13 sessions, and 13 attempt rows exactly before further tests.
-The new coverage migration and application changes have only been exercised
-locally; this follow-up has not been pushed or deployed to production.
+<a id="member-deletion-verification"></a>
+### Verifikasi penghapusan anggota
 
+Lint, typecheck, build, dan semua 147 uji Node berhasil dengan validasi SQL diaktifkan. Chromium memverifikasi seleksi, keadaan pilih-semua campuran, pembersihan seleksi, pembatasan pencarian, pembatalan konfirmasi, penghapusan tunggal dan massal, tata letak mobile, dan ulang setelah kegagalan permintaan disimulasikan. Sesi hidup anggota yang dihapus ditolak dan login berikutnya gagal, sementara pembelian dan klaim yang dikonfirmasi tetap disimpan. Anggota yang tidak dipilih tetap aktif hingga penghapusan eksplisit terpisah. Perangkat uji browser hanya menggunakan akun lokal fiktif; laporan berada di `.data/gascomp-care-validation/deletion-browser.json`.
 
-### Member deletion verification
-
-Lint, typecheck, build, and all 147 Node tests passed with SQL validation enabled.
-Chromium verified selection, mixed select-all state, clear selection, search
-scoping, canceling confirmation, single and bulk deletion, mobile layout, and
-retry after a simulated request failure. A deleted member's live session was
-rejected and subsequent login failed, while its purchase and confirmed claim
-remained stored. An unselected member remained active until its separate explicit
-deletion. Browser fixtures used only fictional local accounts; the report is
-`.data/gascomp-care-validation/deletion-browser.json`.
-
-The local migration preserved existing members, sessions, purchases and claims;
-its only initial row change was adding null `deleted_at` values. Production
-migration, GitHub push, and hosting deployment of this follow-up remain pending.
+Migrasi lokal melestarikan anggota yang ada, sesi, pembelian, dan klaim; satu-satunya perubahan baris awal adalah menambahkan nilai `deleted_at` null. Migrasi produksi, push GitHub, dan hosting deployment tindak lanjut ini tetap tertunda.

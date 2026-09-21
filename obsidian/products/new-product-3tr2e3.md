@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRS-05
 - **Model:** Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/new-product-3tr2e3
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/new-product-3tr2e3
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789546730635-tyt6u|regulator yg tanpa selang]]
 - [[../knowledge/approved/admin-faq-faq-1789546745381-qk91j|Kalau rusak, bisa klaim garansi nggak Kak?]]

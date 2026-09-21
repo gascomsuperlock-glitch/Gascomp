@@ -83,7 +83,7 @@ class ProductArchiveTests(unittest.IsolatedAsyncioTestCase):
         product = {**PRODUCT, "productDescription": '<img src="https://example.test/product.jpg">'}
         self.assertEqual(description_text(product), "")
         note = render_product(product, [], "2026-09-17T00:00:00Z")
-        self.assertIn("image-only description", note)
+        self.assertIn("deskripsi berupa gambar", note)
         self.assertIn("`https://example.test/product.jpg`", note)
         self.assertNotIn("<img", note)
 
@@ -109,8 +109,8 @@ class ProductArchiveTests(unittest.IsolatedAsyncioTestCase):
                   "expected_messages": 1, "messages": [message("text", {"text": "GC-01"})],
                   "product_context_review": {"message-a": "Multiple products share this SKU."}}
         note = render_note(record)
-        self.assertIn("Product context requires review for 1 messages", note)
-        self.assertIn("Product context review: Multiple products share this SKU.", note)
+        self.assertIn("Konteks produk memerlukan tinjauan untuk 1 pesan", note)
+        self.assertIn("Tinjauan konteks produk: Multiple products share this SKU.", note)
 
     def test_export_creates_two_way_links_without_losing_transcript_or_manual_notes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

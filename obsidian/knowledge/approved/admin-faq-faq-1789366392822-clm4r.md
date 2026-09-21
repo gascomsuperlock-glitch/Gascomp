@@ -10,19 +10,19 @@ generated: true
 
 # Apakah GASCOMP Superlock GRS 925 F merupakan regulator gas bertekanan rendah?
 
-Product: [[../../products/grs-925f-93200e1|GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas]]
+Produk: [[../../products/grs-925f-93200e1|GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas]]
 
-## Question
+## Pertanyaan
 
 Apakah GASCOMP Superlock GRS 925 F merupakan regulator gas bertekanan rendah?
 
-## Approved answer
+## Jawaban disetujui
 
 Ya, GASCOMP Superlock GRS 925 F adalah regulator gas bertekanan rendah (low pressure). Produk ini dirancang khusus untuk penggunaan tekanan rendah dengan sistem superlock yang fleksibel dan mudah dipasang pada berbagai jenis tabung gas.
 
-Product guide: https://support.gascompsuperlock.com/produk/grs-925f-93200e1
+Panduan produk: https://support.gascompsuperlock.com/produk/grs-925f-93200e1
 
-## Search triggers
+## Pemicu pencarian
 
 - Apakah GASCOMP Superlock GRS 925 F merupakan regulator gas bertekanan rendah?
 - GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas

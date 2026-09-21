@@ -29,11 +29,11 @@ aliases: {json.dumps(list(aliases), ensure_ascii=False)}
 
 # Product fixture
 
-## Source description
+## Deskripsi sumber
 
 {chr(10).join("> " + line for line in description.splitlines())}
 
-## Variants
+## Variasi
 
 | Price | Stock |
 | --- | --- |

@@ -79,7 +79,7 @@ class ChatArchiveTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("## Test store (shopee)", index)
         self.assertIn(f"[[Conversation {conversation_ref(ITEM)}|", index)
         self.assertNotIn(f"[[Conversation {conversation_ref(second)}", index)
-        self.assertIn("capture failed", index)
+        self.assertIn("pengambilan gagal", index)
 
     async def test_reads_all_history_pages_and_verifies_total(self) -> None:
         pages = [
@@ -92,8 +92,8 @@ class ChatArchiveTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(api.calls, [1, 2])
         note = render_note(result)
         self.assertLess(note.index("Question"), note.index("Reply"))
-        self.assertIn("Customer", note)
-        self.assertIn("Seller", note)
+        self.assertIn("Pelanggan", note)
+        self.assertIn("Penjual", note)
 
     async def test_duplicate_pages_cannot_claim_complete_history(self) -> None:
         repeated = message("1", 1, "Question")
@@ -174,7 +174,7 @@ class ChatArchiveTests(unittest.IsolatedAsyncioTestCase):
             "expected_messages": 0,
             "messages": [],
         }
-        self.assertIn("[[Conversation archive index|Archive index]]", render_note(record))
+        self.assertIn("[[Conversation archive index|Indeks arsip]]", render_note(record))
 
 
 if __name__ == "__main__":

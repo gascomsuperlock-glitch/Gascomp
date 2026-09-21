@@ -10,13 +10,13 @@ generated: true
 
 # Cara Pemasangan Standar
 
-Product: [[../../products/grt-2d-6d5b4dc|GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
+Produk: [[../../products/grt-2d-6d5b4dc|GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
 
-## Question
+## Pertanyaan
 
 Cara Pemasangan Standar
 
-## Approved answer
+## Jawaban disetujui
 
 1. Pasang Regulator : Letakkan regulator di atas tabung gas dalam posisi OFF (tuas belum  diputar/mengunci). 
 2. Paskan Posisi Seal : Tekan regulator ke arah bawah sambil diputar-putar perlahan,  agar karet seal internal terpasang dengan pas dan presisi pada mulut tabung. 3. Kunci Regulator : Coba putar tuas pengunci ke posisi LOCK. (Panduan visual dapat  dilihat pada Video No. 1). 
@@ -25,7 +25,7 @@ Warning: PENTING: Jika pengunci terasa keras/sulit diputar, JANGAN DIPAKSA agar 
 
 Full guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc#kendala
 
-## Search triggers
+## Pemicu pencarian
 
 - Cara Pemasangan Standar
 - GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock

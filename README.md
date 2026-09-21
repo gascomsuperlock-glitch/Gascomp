@@ -1,21 +1,24 @@
-# Gascomp Product Help
+<a id="gascomp-product-help"></a>
+# Bantuan Produk Gascomp
 
-Gascomp after-sales support website. Customers can open product guides from a QR code, watch embedded YouTube tutorials, review troubleshooting steps and FAQs, submit a warranty claim, and contact support through WhatsApp.
+Website dukungan purna jual Gascomp. Pelanggan dapat membuka panduan produk dari kode QR, menonton tutorial YouTube yang tertanam, meninjau langkah perbaikan masalah dan pertanyaan yang sering diajukan (FAQ), mengajukan klaim garansi, dan menghubungi dukungan melalui WhatsApp.
 
-## Pages
+<a id="pages"></a>
+## Halaman
 
-- `/` — product catalog and support shortcuts.
-- `/produk/[slug]` — tutorials, troubleshooting, FAQs, warranty access, and WhatsApp support for one SKU.
-- `/klaim-garansi` — internal warranty claim form that returns a ticket number.
-- `/admin` — product, variation, image, tutorial, FAQ, QR, settings, and warranty-ticket management.
+- `/` — katalog produk dan pintasan dukungan.
+- `/produk/[slug]` — tutorial, perbaikan masalah, FAQ, akses garansi, dan dukungan WhatsApp untuk satu SKU.
+- `/klaim-garansi` — formulir klaim garansi internal yang mengembalikan nomor tiket.
+- `/admin` — manajemen produk, variasi, gambar, tutorial, FAQ, QR, pengaturan, dan tiket garansi.
 
-The Indonesian route segments are stable public contracts. They remain unchanged so existing links and printed QR codes continue to work. Application copy, code comments, generated system content, documentation, and database identifiers/defaults use English. Product names, SKUs, warehouse headings, and customer-message samples retain their source language when exact matching is required.
+Segmen rute berbahasa Indonesia adalah kontrak publik yang stabil. Segmen tersebut tetap sama agar tautan dan kode QR yang sudah dicetak terus berfungsi. Dokumen Markdown menggunakan bahasa Indonesia; kode aplikasi, komentar kode, keluaran sistem, serta nama dan nilai database tetap mengikuti kontrak teknis yang berlaku. Nama produk, SKU, header gudang, dan contoh pesan pelanggan mempertahankan bahasa sumbernya jika diperlukan untuk pencocokan persis.
 
-## Storage and authentication
+<a id="storage-and-authentication"></a>
+## Penyimpanan dan autentikasi
 
-Supabase is the primary store when its environment variables are configured. PostgreSQL stores products, help content, image metadata, tickets, and evidence metadata. Supabase Storage uses the public `product-images` bucket and the private `warranty-evidence` bucket. Without Supabase, local development uses browser storage for catalog content and `.data/warranty-tickets/` for warranty tickets.
+Supabase adalah penyimpanan utama ketika variabel lingkungannya dikonfigurasi. PostgreSQL menyimpan produk, konten bantuan, metadata gambar, tiket, dan metadata bukti. Supabase Storage menggunakan wadah `product-images` publik dan `warranty-evidence` privat. Tanpa Supabase, pengembangan lokal menggunakan penyimpanan browser untuk konten katalog dan `.data/warranty-tickets/` untuk tiket garansi.
 
-The admin route uses server-side authentication and an HTTP-only signed cookie. Copy `.env.example` to `.env.local` and replace every example credential before deployment:
+Rute admin menggunakan autentikasi sisi server dan cookie bertanda tangan HTTP-only. Salin `.env.example` ke `.env.local` dan ganti setiap kredensial contoh sebelum deployment:
 
 ```bash
 GASCOMP_ADMIN_USERNAME=admin
@@ -23,20 +26,17 @@ GASCOMP_ADMIN_PASSWORD=replace-with-a-strong-password-at-least-12-characters
 GASCOMP_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters
 ```
 
-Set the public production origin used in QR codes:
+Atur asal produksi publik yang digunakan dalam kode QR:
 
 ```bash
 GASCOMP_PUBLIC_BASE_URL=https://support.gascompsuperlock.com
 ```
 
-QR generation is disabled when that value is missing or points to localhost.
+Pembuatan QR code dinonaktifkan ketika nilai tersebut hilang atau mengarah ke localhost.
 
-Follow the [deployment guide](docs/product/operations/deployment.md) to connect
-hosting, Cloudflare DNS, and HTTPS before printing QR codes. Requests on the old
-`bantuan.gascompsuperlock.com` hostname redirect to `support.gascompsuperlock.com`
-once the old hostname's DNS, hosting binding, and HTTPS are also configured.
+Ikuti [panduan deployment](docs/product/operations/deployment.md) untuk menghubungkan hosting, Cloudflare DNS, dan HTTPS sebelum mencetak kode QR. Permintaan pada hostname lama `bantuan.gascompsuperlock.com` akan diarahkan ke `support.gascompsuperlock.com` setelah DNS, pengikatan hosting, dan HTTPS untuk hostname lama juga dikonfigurasi.
 
-Configure Supabase with server credentials. The secret key must never use a `NEXT_PUBLIC_` prefix:
+Konfigurasi Supabase dengan kredensial server. Kunci rahasia tidak boleh pernah menggunakan prefiks `NEXT_PUBLIC_`:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=https://project-ref.supabase.co
@@ -44,64 +44,66 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 SUPABASE_SECRET_KEY=sb_secret_...
 ```
 
-Run these migrations in order through the Supabase SQL Editor:
+Jalankan migrasi berikut secara berurutan melalui Supabase SQL Editor:
 
 1. `supabase/migrations/202609100001_catalog.sql`
 2. `supabase/migrations/202609100002_warranty.sql`
 3. `supabase/migrations/202609110001_english_system_defaults.sql`
 
-`PGRST205` for warranty tickets means the warranty migration is missing from the schema cache. Run the migration and reload `/admin`.
+`PGRST205` untuk tiket garansi berarti migrasi garansi hilang dari cache skema. Jalankan migrasi dan muat ulang `/admin`.
 
-## Catalog imports
+<a id="catalog-imports"></a>
+## Impor katalog
 
-Capture and normalize Duoke products, then push products and variations without overwriting admin-managed tutorials, FAQs, issues, or images:
+Tangkap dan normalisasi produk Duoke, lalu dorong produk dan variasi tanpa menimpa tutorial, FAQ, masalah, atau gambar yang dikelola admin:
 
 ```bash
 npm run duoke:import
 npm run duoke:push
 ```
 
-Normalize a warehouse XLSX export and import it into Supabase:
+Normalisasi ekspor XLSX gudang dan impor hasilnya ke Supabase:
 
 ```bash
 npm run warehouse:normalize -- "/path/SKU_Gudang.xlsx"
 npm run warehouse:push
 ```
 
-The warehouse pipeline reads only the required source columns for SKU, title, category, image URL, and product code. New products remain drafts. Existing SKU content is preserved. Valid source images are copied to `product-images`.
+Pipeline gudang hanya membaca kolom sumber yang diperlukan untuk SKU, judul, kategori, URL gambar, dan kode produk. Produk baru tetap dalam draf. Konten SKU yang ada dipertahankan. Gambar sumber yang valid disalin ke `product-images`.
 
-## Duoke support automation
+<a id="duoke-support-automation"></a>
+## Dukungan Duoke untuk otomatisasi
 
-Build the runtime knowledge base from published and reviewed content:
+Bangun basis pengetahuan runtime dari konten yang diterbitkan dan telah ditinjau:
 
 ```bash
 npm run duoke:knowledge:export
 npm run duoke:knowledge:query -- "customer question and SKU"
 ```
 
-The runtime index is stored in `data/knowledge/duoke-knowledge.json`; related notes are written to `obsidian/`. Only entries with `approval: approved` can become active answers.
+Indeks runtime disimpan di `data/knowledge/duoke-knowledge.json`; catatan terkait ditulis ke `obsidian/`. Hanya entri dengan `approval: approved` yang dapat menjadi jawaban aktif.
 
-The Duoke browser session is stored in `scraping/.private/browser-profile/` and ignored by Git. Refresh and inspect the session with:
+Sesi browser Duoke disimpan di `scraping/.private/browser-profile/` dan diabaikan oleh Git. Segarkan dan periksa sesi dengan:
 
 ```bash
 npm run duoke:login
 npm run duoke:inspect
 ```
 
-Use the private inspection report to configure the `DUOKE_*` selectors in `.env.local`, then run one read-only pass:
+Gunakan laporan inspeksi privat untuk mengonfigurasi pemilih `DUOKE_*` di `.env.local`, lalu jalankan satu kali pembacaan tanpa hak edit:
 
 ```bash
 npm run duoke:reply:dry-run
 ```
 
-Capture approved historical conversations and build anonymized review candidates with:
+Ambil percakapan historis yang disetujui dan buat kandidat tinjauan yang telah dianonimkan dengan:
 
 ```bash
 npm run duoke:chat:capture
 npm run duoke:knowledge:build
 ```
 
-Raw captures remain in `scraping/.private/chat-captures/`. Candidates stay pending until a reviewer supplies anonymized, verified English content:
+Data mentah tetap tersimpan di `scraping/.private/chat-captures/`. Kandidat akan menunggu hingga seorang peninjau menyediakan konten bahasa Inggris yang telah dianonimkan dan diverifikasi:
 
 ```bash
 scraping/.venv/bin/python -m scraping.duoke.knowledge.approve_duoke_knowledge \
@@ -113,34 +115,33 @@ scraping/.venv/bin/python -m scraping.duoke.knowledge.approve_duoke_knowledge \
 npm run duoke:knowledge:export
 ```
 
-Real delivery requires both `--send` and `DUOKE_AUTOREPLY_ENABLED=true`. The knowledge base must use a non-localhost HTTPS origin. Stop and resume watch mode with:
+Pengiriman nyata memerlukan `--send` dan `DUOKE_AUTOREPLY_ENABLED=true`. Basis pengetahuan harus menggunakan asal HTTPS yang bukan localhost. Berhenti dan lanjutkan mode pemantauan dengan:
 
 ```bash
 npm run duoke:stop
 npm run duoke:resume
 ```
 
-## Development
+<a id="development"></a>
+## Pengembangan
 
-The application follows feature-based architecture in `src/app`, `src/features`, and `src/shared`. Python automation lives in `scraping`, operational Node scripts in `scripts`, and persistent files in `data`. Read the [project structure](docs/architecture/project-structure.md), [language standard](docs/architecture/language-standard.md), and the grouped [specification index](docs/product/spec.md).
+Aplikasi mengikuti arsitektur berbasis fitur di `src/app`, `src/features`, dan `src/shared`. Otomasi Python berada di `scraping`, skrip Node operasional di `scripts`, dan file persisten di `data`. Baca [struktur proyek](docs/architecture/project-structure.md), [standar bahasa](docs/architecture/language-standard.md), dan [indeks spesifikasi](docs/product/spec.md).
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Buka [http://localhost:3000](http://localhost:3000).
 
-## Working with an agent
+<a id="working-with-an-agent"></a>
+## Bekerja dengan agen
 
-Start with [AGENTS.md](AGENTS.md), the [task map](docs/product/spec.md), and the
-[folder context map](CONTEXT.md). Each owning area defines its inputs, tasks,
-expected outputs, and verification in a focused context document.
-For ongoing work, read the [handoff index](docs/work/README.md) and follow the
-[continuity workflow](docs/work/workflow.md). Ask to resume a named topic or save
-its progress; the workflow defines what to read and record.
+Mulai dengan [AGENTS.md](AGENTS.md), [peta tugas](docs/product/spec.md), dan [peta konteks folder](CONTEXT.md). Setiap area pemilik mendefinisikan input, tugas, keluaran yang diharapkan, dan verifikasi dalam dokumen konteks yang terfokus.
+Untuk pekerjaan berkelanjutan, baca [indeks serah terima](docs/work/README.md) dan ikuti [alur keberlanjutan pekerjaan](docs/work/workflow.md). Mintalah untuk melanjutkan topik tertentu atau menyimpan kemajuannya; alur kerja mendefinisikan apa yang harus dibaca dan dicatat.
 
-## Verification
+<a id="verification"></a>
+## Verifikasi
 
 ```bash
 npm run lint

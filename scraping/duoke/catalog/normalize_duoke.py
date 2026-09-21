@@ -247,7 +247,7 @@ def write_vault(products: list[dict[str, Any]], synced_at: str) -> None:
             variation_links.append(f"[[variations/{variation_note}|{variation['name']} · {variation['sku']}]]")
             attributes = "\n".join(
                 f"- **{item['name']}:** {item['value']}" for item in variation["attributes"]
-            ) or "- No additional attributes are available in the source."
+            ) or "- Tidak ada atribut tambahan dalam sumber."
             (VARIATION_NOTES / f"{variation_note}.md").write_text(
                 "\n".join([
                     "---",
@@ -260,9 +260,9 @@ def write_vault(products: list[dict[str, Any]], synced_at: str) -> None:
                     "",
                     f"# {variation['name']}",
                     "",
-                    f"Parent product: [[products/{product_note}|{product['name']}]]",
+                    f"Produk induk: [[products/{product_note}|{product['name']}]]",
                     "",
-                    "## Attributes",
+                    "## Atribut",
                     "",
                     attributes,
                     "",
@@ -273,8 +273,8 @@ def write_vault(products: list[dict[str, Any]], synced_at: str) -> None:
         product_links.append(f"[[products/{product_note}|{product['name']} · {product['sku']}]]")
         attributes = "\n".join(
             f"- **{item['name']}:** {item['value']}" for item in product["attributes"]
-        ) or "- No additional attributes are available in the source."
-        variations = "\n".join(f"- {link}" for link in variation_links) or "- No variations are available in the source."
+        ) or "- Tidak ada atribut tambahan dalam sumber."
+        variations = "\n".join(f"- {link}" for link in variation_links) or "- Tidak ada variasi dalam sumber."
         (PRODUCT_NOTES / f"{product_note}.md").write_text(
             "\n".join([
                 "---",
@@ -289,14 +289,14 @@ def write_vault(products: list[dict[str, Any]], synced_at: str) -> None:
                 f"# {product['name']}",
                 "",
                 f"- **SKU:** {product['sku']}",
-                f"- **Model:** {product['model'] or 'Not available in the source'}",
-                f"- **Details:** {product['description'] or 'Not available in the source'}",
+                f"- **Model:** {product['model'] or 'Tidak tersedia dalam sumber'}",
+                f"- **Detail:** {product['description'] or 'Tidak tersedia dalam sumber'}",
                 "",
-                "## Attributes",
+                "## Atribut",
                 "",
                 attributes,
                 "",
-                "## Variations",
+                "## Variasi",
                 "",
                 variations,
                 "",
@@ -313,7 +313,7 @@ def write_vault(products: list[dict[str, Any]], synced_at: str) -> None:
             "generated: true",
             "---",
             "",
-            "# Duoke Product Catalog",
+            "# Katalog Produk Duoke",
             "",
             *(f"- {link}" for link in product_links),
             "",

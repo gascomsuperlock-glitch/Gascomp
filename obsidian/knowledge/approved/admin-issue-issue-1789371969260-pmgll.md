@@ -10,13 +10,13 @@ generated: true
 
 # Solusi Jika Gas Belum Mengalir ke Kompor
 
-Product: [[../../products/grt-2d-6d5b4dc|GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
+Produk: [[../../products/grt-2d-6d5b4dc|GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
 
-## Question
+## Pertanyaan
 
 Solusi Jika Gas Belum Mengalir ke Kompor
 
-## Approved answer
+## Jawaban disetujui
 
 1. Tepuk Selang Gas: Tepuk-tepuk bagian selang gas secara perlahan sampai bola  pengaman (safety ball) di dalam regulator terbuka dan aliran gas naik ke kompor.
 
@@ -24,7 +24,7 @@ Warning: PENTING: Jika pengunci terasa keras/sulit diputar, JANGAN DIPAKSA agar 
 
 Full guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc#kendala
 
-## Search triggers
+## Pemicu pencarian
 
 - Solusi Jika Gas Belum Mengalir ke Kompor
 - GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock

@@ -15,7 +15,8 @@ from scraping.duoke.reply.conversation_references import search_references, term
 from scraping.ai_assistance.sources import bundle_signature
 from scraping.duoke.chat.archive_duoke_chats import capture_history, conversation_ref, message_key, private_json
 from scraping.duoke.reply.hermes_drafts import latest_incoming
-from scraping.duoke.reply.desktop_prompts import RETURN_HANDOFF
+from scraping.duoke.reply.desktop_prompts import RETURN_HANDOFF, NO_MATCH_HANDOFF
+from scraping.duoke.reply.desktop_browser import DeliveryAdapterError
 from scraping.duoke.reply.knowledge_bundle import configured_source, load_knowledge
 from scraping.shared.common import read_json, utc_now
 from scraping.shared.paths import AI_ASSISTANCE_VAULT, DUOKE_DESKTOP_DIR, DUOKE_DESKTOP_ENABLED, STOP_FILE
@@ -71,7 +72,8 @@ class DesktopService:
         # never evidence of a return policy.
         extra = [{**item, "sources": bundle.citations.get(item["id"], [])}
                  for item in evidence if item["kind"] == "answer" and not item["id"].startswith("archive-")
-                 and ("return" not in terms(question) or "return" in terms(" ".join(item["questions"])))]
+                 and all(intent in terms(" ".join(item["questions"]))
+                         for intent in terms(question) & {"return", "lock"})]
         bounded = []
         for item in references + extra:
             if len(json.dumps([*bounded, item], ensure_ascii=False).encode()) <= 7000:
@@ -91,9 +93,9 @@ class DesktopService:
             references = [item for item in references if not item.get("referenceOnly")]
         handoff = bool(historical_matches) and not references
         return {"status": "handoff_required" if handoff else "matched" if references else "no_match",
-                "resolution": "whatsapp_handoff" if handoff else "answer_from_references",
+                "resolution": "whatsapp_handoff" if not references else "answer_from_references",
                 "historicalMatches": historical_matches,
-                **({"customerReply": RETURN_HANDOFF} if handoff else {}),
+                **({"customerReply": RETURN_HANDOFF if handoff else NO_MATCH_HANDOFF} if not references else {}),
                 "replyGuidance": ("Acknowledge the return request and direct the customer to Gascomp admin "
                                   "via WhatsApp. No verified contact is supplied here; do not invent a link. "
                                   "Do not state eligibility, receipt, processing time, destination, or approval."
@@ -151,8 +153,8 @@ class DesktopService:
                         candidates = [{key: item[key] for key in ("id", "answer", "language", "questions")}
                                       for item in conversation_answers] + [
                                           item for item in candidates if not item["id"].startswith("archive-")
-                                          and ("return" not in terms(incoming["text"])
-                                               or "return" in terms(" ".join(item["questions"])))]
+                                          and all(intent in terms(" ".join(item["questions"]))
+                                                  for intent in terms(incoming["text"]) & {"return", "lock"})]
                         if not candidates:
                             review += 1
                             continue
@@ -188,6 +190,11 @@ class DesktopService:
                 ref = pending["incoming"]["messageRef"]
                 if ref in state:
                     return {"status": "already_attempted", "sent": state[ref].get("status") == "sent"}
+                if hasattr(self.transport, "prepare_send"):
+                    try:
+                        await self.transport.prepare_send()
+                    except DeliveryAdapterError as error:
+                        return {"status": "not_ready", "reason": error.reason, "sent": False}
                 record = await capture_history(self.transport, self.transport.session, pending["conversation"])
                 if latest_incoming(record) != pending["incoming"]:
                     return {"status": "conversation_changed", "sent": False}
@@ -205,6 +212,7 @@ class DesktopService:
                 private_json(self.directory / "delivery-state.json", state)
                 previous_ids = {message_key(item) for item in record["messages"]}
                 verified = False
+                failure_reason = "receipt_not_observed"
                 try:
                     await self.transport.send(pending["conversation"], candidate["answer"])
                     for _ in range(5):
@@ -226,12 +234,16 @@ class DesktopService:
                                 break
                         if verified:
                             break
+                except DeliveryAdapterError as error:
+                    failure_reason = error.reason
                 except Exception:
-                    pass
+                    failure_reason = "transport_or_verification_error"
                 state[ref]["status"] = "sent" if verified else "uncertain"
                 private_json(self.directory / "delivery-state.json", state)
                 self.audit({"action": state[ref]["status"], "messageRef": ref,
                             "conversationRef": conversation_ref(pending["conversation"]),
-                            "answerId": answer_id, "sent": verified})
+                            "answerId": answer_id, "sent": verified,
+                            **({"reason": failure_reason} if not verified else {})})
                 self.pending.pop(ticket, None)
-                return {"status": state[ref]["status"], "sent": verified}
+                return {"status": state[ref]["status"], "sent": verified,
+                        **({"reason": failure_reason} if not verified else {})}

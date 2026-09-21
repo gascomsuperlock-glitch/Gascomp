@@ -1,18 +1,21 @@
-# Duoke catalog synchronization
+<a id="duoke-catalog-synchronization"></a>
+# Sinkronisasi katalog Duoke
 
-[Specification index](../spec.md)
+[Indeks spesifikasi](../spec.md)
 
-## Scope
+<a id="scope"></a>
+## Ruang lingkup
 
-Capture product data from [Duoke](https://web.duoke.com/#/dk/main/chat) through an authorized browser session, normalize it with Scrapling, synchronize it with the Gascomp admin catalog, and generate related notes in the project Obsidian vault.
+Ambil data produk dari [Duoke](https://web.duoke.com/#/dk/main/chat) melalui sesi browser yang diotorisasi, normalisasikan dengan Scrapling, sinkronkan dengan katalog admin Gascomp, dan buat catatan terkait dalam gudang Obsidian proyek.
 
-- Capture product SKU, source identity, store identity when required, name, model, description, attributes, variations, and source timestamps.
-- Preserve source product names, SKUs, punctuation, leading zeros, variation values, and provider identifiers exactly.
-- Do not invent missing fields or replace them with demo content.
-- The catalog capture excludes conversations, messages, attachments, and customer personal data.
-- Fields that are missing, malformed, or conflicting go to a review report instead of being silently guessed.
+- Ambil SKU produk, identitas sumber, identitas toko bila diperlukan, nama, model, deskripsi, atribut, variasi, dan stempel waktu sumber.
+- Pertahankan nama produk sumber, SKU, tanda baca, angka nol di depan, nilai variasi, dan identifikasi penyedia secara persis.
+- Jangan ciptakan bidang yang hilang atau gantilah dengan konten demo.
+- Penangkapan katalog mengecualikan percakapan, pesan, lampiran, dan data pribadi pelanggan.
+- Bidang yang hilang, tidak terformat, atau bertentangan masuk ke laporan tinjauan daripada ditebak secara diam-diam.
 
-## Pipeline
+<a id="pipeline"></a>
+## Alur data
 
 ```text
 Authorized Duoke browser session
@@ -24,11 +27,11 @@ Authorized Duoke browser session
   → idempotent Supabase import
 ```
 
-The capture filter rejects chat-, message-, customer-, contact-, and order-related responses. It also removes sensitive-shaped fields from accepted product payloads. Private browser profiles and raw captures remain under `scraping/.private/` and are ignored by Git.
+Filter tangkap menolak respons yang terkait dengan obrolan, pesan, pelanggan, kontak, dan pesanan. Filter ini juga menghapus bidang berbentuk sensitif dari beban produk yang diterima. Profil browser pribadi dan tangkapan mentah tetap berada di bawah `scraping/.private/` dan diabaikan oleh Git.
 
-The importer matches the stable provider/store/product identity. Re-importing updates source-owned product fields and variations while preserving admin-owned status, images, tutorials, FAQs, and issue guides. Conflicting source identities are excluded and recorded for review.
+Proses pencocokan memakai identitas penyedia/toko/produk yang stabil. Impor memperbarui kolom produk dan variasi milik sumber sambil mempertahankan status, gambar, tutorial, FAQ, dan panduan masalah yang dikelola admin. Identitas sumber yang bertentangan dikeluarkan dan dicatat untuk ditinjau.
 
-Commands:
+Perintah:
 
 ```bash
 npm run duoke:login
@@ -36,15 +39,15 @@ npm run duoke:import
 npm run duoke:push
 ```
 
-Status: the capture, normalization, reports, Obsidian generation, and Supabase importer are implemented. A fresh authorized Duoke session is required to capture current production catalog data.
+Status: Pengambilan data, normalisasi, pelaporan, pembuatan catatan Obsidian, dan impor Supabase telah diimplementasikan. Sesi Duoke yang baru dan terotorisasi diperlukan untuk mengambil data katalog produksi saat ini.
 
-## Optional asynchronous HTTP transport
+<a id="optional-asynchronous-http-transport"></a>
+## Transport HTTP asinkron opsional
 
-HTTPX is installed in `scraping/.venv` and declared in `scraping/pyproject.toml`
-with resolved versions in `scraping/uv.lock`. Reproduce the installation from the
-repository root with `uv sync --project scraping --locked --inexact`.
+HTTPX terpasang di `scraping/.venv` dan dideklarasikan di `scraping/pyproject.toml`
+dengan versi yang dikunci di `scraping/uv.lock`. Ulangi instalasi dari akar repositori dengan `uv sync --project scraping --locked --inexact`.
 
-The reusable helper is `scraping/shared/async_http.py`. Import it with:
+Bantuan yang dapat digunakan kembali adalah `scraping/shared/async_http.py`. Impornya dengan:
 
 ```python
 from scraping.shared.async_http import fetch_pages
@@ -63,84 +66,32 @@ if failed_pages:
     raise RuntimeError("The batch is incomplete; handle failed pages before importing.")
 ```
 
-The endpoint, authentication, page parameter, page numbering, and filters must
-match a verified read request from the authorized Duoke session. The helper uses
-one client, preserves query filters, defaults to three concurrent requests and a
-30-second HTTPX timeout, and returns JSON or an exception for each page in input
-order. Redirects are not followed. It does not retry automatically; callers must
-handle authentication expiry, rate limits (including `Retry-After`), and failed
-pages before declaring a capture complete. Use finite batches; dependent cursor
-pagination requires sequential requests.
+Titik akhir (endpoint), autentikasi, parameter halaman, penomoran halaman, dan filter harus sesuai dengan permintaan baca yang diverifikasi dari sesi Duoke yang berizin. Helper menggunakan satu klien, mempertahankan filter query, secara default menggunakan tiga permintaan konkuren dan batas waktu HTTPX 30 detik, serta mengembalikan JSON atau pengecualian untuk setiap halaman dalam urutan input. Pengalihan tidak diikuti. Tidak ada upaya ulang otomatis; pemanggilan harus menangani kedaluwarsa autentikasi, batasan laju (termasuk `Retry-After`), dan halaman yang gagal sebelum menyatakan penangkapan lengkap. Gunakan batch terbatas; paginasi kursor yang bergantung memerlukan permintaan berurutan.
 
-This module is transport infrastructure only. It does not discover endpoints,
-transfer browser sessions, save data, or replace the existing catalog capture.
-Future catalog integration must retain the product-only filtering, private
-capture storage through `scraping.shared.paths`, and existing normalization.
-Keep authentication local and never log raw exceptions that may contain request
-URLs or private payloads. Live Duoke connectivity and throughput are unverified.
+Modul ini hanya infrastruktur transportasi. Tidak menemukan titik akhir, mentransfer sesi browser, menyimpan data, atau menggantikan katalog penangkapan yang ada. Integrasi katalog masa depan harus mempertahankan filter produk saja, penyimpanan penangkapan pribadi melalui `scraping.shared.paths`, dan normalisasi yang ada. Pertahankan autentikasi lokal dan jangan pernah mencatat pengecualian mentah yang mungkin berisi URL permintaan atau beban pribadi. Konektivitas dan throughput Duoke langsung belum diverifikasi.
 
-## Product catalog in the conversation vault
+<a id="product-catalog-in-the-conversation-vault"></a>
+## Katalog produk di vault percakapan
 
-`scraping/duoke/catalog/archive_duoke_products.py` captures the product catalog
-from `POST https://web.duoke.com/api/v1/dk/unity/product/list` and writes product
-notes into the same authorized Obsidian vault as the conversation archive.
-Only Douke is a data source. Marketplace names identify channels returned by
-Douke; the exporter never fetches marketplace pages, image URLs, or media URLs.
+`scraping/duoke/catalog/archive_duoke_products.py` mengambil katalog produk dari `POST https://web.duoke.com/api/v1/dk/unity/product/list` dan menulis catatan produk ke vault Obsidian yang sama dengan arsip percakapan. Hanya Douke yang menjadi sumber data. Nama marketplace mengidentifikasi kanal yang dikembalikan oleh Douke; proses ekspor tidak pernah mengambil halaman marketplace, URL gambar, atau URL media.
 
-The private session and authorized shop inventory are stored under
-`scraping/.private/product-archive/`. The session contains `headers` and the
-verified `list_url`; the shop inventory retains only shop metadata needed for
-catalog reads. Raw product captures and verification counts use the centralized
-`PRODUCT_ARCHIVE_DIR`. The exporter selects product and variant fields, excluding
-account credentials and customer data.
+Sesi pribadi dan inventaris toko yang terotorisasi disimpan di bawah `scraping/.private/product-archive/`. Sesi berisi `headers` dan `list_url` yang diverifikasi; inventaris toko hanya mempertahankan metadata yang diperlukan untuk membaca katalog. Data produk mentah dan hasil verifikasi jumlah menggunakan `PRODUCT_ARCHIVE_DIR` yang terpusat. Proses ekspor memilih kolom produk dan varian, serta mengecualikan kredensial akun dan data pelanggan.
 
 ```bash
 scraping/.venv/bin/python -m scraping.duoke.catalog.archive_duoke_products \
   --fetch --vault "/absolute/path/to/existing/Obsidian vault"
 ```
 
-Omit `--fetch` to regenerate notes and links from the saved local catalog.
-Refresh the private session from verified authenticated Douke browser requests
-if it expires. `messageItemIds` must be an empty string when requesting the
-unfiltered catalog. The API can return `hasNextPage: false` before the last
-page; enumeration uses the page count and total product count instead. Every
-page must belong to the expected shop and platform, and every completed shop
-must have exactly the expected number of unique source product identities.
-A null catalog response is reported separately from an empty, complete catalog.
+Hilangkan `--fetch` untuk memulihkan catatan dan tautan dari katalog lokal yang tersimpan.
+Perbarui sesi pribadi dari permintaan browser Douke yang terverifikasi dan terautentikasi jika kedaluwarsa. `messageItemIds` harus berupa string kosong saat meminta katalog tanpa filter. API dapat mengembalikan `hasNextPage: false` sebelum halaman terakhir; enumerasi memakai jumlah halaman dan total produk sebagai gantinya. Setiap halaman harus berasal dari toko dan platform yang diharapkan, dan setiap toko yang selesai harus memiliki jumlah identitas produk sumber unik yang tepat. Respons katalog null dilaporkan terpisah dari katalog kosong yang lengkap.
 
-Product notes live directly under `Duoke/Produk/`, alongside the uniquely named
-`Product catalog index.md`. Notes include the source product name, exact product
-and variant SKUs, source IDs, full available description, attributes, price and
-stock snapshots, and media URL values supplied by Douke. Media are not embedded
-or downloaded. Products from different shops or with different source IDs remain
-separate even when their SKUs match. Missing source values remain explicitly
-missing. A store-grouped index links all products.
+Catatan produk berada langsung di bawah `Duoke/Produk/`, bersama `Product catalog index.md` yang bernama khusus. Catatan mencakup nama produk sumber, SKU produk dan varian yang tepat, ID sumber, deskripsi lengkap yang tersedia, atribut, harga dan stok saat pengambilan, serta URL media yang disediakan oleh Douke. Media tidak disematkan atau diunduh. Produk dari toko berbeda atau dengan ID sumber berbeda tetap terpisah bahkan ketika SKU mereka cocok. Nilai sumber yang hilang tetap dicatat sebagai hilang. Indeks per toko menghubungkan semua produk.
 
-The exporter adds product context to the existing private conversation wrapper
-without modifying source message payloads. Matching is scoped to the same
-platform and shop and uses explicit product-card IDs, unambiguous exact source
-names or SKUs, or bounded SKU mentions in message text. An unknown explicit ID,
-truncated name, ambiguous name/SKU, or SKU substring cannot silently identify a
-product. Conversation notes link products beside the referring message and in a
-related-products section; product notes link back to the referring conversations.
-These links establish references, not proof of the purchased variant or an
-approved troubleshooting answer.
+Pengekspor menambahkan konteks produk pada pembungkus percakapan pribadi yang ada tanpa mengubah isi pesan sumber. Pencocokan dibatasi pada platform dan toko yang sama serta memakai ID kartu produk eksplisit, nama sumber atau SKU persis yang tidak ambigu, atau penyebutan SKU terbatas dalam teks pesan. ID eksplisit yang tidak diketahui, nama terpotong, nama/SKU ambigu, atau potongan SKU tidak boleh mengidentifikasi produk secara diam-diam. Catatan percakapan menautkan produk di samping pesan referensi dan di bagian produk terkait; catatan produk menautkan kembali ke percakapan referensi. Tautan ini menunjukkan referensi, bukan bukti varian yang dibeli atau jawaban pemecahan masalah yang disetujui.
 
-Stable source identities determine filenames, and manual content below the
-archive marker survives regeneration. After refreshing the conversation archive,
-rerun the product exporter to rebuild product context. This export does not
-publish catalog data to Supabase or activate AI answers.
+Identitas sumber yang stabil menentukan nama file, dan konten manual di bawah penanda arsip tetap terjaga saat catatan dibuat ulang. Setelah memperbarui arsip percakapan, jalankan ulang pengekspor produk untuk membangun kembali konteks produk. Ekspor ini tidak memublikasikan data katalog ke Supabase atau mengaktifkan jawaban AI.
 
-Verified capture on 2026-09-17: Douke returned 414 products and 550 variants from
-12 completed marketplace catalog queries, including one empty catalog. The
-Facebook channel returned no catalog data and was reported separately. There
-are 412 text descriptions and two image-only descriptions; image URL values
-are retained as references without fetching or embedding external media.
-One product SKU and 23 variant SKUs are missing in the source.
+Pengambilan terverifikasi pada 2026-09-17: Douke mengembalikan 414 produk dan 550 varian dari 12 permintaan katalog marketplace yang selesai, termasuk satu katalog kosong. Kanal Facebook tidak mengembalikan data katalog dan dilaporkan secara terpisah. Terdapat 412 deskripsi teks dan dua deskripsi hanya gambar; URL gambar dipertahankan sebagai referensi tanpa mengambil atau menyematkan media eksternal.
+Satu SKU produk dan 23 SKU varian hilang dalam sumber.
 
-The catalog links 2,388 messages in 755 of the 881 archived conversations to
-112 referenced products. Another 116 message references are ambiguous and have
-review markers in their transcripts, with content-free references recorded in
-`scraping/.private/product-archive/context-review.json`. All 13,449 source messages
-remain intact. Verification checked 5,371 generated product/conversation links;
-counts are saved in `scraping/.private/product-archive/link-verification.json`.
+Katalog menghubungkan 2.388 pesan dalam 755 dari 881 percakapan yang diarsipkan ke 112 produk yang dirujuk. Referensi pesan lainnya sebanyak 116 ambigu dan memiliki penanda ulasan dalam transkrip mereka, dengan referensi tanpa konten dicatat dalam `scraping/.private/product-archive/context-review.json`. Semua 13.449 pesan sumber tetap utuh. Verifikasi memeriksa 5.371 tautan produk/percakapan yang dihasilkan; jumlah disimpan dalam `scraping/.private/product-archive/link-verification.json`.

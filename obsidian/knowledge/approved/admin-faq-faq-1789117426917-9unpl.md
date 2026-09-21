@@ -10,19 +10,19 @@ generated: true
 
 # Yg grs 01 ada yg satu set ama selang?
 
-Product: [[../../products/grs-915f-d218061|GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible Hitam 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 915 F Lebih Fexible Mudah Pasang]]
+Produk: [[../../products/grs-915f-d218061|GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible Hitam 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 915 F Lebih Fexible Mudah Pasang]]
 
-## Question
+## Pertanyaan
 
 Yg grs 01 ada yg satu set ama selang?
 
-## Approved answer
+## Jawaban disetujui
 
 Ya Kak, regulator GASCOMP Superlock GRS 915 F ini bisa digunakan untuk kompor GASCOMP Kakak! Produk ini dirancang fleksibel sehingga kompatibel dengan berbagai merek kompor gas, termasuk kompor meja, kompor portable, dan kompor tanam. Regulator ini cocok untuk berbagai kebutuhan rumah tangga dan ideal digunakan dengan kompor gas dari merek apapun, termasuk GASCOMP.
 
-Product guide: https://support.gascompsuperlock.com/produk/grs-915f-d218061
+Panduan produk: https://support.gascompsuperlock.com/produk/grs-915f-d218061
 
-## Search triggers
+## Pemicu pencarian
 
 - Yg grs 01 ada yg satu set ama selang?
 - GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible Hitam 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 915 F Lebih Fexible Mudah Pasang

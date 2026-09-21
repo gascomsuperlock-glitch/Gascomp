@@ -1,42 +1,48 @@
-# Shared infrastructure
+<a id="shared-infrastructure"></a>
+# Infrastruktur bersama
 
-[Workspace map](../../CONTEXT.md) · [Root rules](../../AGENTS.md)
+[Peta ruang kerja ](../../CONTEXT.md) · [Aturan akar ](../../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `src/shared` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `src/shared` dan turunan-nya kecuali jika konteks yang lebih dekat terdaftar dalam peta ruang kerja.
 
-Own reusable UI, language infrastructure, general helpers, and the server-only Supabase client.
+Kembangkan UI yang dapat digunakan kembali, infrastruktur bahasa, helper umum, dan klien Supabase yang hanya untuk server.
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi yang relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
-- [Placement and dependencies](../../docs/architecture/project-structure.md)
-- [Language and compatibility](../../docs/architecture/language-standard.md)
-- [Brand specification](../../docs/product/design/brand.md)
-- [Database and migration specification](../../docs/product/integrations/supabase.md)
+- [Penempatan dan ketergantungan ](../../docs/architecture/project-structure.md)
+- [Bahasa dan kompatibilitas ](../../docs/architecture/language-standard.md)
+- [Spesifikasi merek ](../../docs/product/design/brand.md)
+- [Spesifikasi database dan migrasi ](../../docs/product/integrations/supabase.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tugas otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta untuk bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| components/ | Check consuming features and accessibility before changing reusable UI. | Reusable components without feature imports. |
-| lib/ | Identify all call sites and maintain documented helper contracts. | General utilities with appropriate regression coverage. |
-| integrations/supabase/ | Trace server consumers and environment handling. | Server-only client infrastructure without exposed secrets. |
+| components/ | Periksa fitur yang mengonsumsi dan aksesibilitas sebelum mengubah UI yang dapat digunakan kembali. | Komponen yang dapat digunakan kembali tanpa impor fitur. |
+| lib/ | Identifikasi semua situs panggilan dan pertahankan kontrak helper yang didokumentasikan. | Utilitas umum dengan cakupan regresinya yang sesuai. |
+| integrations/supabase/ | Jejak konsumen server dan penanganan lingkungan. | Infrastruktur klien hanya untuk server tanpa rahasia yang terekspos. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Do not import features or routes into shared modules.
-- Keep client and server modules directly imported rather than mixing them in a barrel.
+- Jangan impor fitur atau rute ke dalam modul bersama.
+- Pertahankan modul klien dan server diimpor langsung daripada mencampurnya dalam satu file (barrel).
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-Update the shared module and any necessary consumer adjustments; keep domain policy in features.
+Perbarui modul bersama dan penyesuaian konsumen yang diperlukan; pertahankan kebijakan domain pada fitur.
 
-For TypeScript/JavaScript changes, run `npm run lint`, `npm run typecheck`, and `npm run test`. Add `npm run build` for route/rendering/dependency/build changes. For visible changes, check the affected desktop/mobile flow and loading, empty, and error states in a browser when available. Report any blocked checks.
+Untuk perubahan TypeScript/JavaScript, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`. Tambahkan `npm run build` untuk perubahan rute/rendering/ketergantungan/build. Untuk perubahan yang terlihat, periksa alur desktop/mobile yang terpengaruh serta status loading, kosong, dan kesalahan dalam browser jika tersedia. Laporkan pemeriksaan yang terhambat.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../docs/work/README.md) and [continuity workflow](../../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan
+[indeks serah terima ](../../docs/work/README.md) dan [aliran kontinuitas ](../../docs/work/workflow.md).

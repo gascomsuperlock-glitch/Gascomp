@@ -1,46 +1,52 @@
-# Obsidian folder context
+<a id="obsidian-folder-context"></a>
+# Folder konteks Obsidian
 
-[Workspace map](../../../CONTEXT.md) · [Root rules](../../../AGENTS.md)
+[Peta ruang kerja ](../../../CONTEXT.md) · [Aturan akar ](../../../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `obsidian` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `obsidian` dan turunan-nya kecuali jika ada konteks yang lebih dekat yang terdaftar dalam peta ruang kerja.
 
-Own product and knowledge notes used by the documented export and retrieval workflows.
+Catatan produk dan pengetahuan milik sendiri yang digunakan oleh alur ekspor dan pengambilan yang didokumentasikan.
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi yang relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
-- [Duoke catalog specification](../../product/integrations/duoke-catalog.md)
-- [Knowledge and replies specification](../../product/integrations/duoke-support.md)
-- [AI assistance specification](../../product/features/ai-assistance.md)
-- [Knowledge source setup](../../setup/ai-assistance.md)
+- [Spesifikasi katalog Duoke](../../product/integrations/duoke-catalog.md)
+- [Spesifikasi pengetahuan dan balasan](../../product/integrations/duoke-support.md)
+- [Spesifikasi bantuan AI](../../product/features/ai-assistance.md)
+- [Pembelian sumber pengetahuan](../../setup/ai-assistance.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tugas otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta untuk bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| products/ | Find the producing catalog/export workflow and preserve source identity. | Product notes with working links and attributable source fields. |
-| knowledge/ | Distinguish approved content from pending history and check the producing workflow. | Correct review state without unrequested activation. |
-| customer-support/ | Read curated-answer conventions and website-assistant retrieval contracts. | Verified customer knowledge with the expected metadata. |
-| Vault index | Regenerate or edit only according to its owning exporter. | An index matching the intended notes without broken references. |
+| products/ | Temukan alur katalog/pengeluaran produksi dan pertahankan identitas sumber. | Catatan produk dengan tautan yang berfungsi dan bidang sumber yang dapat ditelusuri. |
+| knowledge/ | Bedakan konten yang disetujui dari sejarah yang menunggu dan periksa alur produksi. | Status tinjauan yang benar tanpa aktivasi yang tidak diminta. |
+| customer-support/ | Baca konvensi jawaban kurasi dan kontrak pengambilan asisten website. | Pengetahuan pelanggan yang diverifikasi dengan metadata yang diharapkan. |
+| Vault index | Regenerasi atau edit hanya sesuai dengan pengelolanya. | Indeks yang cocok dengan catatan yang dimaksud tanpa referensi yang rusak. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Keep coding-agent instructions outside this vault so they cannot enter customer knowledge scans.
-- Do not include private raw conversations in repository notes or reports.
-- Preserve generated filenames and external identifiers; source review precedes publication.
+- Pertahankan instruksi agen pemrograman di luar ruang kerja ini agar mereka tidak dapat memasuki pemindaian pengetahuan pelanggan.
+- Jangan sertakan percakapan mentah pribadi dalam catatan repositori atau laporan.
+- Pertahankan nama file yang dihasilkan dan identifikasi eksternal; tinjauan sumber dilakukan sebelum publikasi.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-Keep the actual files in their existing stable folder. This context is stored outside the data/asset tree and linked from the workspace map.
+Pertahankan file asli dalam folder stabil yang ada. Konteks ini disimpan di luar pohon data/aset dan terhubung dari peta ruang kerja.
 
-For documentation-only changes, validate relative links, inspect the final diff including new files, and run `git diff --check`. If producers, retrieval behavior, or rendering change, run the root checks for that implementation.
+Untuk perubahan hanya dokumentasi, validasi tautan relatif, periksa selisih akhir termasuk file baru, dan jalankan `git diff --check`. Jika produsen, perilaku pengambilan, atau rendering berubah, jalankan pemeriksaan akar untuk implementasi tersebut.
 
-Existing work: [knowledge handoff](../../work/handoffs/handoff-knowledge-review-v1.md).
+Pekerjaan yang ada: [pembelajaran serah terima ](../../work/handoffs/handoff-knowledge-review-v1.md).
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../work/README.md) and [continuity workflow](../../work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan
+[indeks serah terima ](../../work/README.md) dan [alur kontinuitas ](../../work/workflow.md).

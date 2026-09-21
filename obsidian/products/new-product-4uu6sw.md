@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRS915F-PRO
 - **Model:** Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/new-product-4uu6sw
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/new-product-4uu6sw
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789612287098-izmvg|Mengapa regulator ini tidak bisa digunakan?]]
 - [[../knowledge/approved/admin-faq-faq-1789612439093-8aty4|apakah bisa semua jenis kompor tanam?]]

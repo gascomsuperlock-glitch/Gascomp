@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRP-2D
 - **Model:** Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/new-product-5bnxu5
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/new-product-5bnxu5
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789637153198-vy8ar|Regulator Gascomp GRP-2D ini bisa digunakan untuk tabung gas 12kg?~]]
 - [[../knowledge/approved/admin-faq-faq-1789637161296-g6ae7|Apakah regulator Gascomp GRP-2D ini cocok untuk tabung gas besar 25kg, dan mengapa sering bocor saat dipasang?]]

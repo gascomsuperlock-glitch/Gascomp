@@ -135,7 +135,7 @@ def all_skus(product: dict[str, Any]) -> list[str]:
 
 
 def label(value: Any) -> str:
-    return str(value if value not in (None, "") else "Not provided").replace("|", " / ").replace("[", "(").replace("]", ")").replace("\n", " ")
+    return str(value if value not in (None, "") else "Tidak tersedia").replace("|", " / ").replace("[", "(").replace("]", ")").replace("\n", " ")
 
 
 def structured_lines(value: Any) -> list[str]:
@@ -151,41 +151,41 @@ def render_product(product: dict[str, Any], backlinks: list[str], captured_at: s
              f"platform: {json.dumps(product['platform'])}",
              f"sku: {json.dumps(product.get('productSku') or '', ensure_ascii=False)}",
              f"aliases: {json.dumps(list(dict.fromkeys([product['productName'], *skus])), ensure_ascii=False)}",
-             "---", "", f"# {product['productName']}", "", f"[[{PRODUCT_NOTE_DIR}/Product catalog index|Product catalog]]", "",
-             "## Identity", "", f"- Store: {product.get('shopName') or 'Not provided'}",
-             f"- Channel: {product['platform']}", f"- Product SKU: {product.get('productSku') or 'Not provided'}",
-             f"- Source product ID: {product['productId']}", f"- Brand: {product.get('productBrand') or 'Not provided'}",
-             f"- Category: {product.get('productCategoryName') or 'Not provided'}", "",
-             "Use the exact store, product ID, and variant SKU when identifying a product.",
-             "A conversation link identifies a reference, not proof of which variant was purchased.", "",
-             "## Source description", ""]
+             "---", "", f"# {product['productName']}", "", f"[[{PRODUCT_NOTE_DIR}/Product catalog index|Katalog produk]]", "",
+             "## Identitas", "", f"- Toko: {product.get('shopName') or 'Tidak tersedia'}",
+             f"- Kanal: {product['platform']}", f"- SKU produk: {product.get('productSku') or 'Tidak tersedia'}",
+             f"- ID produk sumber: {product['productId']}", f"- Merek: {product.get('productBrand') or 'Tidak tersedia'}",
+             f"- Kategori: {product.get('productCategoryName') or 'Tidak tersedia'}", "",
+             "Gunakan toko, ID produk, dan SKU variasi yang persis saat mengidentifikasi produk.",
+             "Tautan percakapan menunjukkan rujukan, bukan bukti variasi mana yang dibeli.", "",
+             "## Deskripsi sumber", ""]
     description = description_text(product)
-    missing = "Douke provided an image-only description; its URL references are listed below." if description_images(product) else "No text description was provided by Douke."
+    missing = "Douke hanya menyediakan deskripsi berupa gambar; URL rujukannya tercantum di bawah." if description_images(product) else "Douke tidak menyediakan deskripsi teks."
     lines.extend("> " + line for line in (description or missing).splitlines())
-    lines.extend(["", "## Variants", "", "| Variant ID | SKU | Attributes | Price | Currency | Stock |",
+    lines.extend(["", "## Variasi", "", "| ID variasi | SKU | Atribut | Harga | Mata uang | Stok |",
                   "| --- | --- | --- | --- | --- | --- |"])
     for variant in product.get("items") or []:
         values = [variant.get(key) for key in ("itemId", "itemSku", "attribute", "price", "currency", "stock")]
         lines.append("| " + " | ".join(label(value) for value in values) + " |")
-    lines.extend(["", "## Catalog snapshot", "",
-                  f"- Price range: {product.get('productMinPrice')} – {product.get('productMaxPrice')} {product.get('productCurrency') or ''}",
-                  f"- Stock: {product.get('productStock')}",
-                  f"- Source status: {product.get('platformProductStatus')}",
-                  f"- Source platform update timestamp: {product.get('platformUpdateTime')}", "",
-                  "Prices and stock describe the Duoke snapshot at capture time.", "",
-                  "## Source attributes", ""])
+    lines.extend(["", "## Cuplikan katalog", "",
+                  f"- Rentang harga: {product.get('productMinPrice')} – {product.get('productMaxPrice')} {product.get('productCurrency') or ''}",
+                  f"- Stok: {product.get('productStock')}",
+                  f"- Status sumber: {product.get('platformProductStatus')}",
+                  f"- Waktu pembaruan platform sumber: {product.get('platformUpdateTime')}", "",
+                  "Harga dan stok menggambarkan cuplikan Duoke saat pengambilan data.", "",
+                  "## Atribut sumber", ""])
     lines.extend(structured_lines(product.get("productAttribute")))
-    lines.extend(["", "## Source media references", "",
-                  "These URL values were returned by Douke. External marketplace pages and media were not fetched.", ""])
+    lines.extend(["", "## Referensi media sumber", "",
+                  "Nilai URL ini dikembalikan oleh Douke. Halaman dan media marketplace eksternal tidak diambil.", ""])
     for key in ("productImage", "productVideoUrl", "productUrl"):
         if product.get(key):
             lines.append(f"- {key}: `{str(product[key]).replace('`', '')}`")
     for index, image_url in enumerate(description_images(product), start=1):
-        lines.append(f"- Description image {index}: `{image_url.replace('`', '')}`")
-    lines.extend(["", "## Related conversations", ""])
+        lines.append(f"- Gambar deskripsi {index}: `{image_url.replace('`', '')}`")
+    lines.extend(["", "## Percakapan terkait", ""])
     lines.extend(f"- [[{CHAT_NOTE_DIR}/Conversation {ref}]]" for ref in sorted(set(backlinks)))
     if not backlinks:
-        lines.append("No verified reference was found in the captured conversations.")
+        lines.append("Tidak ditemukan rujukan terverifikasi dalam percakapan yang diambil.")
     lines.extend(["", "## Manual notes", "", MANUAL_MARKER, ""])
     return "\n".join(lines)
 
@@ -331,7 +331,7 @@ def export_catalog(catalog: dict[str, Any], vault: Path) -> dict[str, Any]:
             matches, ambiguous = matcher.match(record["conversation"], message)
             ambiguous_messages += int(ambiguous)
             if ambiguous:
-                review[message_key(message)] = "Multiple products share a referenced name or SKU; verify the source product and variant."
+                review[message_key(message)] = "Beberapa produk memiliki nama atau SKU rujukan yang sama; verifikasi produk sumber dan variasinya."
                 review_references.append({"conversation_ref": ref, "message_ref": stable_hash(message_key(message))})
             if matches:
                 linked_messages += 1
@@ -362,23 +362,23 @@ def export_catalog(catalog: dict[str, Any], vault: Path) -> dict[str, Any]:
         "missing_variant_skus": sum(not v.get("itemSku") for p in products for v in p["items"]),
         "stores": catalog["stores"],
     }
-    lines = ["# Duoke product catalog", "", f"Captured: {captured_at}", "", f"Products: {len(products)}",
-             f"Variants: {summary['variants']}", f"Linked conversations: {len(changed)}", "",
-             f"[[{CHAT_NOTE_DIR}/Conversation archive index|Conversation archive]]", "",
-             "All catalog data comes from web.duoke.com. Marketplace pages and media were not fetched.",
-             "Products are kept separate by store and source ID, even when SKUs match.",
-             "Missing SKUs and ambiguous references remain unresolved; do not infer a purchased variant.", ""]
+    lines = ["# Katalog produk Duoke", "", f"Diambil: {captured_at}", "", f"Produk: {len(products)}",
+             f"Variasi: {summary['variants']}", f"Percakapan tertaut: {len(changed)}", "",
+             f"[[{CHAT_NOTE_DIR}/Conversation archive index|Arsip percakapan]]", "",
+             "Semua data katalog berasal dari web.duoke.com. Halaman marketplace dan media tidak diambil.",
+             "Produk tetap dipisahkan menurut toko dan ID sumber, meskipun SKU-nya sama.",
+             "SKU yang hilang dan rujukan ambigu tetap belum terselesaikan; jangan menyimpulkan variasi yang dibeli.", ""]
     for (platform, shop), members in sorted(groups.items()):
-        lines.extend([f"## {shop} ({platform})", "", f"Products: {len(members)}", ""])
+        lines.extend([f"## {shop} ({platform})", "", f"Produk: {len(members)}", ""])
         for product in sorted(members, key=lambda p: p["productName"].casefold()):
-            display = label(f"{product.get('productSku') or 'SKU not provided'} — {product['productName']}")
+            display = label(f"{product.get('productSku') or 'SKU tidak tersedia'} — {product['productName']}")
             lines.append(f"- [[{product_note(product)}|{display}]]")
         lines.append("")
-    lines.extend(["## Coverage", "",
-                  f"Descriptions available: {summary['descriptions']}/{len(products)}.",
-                  f"Missing parent SKUs: {summary['missing_product_skus']}; missing variant SKUs: {summary['missing_variant_skus']}.",
-                  f"Ambiguous message references: {ambiguous_messages}.",
-                  f"Channels without a catalog response: {sum(s['status'] == 'no_catalog_response' for s in catalog['stores'])}.",
+    lines.extend(["## Cakupan", "",
+                  f"Deskripsi tersedia: {summary['descriptions']}/{len(products)}.",
+                  f"SKU induk yang hilang: {summary['missing_product_skus']}; SKU variasi yang hilang: {summary['missing_variant_skus']}.",
+                  f"Rujukan pesan ambigu: {ambiguous_messages}.",
+                  f"Kanal tanpa respons katalog: {sum(s['status'] == 'no_catalog_response' for s in catalog['stores'])}.",
                   "", "## Manual notes", "", MANUAL_MARKER, ""])
     write_note(vault / PRODUCT_NOTE_DIR / PRODUCT_INDEX_NAME, "\n".join(lines))
     manifest = read_json(CHAT_ARCHIVE_DIR / "manifest.json", {})

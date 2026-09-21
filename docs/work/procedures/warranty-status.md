@@ -1,94 +1,76 @@
-# Warranty status work procedure
+<a id="warranty-status-work-procedure"></a>
+# Prosedur kerja status garansi
 
-[Feature context](../../../src/features/warranty/CONTEXT.md) · [Learning workflow](../learning.md)
+[Konteks fitur](../../../src/features/warranty/CONTEXT.md) · [Alur pembelajaran](../learning.md)
 
-## Trigger and scope
+<a id="trigger-and-scope"></a>
+## Pemicu dan cakupan
 
-Use when asked to change, fix, review, or verify ticket status controls, status
-labels, or their interaction with saved and unsaved solutions. A status report
-only reads the relevant evidence; implement changes only when requested.
+Digunakan ketika diminta untuk mengubah, memperbaiki, meninjau, atau memverifikasi kontrol status tiket, label status, atau interaksi mereka dengan solusi yang disimpan dan belum disimpan. Laporan status hanya membaca bukti yang relevan; implementasikan perubahan hanya saat diminta.
 
-Requirement source: [Restored status controls](../../product/features/warranty.md#restored-status-controls).
-This procedure is derived from that specification and inspected code. The original
-owner conversation behind those controls was not available. Do not attribute a
-hypothetical correction to the owner.
+Sumber persyaratan: [Kontrol status dipulihkan](../../product/features/warranty.md#restored-status-controls).
+Prosedur ini diturunkan dari spesifikasi tersebut dan kode yang diperiksa. Percakapan pemilik asli di balik kontrol tersebut tidak tersedia. Jangan mengaitkan koreksi hipotetis dengan pemilik.
 
-Current evidence: [warranty handoff](../handoffs/handoff-warranty-review-v1.md).
-Use its dated verification section; this procedure alone does not certify the feature.
+Bukti saat ini: [catatan serah terima garansi](../handoffs/handoff-warranty-review-v1.md).
+Gunakan bagian verifikasi terbarunya; prosedur ini sendiri tidak memvalidasi fitur tersebut.
 
-## Inputs and entrypoints
+<a id="inputs-and-entrypoints"></a>
+## Input dan titik masuk
 
-| Input | Inspect for |
+| Input | Periksa untuk |
 | --- | --- |
-| [Ticket inbox](../../../src/features/warranty/components/ticket-inbox.tsx) | `changeStatus`, `changeSolution`, `solutionDrafts`, filters, and feedback |
-| [Admin actions](../../../src/features/warranty/server/admin-actions.ts) | `setWarrantyTicketStatusAction` versus `updateWarrantyTicketStatusAction`, authentication, and validation |
-| [Ticket service](../../../src/features/warranty/server/ticket-service.ts) | Status/solution arguments and storage dispatch |
-| [Local store](../../../src/features/warranty/server/local-ticket-store.ts) and [Supabase store](../../../src/features/warranty/server/supabase-ticket-store.ts) | Conditional updates and real persistence behavior when affected |
-| [Types and labels](../../../src/features/warranty/model/types.ts) | Stored status values, display labels, and solution identities |
-| [Solution UI](../../../src/features/warranty/components/ticket-solution.tsx) | Draft selection and explicit solution save/Done behavior |
-| [CSV logic](../../../src/features/warranty/model/ticket-export.ts) | Labels and compatibility values in exported output |
+| [Kotak masuk tiket](../../../src/features/warranty/components/ticket-inbox.tsx) | `changeStatus`, `changeSolution`, `solutionDrafts`, filter, dan umpan balik |
+| [Aksi admin](../../../src/features/warranty/server/admin-actions.ts) | `setWarrantyTicketStatusAction` versus `updateWarrantyTicketStatusAction`, autentikasi, dan validasi |
+| [Layanan tiket](../../../src/features/warranty/server/ticket-service.ts) | Argumen status/solusi dan penyaluran penyimpanan |
+| [Penyimpanan lokal](../../../src/features/warranty/server/local-ticket-store.ts) dan [Penyimpanan Supabase](../../../src/features/warranty/server/supabase-ticket-store.ts) | Pembaruan bersyarat dan perilaku persistensi nyata saat terpengaruh |
+| [Tipe dan label](../../../src/features/warranty/model/types.ts) | Nilai status yang disimpan, label tampilan, dan identitas solusi |
+| [Solusi UI](../../../src/features/warranty/components/ticket-solution.tsx) | Pemilihan draf dan perilaku penyimpanan solusi eksplisit/Selesai |
+| [Logika CSV](../../../src/features/warranty/model/ticket-export.ts) | Label dan nilai kompatibilitas dalam output ekspor |
 
-## Ordered work
+<a id="ordered-work"></a>
+## Pekerjaan berurutan
 
-1. Inspect current Git status and the warranty handoff. Identify existing user
-   changes. Read the requirement section and record any new correction using the
-   learning workflow; do not apply older status wording over a newer scoped rule.
-2. Trace one requested status transition from inbox to action to storage. Expected
-   distinction: status-only changes pass no replacement solution; solution-only
-   saves do not replace status; Done can save a solution and close the ticket.
-3. Inspect UI state separately from storage. A preserved database solution does
-   not prove that `solutionDrafts` survives rerendering, filtering, or reopening.
-4. If a fix is requested, change the smallest responsible layer and add regression
-   coverage for the observed failure. Read the relevant installed Next.js guide
-   before framework code changes. Keep existing ticket and solution identifiers.
-5. Run the focused tests below, then the required root checks for implementation
-   changes. A failed or unavailable check remains explicit unfinished work.
-6. For UI verification, use synthetic tickets in an isolated local environment.
-   Confirm the app is not writing to configured production storage before mutations.
-   Do not submit real claims or send WhatsApp messages as a test.
-7. Compare observed results with the acceptance cases. Update the owning rule only
-   if behavior decisions changed. Save dated evidence and the next step in the
-   handoff, including failed checks, remaining browser coverage, and release state.
+1. Periksa status Git saat ini dan catatan serah terima garansi. Identifikasi perubahan pengguna yang ada. Baca bagian persyaratan dan catat koreksi baru menggunakan alur pembelajaran; jangan terapkan aturan penulisan status lama di atas aturan cakupan yang lebih baru.
+2. Lacak satu transisi status yang diminta dari kotak masuk ke aksi ke penyimpanan. Perbedaan yang diharapkan: perubahan hanya status melewatkan solusi pengganti; penyimpanan hanya solusi tidak mengganti status; Selesai dapat menyimpan solusi dan menutup tiket.
+3. Periksa keadaan UI secara terpisah dari penyimpanan. Solusi database yang dipertahankan tidak membuktikan bahwa `solutionDrafts` bertahan melalui rerendering, filtering, atau pembukaan ulang.
+4. Jika perbaikan diminta, ubah lapisan bertanggung jawab terkecil dan tambahkan cakupan regresinya untuk kegagalan yang diamati. Baca panduan Next.js yang relevan sebelum perubahan kode kerangka kerja. Pertahankan identifikasi tiket dan solusi yang ada.
+5. Jalankan tes fokus di bawah ini, kemudian pemeriksaan akar yang diperlukan untuk perubahan implementasi. Pemeriksaan yang gagal atau tidak tersedia tetap menjadi pekerjaan belum selesai yang eksplisit.
+6. Untuk verifikasi UI, gunakan tiket sintetik dalam lingkungan lokal terisolasi. Konfirmasi aplikasi tidak menulis ke penyimpanan produksi yang dikonfigurasi sebelum mutasi. Jangan kirim klaim nyata atau mengirim pesan WhatsApp sebagai tes.
+7. Bandingkan hasil yang diamati dengan kasus penerimaan. Perbarui aturan dalam dokumen pemilik hanya jika keputusan perilaku berubah. Simpan bukti terbaru dan langkah berikutnya dalam catatan serah terima, termasuk pemeriksaan yang gagal, cakupan browser yang tersisa, dan keadaan rilis.
 
-## Acceptance cases
+<a id="acceptance-cases"></a>
+## Kasus penerimaan
 
-These cases restate testable implications of the linked requirement; they are not
-additional product policy. Use fictional tickets and distinguish saved solution A
-from unsaved selection B.
+Kasus ini merinci implikasi yang dapat diuji dari persyaratan terkait; bukan kebijakan produk tambahan. Gunakan tiket fiktif dan bedakan solusi A yang disimpan dengan pilihan B yang belum disimpan.
 
-| Action | Expected observation |
+| Aksi | Pengamatan yang diharapkan |
 | --- | --- |
-| Change a ticket from New to Under review | The save succeeds, labels update, and the ticket remains in Pending |
-| Change status while solution A is saved and B is selected but unsaved | Stored solution remains A and the editor retains B |
-| Reopen a Closed ticket | The selected status is saved, saved solution is retained, and Pending/Done grouping follows status |
-| Save solution B without Done | Solution changes without an unrelated status change |
-| Select Done with solution B | Solution B is saved and the ticket becomes Closed |
-| Reject an invalid status or unauthenticated request | No mutation is dispatched |
-| Return a save failure or lose the response | Failure is reported; the previous confirmed UI value is retained and uncertain persistence is checked before retry |
-| Start another mutation during a pending save | Busy controls prevent overlapping user mutations |
-| Export tickets | Detailed status labels and documented solution compatibility values are preserved |
+| Ubah tiket dari New menjadi Under review | Penyimpanan berhasil, label diperbarui, dan tiket tetap dalam Pending |
+| Ubah status saat solusi A disimpan dan B dipilih namun belum disimpan | Solusi tersimpan tetap A dan editor mempertahankan B |
+| Buka kembali tiket yang Closed | Status yang dipilih disimpan, solusi tersimpan dipertahankan, dan pengelompokan Pending/Done mengikuti status |
+| Simpan solusi B tanpa Done | Perubahan solusi terjadi tanpa perubahan status yang tidak terkait |
+| Pilih Done dengan solusi B | Solusi B disimpan dan tiket menjadi Closed |
+| Tolak status yang tidak valid atau permintaan yang belum terautentikasi | Tidak ada mutasi yang dikirim |
+| Kembali ke kegagalan penyimpanan atau kehilangan respons | Kegagalan dilaporkan; nilai antarmuka UI yang dikonfirmasi sebelumnya dipertahankan dan ketidaktentuan persistensi diperiksa sebelum percobaan ulang |
+| Mulai mutasi lain selama penyimpanan pending | Kontrol Busy mencegah mutasi pengguna yang tumpang tindih |
+| Ekspor tiket | Label status terperinci dan nilai kompatibilitas solusi terdokumentasi dipertahankan |
 
-For browser checks, cover desktop and mobile, empty filters, failed requests, and
-pending controls. These checks are separate from action tests using mocks.
+Untuk pemeriksaan browser, tutup desktop dan mobile, filter kosong, permintaan gagal, dan kontrol pending. Pemeriksaan ini terpisah dari uji aksi menggunakan mock.
 
-## Focused verification
+<a id="focused-verification"></a>
+## Verifikasi berfokus
 
-Run from the repository root:
+Jalankan dari akar repositori:
 
 ```bash
 node --test src/features/warranty/server/status-actions.test.mjs src/features/warranty/server/solution-actions.test.mjs src/features/warranty/model/ticket-export.test.mjs
 ```
 
-The action tests verify validation and arguments passed to a mocked ticket service.
-They do not exercise either real store or render the inbox. Export tests cover
-specific CSV/date/normalization examples, not all statuses in every UI location.
+Uji tindakan memverifikasi validasi dan argumen yang diteruskan ke layanan tiket tiruan.
+Mereka tidak menguji toko nyata atau merender kotak masuk. Uji ekspor mencakup contoh spesifik CSV/tanggal/normalisasi, bukan semua status di setiap lokasi antarmuka.
 
-After implementation changes, also run `npm run lint`, `npm run typecheck`, and
-`npm run test`; include `npm run build` for rendering/route changes and the affected
-browser flow. A documentation-only procedure update requires link and diff checks.
+Setelah perubahan implementasi, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`; sertakan `npm run build` untuk perubahan rendering/rute dan alur browser yang terpengaruh. Pembaruan prosedur hanya dokumentasi memerlukan pemeriksaan link dan diff.
 
-## Expected deliverable
+## Hasil yang diharapkan
 
-A scoped fix or review, acceptance results, links to any updated canonical decision,
-and a handoff that distinguishes observed behavior, assumptions, and unverified
-paths. Do not report production completion from local test results.
+Perbaikan atau tinjauan berskala terbatas, hasil penerimaan, tautan ke keputusan kanonik yang diperbarui, dan serah terima yang membedakan perilaku diamati, asumsi, dan jalur yang belum diverifikasi. Jangan melaporkan penyelesaian produksi dari hasil uji lokal.

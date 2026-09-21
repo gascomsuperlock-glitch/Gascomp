@@ -79,7 +79,8 @@ _PASSIVE_OPERATIONAL_PROMISE = re.compile(
 )
 _MARKDOWN_LINK = re.compile(r"!?\[([^\]]*)\]\([^)]*\)|!?\[\[([^\]|]*)(?:\|([^\]]*))?\]\]")
 _PLACEHOLDER_DESCRIPTION = re.compile(
-    r"^Douke provided an image-only description; its URL references are listed below\.?$",
+    r"^(?:Douke provided an image-only description; its URL references are listed below|"
+    r"Douke hanya menyediakan deskripsi berupa gambar; URL rujukannya tercantum di bawah)\.?$",
     re.IGNORECASE,
 )
 _LEADING_DECORATION = re.compile(r"^\s*[^\w\d]+", re.UNICODE)
@@ -220,7 +221,7 @@ def _conversation_document(path: Path, source: Path) -> tuple[dict[str, Any], Pa
 def _description_lines(body: str) -> list[str]:
     lines = body.splitlines()
     start = next((index + 1 for index, line in enumerate(lines)
-                  if line.strip() == "## Source description"), None)
+                  if line.strip() in {"## Source description", "## Deskripsi sumber"}), None)
     if start is None:
         return []
     result: list[str] = []

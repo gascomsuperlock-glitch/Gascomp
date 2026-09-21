@@ -24,7 +24,7 @@ from scraping.shared.paths import AI_ASSISTANCE_PRIVATE_DIR
 
 REVIEW_DIR = AI_ASSISTANCE_PRIVATE_DIR / "duoke-review"
 ROLE_LINE = re.compile(r"^- \*\*(Customer|Seller)\*\* · ([^—\n]+?) —(.*)$")
-ARCHIVE_ROLE_LINE = re.compile(r"^###\s+(.+?)\s+—\s+(Customer|Seller)\s*$")
+ARCHIVE_ROLE_LINE = re.compile(r"^###\s+(.+?)\s+—\s+(Customer|Seller|Pelanggan|Penjual)\s*$")
 ARCHIVE_SKU = re.compile(r'"skuValue"\s*:\s*"([^"\n]+)"')
 PLACEHOLDER = re.compile(
     r"\[(?:EMAIL|PHONE|ORDER_NUMBER|NAME|ADDRESS|LINK|NATIONAL_ID|BANK_ACCOUNT|USERNAME)\]"
@@ -261,7 +261,7 @@ def _archive_transcript(lines: list[tuple[int, str]]) -> tuple[tuple[Turn | Boun
         line_start, timestamp, role = heading
         message_type = ""
         for _, value in message:
-            if value.startswith("Type:"):
+            if value.startswith(("Type:", "Tipe:")):
                 message_type = value.partition(":")[2].strip().casefold()
                 break
         if message_type in MISSING_MEDIA_TYPES:
@@ -296,7 +296,8 @@ def _archive_transcript(lines: list[tuple[int, str]]) -> tuple[tuple[Turn | Boun
         role_match = ARCHIVE_ROLE_LINE.match(line)
         if role_match:
             flush()
-            heading = (line_number, role_match.group(1).strip(), role_match.group(2).casefold())
+            role = role_match.group(2).casefold()
+            heading = (line_number, role_match.group(1).strip(), {"pelanggan": "customer", "penjual": "seller"}.get(role, role))
             continue
         if heading is not None:
             message.append((line_number, line))
@@ -338,7 +339,8 @@ def parse_note(path: Path, source: Path) -> ParsedNote:
         digest=hashlib.sha256(raw).hexdigest(),
         source_format="archive" if archive_format else "legacy",
         missing_media=missing_media,
-        product_context_ambiguous="Product context review: Multiple products" in text,
+        product_context_ambiguous=("Product context review: Multiple products" in text or
+                                   "Tinjauan konteks produk: Beberapa produk" in text),
     )
 
 
@@ -667,47 +669,47 @@ def _private_write(path: Path, text: str) -> None:
 
 def _markdown(candidate: dict[str, Any]) -> str:
     lines = [
-        f"# Review candidate {candidate['id']}",
+        f"# Kandidat tinjauan {candidate['id']}",
         "",
         "Status: **UNAPPROVED**",
         "",
-        "This is a redacted historical draft. Verify role attribution, product context, and factual accuracy before manually creating active knowledge.",
+        "Ini adalah draf riwayat yang telah disamarkan. Verifikasi peran, konteks produk, dan ketepatan fakta sebelum membuat pengetahuan aktif secara manual.",
         "",
-        "## Review flags",
+        "## Penanda tinjauan",
         "",
         *(f"- `{flag}`" for flag in candidate["flags"]),
         "",
-        "## Customer turns",
+        "## Giliran pelanggan",
         "",
     ]
     for index, turn in enumerate(candidate["questionTurns"], start=1):
         source = turn["source"]
         lines.extend([
-            f"### Customer turn {index}",
+            f"### Giliran pelanggan {index}",
             "",
-            f"Source: `{source['path']}:{source['lineStart']}-{source['lineEnd']}`",
+            f"Sumber: `{source['path']}:{source['lineStart']}-{source['lineEnd']}`",
             "",
             *(f"> {line}" for line in turn["text"].splitlines()),
             "",
         ])
-    lines.extend(["## Historical seller turns", ""])
+    lines.extend(["## Giliran penjual dalam riwayat", ""])
     for index, turn in enumerate(candidate["historicalSellerTurns"], start=1):
         source = turn["source"]
         lines.extend([
-            f"### Seller turn {index}",
+            f"### Giliran penjual {index}",
             "",
-            f"Source: `{source['path']}:{source['lineStart']}-{source['lineEnd']}`",
+            f"Sumber: `{source['path']}:{source['lineStart']}-{source['lineEnd']}`",
             "",
             *(f"> {line}" for line in turn["text"].splitlines()),
             "",
         ])
     lines.extend([
-        "## Owner review",
+        "## Tinjauan pemilik",
         "",
-        "- [ ] Confirm the customer and seller roles.",
-        "- [ ] Confirm the product/SKU context.",
-        "- [ ] Rewrite and approve final Indonesian wording in the dedicated customer-support vault.",
-        "- [ ] Create and approve a separate English entry if required.",
+        "- [ ] Pastikan peran pelanggan dan penjual.",
+        "- [ ] Pastikan konteks produk/SKU.",
+        "- [ ] Tulis ulang dan setujui redaksi akhir berbahasa Indonesia di vault dukungan pelanggan khusus.",
+        "- [ ] Buat dan setujui entri bahasa Inggris terpisah bila diperlukan.",
         "",
     ])
     return "\n".join(lines)
@@ -745,27 +747,27 @@ def write_review(candidates: list[dict[str, Any]], report: dict[str, Any], outpu
             stale.unlink()
 
     index = [
-        "# Duoke AI Assistance Review",
+        "# Tinjauan Bantuan AI Duoke",
         "",
-        "All candidates are **UNAPPROVED** and cannot be published by this importer.",
-        "Historical seller text is redacted but is not verified product truth.",
-        "These generated artifacts are overwritten on rerun. Put final owner-approved wording in the dedicated customer-support vault.",
+        "Semua kandidat berstatus **UNAPPROVED** dan tidak dapat diterbitkan oleh pengimpor ini.",
+        "Teks penjual dalam riwayat telah disamarkan, tetapi belum diverifikasi sebagai fakta produk.",
+        "Artefak yang dihasilkan ini ditimpa saat dijalankan ulang. Simpan redaksi akhir yang disetujui pemilik di vault dukungan pelanggan khusus.",
         "",
-        f"Candidate count: {len(candidates)}",
-        f"Strict pilot review eligible: {report['strictPilotReviewEligibleCount']}",
+        f"Jumlah kandidat: {len(candidates)}",
+        f"Layak ditinjau untuk pilot ketat: {report['strictPilotReviewEligibleCount']}",
         "",
-        "## Actionable review groups",
+        "## Kelompok tinjauan yang dapat ditindaklanjuti",
         "",
         *(f"- {name}: {count}" for name, count in report["reviewBuckets"].items()),
         "",
-        "## Strict pilot review candidates",
+        "## Kandidat tinjauan pilot ketat",
         "",
-        "These remain unapproved. They only passed automated risk triage and still require owner fact checking.",
+        "Kandidat ini tetap belum disetujui. Kandidat hanya lolos pemilahan risiko otomatis dan masih memerlukan pemeriksaan fakta oleh pemilik.",
         "",
         *(f"- [ ] [{_index_label(candidate)}](candidates/{candidate['id']}.md)"
           for candidate in candidates if candidate["strictPilotReviewEligible"]),
         "",
-        "## Candidates",
+        "## Kandidat",
         "",
         *(f"- [ ] [{_index_label(candidate)}](candidates/{candidate['id']}.md) · {', '.join(candidate['flags'])}" for candidate in candidates),
         "",

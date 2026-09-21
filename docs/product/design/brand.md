@@ -1,26 +1,28 @@
-# Brand identity and public design
+<a id="brand-identity-and-public-design"></a>
+# Identitas merek dan desain publik
 
-[Specification index](../spec.md)
+[Indeks spesifikasi](../spec.md)
 
-The brand guide is stored in [Gascomp - Guidelines.pdf](<../../brand/Gascomp - Guidelines.pdf>). Brand documentation belongs in `docs/brand/`; assets used directly by the website remain in `public/`.
+Panduan merek disimpan di [Gascomp - Panduan.pdf](<../../brand/Gascomp - Guidelines.pdf>); dokumentasi merek harus berada di `docs/brand/`; aset yang digunakan langsung oleh situs web tetap berada di `public/`.
 
-The visual reference is the [Gascomp Superlock website](https://gascompsuperlock.com/).
+Referensi visual adalah [Situs web Gascomp Superlock](https://gascompsuperlock.com/).
 
-- Use the official logo, colors, and typography consistently.
-- Browser icons use the official A-shaped supergraphic described on printed pages 2 and 5 of the brand guide, in white on Gascomp navy `#021B40`. `src/app/icon.svg` supplies the scalable icon, and `src/app/favicon.ico` provides 16, 32, and 48 pixel fallbacks with the same design.
-- The current direction uses the official navy wordmark, saturated Gascomp blue, cyan, generous spacing, and pill-shaped controls. The September 14, 2026 update adds lime-yellow and coral accents following the owner’s preference for a bold, colorful website.
-- Replace temporary illustrations with approved logo and product-photo assets when those files are available.
-- Preserve the agreed help flow: searchable catalog at the root URL and a product-specific help page opened by QR.
-- Prioritize mobile use because many customers arrive by scanning packaging. Keep product identity, tutorial access, troubleshooting, and WhatsApp easy to reach.
+- Gunakan logo resmi, warna, dan tipografi secara konsisten.
+- Ikon browser menggunakan supergrafik berbentuk huruf A resmi yang dijelaskan pada halaman 2 dan 5 panduan merek, berwarna putih di atas biru laut Gascomp `#021B40`. `src/app/icon.svg` menyediakan ikon yang dapat diperbesar, dan `src/app/favicon.ico` menyediakan cadangan berukuran 16, 32, dan 48 piksel dengan desain yang sama.
+- Arah saat ini menggunakan nama merek biru laut resmi, biru Gascomp jenuh, sian, jarak antar elemen yang luas, dan kontrol berbentuk kapsul. Update tanggal 14 September 2026 menambahkan aksen kuning lime dan merah muda mengikuti preferensi pemilik untuk situs web yang berani dan berwarna-warni.
+- Gantikan ilustrasi sementara dengan aset logo dan foto produk yang disetujui ketika file tersebut tersedia.
+- Pertahankan alur bantuan yang disepakati: katalog dapat dicari di URL akar dan halaman bantuan khusus produk dibuka melalui QR code.
+- Prioritaskan penggunaan mobile karena banyak pelanggan datang dengan memindai kemasan. Pastikan identitas produk, akses tutorial, pemecahan masalah, dan WhatsApp mudah diakses.
 
-## Public home-page design
+<a id="public-home-page-design"></a>
+## Desain halaman depan publik
 
-The September 14, 2026 redesign covers the home page and shared public header:
+Redesain tanggal 14 September 2026 mencakup halaman depan dan header publik yang dibagikan:
 
-- Use Gascomp blue `#0035B9` for the hero, navy `#021B40` for text and the contact section, cyan `#31B4DD`, lime-yellow `#DAEF69`, coral `#FFB39D`, and warm off-white `#FFFDF7` surfaces.
-- Keep the official logo. The hero uses locally hosted Raleway headings and Open Sans supporting text; the rest of the site retains Manrope. Existing font files and licenses remain in `public/fonts`.
-- Use large, expressive headings, a tilted guide illustration built from HTML/CSS, a QR reminder, colorful help cards, and clear product cards. Decorative graphics remain hidden from assistive technology.
-- Keep product selection as the primary action. Quick links lead to product guides, warranty support, and contact details. Preserve `#produk`, `#bantuan`, `#hubungi`, product URLs, and the configured WhatsApp destination.
-- Keep the catalog searchable by name, model, and SKU. Provide a labeled search, a result announcement, a clear-search action, and support links when no results or published guides are available.
-- Stack content on mobile. Keep visible keyboard focus, a skip link, touch-friendly actions, readable contrast, and reduced-motion support. Product cards use content visibility to limit rendering work for large catalogs.
-- The admin dashboard retains its own design system. Public product-help and warranty forms retain their existing layouts.
+- Gunakan biru Gascomp `#0035B9` untuk hero, biru laut `#021B40` untuk teks dan bagian kontak, sian `#31B4DD`, kuning lime `#DAEF69`, merah muda `#FFB39D`, dan permukaan putih off-white hangat `#FFFDF7`.
+- Pertahankan logo resmi. Hero menggunakan judul Raleway yang dihosting secara lokal dan teks pendukung Open Sans; sisinya situs mempertahankan Manrope. File font dan lisensi yang ada tetap berada di `public/fonts`.
+- Gunakan judul besar dan ekspresif, ilustrasi panduan miring yang dibangun dari HTML/CSS, pengingat QR code, kartu bantuan berwarna-warni, dan kartu produk yang jelas. Grafik dekoratif tetap disembunyikan dari teknologi bantu.
+- Pertahankan pemilihan produk sebagai tindakan utama. Tautan cepat mengarah ke panduan produk, dukungan garansi, dan detail kontak. Pertahankan `#produk`, `#bantuan`, `#hubungi`, URL produk, dan tujuan WhatsApp yang dikonfigurasi.
+- Pertahankan katalog dapat dicari berdasarkan nama, model, dan SKU. Sediakan pencarian berlabel, pengumuman hasil, tindakan pencarian yang jelas, dan tautan dukungan ketika tidak ada hasil atau panduan yang diterbitkan tersedia.
+- Susun konten secara vertikal di mobile. Pertahankan fokus keyboard yang terlihat, tautan lompat, aksi ramah sentuhan, kontras yang dapat dibaca, dan dukungan gerak berkurang. Kartu produk menggunakan visibilitas konten untuk membatasi pekerjaan rendering untuk katalog besar.
+- Dashboard admin mempertahankan sistem desainnya sendiri. Formulir bantuan produk dan garansi publik mempertahankan tata letak yang ada.

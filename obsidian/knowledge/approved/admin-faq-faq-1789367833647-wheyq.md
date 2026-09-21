@@ -10,19 +10,19 @@ generated: true
 
 # Bagaimana cara melepas karet seal di regulator?
 
-Product: [[../../products/grt-2d-6d5b4dc|GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
+Produk: [[../../products/grt-2d-6d5b4dc|GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
 
-## Question
+## Pertanyaan
 
 Bagaimana cara melepas karet seal di regulator?
 
-## Approved answer
+## Jawaban disetujui
 
 Untuk melepas karet seal di regulator, tinggal dicongkel saja kak menggunakan obeng min. Karet seal ini kadang terlalu tebal sehingga membuat regulator sulit mengunci. Setelah dilepas, regulator akan lebih mudah dipasang dan dikunci dengan baik.
 
-Product guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc
+Panduan produk: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc
 
-## Search triggers
+## Pemicu pencarian
 
 - Bagaimana cara melepas karet seal di regulator?
 - GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock

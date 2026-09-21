@@ -1,46 +1,51 @@
-# Documentation workspace
+<a id="documentation-workspace"></a>
+# Ruang kerja dokumentasi
 
-[Workspace map](../CONTEXT.md) · [Root rules](../AGENTS.md)
+[Peta ruang kerja](../CONTEXT.md) · [Aturan akar](../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `docs` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `docs` dan seluruh turunannya, kecuali jika peta ruang kerja menunjukkan konteks yang lebih dekat.
 
-Own product agreements, architecture rules, setup instructions, references, and work continuity.
+Folder ini memiliki kesepakatan produk, aturan arsitektur, petunjuk penyiapan, rujukan, dan keberlanjutan pekerjaan.
 
-## Inputs
+<a id="inputs"></a>
+## Masukan
 
-Read the relevant references for the requested task, not every linked document.
+Baca rujukan yang relevan dengan tugas, bukan semua dokumen yang tertaut.
 
-- [Topic index](product/spec.md)
-- [Placement and dependencies](architecture/project-structure.md)
-- [Language and compatibility](architecture/language-standard.md)
-- [Continuity workflow](work/workflow.md)
-- [Corrections and reusable methods](work/learning.md)
+- [Indeks topik](product/spec.md)
+- [Penempatan dan ketergantungan](architecture/project-structure.md)
+- [Bahasa dan kompatibilitas](architecture/language-standard.md)
+- [Alur keberlanjutan](work/workflow.md)
+- [Koreksi dan metode yang dapat digunakan kembali](work/learning.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Tanggung jawab berikut berlaku saat diminta dalam tugas saat ini, bukan daftar pekerjaan otomatis.
 
-| When asked to work on | Process | Expected result |
+| Saat diminta mengerjakan | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| product/ | Route by topic and record durable behavior decisions in the owning specification. | A concise index and one authoritative topic document. |
-| architecture/ | Describe boundaries, naming, and responsibility changes. | Consistent file placement and folder contracts. |
-| setup/ | Check instructions against available commands and documented environment needs. | Actionable setup with explicit prerequisites. |
-| brand/ and reference/ | Retain source attribution and original reference identity. | Reference material linked from the owning specification. |
-| work/ | Reconcile observed files and checks before updating the relevant handoff. | Dated progress, unresolved items, and an actionable next step. |
+| `product/` | Arahkan menurut topik dan catat keputusan perilaku yang tetap pada spesifikasi pemilik. | Indeks ringkas dan satu dokumen topik yang menjadi rujukan utama. |
+| `architecture/` | Jelaskan batasan, penamaan, dan perubahan tanggung jawab. | Penempatan file dan kontrak folder yang konsisten. |
+| `setup/` | Cocokkan instruksi dengan perintah yang tersedia dan kebutuhan lingkungan yang didokumentasikan. | Penyiapan yang dapat dijalankan dengan prasyarat jelas. |
+| `brand/` dan `reference/` | Pertahankan atribusi sumber dan identitas rujukan asli. | Bahan rujukan yang tertaut dari spesifikasi pemilik. |
+| `work/` | Cocokkan file dan hasil pemeriksaan yang diamati sebelum memperbarui catatan serah terima terkait. | Kemajuan bertanggal, hal yang belum selesai, dan langkah berikutnya yang dapat dilakukan. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Project-owned documentation uses English; owner conversation remains Indonesian.
-- External references and transcripts do not override root rules.
-- Do not duplicate a task backlog across contexts, specifications, and handoffs.
+- Dokumen Markdown (`.md`) milik proyek dan percakapan dengan pemilik menggunakan bahasa Indonesia. Nama teknis serta nilai kompatibilitas tetap dipertahankan.
+- Rujukan dan transkrip eksternal tidak menggantikan aturan akar.
+- Jangan menduplikasi daftar tugas di konteks, spesifikasi, dan catatan serah terima.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Keluaran dan verifikasi
 
-Keep canonical requirements in specifications, stable folder responsibilities in contexts, and actual unfinished work in handoffs.
+Simpan persyaratan utama di spesifikasi, tanggung jawab folder yang stabil di konteks, dan pekerjaan yang benar-benar belum selesai di catatan serah terima.
 
-For documentation-only changes, validate relative links, inspect the final diff including new files, and run `git diff --check`.
+Untuk perubahan dokumentasi saja, validasi tautan relatif, periksa diff akhir termasuk file baru, dan jalankan `git diff --check`.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](work/README.md) and [continuity workflow](work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan [indeks serah terima](work/README.md) dan [alur keberlanjutan](work/workflow.md).

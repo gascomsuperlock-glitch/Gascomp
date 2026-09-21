@@ -1,25 +1,23 @@
-# Work handoff index
+<a id="work-handoff-index"></a>
+# Indeks serah terima pekerjaan
 
-[Task map](../product/spec.md) · [Workflow](workflow.md) · [Project structure](../architecture/project-structure.md)
+[Peta tugas](../product/spec.md) · [Alur kerja](workflow.md) · [Struktur proyek](../architecture/project-structure.md)
 
-Open only the note relevant to the requested work. Notes are dated observations;
-verify current files before relying on them. This index is not a complete product
-backlog. Status and next actions belong in the linked note.
+Buka hanya catatan yang relevan dengan pekerjaan yang diminta. Catatan adalah pengamatan bertanggal;
+verifikasi file saat ini sebelum mempercayainya. Indeks ini bukan daftar tugas produk lengkap. Status dan tindakan selanjutnya berada di dalam catatan yang terhubung.
 
-| Workstream | Handoff |
+| Alur kerja | Serah terima |
 | --- | --- |
-| Online new-product Save diagnosis | [Catalog Save](handoffs/handoff-catalog-save-review-v1.md) |
-| Warranty ticket status controls | [Warranty](handoffs/handoff-warranty-review-v1.md) |
-| Existing knowledge and product-note changes | [Knowledge](handoffs/handoff-knowledge-review-v1.md) |
-| Duoke 24/7 replies from Obsidian admin Q&A, orchestrated by Hermes through headless Chrome | [Hermes Duoke](handoffs/handoff-duoke-hermes-active-v2.md) |
+| QR produk biasa dan QR halaman depan bermerk | [QR Bermerk](handoffs/handoff-branded-qr-complete-v2.md) |
+| Simpan diagnosis produk baru online | [Katalog Simpan](handoffs/handoff-catalog-save-review-v1.md) |
+| Kontrol status tiket garansi | [Garansi](handoffs/handoff-warranty-review-v1.md) |
+| Perubahan pengetahuan yang ada dan catatan produk | [Pengetahuan](handoffs/handoff-knowledge-review-v1.md) |
+| Balasan Duoke 24/7 dari Obsidian admin Q&A, diorkestasi oleh Hermes melalui Chrome tanpa antarmuka | [Hermes Duoke](handoffs/handoff-duoke-hermes-active-v2.md) |
 
-## Reusable methods
+<a id="reusable-methods"></a>
+## Metode yang dapat digunakan kembali
 
-- [Capture corrections and decisions](learning.md): turn actual dialogue and verification into reusable instructions.
-- [Warranty status procedure](procedures/warranty-status.md): inspect, change, and verify status/solution behavior; current evidence remains in its handoff.
+- [Menangkap koreksi dan keputusan](learning.md): ubah dialog aktual dan verifikasi menjadi instruksi yang dapat digunakan kembali.
+- [Prosedur status garansi](procedures/warranty-status.md): periksa, ubah, dan verifikasi perilaku status/penyelesaian; bukti saat ini tetap berada di serah terima.
 
-The untracked `awesome-codex-subagents/` directory was present during the initial
-inventory on 2026-09-18. Its purpose and desired repository inclusion have not been
-established. Preserve it as existing reference material; its presence does not
-activate agent instructions or authorize delegation. Resolve its ownership if a
-future task requires using, moving, committing, or removing it.
+Direktori `awesome-codex-subagents/` yang tidak dilacak hadir selama inventaris awal pada 2026-09-18. Tujuannya dan inklusi repositori yang diinginkan belum ditetapkan. Simpan sebagai materi referensi yang ada; kehadirannya tidak mengaktifkan instruksi agen atau mengotorisasi delegasi. Selesaikan kepemilikannya jika tugas masa depan memerlukan penggunaan, perpindahan, komitmen, atau penghapusan terhadapnya.

@@ -1,42 +1,47 @@
-# Application routes
+<a id="application-routes"></a>
+# Rute aplikasi
 
-[Workspace map](../../CONTEXT.md) · [Root rules](../../AGENTS.md)
+[Peta ruang kerja](../../CONTEXT.md) · [Aturan akar](../../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `src/app` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `src/app` dan seluruh turunannya, kecuali jika peta ruang kerja menunjukkan konteks yang lebih dekat.
 
-Own URL contracts, page/layout composition, route handlers, metadata, and route-level loading/error states.
+Folder ini memiliki kontrak URL, komposisi halaman dan tata letak, route handler, metadata, serta keadaan memuat dan galat pada tingkat rute.
 
-## Inputs
+<a id="inputs"></a>
+## Masukan
 
-Read the relevant references for the requested task, not every linked document.
+Baca rujukan yang relevan dengan tugas, bukan seluruh dokumen tertaut.
 
-- [Placement and dependencies](../../docs/architecture/project-structure.md)
-- [QR and stable URLs](../../docs/product/features/qr.md)
-- [Language and compatibility](../../docs/architecture/language-standard.md)
+- [Penempatan dan ketergantungan](../../docs/architecture/project-structure.md)
+- [QR dan URL stabil](../../docs/product/features/qr.md)
+- [Bahasa dan kompatibilitas](../../docs/architecture/language-standard.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Tanggung jawab berikut berlaku saat diminta dalam tugas saat ini, bukan daftar pekerjaan yang harus dijalankan otomatis.
 
-| When asked to work on | Process | Expected result |
+| Saat diminta mengerjakan | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| Page or navigation changes | Locate the route and read the context of the feature it composes. Keep rendering composition here. | A route using the owning feature and preserving documented URLs. |
-| API or form endpoints | Trace the request into its feature handler and retain origin/session checks. | A thin route contract with feature-owned validation and persistence. |
-| Metadata or route states | Check the installed Next.js guide for the relevant file convention. | Correct metadata and localized loading/error behavior. |
+| Perubahan halaman atau navigasi | Temukan rute dan baca konteks fitur yang dirangkainya. Simpan komposisi rendering di sini. | Rute menggunakan fitur pemilik dan mempertahankan URL yang didokumentasikan. |
+| Endpoint API atau formulir | Telusuri permintaan hingga handler fitur dan pertahankan pemeriksaan asal permintaan serta sesi. | Kontrak rute tipis dengan validasi dan penyimpanan milik fitur. |
+| Metadata atau keadaan rute | Periksa panduan Next.js terpasang untuk konvensi file terkait. | Metadata yang benar serta perilaku memuat dan galat yang sesuai bahasa. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Read the relevant guide under `node_modules/next/dist/docs/` before framework changes.
-- Preserve printed QR destinations and documented route segments.
-- Place reusable business behavior in features, not route folders.
+- Baca panduan terkait di `node_modules/next/dist/docs/` sebelum mengubah framework.
+- Pertahankan tujuan QR yang sudah dicetak dan segmen rute yang didokumentasikan.
+- Letakkan perilaku bisnis yang dapat digunakan kembali di fitur, bukan di folder rute.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Keluaran dan verifikasi
 
-Keep route files here and implementation changes in the selected feature; update the owning specification when behavior changes.
+Simpan file rute di sini dan perubahan implementasi dalam fitur terpilih; perbarui spesifikasi pemilik ketika perilaku berubah.
 
-For TypeScript/JavaScript changes, run `npm run lint`, `npm run typecheck`, and `npm run test`. Add `npm run build` for route/rendering/dependency/build changes. For visible changes, check the affected desktop/mobile flow and loading, empty, and error states in a browser when available. Report any blocked checks.
+Untuk perubahan TypeScript atau JavaScript, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`. Tambahkan `npm run build` untuk perubahan rute, rendering, dependensi, atau build. Untuk perubahan yang terlihat, periksa alur desktop dan ponsel serta keadaan memuat, kosong, dan galat di browser jika tersedia. Laporkan pemeriksaan yang terhalang.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../docs/work/README.md) and [continuity workflow](../../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan [indeks serah terima](../../docs/work/README.md) dan [alur keberlanjutan](../../docs/work/workflow.md).

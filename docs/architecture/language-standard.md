@@ -1,44 +1,47 @@
-# English language standard
+# Standar bahasa proyek
 
-English is the canonical language for all project-owned writing and identifiers.
+Bahasa Indonesia adalah bahasa untuk semua dokumen Markdown (`.md`) milik proyek, termasuk spesifikasi, petunjuk kerja, panduan penyiapan, catatan serah terima, dan teks penjelas pada catatan pengetahuan. Nama database, tabel, kolom, folder, file, path, perintah, pengenal, URL, serta nilai yang menjadi kontrak eksternal tetap ditulis persis seperti aslinya. Jangan mengganti nama berkas untuk menerjemahkannya.
 
-## Agent conversation
+## Keputusan pemilik pada 21 September 2026
 
-Use Indonesian when conversing with the project owner, including progress updates, questions, and final explanations, unless they request another language. This conversation preference does not change the English requirement for project-owned artifacts below.
+Sumber: pemilik meminta semua file `.md` menggunakan bahasa Indonesia tanpa mengubah penamaan database, folder, atau file. Dalam klarifikasi lanjutan, pemilik meminta jawaban sumber untuk layanan bahasa Inggris tetap persis seperti semula, sementara dokumentasi dan label diterjemahkan. Alasan tambahan tidak disebutkan. Keputusan ini menggantikan aturan lama yang mewajibkan bahasa Inggris untuk dokumentasi. Contoh penerimaan: petunjuk dalam `README.md` berbahasa Indonesia, path dan perintah di dalamnya tetap sama, serta isi jawaban sumber `-en.md` tetap dapat digunakan untuk layanan bahasa Inggris.
 
-## Required English project content
+## Percakapan dengan pemilik
 
-- Source-level user interface copy, accessibility labels, metadata, default values, and prefilled messages must be authored in English unless they are localized customer-facing translations.
-- Source-code comments, test descriptions, fixture labels, validation errors, logs, and CLI help/output.
-- Documentation, generated reports, Obsidian headings, generated questions/answers, and bot messages.
-- Database tables, columns, constraints, policies, enum-like values, comments, and system defaults.
-- New TypeScript/JavaScript file names in `kebab-case` and Python file names in `snake_case`.
+Gunakan bahasa Indonesia untuk pembaruan, pertanyaan, dan laporan akhir kepada pemilik proyek, kecuali pemilik meminta bahasa lain.
 
-## Owner-requested interface labels
+## Isi proyek di luar Markdown
 
-- Warranty solution options retain `Klaim Garansi`, `Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`, `Refund dana sebagian`, and `Edukasi cara pemakaian/kendala`, including spreadsheet values.
-- The claim order field retains `order number/No.Resi/No Pesanan` in both languages.
+- Kode sumber, komentar kode, konfigurasi, nama pengenal, pengujian, log, pesan CLI, dan keluaran non-Markdown tetap menggunakan bahasa Inggris, kecuali terjemahan antarmuka yang memang ditujukan kepada pelanggan.
+- Antarmuka pelanggan tetap menyediakan pilihan bahasa Indonesia dan Inggris. Kebutuhan terjemahan dokumen `.md` tidak mengubah kode bahasa (`id` dan `en`) maupun kontrak antarmuka tersebut.
+- Nama dan nilai database, termasuk tabel, kolom, constraint, policy, enum, nilai bawaan sistem, dan predikat migrasi, tetap mengikuti skema yang berlaku. Jangan menerjemahkannya sebagai efek samping perubahan dokumen.
+- Judul, penjelasan, dan instruksi dalam Markdown ditulis dalam bahasa Indonesia. Pertahankan cuplikan kode, nama variabel, frontmatter yang dipakai parser, tautan, kutipan sumber, data impor, dan jawaban pelanggan yang wajib dikirim persis sesuai sumbernya.
 
-## Compatibility exceptions
+## Label antarmuka yang diminta pemilik
 
-Exact external values must remain unchanged when translation would damage identity, matching, or existing links:
+- Pilihan solusi garansi tetap `Klaim Garansi`, `Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`, `Refund dana sebagian`, dan `Edukasi cara pemakaian/kendala`, termasuk nilai pada spreadsheet.
+- Kolom nomor pesanan tetap `order number/No.Resi/No Pesanan` dalam kedua bahasa antarmuka.
 
-- The owner-requested post-claim WhatsApp message remains exactly `kak, aku sudah claim garansi` in every interface language.
-- Imported product names, SKUs, category values, filenames, and provider-specific IDs.
-- Warehouse XLSX headers such as `Nomor SKU`, `Judul`, and `Kode Produk` because they are source-schema keys.
-- Captured customer messages and Indonesian tokens used by privacy filters or retrieval matching.
-- Exact Obsidian source answers delivered by the Duoke Hermes Desktop bridge retain their source language, as requested by the owner; see the [Duoke contract](../product/integrations/duoke-support.md#desktop-implementation-and-owner-corrections).
-- The owner-requested Indonesian support introduction is `Saya Ayu dari Gascomp, ada yang bisa saya bantu?`; see the [customer-facing identity contract](../product/integrations/duoke-support.md#customer-facing-identity).
-- Stable public routes and fragments such as `/produk`, `/klaim-garansi`, `/tiket`, `/lampiran`, and `#kendala`.
-- Third-party URLs, selector values, protocol values, locale codes, and time-zone identifiers.
-- Migration predicates may contain exact legacy non-English values solely to replace them with English equivalents.
+## Nilai kompatibilitas
 
-Code around these values, including variable names, comments, errors, reports, and UI labels, must remain English. New public routes should use English unless a compatibility decision explicitly requires another value.
+Nilai eksternal berikut harus tetap sama ketika penerjemahan dapat merusak identitas, pencocokan, atau tautan yang sudah ada:
 
-## Customer language selection
+- Pesan WhatsApp setelah klaim yang diminta pemilik tetap persis `kak, aku sudah claim garansi` dalam setiap bahasa antarmuka.
+- Nama produk impor, SKU, kategori, nama file, dan ID khusus penyedia.
+- Header XLSX gudang seperti `Nomor SKU`, `Judul`, dan `Kode Produk`, karena merupakan kunci skema sumber.
+- Pesan pelanggan yang tertangkap serta token bahasa Indonesia yang digunakan untuk penyaringan privasi atau pencocokan pencarian.
+- Jawaban sumber Obsidian yang dikirim persis oleh jembatan Duoke Hermes Desktop tetap dalam bahasa sumbernya; lihat [kontrak Duoke](../product/integrations/duoke-support.md#desktop-implementation-and-owner-corrections).
+- Kalimat perkenalan dukungan berbahasa Indonesia tetap `Saya Ayu dari Gascomp, ada yang bisa saya bantu?`; lihat [kontrak identitas](../product/integrations/duoke-support.md#customer-facing-identity).
+- Rute publik dan fragmen yang stabil, seperti `/produk`, `/klaim-garansi`, `/tiket`, `/lampiran`, dan `#kendala`.
+- URL pihak ketiga, nilai selector, nilai protokol, kode bahasa, dan pengenal zona waktu.
+- Predikat migrasi boleh memuat nilai lama dalam bahasa lain hanya untuk menggantinya dengan nilai standar yang berlaku.
 
-- Customer-facing pages must support Indonesian and English.
-- Provide a visible language selector so customers can choose `Indonesian` or `English`.
-- Apply the selected language consistently to navigation, headings, help content, FAQs, forms, validation messages, support actions, accessibility labels, and metadata where localized values exist.
-- Persist the customer's language preference for subsequent visits and use English as the fallback when no preference or translation exists.
-- Keep source code, documentation, configuration, database identifiers, logs, and operator-facing content in English. Indonesian customer-facing translations are localized content, not a replacement for the project language standard.
+Teks Markdown yang menjelaskan nilai tersebut tetap menggunakan bahasa Indonesia. Jangan menerjemahkan bagian yang harus sama persis agar integrasi tetap bekerja.
+
+## Pilihan bahasa pelanggan
+
+- Halaman pelanggan mendukung bahasa Indonesia dan Inggris.
+- Sediakan pemilih bahasa yang terlihat agar pelanggan dapat memilih `Indonesian` atau `English` sesuai label antarmuka yang ada.
+- Terapkan pilihan secara konsisten pada navigasi, judul, isi panduan, FAQ, formulir, pesan validasi, tindakan dukungan, label aksesibilitas, dan metadata yang memiliki terjemahan.
+- Simpan pilihan bahasa untuk kunjungan berikutnya dan gunakan bahasa Inggris sebagai cadangan jika pilihan atau terjemahan belum tersedia.
+- Terjemahan dokumen Markdown tidak secara otomatis mengubah konten pelanggan dalam database atau jalur pengiriman jawaban yang bergantung pada bahasa sumber.

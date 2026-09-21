@@ -1,43 +1,49 @@
-# Service center directory
+<a id="service-center-directory"></a>
+# Direktori pusat layanan
 
-[Workspace map](../../../CONTEXT.md) · [Root rules](../../../AGENTS.md)
+[Peta ruang kerja ](../../../CONTEXT.md) · [Aturan akar ](../../../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `src/features/service-center` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `src/features/service-center` dan turunan-nya kecuali jika konteks yang lebih dekat terdaftar dalam peta ruang kerja.
 
-Own active public locations, filtering, maps, and protected location administration.
+Lokasi publik aktif milik sendiri, penyaringan, peta, dan administrasi lokasi yang dilindungi.
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi yang relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
-- [Support and service center specification](../../../docs/product/features/support.md)
-- [Database and migration specification](../../../docs/product/integrations/supabase.md)
-- [Language and compatibility](../../../docs/architecture/language-standard.md)
+- [Spesifikasi pusat layanan dan dukungan ](../../../docs/product/features/support.md)
+- [Spesifikasi database dan migrasi ](../../../docs/product/integrations/supabase.md)
+- [Bahasa dan kompatibilitas ](../../../docs/architecture/language-standard.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tugas otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta untuk bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| Public directory or map | Trace active-only data, search/province filters, and map synchronization. | Directory and contact actions remain usable when tiles fail. |
-| Location administration | Check validation, Save location, deletion, and draft preservation. | Selected location changes persist independently from catalog Save. |
-| Maps import | Validate external destinations and handle stale asynchronous responses. | Only validated location values reach the editor. |
+| Direktori publik atau peta | Jejak data hanya aktif, penyaringan pencarian/provinsi, dan sinkronisasi peta. | Aksi direktori dan kontak tetap dapat digunakan ketika tile gagal. |
+| Administrasi lokasi | Periksa validasi, Simpan lokasi, penghapusan, dan preservasi draf. | Perubahan lokasi yang dipilih bertahan secara independen dari Simpan katalog. |
+| Impor peta | Validasi tujuan eksternal dan tangani respons asinkron usang. | Hanya nilai lokasi yang divalidasi mencapai editor. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Do not seed invented service center locations.
-- A failed configured database must not be shown as an empty successful result.
-- Keep business logic within its owning feature; respect server/client boundaries and the root verification rules.
-- Treat dated specification status as evidence to verify, not proof of current behavior.
+- Jangan tanam lokasi pusat layanan yang dibuat-buat.
+- Database yang dikonfigurasi gagal tidak boleh ditampilkan sebagai hasil sukses kosong.
+- Pertahankan logika bisnis dalam fitur pemiliknya; hormati batas server/klien dan aturan verifikasi akar.
+- Anggap status spesifikasi berdate sebagai bukti untuk diverifikasi, bukan bukti perilaku saat ini.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-Use `components/` for feature UI, `model/` for domain types and pure logic, `server/` for protected storage/actions, and existing `hooks/` where applicable. Create subfolders only when real modules need them. Update the owning specification and save unfinished progress.
+Gunakan `components/` untuk UI fitur, `model/` untuk tipe domain dan logika murni, `server/` untuk penyimpanan/aksi yang dilindungi, dan `hooks/` yang ada jika berlaku. Buat subfolder hanya ketika modul nyata membutuhkannya. Perbarui spesifikasi pemilik dan simpan kemajuan yang belum selesai.
 
-For TypeScript/JavaScript changes, run `npm run lint`, `npm run typecheck`, and `npm run test`. Add `npm run build` for route/rendering/dependency/build changes. For visible changes, check the affected desktop/mobile flow and loading, empty, and error states in a browser when available. Report any blocked checks.
+Untuk perubahan TypeScript/JavaScript, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`. Tambahkan `npm run build` untuk perubahan rute/rendering/gantung/build. Untuk perubahan yang terlihat, periksa alur desktop/mobile yang terpengaruh dan keadaan loading, kosong, dan kesalahan di browser jika tersedia. Laporkan pemeriksaan apa pun yang diblokir.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../../docs/work/README.md) and [continuity workflow](../../../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan
+[indeks serah terima ](../../../docs/work/README.md) dan [aliran kontinuitas ](../../../docs/work/workflow.md).

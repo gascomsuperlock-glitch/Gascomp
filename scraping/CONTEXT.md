@@ -1,68 +1,69 @@
-# Python capture and knowledge workflows
+<a id="python-capture-and-knowledge-workflows"></a>
+# Alur kerja penangkapan dan pengetahuan Python
 
-[Workspace map](../CONTEXT.md) · [Root rules](../AGENTS.md)
+[ Peta ruang kerja ](../CONTEXT.md) · [Aturan akar ](../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `scraping` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `scraping` dan turunan-nya kecuali jika konteks yang lebih dekat terdaftar dalam peta ruang kerja.
 
-Own authorized capture, normalization, knowledge preparation, Duoke reply automation, and the separate customer-assistance worker.
+Penangkapan, normalisasi, persiapan pengetahuan yang diotorisasi sendiri, otomatisasi balasan Duoke, dan pekerja bantuan pelanggan terpisah.
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
-- [Primary Percakapan reference retrieval](../docs/product/integrations/duoke-support.md#percakapan-as-the-primary-admin-reference-source)
-- [Customer resolution, full Obsidian references, and WhatsApp handoff](../docs/product/integrations/duoke-support.md#customer-problem-resolution-and-whatsapp-handoff)
+- [Pilihan alat Hermes asli dan verifikasi sumber ](../docs/product/integrations/duoke-support.md#direct-knowledge-tools-in-hermes)
+- [Retrifikasi referensi percakapan utama ](../docs/product/integrations/duoke-support.md#percakapan-as-the-primary-admin-reference-source)
+- [Penyelesaian pelanggan, referensi Obsidian lengkap, dan serah terima WhatsApp ](../docs/product/integrations/duoke-support.md#customer-problem-resolution-and-whatsapp-handoff)
 
-- [Placement and dependencies](../docs/architecture/project-structure.md)
-- [Duoke catalog specification](../docs/product/integrations/duoke-catalog.md)
-- [Knowledge and replies specification](../docs/product/integrations/duoke-support.md)
-- [Hermes Desktop automatic-reply target](../docs/product/integrations/duoke-support.md#target-automatic-replies-through-hermes-desktop)
-- [Reference-based replies and continuous operation](../docs/product/integrations/duoke-support.md#reference-based-replies-and-continuous-operation)
-- [Interactive chat versus scheduled execution](../docs/product/integrations/duoke-support.md#interactive-chat-and-scheduled-execution)
-- [Customer-facing identity: Ayu from Gascomp](../docs/product/integrations/duoke-support.md#customer-facing-identity)
-- [Response latency and greeting handling](../docs/product/integrations/duoke-support.md#response-latency)
-- [Warehouse import specification](../docs/product/integrations/warehouse.md)
-- [AI assistance specification](../docs/product/features/ai-assistance.md)
-- [AI worker setup](../docs/setup/ai-assistance.md)
+- [Penempatan dan ketergantungan ](../docs/architecture/project-structure.md)
+- [Spesifikasi katalog Duoke ](../docs/product/integrations/duoke-catalog.md)
+- [Spesifikasi pengetahuan dan balasan ](../docs/product/integrations/duoke-support.md)
+- [Tujuan balasan otomatis Hermes Desktop ](../docs/product/integrations/duoke-support.md#target-automatic-replies-through-hermes-desktop)
+- [Balasan berbasis referensi dan operasi berkelanjutan ](../docs/product/integrations/duoke-support.md#reference-based-replies-and-continuous-operation)
+- [Cobak interaktif versus eksekusi terjadwal ](../docs/product/integrations/duoke-support.md#interactive-chat-and-scheduled-execution)
+- [Identitas yang menghadap pelanggan: Ayu dari Gascomp ](../docs/product/integrations/duoke-support.md#customer-facing-identity)
+- [Latensi respons dan penanganan sapaan ](../docs/product/integrations/duoke-support.md#response-latency)
+- [Spesifikasi impor gudang ](../docs/product/integrations/warehouse.md)
+- [Spesifikasi bantuan AI ](../docs/product/features/ai-assistance.md)
+- [Penyiapan pekerja AI ](../docs/setup/ai-assistance.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tugas otomatis.
 
-| When asked to work on | Process | Expected result |
+| Saat diminta bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| duoke/catalog/ | Trace authorized product capture through normalization or archive generation. | Stable product identities and reviewable catalog output. |
-| duoke/chat/ | Inspect authorized capture/archive scope and private storage. | Preserved source history with privacy-aware derived notes. |
-| duoke/knowledge/ | Map and index the full existing Obsidian admin Q&A database; preserve question-answer associations, product context, provenance, and updates. Distinguish reusable admin answers from unrelated transcript content. | Matching customer questions retrieve applicable admin answer references without an arbitrary starter-note limit. |
-| duoke/reply/ | Follow the reference-based, continuous-operation contract: Hermes orchestrates Obsidian retrieval and headless Chrome delivery; measure latency and verify supervised recovery alongside delivery guards. | Grounded Ayu replies with traceable admin sources and a verified path to unattended 24/7 operation; distinguish requirements from observed runtime behavior. |
-| ai_assistance/ | Check corpus inputs, grounding, job protocol, and response validation. | Grounded website assistance consistent with server contracts. |
-| warehouse/ | Validate XLSX schema, identities, and normalization reports. | Normalized source-owned data with explicit rejected rows. |
-| shared/ | Use module-relative paths and privacy/environment helpers. | Reusable infrastructure without hardcoded working-directory assumptions. |
-| tests/ | Use temporary synthetic inputs and the repository virtual environment. | Meaningful regression coverage without live customer data. |
+| duoke/catalog/ | Melacak penangkapan produk yang diotorisasi melalui normalisasi atau generasi arsip. | Identitas produk yang stabil dan output katalog yang dapat ditinjau. |
+| duoke/chat/ | Periksa cakupan penangkapan/arsip yang diotorisasi dan penyimpanan pribadi. | Riwayat sumber yang dipertahankan dengan catatan turunan yang sadar privasi. |
+| duoke/knowledge/ | Peta dan indeks seluruh database admin Q&A Obsidian yang ada; pertahankan asosiasi pertanyaan-jawaban, konteks produk, asal-usul, dan pembaruan. Bedakan jawaban admin yang dapat digunakan kembali dari konten transkrip yang tidak terkait. | Pertanyaan pelanggan yang cocok mengambil referensi jawaban admin yang berlaku tanpa batas acak untuk catatan pembuka. |
+| duoke/reply/ | Ikuti kontrak operasi berkelanjutan berbasis referensi: Hermes mengoordinasikan pengambilan Obsidian dan pengiriman Chrome headless; ukur latensi dan verifikasi pemulihan di bawah pengawasan bersama dengan perisai pengiriman. | Balasan Ayu yang berakar pada sumber admin yang dapat dilacak dan jalur verifikasi menuju operasi 24/7 tanpa pengawasan; bedakan persyaratan dari perilaku runtime yang diamati. |
+| ai_assistance/ | Periksa input korpus, pencahayaan (grounding), protokol pekerjaan, dan validasi respons. | Bantuan website yang berakar sesuai dengan kontrak server. |
+| warehouse/ | Validasikan skema XLSX, identitas, dan laporan normalisasi. | Data milik sumber yang dinormalisasi dengan baris ditolak yang eksplisit. |
+| shared/ | Gunakan jalur relatif terhadap modul dan bantuan privasi/lingkungan. | Infrastruktur yang dapat digunakan kembali tanpa asumsi direktori kerja yang hardcode. |
+| tests/ | Gunakan input sintetik sementara dan lingkungan virtual repositori. | Penutupan regresi yang bermakna tanpa data pelanggan hidup. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Use `shared/paths.py` and `python -m` package entrypoints.
-- Keep `.private/`, `.venv/`, and `__pycache__/` outside documentation scaffolding.
-- A dry-run or worker command may access external services; inspect the selected operation first.
-- Do not activate reply delivery, production imports, or knowledge approval solely because a task row exists.
+- Gunakan titik masuk paket `shared/paths.py` dan `python -m`.
+- Pertahankan `.private/`, `.venv/`, dan `__pycache__/` di luar kerangka dokumentasi.
+- Perintah dry-run atau pekerja dapat mengakses layanan eksternal; periksa operasi yang dipilih terlebih dahulu.
+- Jangan aktifkan pengiriman balasan, impor produksi, atau persetujuan pengetahuan hanya karena ada baris tugas.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-For Hermes customer replies, verify that known questions retrieve applicable
-admin answers and unresolved issues receive an official WhatsApp handoff. Keep
-tool/status/queue information out of customer text. Audit all connected Obsidian
-source folders and retrieval exclusions before attributing missed answers to a
-lack of knowledge; corpus counts alone are insufficient evidence.
+Untuk balasan pelanggan Hermes, verifikasi bahwa pertanyaan yang diketahui mengambil jawaban admin yang berlaku dan masalah yang belum terpecah menerima serah terima resmi WhatsApp. Pertahankan informasi tool/status/queue di luar teks pelanggan. Lakukan audit semua folder sumber Obsidian yang terhubung dan pengecualian pengambilan sebelum mengatribusikan jawaban yang terlewat pada kurangnya pengetahuan; jumlah korpus saja tidak cukup sebagai bukti.
 
-For owner-operated Hermes Desktop replies, use the
-[setup, preview, start, monitor, and stop procedure](../docs/setup/duoke-hermes-desktop.md).
+Untuk balasan Hermes Desktop yang dikelola pemilik, gunakan [prosedur setup, preview, start, monitor, dan stop](../docs/setup/duoke-hermes-desktop.md).
 
-Keep code in the owning package and tests in `tests/`; preserve documented schemas and output locations.
+Pertahankan kode di paket milikannya dan tes di `tests/`; pertahankan skema terdokumentasi dan lokasi output.
 
-For Python changes, run `npm run duoke:test` through the repository virtual environment. Keep validation local or use an appropriate authorized preview; report unavailable service checks separately.
+Untuk perubahan Python, jalankan `npm run duoke:test` melalui lingkungan virtual repositori. Pertahankan validasi lokal atau gunakan pratinjau yang diotorisasi yang sesuai; laporkan pemeriksaan layanan yang tidak tersedia secara terpisah.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../docs/work/README.md) and [continuity workflow](../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan [indeks serah terima](../docs/work/README.md) dan [aliran kerja kontinuitas](../docs/work/workflow.md).

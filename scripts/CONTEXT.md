@@ -1,16 +1,19 @@
-# Node operational scripts
+<a id="node-operational-scripts"></a>
+# Skrip operasional Node
 
 [Workspace map](../CONTEXT.md) · [Root rules](../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `scripts` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `scripts` dan turunan-nya kecuali jika konteks yang lebih dekat terdaftar dalam peta workspace.
 
-Own Node-based imports, exports, local operational tooling, and shared script infrastructure.
+Pembuatan impor, ekspor berbasis Node, alat operasional lokal, dan infrastruktur skrip bersama.
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi yang relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
 - [Placement and dependencies](../docs/architecture/project-structure.md)
 - [Duoke catalog specification](../docs/product/integrations/duoke-catalog.md)
@@ -20,31 +23,34 @@ Read the relevant references for the requested task, not every linked document.
 - [AI assistance specification](../docs/product/features/ai-assistance.md)
 - [Available commands](../package.json)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tugas otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta untuk bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| duoke/ | Read the catalog or knowledge specification; inspect exporter/importer side effects. | Validated synchronization or export changes with stable identities. |
-| warehouse/ | Inspect normalization inputs and use the import preview when appropriate. | SKU mapping and preservation rules remain intact. |
-| catalog/ | Check brochure-to-SKU matching and the description-only update contract. | A scoped preview or authorized update of descriptions. |
-| ai-assistance/ | Inspect launch, pilot, and preview behavior for the requested operation. | Reproducible local worker operations and explicit runtime state. |
-| supabase/ | Read migration baseline rules and inspect target/history before release work. | Validated connection or migration tooling; production application only when authorized. |
-| shared/ | Use centralized paths, environment parsing, and script clients. | Consistent module-relative paths across scripts. |
-| scratch/ | Inspect experiments only when relevant to the current task. | Isolated experiments with no application entrypoint dependency. |
+| duoke/ | Baca spesifikasi katalog atau pengetahuan; periksa efek samping eksporter/importer. | Sinkronisasi atau perubahan ekspor yang divalidasi dengan identitas stabil. |
+| warehouse/ | Periksa input normalisasi dan gunakan pratinjau impor bila diperlukan. | Aturan pemetaan SKU dan preservasi tetap utuh. |
+| catalog/ | Cocokkan brosur ke SKU dan kontrak update hanya deskripsi. | Pratinjau berskala terbatas atau update deskripsi yang diotorisasi. |
+| ai-assistance/ | Periksa perilaku peluncuran, pilot, dan pratinjau untuk operasi yang diminta. | Operasi pekerja lokal yang dapat direproduksi dan keadaan runtime eksplisit. |
+| supabase/ | Baca aturan baseline migrasi dan periksa target/sejarah sebelum pekerjaan rilis. | Koneksi atau alat migrasi yang divalidasi; aplikasi produksi hanya bila diotorisasi. |
+| shared/ | Gunakan jalur terpusat, parsing lingkungan, dan klien skrip. | Jalur relatif modul yang konsisten di seluruh skrip. |
+| scratch/ | Periksa eksperimen hanya bila relevan dengan tugas saat ini. | Eksperimen terisolasi tanpa ketergantungan pada titik masuk aplikasi. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Inspect command behavior: an export or preview can access services or overwrite local artifacts.
-- Do not apply imports/migrations or send customer replies without task authorization.
-- Preserve source IDs and admin-managed content; use `shared/paths.mjs`.
+- Periksa perilaku perintah: ekspor atau pratinjau dapat mengakses layanan atau menimpa artefak lokal.
+- Jangan terapkan impor/migrasi atau kirim balasan pelanggan tanpa otorisasi tugas.
+- Pertahankan ID sumber dan konten yang dikelola admin; gunakan `shared/paths.mjs`.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-Place scripts and adjacent Node tests in their owning subfolder. Output artifacts belong to the documented data/private locations, not arbitrary new directories.
+Letakkan skrip dan tes Node bersebelahan di subfolder pemiliknya. Artefak output termasuk lokasi data/private yang didokumentasikan, bukan direktori baru sembarang.
 
-For TypeScript/JavaScript changes, run `npm run lint`, `npm run typecheck`, and `npm run test`. Add `npm run build` for route/rendering/dependency/build changes. For visible changes, check the affected desktop/mobile flow and loading, empty, and error states in a browser when available. Report any blocked checks.
+Untuk perubahan TypeScript/JavaScript, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`. Tambahkan `npm run build` untuk perubahan rute/rendering/ketergantungan/build. Untuk perubahan yang terlihat, periksa alur desktop/mobile yang terpengaruh dan keadaan loading, kosong, dan kesalahan di browser bila tersedia. Laporkan pemeriksaan apa pun yang diblokir.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../docs/work/README.md) and [continuity workflow](../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta workspace. Untuk pekerjaan yang belum selesai, gunakan
+[handoff index](../docs/work/README.md) dan [continuity workflow](../docs/work/workflow.md).
