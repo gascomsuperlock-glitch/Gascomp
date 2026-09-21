@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRP-934E
 - **Model:** Kompor & Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789381680355-1t0uk|New question]]
 - [[../knowledge/approved/admin-faq-faq-1789381682004-q5vvx|New question]]

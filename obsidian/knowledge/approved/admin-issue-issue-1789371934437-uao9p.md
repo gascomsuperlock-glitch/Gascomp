@@ -10,13 +10,13 @@ generated: true
 
 # Solusi Jika Pengunci Masih Keras/Sulit Diputar
 
-Product: [[../../products/grt-2d-6d5b4dc|GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
+Produk: [[../../products/grt-2d-6d5b4dc|GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
 
-## Question
+## Pertanyaan
 
 Solusi Jika Pengunci Masih Keras/Sulit Diputar
 
-## Approved answer
+## Jawaban disetujui
 
 1. Lepas Karet Seal Regulator : Lepaskan karet seal berwarna hitam/merah yang ada di  dalam regulator. (Cara melepasnya dapat dilihat pada Video No. 4). 
 2. Pastikan Karet Tabung Tetap Terpasang : Biarkan karet seal hitam yang ada di dalam  mulut tabung gas tetap terpasang seperti biasa. 
@@ -26,7 +26,7 @@ Warning: PENTING: Jika pengunci terasa keras/sulit diputar, JANGAN DIPAKSA agar 
 
 Full guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc#kendala
 
-## Search triggers
+## Pemicu pencarian
 
 - Solusi Jika Pengunci Masih Keras/Sulit Diputar
 - GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock

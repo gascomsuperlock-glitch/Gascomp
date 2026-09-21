@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRS-915F PRO
 - **Model:** Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/new-product-5b3hoa
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/new-product-5b3hoa
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789636357653-gkzbj|Apakah GRS-02 Pro dan selang 5 lapis bisa dibeli terpisah?]]
 - [[../knowledge/approved/admin-faq-faq-1789636457140-6qkjb|Apakah produk ini sudah termasuk selang 1,8 meter dengan bahan 5 lapis premium anti gigitan tikus, tahan panas, tekanan tinggi, dan anti bocor?~]]

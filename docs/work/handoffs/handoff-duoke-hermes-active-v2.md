@@ -1,270 +1,190 @@
-# Duoke Hermes Desktop automatic replies handoff
+<a id="duoke-hermes-desktop-automatic-replies-handoff"></a>
+# Duoke Hermes Desktop balasan otomatis serah terima
 
-Updated: 2026-09-18
-Status: In progress
+Diperbarui: 2026-09-18
+Status: Dalam proses
 
-## Objective
+<a id="objective"></a>
+## Tujuan
 
-Deliver the [reference-based continuous workflow](../../product/integrations/duoke-support.md#reference-based-replies-and-continuous-operation):
-use the full Obsidian admin Q&A database for matching Duoke questions, with Hermes
-as harness and headless Chrome as read/send interface. Preserve Qwen `qwen3.5:4b`,
-all-store scope, source-language behavior, Ayu, and owner-operated live startup.
+Menyediakan [aliran kerja berkelanjutan berbasis referensi](../../product/integrations/duoke-support.md#reference-based-replies-and-continuous-operation):
+gunakan seluruh basis data Q&A admin Obsidian untuk mencocokkan pertanyaan Duoke, dengan Hermes sebagai perancah dan Chrome headless sebagai antarmuka baca/kirim. Pertahankan Qwen `qwen3.5:4b`,
+cakup semua toko, perilaku bahasa sumber, Ayu, dan startup live yang dioperasikan pemilik.
 
-## Current evidence
+<a id="current-evidence"></a>
+## Bukti saat ini
 
-Latest Percakapan repair (2026-09-18): the owner explicitly identified that folder
-as the admin-answer database. The existing corpus indexed all notes but routed
-Desktop evidence through website publication eligibility and whole-note media
-flags. Added `conversation_references.py`: direct adjacent-pair extraction,
-question-level ranking, canonical return synonyms, deduplication, explicit product
-scope, bounded evidence, and per-pair media handling. Search prioritizes these
-references; polling uses only eligible paired exact answers. Contextual/monetary
-and return references remain preview-only, with private/unsafe material excluded.
-Legacy draft and website extraction behavior is unchanged.
+Periksa pelaporan pemilik setelah pemutihan pemulihan sesi (2026-09-18): hasil tempel `duoke:desktop -- check` berhasil dengan `mode: preview`,
+`session: accepted`, `chrome: ready`, `sendAction: available`, dan `sent: 0`.
+Ini mengikuti instruksi untuk menangkap sesi segar dengan Desktop ditutup;
+keluaran tempel itu sendiri tidak secara independen menetapkan status proses Desktop.
+Tidak ada pemeriksaan baru atau perubahan kontrol pengiriman yang dilakukan oleh agen dalam putaran ini.
+Perbandingan terkontrol berikutnya: buka kembali duoke-support di Desktop, mulai percakapan baru,
+sebutkan duoke_poll tepat sekali dengan batas 1 dan tanpa panggilan balasan, dan periksa status/hasil error aktualnya. Pertahankan jadwal dihentikan dan pengiriman dinonaktifkan.
+Siap CLI sukses saja tidak menetapkan durabilitas sesi MCP atau pengiriman live; jangan aktifkan/lanjutkan hanya atas bukti ini.
 
-Read-only audit of the actual connected source:
+Pemutihan pemulihan sesi (2026-09-18, setelah pemilik menonaktifkan/menghentikan pengiriman):
+memperbaiki tiga masalah tingkat sumber sambil mempertahankan perubahan yang ada sebelumnya. Pembangun URL dilindungi menambahkan tanda slash ke nilai query `lang`; sekarang membuka URL obrolan pemilik yang tepat tanpa query tersebut. DesktopBrowser jangka panjang sekarang membandingkan tanda tangan konten snapshot tersimpan, menutup konteks kadaluarsa, dan me-reload header permintaan tersimpan sebelum membuka kembali; menghapus snapshot juga menutup konteks lama. MCP mengembalikan alasan adapter yang diizinkan daripada hanya kelas pengecualian, tanpa mengekspos teks pengecualian sembarang. Prompt terjadwal membedakan kesalahan alat dari polling kosong sukses dan memerlukan diagnostik operator terbatas daripada respons diam.
+
+Diverifikasi `npm run duoke:test`: **198 passed**, termasuk penggantian sesi,
+penggunaan kembali sesi yang tidak berubah, penutupan sesi hilang, loading header diperbarui, privasi kesalahan terbatas, dan perlindungan pengiriman Chrome sintetis yang ada.
+`git diff --check` dan pemeriksaan tautan lokal dokumen yang diubah lolos. Diterapkan `duoke:desktop -- refresh` ke profil milik; baca kembali mengonfirmasi pekerjaan yang ada tetap dihentikan. Tidak ada aktivasi, lanjutan, kirim pelanggan, atau reset status pengiriman yang dilakukan. Perubahan ini meningkatkan pemulihan/diagnostik tetapi tidak membuktikan penyebab penolakan tingkat server: `duoke:desktop -- check` asli masih melaporkan `authentication_required` dengan sesi tersimpan saat ini. Kadaluarsa cookie belum berlalu saat diperiksa; itu tidak menetapkan penerimaan server.
+Tindakan pemilik berikutnya: keluar Desktop, tangkap sesi segar menggunakan kode yang diperbarui, jalankan pemeriksaan saat Desktop ditutup, lalu buka Desktop dalam pratinjau dan verifikasi polling inbox yang diminta secara eksplisit. Bandingkan tahap-tahap ini sebelum mengaktifkan kembali. Durabilitas sesi live, kepatuhan model pada instruksi pelaporan kesalahan, dan pengiriman sukses tetap belum diverifikasi. Jangan sajikan login lain sebagai perbaikan tahan lama yang terbukti.
+
+Kegagalan berulang setelah tugas dilanjutkan (2026-09-18, 16:55 waktu setempat): pemilik melanjutkan pekerjaan `c0a140d71d08`. Eksekusi `197c1e4c077b4522aa93f9b31e4f3790` menggunakan penjadwal bawaan dan berubah dari berjalan menjadi selesai. Pemeriksaan baca saja atas hasil alat yang tersimpan menunjukkan `duoke_poll` mengembalikan `status: error`, `reason: DeliveryAdapterError`, dan `sent: false`, tetapi keluaran akhirnya `[SILENT]`. Ini bukan polling kotak masuk yang berhasil. Artefak status masih berasal dari pukul 16:01, sedangkan audit hanya memuat upaya tidak pasti sebelumnya tanpa pengiriman terkonfirmasi. Gerbang pengiriman aktif dan penanda berhenti tidak ada.
+
+Pemeriksaan terpisah `npm run duoke:desktop -- check` kemudian keluar dengan kode 2 dan `authentication_required`, meskipun pemeriksaan enable pemilik berhasil beberapa saat sebelumnya. Penyebab penolakan sesi tersimpan yang berulang belum diketahui. Agen pengodean tidak mengirim, menjeda, menonaktifkan, melanjutkan, atau menghapus status pada pemeriksaan ini. Tindakan yang disarankan kepada pemilik adalah menjeda jadwal yang ada dan menonaktifkan pengiriman sebelum memulihkan autentikasi. Investigasi implementasi berikutnya: telusuri persistensi dan penolakan sesi, tampilkan galat alat terjadwal alih-alih diam-diam menandai pekerjaan selesai, dan pertahankan reservasi yang tidak pasti. Login ulang saja belum terbukti sebagai perbaikan permanen.
+
+Aktivasi oleh pemilik setelah pemulihan (2026-09-18): keluaran yang ditempel berakhir dengan `Desktop delivery enabled`; `mode: preview` sebelumnya adalah pemeriksaan sebelum enable. Pemeriksaan baca saja `cron list --all` mengonfirmasi pekerjaan `c0a140d71d08` masih dijeda, dengan eksekusi terakhir pada 16:08 waktu setempat. `cron status` melaporkan tidak ada pekerjaan aktif dan tidak ada gateway terpisah; hal itu sendiri tidak menetapkan apakah penjadwal bawaan Desktop tersedia. Eksekusi selesai yang tercantum adalah riwayat lama, bukan bukti eksekusi setelah aktivasi. Agen tidak melanjutkan tugas atau memanggil balasan. Pemilik perlu membuka profil duoke-support di Desktop, melanjutkan pekerjaan yang sama tanpa `--run-now`, lalu memverifikasi eksekusi baru dan audit pengiriman terkonfirmasi. Jangan membuat pekerjaan atau penjadwal kedua hanya karena peringatan gateway terpisah.
+
+Pemeriksaan pemulihan yang dilaporkan pemilik (2026-09-18, setelah diagnosis Playwright dan startup): keluaran `npm run duoke:desktop -- check` yang ditempel menunjukkan `mode: preview`, `stopped: false`, `session: accepted`, `chrome: ready`, `sendAction: available`, dan `sent: 0`. Keluaran itu melaporkan 1.334 dokumen sumber terindeks, 445 entri gabungan, 236 referensi percakapan, dan satu file percakapan yang gagal diparsing. Hasil ini menggantikan kegagalan autentikasi sebelumnya hanya untuk pemeriksaan tersebut; hasil itu tidak membuktikan daya tahan sesi, cakupan jawaban, eksekusi jadwal, atau pengiriman nyata. Agen tidak mengulang pemeriksaan secara independen maupun mengubah kontrol pengiriman. Langkah pemilik berikutnya: buka ulang profil Desktop yang ada, aktifkan pengiriman hanya setelah kesiapan berhasil, lanjutkan pekerjaan berulang tanpa `--run-now`, lalu verifikasi eksekusi dan pengiriman terkonfirmasi pertama. Pertahankan reservasi upaya tidak pasti dan hindari pekerjaan duplikat.
+
+Diagnosis pemasangan dan startup Playwright (2026-09-18): pemilik melaporkan bahwa douke-web tidak berjalan setelah menambahkan `playwright.config.ts`; perintah yang tepat saat gagal belum diketahui. Konfigurasi tak terlacak saat itu masih perancah tes Node bawaan, dengan `baseURL` dan `webServer` dikomentari serta contoh tes yang menargetkan playwright.dev. `playwright test --list` menemukan enam contoh; ini hanya membuktikan penemuan tes, bukan pelaksanaannya atau kesiapan Duoke. Node Playwright terpasang versi 1.63.0 dan Python Playwright 1.62.0; Chromium Python dan Google Chrome tersedia. Perancah milik pemilik dipertahankan.
+
+`npm run dev` berhasil dimulai dan halaman depan lokal mengembalikan HTTP 200; proses pengembangan dibiarkan berjalan pada port 3000 untuk pemilik. Secara terpisah, `npm run duoke:desktop -- check` keluar dengan kode 2 dan `authentication_required`. Tidak ada kontrol pengiriman, status penjadwal, kredensial, atau file implementasi yang diubah, dan tidak ada balasan pelanggan yang dikirim. Suite tes aplikasi lengkap tidak dijalankan untuk diagnosis ini. Pemulihan saat itu: tutup Hermes Desktop sepenuhnya, jalankan `npm run duoke:desktop -- session --headed`, selesaikan login sampai konfirmasi sesi tersimpan muncul, lalu jalankan `check` lagi. Profil `duoke:login` lama dan konfigurasi tes Node tidak menggantikan sesi tersimpan jembatan Desktop. Pengiriman nyata yang berhasil belum terverifikasi.
+
+Investigasi timeout enable terbaru (2026-09-18, setelah pemilik melanjutkan pada 16:09): Ollama merespons, tetapi Storage browser yang tersimpan mencapai layar login, termasuk saat rute chat terlindungi dibuka langsung. Cookie belum melewati waktu kedaluwarsa tercatat; penyebab penolakan sesi sisi server tetap tidak diketahui. Gerbang pengiriman tidak ada setelah enable gagal. Pekerjaan yang sempat dilanjutkan pemilik dijeda lagi; pengiriman tetap nonaktif dan status deduplikasi dipertahankan.
+
+Alasan galat navigasi, kesiapan aplikasi, dan autentikasi yang terbatas ditambahkan, bersama deteksi login eksplisit, navigasi chat terlindungi untuk pengambilan dan runtime, serta penanganan callback header permintaan yang terlambat saat browser ditutup. Pemeriksaan baca saja nyata kini melaporkan `authentication_required` secara jelas dan meminta pemilik menutup Hermes sebelum memperbarui login. `npm run duoke:test`: 195 lulus; `git diff --check` lulus. Diagnostik ini tidak memicu pengiriman pelanggan. Langkah pemilik berikutnya: tutup Desktop sepenuhnya, jalankan `session --headed`, tunggu pesan sesi tersimpan, lalu jalankan `check` sebelum enable atau resume. Kehilangan sesi berulang dan pengiriman nyata yang berhasil tetap belum terpecahkan; keberhasilan pemeriksaan lama tidak membuktikan autentikasi saat ini atau kesiapan 24/7.
+
+Perbaikan diagnostik jalur kirim (2026-09-18): pekerjaan dijeda dan pengiriman dinonaktifkan saat upaya yang belum terkonfirmasi diselidiki. Pemeriksaan baca saja di situs aktif mula-mula tidak menemukan `$dkChat` pada jendela luar, tetapi pemeriksaan berikutnya membuktikan bahwa mikro-aplikasi Vue memiliki SDK dan koneksi online sendiri. Dugaan awal bahwa SDK tidak ada ternyata keliru; perbaikan pemeriksaan SDK tersebut tidak mengubah rute. Penyebab tepat penolakan pengiriman historis masih belum diketahui.
+
+Memeriksa sumber aplikasi Duoke yang dikunci: ``Chat/send-message`` menangkap kesalahan SDK dan menetapkan ``pendingFlag: 2`` alih-alih menyebarkannya. Jembatan telah mengabaikan keadaan tersebut dan menelan semua pengecualian selama verifikasi penerimaan.
+Menambahkan pra-pembaruan SDK melalui aplikasi Vue, memeriksa flag pending yang dimutasi dari tindakan, dan menambahkan alasan kegagalan audit/alat yang terbatas. Kesiapan yang hilang sebelum reservasi mengembalikan ``not_ready``; kegagalan setelah reservasi tetap ``uncertain`` tanpa percobaan ulang. Membuka kembali halaman yang ditutup juga didukung. Konfirmasi sejarah tetap wajib bahkan setelah pengakuan SDK.
+
+``npm run duoke:test``: 193 lulus, termasuk kasus penolakan SDK/offline sintetis nyata-Chrome dan perilaku layanan no-reservasi/no-ulang. Baca-only langsung ``duoke:desktop -- check`` juga lulus kesiapan SDK, autentikasi, dan pembacaan kotak masuk dengan nol pengiriman. Ini adalah perbaikan diagnostik/pelindung, bukan bukti bahwa penyebab pengiriman asli telah diselesaikan atau bahwa pesan langsung sekarang berhasil. Pemilik harus memulai ulang Desktop untuk memuat MCP yang berubah, mengaktifkan dan melanjutkan saat siap, dan menggunakan pesan masuk baru untuk penerimaan diawasi. Pertahankan reservasi lama.
+Kontrol saat ini: jadwal dihentikan dan pengiriman dinonaktifkan; tidak ada pengiriman ulang yang dicoba.
+
+Pertama percobaan langsung pasca-login (2026-09-18): pemilik melanjutkan pekerjaan; gerbang pengiriman hadir dan berhenti tidak aktif. Mengamati penjadwal bawaan berjalan pada 15:39:46 waktu lokal. Pollingnya berhasil pada 15:40:12: lima dipindai, empat dilewati, satu pekerjaan, nol kesalahan. Hermes memanggil ``duoke_reply``; audit pada 15:40:23 merekam ``action: uncertain``, ``sent: false``. Ini adalah upaya pengiriman dengan penerimaan tidak dikonfirmasi, bukan verifikasi keberhasilan atau bukti ketidakberhasilan pengiriman. Reservasi yang ada mencegah percobaan ulang pesan masuk tersebut. Jangan hapus keadaan pengiriman atau ulangi jawaban tersebut secara manual sebelum memeriksa sejarah pelanggan asli. Tidak ada pengiriman tambahan yang dipicu oleh agen pemrograman. Jadwal yang berjalan tetap diaktifkan pemilik.
+Selanjutnya: selaraskan upaya tidak pasti baca-only terhadap Duoke dan investigasi verifikasi penerimaan sebelum mengklaim alih respons otomatis diterima.
+
+Periksa pemulihan autentikasi (2026-09-18): setelah pemilik mengonfirmasi login ulang, menjalankan ``duoke:desktop -- check`` berhasil. Sesi disimpan diterima, Chrome siap, tindakan pengiriman tersedia, berhenti palsu, mode pratinjau, mengirim nol. Pekerjaan yang ada tetap dihentikan. Pemilik harus sepenuhnya keluar/membuka kembali Hermes untuk mengganti browser tidak terautentikasi yang dikunci, kemudian mengaktifkan pengiriman dan melanjutkan pekerjaan berulang yang sama tanpa ``--run-now``. Tidak ada kontrol pengiriman atau aktivasi pekerjaan yang berubah selama verifikasi ini. Polling langsung berikutnya dan pengiriman pertama yang diverifikasi masih menunggu; pemeriksaan ini tidak menetapkan durabilitas sesi.
+
+
+Kegagalan saat memulai layanan langsung (2026-09-18): pemilik mengaktifkan pengiriman dan melanjutkan pekerjaan yang ada. Eksekusi pukul 15:22 waktu setempat memanggil polling, memindai lima percakapan, melewati semuanya, dan tidak menghasilkan pekerjaan. Hermes menandai eksekusi berikutnya selesai meskipun polling mengembalikan galat; status cron selesai tidak membuktikan pengiriman berhasil. Pemeriksaan browser baru yang hanya membaca sesi tersimpan menampilkan kolom kata sandi dan `authenticated: false` di penyimpanan Duoke. Autentikasi saat itu hilang; alasan kedaluwarsanya, termasuk kemungkinan kaitan dengan pemakaian browser secara bersamaan, belum diketahui. Tidak ada peristiwa pengiriman keluar yang terverifikasi dalam audit runtime yang diperiksa.
+
+Selama pemulihan, gerbang pengiriman dinonaktifkan dan pekerjaan yang ada dijeda. Pemilik perlu menjalankan `duoke:desktop -- session --headed` lalu masuk, kemudian membuka ulang Hermes sepenuhnya agar keadaan browser/MCP yang tersimpan terbuang. Jalankan pemeriksaan sebelum mengaktifkan dan melanjutkan pekerjaan. Penjadwal aktif juga melaporkan jumlah korpus lama, sehingga pembukaan ulang harus memuat bridge terbaru. Jangan hapus keadaan deduplikasi. Penghalang saat itu adalah autentikasi Duoke interaktif, bukan kekurangan pengetahuan Obsidian. Catatan ini tidak meminta atau menyimpan kredensial login.
+
+Koreksi perintah saat memulai (2026-09-18): pemilik mengikuti instruksi lama `cron resume <id> --run-now` yang keliru; Hermes menolaknya karena pekerjaan ini berulang menurut interval. Pemeriksaan `cron_resume` terpasang menunjukkan `cron resume` biasa memulihkan pekerjaan berulang, sedangkan opsi tersebut memakai jalur pengaktifan ulang pekerjaan sekali jalan. Panduan sudah diperbaiki. Pembacaan status saat itu: pekerjaan masih dijeda, gerbang pengiriman tidak ada, dan penanda berhenti tidak aktif. Perintah yang gagal tidak memulai otomatisasi. Pemilik perlu menjalankan `duoke:desktop -- enable --send`, lalu `cron resume` biasa, kemudian memeriksa catatan eksekusi sebenarnya. Aplikasi yang sebelumnya berhasil terbuka tidak berarti pengiriman sudah aktif.
+
+Pemeriksaan kesiapan oleh pemilik (2026-09-18): pemilik ingin segera memulai dan tetap menjalankan sendiri aktivasi layanan langsung sesuai instruksi sebelumnya. `duoke:desktop -- check` menunjukkan sesi diterima, Chrome siap, tindakan kirim tersedia, Qwen tersedia, penanda berhenti tidak aktif, mode pratinjau, dan nol pesan terkirim. Setelah filter placeholder ditambahkan, ekstraksi melaporkan 902 dokumen percakapan, 339 pasangan, 236 referensi, dan 103 pasangan dikecualikan; angka ini menggantikan jumlah referensi sebelumnya. Pekerjaan setiap menit yang ada masih dijeda. `cron list` menyembunyikan pekerjaan nonaktif; gunakan `cron list --all` untuk melihatnya. Log Desktop menunjukkan penjadwal bawaannya mulai berjalan; peringatan gateway CLI saja tidak membuktikan penjadwalan Desktop tidak tersedia. Pemeriksaan ini tidak mengaktifkan pengiriman maupun jadwal. Langkah pemilik: buka ulang Desktop sepenuhnya, aktifkan gerbang pengiriman, lalu lanjutkan pekerjaan yang ada. Eksekusi terjadwal pertama dan pengiriman pelanggan pertama yang terverifikasi masih menjadi syarat penerimaan.
+
+Investigasi percakapan nyata terbaru (2026-09-18): bukti sesi yang hanya dibaca menunjukkan pemilik menanyakan regulator yang menutup, tetapi model memanggil `duoke_status` dan menghasilkan saran kelistrikan/reset tanpa sumber. Sesi lama yang sama dilanjutkan setelah Desktop dimulai ulang. Kegagalan ini tidak boleh langsung dianggap akibat dokumen sumber yang hilang. Probe Hermes CLI baru dan terisolasi terkadang juga tidak memanggil alat, sehingga riwayat lama saja tidak menjelaskan kegagalan tersebut.
+
+Sumber Hermes yang terpasang menunjukkan pengungkapan alat bertahap yang membungkus alat MCP dalam
+`tool_search`/`tool_describe`/`tool_call`. Pengaturan kunci konfigurasi yang didukung secara aktual
+`tools.tool_search.enabled: off` mengekspos skema konkret; probe Hermes asli yang baru kemudian memanggil `mcp__duoke__duoke_search`.
+Pengaturan tingkat atas eksperimental awal `tool_search` diabaikan dan tidak pernah diterapkan ke profil pemilik.
+Mengimplementasikan pengaturan yang benar dalam setup dan mem-backup refresh owned-profile;
+menonaktifkan skema sumber daya/prompt MCP yang tidak digunakan. Menerapkan refresh dan mempertahankan kontrol langsung.
+Probe menggunakan profil sementara terbatas pada status/search, tanpa alat inbox atau pengiriman, model Qwen asli, dan lumbung sumber lokal asli.
+
+Juga memperbaiki penyesuaian pengambilan: negasi bersama tidak lagi menciptakan penyesuaian palsu; varian kunci/penutupan (termasuk `ditutup`) dinormalisasi dan diperlukan dalam pertanyaan kandidat, termasuk entri cadangan. Placeholder identifikasi yang direduksi ditolak. Gejala regulator yang sebelumnya diambil promosi tidak terkait dan deskripsi kompor; setelah perbaikan, pencarian langsung mengembalikan referensi yang tidak berlaku. Itu bukan bukti bahwa lumbung penuh tidak memiliki jawaban. Hasil alat no-match sekarang menyediakan transfer pelanggan singkat daripada membiarkan model menciptakan perbaikan.
+
+Perbaikan Percakapan Terbaru (2026-09-18): pemilik secara eksplisit mengidentifikasi folder tersebut sebagai basis data admin-answer. Korpus yang ada menindek semua catatan tetapi merutekan bukti Desktop melalui kepatuhan publikasi website dan flag media per-catatan-penuh. Menambahkan `conversation_references.py`: ekstraksi pasangan berdekatan langsung, peringkat tingkat pertanyaan, sinonim pengembalian kanonik, deduplikasi, ruang lingkup produk eksplisit, bukti terbatas, dan penanganan media per-pasangan. Pencarian memprioritaskan referensi ini; polling hanya menggunakan jawaban pasangan tepat yang layak. Referensi kontekstual/moneter dan pengembalian tetap hanya pratinjau, dengan materi pribadi/tidak aman dikecualikan. Perilaku ekstraksi draf legacy dan website tidak berubah.
+
+Audit baca-hanya dari sumber terhubung aktual:
 `/Users/surya/Documents/douke-chat/knowledge/approved/Douke Knowledge Base/Duoke/Percakapan`.
-902 files scanned, 339 adjacent Q&A pairs extracted, 246 reference pairs retained,
-93 excluded by the new privacy/context/safety/size checks, and one unparsed note.
-These are extraction counts, not 902 guaranteed answers. Existing pairing also
-excludes 512 boilerplate seller runs, 125 trivial customer runs, 285 customer runs
-without adjacent seller replies, 13 card runs, and 13 trivial seller runs. Mixed
-boilerplate/useful replies and unparsed content still need a separate coverage
-review. No source notes were edited or published.
+902 file dipindai, 339 pasangan Q&A berdekatan diekstrak, 246 pasangan referensi dipertahankan,
+93 dikecualikan oleh pemeriksaan privasi/konteks/keamanan/ukuran baru, dan satu catatan tidak terurai.
+Ini adalah hitungan ekstraksi, bukan 902 jawaban yang dijamin. Penyesuaian yang ada juga mengecualikan 512 eksekusi penjual boilerplate, 125 eksekusi pelanggan trivial, 285 eksekusi pelanggan tanpa balasan penjual berdekatan, 13 eksekusi kartu, dan 13 eksekusi penjual trivial. Campuran balasan boilerplate/bermanfaat dan konten tidak terurai masih memerlukan tinjauan cakupan terpisah. Tidak ada catatan sumber yang diedit atau dipublikasikan.
 
-The owner's synthetic regulator-return query now returns paired conversation
-references. Actual local Qwen response composition was tested with the real
-read-only search output injected as a tool result; this is not an end-to-end
-Hermes tool-selection or Desktop UI test. The initial model result added an
-unsupported warehouse destination and repeated a historical processing claim;
-strengthened SOUL, but another probe still copied the old claim. The bridge now
-suppresses historical return answer text, retaining matched source metadata, and
-provides a fixed customer handoff. A third probe without fixed wording invented a
-special-handling rationale; the final contract supplies `customerReply` verbatim.
-Final probe evidence is recorded below. These failed intermediate checks show
-why prompt caveats alone were insufficient.
+Kueri pengembalian regulator sintetis pemilik sekarang mengembalikan referensi percakapan berpasangan. Komposisi respons Qwen lokal aktual diuji dengan output pencarian baca-hanya asli disuntikkan sebagai hasil alat; ini bukan tes pemilihan alat Hermes end-to-end atau UI Desktop. Hasil model awal menambahkan tujuan gudang yang tidak didukung dan mengulang klaim pemrosesan historis; SOUL diperkuat, tetapi probe lain masih menyalin klaim lama. Jembatan sekarang menekan teks jawaban pengembalian historis, mempertahankan metadata sumber yang cocok, dan menyediakan transfer pelanggan tetap. Probe ketiga tanpa penulisan tetap menciptakan alasan penanganan khusus; kontrak akhir menyediakan `customerReply` verbatim. Bukti probe akhir dicatat di bawah ini. Cek intermediate gagal ini menunjukkan mengapa hanya batasan prompt tidak cukup.
 
-Refreshed the actual owned Hermes profile instructions. Delivery remains disabled;
-no Chrome/inbox call or customer send was made. Existing running Desktop MCP
-processes require a restart to load the changed Python implementation.
+Perbarui instruksi profil Hermes yang benar-benar dimiliki. Pengiriman tetap dinonaktifkan; tidak ada panggilan Chrome/inbox atau pengiriman pelanggan yang dilakukan. Proses Desktop MCP yang sedang berjalan memerlukan restart untuk memuat implementasi Python yang berubah.
 
+Koreksi pemilik terbaru: balasan permintaan pengembalian mengekspos nama alat internal, status preview/inbox, dan artefak kelanjutan daripada membantu pelanggan. Pemilik membutuhkan jawaban yang berguna dari semua referensi Obsidian dan serah terima WhatsApp ketika belum terselesaikan. Contoh ini dirangkum di sini tanpa menyalin seluruh percakapan. Ini menyediakan kasus respons yang salah yang sebelumnya hilang.
 
-Latest owner correction: a return-request reply exposed internal tool names,
-preview/inbox status, and continuation artifacts rather than helping the customer.
-The owner requires useful answers from all Obsidian references and WhatsApp
-handoff when unresolved. The example is summarized here without copying the
-full conversation. This supplies the previously missing incorrect-response case.
+Perbarui `desktop_prompts.py` dan perbarui prompt SOUL dan terjadwal yang benar-benar dimiliki: pratinjau dukungan pelanggan harus menggunakan pencarian referensi, memberikan penulisan hanya untuk pelanggan yang praktis, dan menggunakan pencarian reformulasi terbatas sebelum fallback. Diagnosa internal hanya untuk permintaan eksplisit operator. Prompt membutuhkan serah terima WhatsApp resmi tanpa menciptakan tujuan atau mengklaim transfer yang belum dilakukan. Penjadwal tidak dapat menciptakan kandidat serah terima; mengimplementasikan mekanisme pengiriman tersebut tetap berada di bawah ini. Ini bukan bukti bahwa setiap catatan yang ada dapat dicari atau bahwa tujuan WhatsApp yang diverifikasi tersedia.
 
-Updated `desktop_prompts.py` and refreshed the actual project-owned SOUL and
-scheduled prompt: customer support previews must use reference search, give
-practical customer-only wording, and use a bounded reformulated lookup before
-fallback. Internal diagnostics are only for explicit operator requests. The
-prompt requires official WhatsApp handoff without inventing a destination or
-claiming an unperformed transfer. The scheduler cannot invent a handoff candidate;
-implementing that delivery mechanism remains below. This is not proof that every
-existing note is searchable or that a verified WhatsApp destination is available.
+Perbaikan terbaru: pemilik melaporkan `Response remained truncated after 4 continuation attempts` pada 2026-09-18T06:33:47Z. Log Desktop yang sesuai melanjutkan sesi lama dengan 21 pesan riwayat. Ollama `/api/ps` menunjukkan jendela waktu runtime 4.096 token, sementara `/api/show` mengiklankan maksimum pelatihan 262.144 token dan profil tidak memiliki penutupan konteks. Panggilan sebelumnya mendekati total token 4.096 dengan hanya 28-30 token output. Ini mendukung ketidakcocokan konteks sebagai penyebab pemotongan, daripada koneksi Obsidian yang hilang.
 
-Latest repair: the owner reported `Response remained truncated after 4
-continuation attempts` at 2026-09-18T06:33:47Z. The corresponding Desktop log
-resumed the old session with 21 history messages. Ollama `/api/ps` showed a
-4,096-token runtime window, while `/api/show` advertised a 262,144-token training
-maximum and the profile had no context override. Earlier calls approached 4,096
-total tokens with only 28-30 output tokens. This supports a context mismatch as
-the truncation cause, rather than a missing Obsidian connection.
+Tambahkan `desktop_model.py` dan `duoke:desktop -- model-context`: cadangkan label model lokal saat ini, gunakan bobotnya dengan `num_ctx: 65536`, verifikasi persistensi, lalu tetapkan konteks profil Hermes yang dimiliki ke nilai yang sama. Diterapkan dengan sukses; parameter sampling lainnya, model yang dipilih, aktivasi tugas, dan kontrol pengiriman dipertahankan. Setup sekarang mengunci batas Hermes yang sama dan pengecekan menolak model Ollama yang tidak sejajar. Catatan cadangan bersifat pribadi. Klien lokal lain dari label model ini mewarisi konteks defaultnya.
 
-Added `desktop_model.py` and `duoke:desktop -- model-context`: back up the current
-local model tag, reuse its weights with `num_ctx: 65536`, verify persistence, then
-set the owned Hermes profile context to the same value. Applied successfully;
-other sampling parameters, the selected model, job activation, and delivery
-controls were preserved. Setup now pins the same Hermes bound and check rejects
-an unaligned Ollama model. The backup record is private. Other clients of this
-local model tag inherit its context default.
+Log backend Desktop saat ini juga menunjukkan penjadwal cron bawaannya mulai untuk dua profil, termasuk duoke-support. Perbaiki panduan operator: gateway terpisah adalah alternatif, bukan persyaratan mutlak tanpa syarat. Tidak ada tugas yang dilanjutkan atau dibuat sebagai bagian dari perbaikan ini.
 
-The current Desktop backend log also showed its built-in cron scheduler starting
-for two profiles, including duoke-support. Corrected the operator guide: a
-separate gateway is an alternative, not an unconditional prerequisite. No job
-was resumed or created as part of this repair.
+Pemilik melaporkan perilaku agen Hermes yang salah setelah pembaruan dokumentasi saja. Profil proyek yang benar-benar dimiliki masih menggunakan prompt inbox terjadwal sebagai SOUL, tidak memiliki instruksi Ayu, dan menggunakan direktori kerja di dalam repositori pemrograman ini. Metadata sesi Desktop terbaru mengonfirmasi bahwa pesan asisten masih memperkenalkan asisten Duoke. Tidak ada transkrip pribadi yang disalin ke catatan ini.
 
-The owner reported incorrect Hermes agent behavior after the documentation-only
-updates. The actual project-owned profile still used the scheduled inbox prompt
-as SOUL, had no Ayu instruction, and used a working directory inside this coding
-repository. Recent Desktop session metadata confirmed assistant messages still
-introduced a Duoke assistant. No private transcripts are copied into this note.
+Mengimplementasikan dan menerapkan perbaikan berikut:
 
-Implemented and applied these fixes:
+- `desktop_prompts.py` memisahkan SOUL interaktif dari `DUOKE_INBOX_PASS`. Pertanyaan sapaan/identitas menggunakan Ayu tanpa panggilan alat; pertanyaan produk menggunakan pencarian referensi lokal baca-hanya. Operasi kotak masuk memerlukan pass eksplisit.
+- `duoke_search` adalah alat MCP keempat. Mengembalikan bukti Obsidian terbatas dengan referensi catatan sumber tanpa membuka Chrome, membaca percakapan pelanggan, membuat tiket, atau mengirim pesan, bahkan ketika pengiriman aktif.
+- Pemuatan Desktop mengaktifkan referensi admin. Asal-usul percakapan saja tidak lagi menghalangi Q&A admin yang diekstrak yang dapat digunakan. Filter privasi substansial, konteks, fakta bertentangan, klaim volatil, dan saran tidak aman tetap ada. Pemuatan draf warisan mempertahankan perilaku tinjauan sebelumnya. Ini bukan akses sembarang ke setiap baris transkrip mentah atau bukti cakupan pengambilan makna lengkap.
+- `npm run duoke:desktop -- refresh` memperbarui SOUL yang dimiliki dan prompt terjadwal, dengan cadangan pribadi dan verifikasi aktivasi/model/jadwal yang dipertahankan. Ia juga memigrasikan repositori cwd lama yang dihasilkan ke ruang kerja profil; custom cwd/settings dipertahankan. Tes mencakup idempotence refresh dan migrasi.
+- Refresh diterapkan pada `~/.hermes/profiles/duoke-support`. SOUL dan prompt job diverifikasi sama dengan konstanta saat ini, job tetap dalam keadaan jeda, dan gerbang pengiriman tetap tidak ada. Tidak terjadi pass kotak masuk, baca browser, kirim nyata, atau startup gateway dalam sesi perbaikan ini. Sesi Desktop lama harus dibuka kembali sebagai obrolan baru.
 
-- `desktop_prompts.py` separates interactive SOUL from `DUOKE_INBOX_PASS`.
-  Greetings/identity questions use Ayu without tool calls; product questions use
-  a read-only local reference search. Inbox operations require an explicit pass.
-- `duoke_search` is a fourth MCP tool. It returns bounded Obsidian evidence with
-  source-note references without opening Chrome, reading customer conversations,
-  generating tickets, or sending messages, even when delivery is enabled.
-- Desktop loading opts into admin references. Conversation provenance alone no
-  longer blocks usable extracted admin Q&A. Substantive privacy, context,
-  conflicting-fact, volatile-claim, and unsafe-advice filters remain. Legacy draft
-  loading retains its previous review behavior. This is not arbitrary access to
-  every raw transcript line or proof of complete semantic retrieval coverage.
-- `npm run duoke:desktop -- refresh` updates owned SOUL and the scheduled prompt,
-  with private backups and verification of preserved activation/model/schedule.
-  It also migrates the old generated repository cwd into the profile workspace;
-  custom cwd/settings are preserved. Tests cover refresh idempotence and migration.
-- Applied refresh to `~/.hermes/profiles/duoke-support`. Verified SOUL and job prompt
-  equal current constants, the job remains paused, and the delivery gate remains
-  absent. No inbox pass, browser read, real send, or gateway startup occurred in
-  this repair session. Old Desktop sessions must be reopened as new chats.
+Tes sapaan Qwen pertama yang nyata setelah refresh SOUL masih menjawab sebagai asisten proyek pemrograman. Setelah memigrasikan cwd di luar repositori, backend Hermes CLI yang terpasang sebenarnya mengembalikan perkenalan Ayu yang tepat untuk putaran `halo` baru, tanpa panggilan alat sama sekali. Ini mengkonfirmasi satu skenario; ini bukan tes GUI atau bukti bahwa semua output model mengikuti kebijakan.
 
-The first real Qwen greeting test after SOUL refresh still answered as a coding
-project assistant. After migrating the cwd outside the repository, the actual
-installed Hermes CLI backend returned the exact Ayu introduction for a new `halo`
-turn, with zero tool calls. This confirms that one scenario; it is not a GUI test
-or proof that all model outputs follow the policy.
+Implementasi awal termasuk pengiriman Chrome yang dilindungi, pemeriksaan pesan/sumber sebelum kirim, deduplikasi persisten, reservasi sebelum mengirim, dan verifikasi pasca-kirim. Upaya ambigu tidak otomatis diulang. Pemeriksaan baca-hanya hidup sebelumnya menerima login pemilik dan memindai lima percakapan dengan empat lompatan, satu hasil perlu tinjauan, nol kesalahan, dan nol pengiriman. Periksa historis tersebut tidak menetapkan autentikasi browser saat ini atau keberhasilan pengiriman hidup. Jaminan yang ada sebelumnya, pengetahuan sumber, dan edit ruang kerja lainnya dipertahankan.
 
-Earlier implementation includes guarded Chrome delivery, pre-send message/source
-checks, persistent deduplication, reservation before sending, and post-send
-verification. Ambiguous attempts are not automatically retried. Earlier live
-read-only checks accepted the owner's login and scanned five conversations with
-four skips, one needs-review result, zero errors, and zero sends. Those historical
-checks do not establish current browser authentication or live delivery success.
-Pre-existing warranty, source knowledge, and other workspace edits are preserved.
+<a id="remaining-work-and-decisions"></a>
+## Pekerjaan dan keputusan yang tersisa
 
-## Remaining work and decisions
+- Perbaikan pengambilan percakapan telah diimplementasikan dan diperiksa secara lokal. Lanjutkan audit cakupan pengetahuan Obsidian yang ditentukan pemilik, termasuk Q&A admin, FAQ, prosedur, dan panduan pengembalian/tagihan kembali di luar folder sumber yang saat ini dipilih. Catat file yang disertakan/dikeluarkan, hasil ekstraksi, pasangan pertanyaan-jawaban, peringkat, dan pengecualian keeliblean. Perbaiki sumber yang belum tercover dan pencocokan yang terlewat daripada mengasumsikan pengetahuan yang tidak memadai.
+- Duplikasikan contoh pengembalian regulator pemilik dengan bukti kebijakan yang berlaku dan tanpa bukti kebijakan yang berlaku. Verifikasi FAQ yang diketahui/diubah kalimatnya dan pastikan output pelanggan mengecualikan nama operasional, pratinjau/pekerjaan, dan teks kelanjutan.
+- Selesaikan kontak WhatsApp resmi yang dikonfigurasi melalui konfigurasi dukungan yang ada, paparkan hasil alih tangan yang divalidasi, dan hubungkan dengan pengiriman pelanggan yang dilindungi. Aliran kandidat sumber-sumber eksak saat ini tidak dapat mengirim alih tangan sembarang; jangan salah artikan instruksi prompt sebagai jalur yang telah diimplementasikan.
+- Pemilik: buka kembali profil Desktop dan mulai percakapan baru untuk memvalidasi perilaku perbaikan dalam UI aktual. Pemilik kini telah memberikan respons pengembalian yang tidak benar; gunakan skenario tersebut sebagai kasus regresi berikutnya.
+- Perluas tes pencocokan Q&A admin representatif, termasuk penulisan ekuivalen, produk yang bertentangan/tidak terkait, referensi yang hilang, dan cakupan korpus penuh. Pengiriman sumber-sumber eksak tetap lebih sempit daripada komposisi berbasis fakta.
+- Implementasikan penanganan sapaan/identitas deterministik dalam jalur pelanggan keluaran. Perbaikan interaktif SOUL tidak menambahkan interceptor sapaan tanpa model ke Desktop atau mengubah pengantar jawaban sumber lama.
+- Latensi tetap belum terpecahkan: permintaan model untuk sapaan sukses memakan **39.8 seconds**, 3.266 token input dan 13 token output, dengan nol panggilan alat. Hasil coding-assistant sebelumnya memakan waktu 36,4 detik. Tidak ada percepatan yang diklaim. Investigasikan kinerja model/runtime secara terpisah dari penundaan polling inbox.
+- Tentukan host yang selalu aktif, runtime yang diawasi, pemulihan kadaluarsa sesi, keadaan tahan lama, pelaporan kesehatan, dan tes soak selama 24 jam. Tidak ada deployment 24/7 atau penerimaan pengiriman langsung yang telah ditetapkan.
+- Pemilik: startup langsung dan pengiriman pelanggan pertama yang terverifikasi masih belum selesai.
 
-- The Percakapan retrieval repair is implemented and locally checked. Continue auditing the owner-designated Obsidian knowledge scope,
-  including admin Q&A, FAQs, procedures, and return/refund guidance beyond the
-  currently selected source folders. Record included/excluded files, extraction
-  results, question-answer pairing, ranking, and eligibility exclusions. Fix
-  uncovered sources and missed matches instead of assuming insufficient knowledge.
-- Reproduce the owner's regulator-return example with both applicable policy
-  evidence and no applicable evidence. Verify known/rephrased FAQs and ensure
-  customer output excludes operational names, preview/jobs, and continuation text.
-- Resolve the official configured WhatsApp contact through the existing support
-  configuration, expose a validated handoff result, and connect it to guarded
-  customer delivery. The current exact-source candidate flow cannot send an
-  arbitrary handoff; do not mistake a prompt instruction for an implemented path.
-- Owner: reopen the Desktop profile and start a new chat to validate the repaired
-  behavior in the actual UI. The owner has now provided the incorrect return
-  response; use that scenario as the next regression case.
-- Extend representative admin Q&A matching tests, including equivalent wording,
-  conflicting/unrelated products, absent references, and full corpus coverage.
-  Exact-source outgoing delivery remains narrower than grounded composition.
-- Implement deterministic greeting/identity handling in the outgoing customer
-  path. The interactive SOUL fix does not add a no-model greeting interceptor to
-  Desktop or change an old source answer's introduction.
-- Latency remains unresolved: the successful greeting's model request took
-  **39.8 seconds**, 3,266 input tokens and 13 output tokens, with zero tool calls.
-  The earlier coding-assistant result took 36.4 seconds. No speedup is claimed.
-  Investigate model/runtime performance separately from inbox polling delays.
-- Define an always-on host, supervised runtime, session-expiry recovery, durable
-  state, health reporting, and a 24-hour soak test. No 24/7 deployment or live
-  delivery acceptance has been established.
-- Owner-operated live startup and first verified customer send remain outstanding.
+<a id="decisions-and-corrections"></a>
+## Keputusan dan koreksi
 
-## Decisions and corrections
+Pemilik, 2026-09-18: balasan pelanggan harus menyelesaikan masalah tanpa penjelasan sistem internal; gunakan semua pengetahuan Obsidian sebagai referensi dan alihkan kasus yang belum terselesaikan ke WhatsApp. Alasan: pelanggan hanya ingin masalah mereka diselesaikan. Lihat [koreksi kanonik](../../product/integrations/duoke-support.md#customer-problem-resolution-and-whatsapp-handoff).
+Respons pengembalian/status internal tidak dapat diterima sebagai cadangan. Ini menggantikan instruksi umum prompt untuk terus meminta konteks yang hilang ketika penanganan admin diperlukan. Tidak ada kebijakan tagihan kembali atau nomor WhatsApp baru yang disediakan.
 
-Owner, 2026-09-18: customer replies must solve the issue without internal system
-explanations; use all Obsidian knowledge as reference and hand off unresolved
-cases to WhatsApp. Reason stated: customers only want their problems resolved.
-See the [canonical correction](../../product/integrations/duoke-support.md#customer-problem-resolution-and-whatsapp-handoff).
-The internal return/status response is not an acceptable fallback. This supersedes
-the prompt's generic instruction to keep asking for missing context when admin
-handling is needed. No refund policy or new WhatsApp number was supplied.
+Syarat-syarat kanonik terdapat dalam [spesifikasi produk](../../product/integrations/duoke-support.md).
+Pemilik memerlukan referensi Q&A admin lengkap, Hermes/headless Chrome, identitas Ayu, respons lebih cepat, semua toko terhubung, dan memulai otomatisasi langsung secara pribadi.
 
-Canonical requirements are in the [product specification](../../product/integrations/duoke-support.md).
-The owner requires full admin Q&A references, Hermes/headless Chrome, Ayu identity,
-faster responses, all connected stores, and personally starting live automation.
+Perbaikan 2026-09-18: laporan terbaru mengotorisasi troubleshooting perilaku agen yang tidak benar. Memisahkan chat interaktif dari tugas inbox terjadwal dan mengisolasi cwd-nya adalah perbaikan implementasi yang didukung oleh konfigurasi yang diperiksa dan tes model aktual. Tidak ada substitusi model atau aktivasi langsung yang disimpulkan.
 
-2026-09-18 repair: the latest report authorizes troubleshooting incorrect agent
-behavior. Separating interactive chat from a scheduled inbox task and isolating
-its cwd are implementation fixes supported by inspected configuration and the
-actual model test. No model substitution or live activation was inferred.
+<a id="verification"></a>
+## Verifikasi
 
-## Verification
+Perbaikan aktual-chat terbaru: `npm run duoke:test` telah melewati **191 tests**. Penutupan pemeriksaan cakupan relevansi penutupan/kunci versus negasi bersama, redaksi identifier, transfer tanpa cocok, normalisasi singkatan obrolan, dan migrasi skema idempoten yang mempertahankan model dan filter alat eksplisit. Probe pemilihan alat Hermes asli memanggil pencarian Obsidian; jawabannya masih meminta izin untuk mencari lagi, sehingga instruksi tindakan pertama dan transfer diperkuat. Penerimaan antarmuka desktop masih menunggu.
+Uji komposisi langsung-Ollama historis di bawah ini tidak membuktikan penggunaan Desktop. Probe EH-01 asli awalnya mencari tetapi hanya mengambil konten katalog: reformulasi kueri model membuang istilah kolokial dari pertanyaan admin. Ditambahkan alias terbatas untuk inklusi dan varian ejaan drain-hose, dengan regresi yang memerlukan sumber obrolan untuk pertanyaan dinormalisasi. Hasil Hermes penuh akhir: sesi CLI terisolasi segar bertanya apakah EH-01 termasuk selang drainnya. Qwen memanggil `mcp__duoke__duoke_search` dengan penulisan yang setara; pesan alat yang dikembalikan mengandung sumber `Percakapan/` dan jawaban admin asli. Jawaban akhir mengintegrasikan jawaban inklusi admin dan detail panjang katalog. Ini memverifikasi penggunaan Hermes-ke-MCP-ke-Obsidian nyata untuk kasus tersebut, bukan komposisi hanya transkrip eksklusif atau kebenaran setiap pertanyaan.
+Probe tidak dapat mengambil data/terkirim karena alat-alat tersebut dikecualikan. Perilaku antarmuka desktop pemilik, profil empat-alat penuh, dan pengiriman langsung masih belum diverifikasi.
 
-Percakapan repair: `npm run duoke:test` passed **187 tests**, including return
-synonyms without a SKU, direct source-note provenance, preview-only policy
-references, unrelated versus intervening media, wrong/unknown product scopes,
-private/unsafe/unrelated answers, plus existing delivery controls. Real local
-source search reproduced the owner's return query without accessing Duoke.
-Final local Qwen composition probe returned the exact fixed customer handoff,
-`finish_reason: stop`, in 5.4 seconds, using four matched historical source
-references represented as metadata. No tool/system status or old processing
-promise appeared. This time measures that one warm direct Ollama request, not
-Hermes end-to-end latency or a general performance improvement.
-This does not establish complete semantic coverage, live sending, Desktop UI
-behavior, or automatic WhatsApp delivery. No JS/TS or application route changes.
-The source's official WhatsApp destination has not been verified; no sample
-website default was adopted. The handoff currently has no contact link.
+Perbaikan percakapan: `npm run duoke:test` melewati **187 tests**, termasuk sinonim pengembalian tanpa SKU, asal sumber catatan langsung, referensi kebijakan hanya pratinjau, media tidak terkait versus intervensi, ruang lingkup produk salah/tidak dikenal, jawaban pribadi/tidak aman/tidak terkait, plus kontrol pengiriman yang ada. Pencarian sumber lokal asli mereproduksi kueri pengembalian pemilik tanpa mengakses Duoke. Probe komposisi Qwen lokal akhir mengembalikan transfer tangan pelanggan yang diperbaiki persis, `finish_reason: stop`, dalam 5,4 detik, menggunakan empat referensi sumber historis yang cocok direpresentasikan sebagai metadata. Tidak ada status alat/sistem atau janji pemrosesan lama muncul. Kali ini mengukur satu permintaan langsung Ollama hangat, bukan latensi Hermes end-to-end atau peningkatan kinerja umum.
+Ini tidak menetapkan cakupan semantik lengkap, pengiriman langsung, perilaku antarmuka desktop, atau pengiriman WhatsApp otomatis. Tidak ada perubahan rute aplikasi JS/TS. Tujuan WhatsApp resmi sumber belum diverifikasi; tidak ada website default sampel diadopsi. Transfer tangan saat ini tidak memiliki link kontak.
 
+Perbaikan koreksi balasan pelanggan terbaru, 2026-09-18: memperbarui dokumentasi dan template prompt, lalu menjalankan refresh profil untuk sinkronisasi SOUL dan prompt terjadwal yang ada. Kontrol pengiriman dan aktivasi tidak diubah. Suite regresi Python, link file, spasi diff, dan instruksi tersinkronisasi diperiksa. Tidak dilakukan balasan pelanggan langsung, penerimaan output model, impor korpus baru, atau transfer WhatsApp. Uji yang ada tidak menetapkan penulisan balasan baru, cakupan pengetahuan lengkap, atau jalur pengiriman WhatsApp yang berfungsi.
 
+Perbaikan pemotongan terbaru, 2026-09-18:
 
-Latest customer-reply correction, 2026-09-18: updated documentation and prompt
-templates, then ran profile refresh to synchronize SOUL and the existing scheduled
-prompt. Delivery and activation controls were not changed. The Python regression
-suite, file links, diff whitespace, and synchronized instructions were checked.
-No live customer reply, model-output acceptance, new corpus import, or WhatsApp
-transfer was performed. Existing tests do not establish the new reply wording,
-complete knowledge coverage, or a working WhatsApp delivery path.
+- `npm run duoke:test`: **183 lulus**, termasuk pencadangan sebelum mutasi, idempotensi, pelestarian pengaturan profil, dan penanganan pembaruan model yang gagal.
+- Permintaan perantara ke Ollama yang kompatibel dengan OpenAI pada konteks 16K dan riwayat sintetis: **5,770 token masukan**, 16 token keluaran, `finish_reason: stop`, 18.84 detik, serta salam yang menyebut Ayu. `/api/ps` lalu mengonfirmasi **16,384** token konteks runtime. Ini uji inferensi lokal, bukan pengiriman pelanggan atau regresi Desktop lengkap. Hermes kemudian menolak 16K karena batas minimum versi terpasang adalah 64,000; konfigurasi akhir dinaikkan menjadi **65,536** pada kedua sisi.
+- Uji akhir backend Hermes CLI asli pada 65,536: giliran `halo` baru berhasil mengembalikan perkenalan Ayu yang persis. Ollama `/api/ps` mengonfirmasi konteks 65,536 dan alokasi model/VRAM sekitar 5.82 GB. Seluruh 183 pengujian Python dijalankan ulang dan lulus setelah batas akhir dipilih. Riwayat yang semula gagal tidak diputar ulang melalui UI Desktop.
+- Probe awal dengan riwayat panjang terputus saat Ollama dimulai ulang; probe berikutnya di atas selesai. Tidak ada klaim peningkatan kecepatan inferensi.
+- Konfigurasi profil dan parameter model dibaca kembali; tautan dokumentasi serta `git diff --check` diperiksa. Tidak ada akses browser/kotak masuk atau pengiriman pelanggan.
+- Percakapan Desktop yang baru tetap menjadi langkah penerimaan UI oleh pemilik; percakapan lama yang gagal tidak dihapus atau diubah.
 
-Latest truncation repair, 2026-09-18:
+Perbaikan terbaru pada pohon kerja Mac yang saat itu belum di-commit, 2026-09-18:
 
-- `npm run duoke:test`: **183 passed**, including backup-before-mutation,
-  idempotence, preserved profile settings, and failed model-update handling.
-- Intermediate 16K Ollama OpenAI-compatible request with synthetic history: **5,770 input
-  tokens**, 16 output tokens, `finish_reason: stop`, 18.84 seconds, named Ayu
-  greeting. `/api/ps` then confirmed **16,384** runtime context tokens. This is a
-  local inference test, not a customer send or complete Desktop regression.
-  Hermes subsequently rejected 16K because its installed minimum is 64,000;
-  the final configuration was raised to **65,536** on both sides.
-- Final real Hermes CLI backend test at 65,536: new `halo` turn returned the
-  exact Ayu introduction successfully. Ollama `/api/ps` confirmed 65,536 context
-  and approximately 5.82 GB model/VRAM allocation. All 183 Python tests were
-  rerun successfully after selecting this final bound. Desktop UI replay of the
-  originally failing history was not performed.
-- An initial long-history probe disconnected while Ollama restarted; the later
-  probe above completed. No inference-speed improvement is claimed.
-- Profile config and model parameters were read back; documentation links and
-  `git diff --check` checked. No browser/inbox access or customer send.
-- A fresh Desktop chat remains the owner UI acceptance step; the failing old
-  conversation was not deleted or modified.
+- `npm run duoke:test`: **181 lulus**. Pengujian ditambahkan untuk pencarian baca saja ketika pengiriman aktif, kelayakan referensi admin dengan perilaku lama tetap terjaga, pemblokiran khusus akun, serta penyegaran instruksi/migrasi konfigurasi.
+- Daftar alat MCP stdio asli mengekspos status/search/poll/reply. `duoke_search` untuk pertanyaan produk mengembalikan dua referensi, `sent: false`, dan 1,334 dokumen sumber terindeks (902 percakapan, 432 produk), 35 catatan kurasi, serta 445 entri gabungan. Konten sumber mentah tidak dicetak dalam laporan eksekusi.
+- Hermes terpasang yang asli bersama Qwen lokal mengembalikan perkenalan Ayu yang persis setelah migrasi direktori kerja. Metadata pesan tersimpan mengonfirmasi nol pemanggilan alat. Latensi model di atas diukur; tidak ada klaim peningkatan kecepatan inferensi.
+- Profil dan prompt terjadwal yang dijeda diperbarui lalu dibaca kembali. Pengiriman tetap nonaktif; tidak ada pesan pelanggan yang dikirim.
+- `git diff --check` dan tautan dokumentasi relatif lulus; catatan serah terima tersimpan dibaca kembali. Perbaikan ini tidak mengubah JavaScript/TypeScript, dependensi, rendering, atau konfigurasi build, sehingga pemeriksaan aplikasi tidak dijalankan ulang.
+- Pemeriksaan sebelumnya: 177 pengujian Python, lint/typecheck/build, serta 236 pengujian JavaScript lulus dengan enam dilewati. Pemeriksaan tersebut mendahului perbaikan ini dan tidak memverifikasi perilaku barunya.
 
-Latest repair, current uncommitted working tree on this Mac, 2026-09-18:
+## Tindakan selanjutnya
 
-- `npm run duoke:test`: **181 passed**. Added tests for read-only lookup even with
-  delivery enabled, admin reference eligibility with legacy behavior preserved,
-  retained account-specific blocking, and instruction refresh/config migration.
-- Real MCP stdio tools/list exposed status/search/poll/reply. `duoke_search` on a
-  product question returned two references, `sent: false`, and 1,334 indexed
-  source documents (902 conversation, 432 product), 35 curated notes, and 445
-  combined entries. Raw source content was not printed in the run report.
-- Real installed Hermes + local Qwen returned the exact Ayu introduction after
-  cwd migration. Stored message metadata confirms zero tool calls. The model
-  latency above is measured; no inference-speed improvement is claimed.
-- Profile and paused scheduled prompt were refreshed and read back. Delivery
-  remained disabled; no customer messages were sent.
-- `git diff --check` and relative documentation links passed; saved handoff read
-  back. No JavaScript/TypeScript, dependencies, rendering, or build configuration
-  changed in this repair, so app checks were not rerun.
-- Earlier checks: 177 Python tests, lint/typecheck/build, and 236 JS passes with
-  six skips. These precede this repair and do not verify its new behavior.
+Mulai ulang Desktop agar MCP yang diperbaiki dimuat, lalu verifikasi bahwa pratinjau percakapan pelanggan baru memakai Percakapan tanpa diagnostik internal. Tinjau teks baku yang tercampur dan pengecualian sumber yang tersisa. Implementasikan fallback WhatsApp yang telah divalidasi melalui bridge pengiriman dan verifikasi bahasa khusus pelanggan untuk pertanyaan yang diketahui maupun tidak diketahui dalam percakapan Desktop baru. Pekerjaan kinerja dan operasi berkelanjutan masih terbuka.
 
-## Next action
+## Referensi
 
-Restart Desktop to load the repaired MCP, then verify a fresh customer-preview
-chat uses Percakapan with no internal diagnostics. Review mixed boilerplate and
-remaining source exclusions. Implement the validated WhatsApp fallback through the delivery bridge and
-verify customer-only wording against both known and unknown questions in a fresh
-Desktop chat. Keep the remaining performance and continuous-operation work open.
-
-## References
-
-- [Contract](../../product/integrations/duoke-support.md)
-- [Python context](../../../scraping/CONTEXT.md)
-- [Operator steps](../../setup/duoke-hermes-desktop.md)
-- [Instructions](../../../scraping/duoke/reply/desktop_prompts.py)
-- [MCP tools](../../../scraping/duoke/reply/desktop_mcp.py)
-- [Delivery service](../../../scraping/duoke/reply/desktop_service.py)
-- [Profile setup and refresh](../../../scraping/duoke/reply/desktop_setup.py)
-- [Service tests](../../../scraping/tests/test_desktop_service.py)
-- [Profile tests](../../../scraping/tests/test_desktop_setup.py)
-- [Context alignment](../../../scraping/duoke/reply/desktop_model.py)
-- [Context repair tests](../../../scraping/tests/test_desktop_model.py)
+- [Kontrak](../../product/integrations/duoke-support.md)
+- [Konteks Python](../../../scraping/CONTEXT.md)
+- [Langkah operator](../../setup/duoke-hermes-desktop.md)
+- [Instruksi](../../../scraping/duoke/reply/desktop_prompts.py)
+- [Alat MCP](../../../scraping/duoke/reply/desktop_mcp.py)
+- [Layanan pengiriman](../../../scraping/duoke/reply/desktop_service.py)
+- [Pengaturan dan pembaruan profil](../../../scraping/duoke/reply/desktop_setup.py)
+- [Uji layanan](../../../scraping/tests/test_desktop_service.py)
+- [Uji profil](../../../scraping/tests/test_desktop_setup.py)
+- [Penyelarasan konteks](../../../scraping/duoke/reply/desktop_model.py)
+- [Uji perbaikan konteks](../../../scraping/tests/test_desktop_model.py)

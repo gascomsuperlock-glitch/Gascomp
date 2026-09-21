@@ -1,13 +1,14 @@
-# Warehouse SKU import
+<a id="warehouse-sku-import"></a>
+# Impor SKU Gudang
 
-[Specification index](../spec.md)
+[Spesifikasi indeks](../spec.md)
 
-The temporary bulk-import pipeline reads a warehouse XLSX export through `warehouse:normalize` and `warehouse:push`.
+Pipa impor massal sementara membaca ekspor XLSX gudang melalui `warehouse:normalize` dan `warehouse:push`.
 
-- Source columns **Nomor SKU**, **Judul**, **Kategori**, **Tautan Gambar**, and **Kode Produk** are preserved because they are external schema keys.
-- Price, cost, stock, GTIN, weight, dimensions, dates, warehouse notes, brand/material/use tags, and combination-SKU details are excluded from the admin schema.
-- New products are drafts. Matching uses source identity first and exact SKU second so repeated imports remain idempotent.
-- Existing admin-managed names, status, images, tutorials, FAQs, and issue guides are preserved.
-- New images are downloaded only from allowlisted HTTPS marketplace hosts, validated as JPG/PNG/WebP up to 5 MB, and copied to `product-images`.
+- Kolom sumber **Nomor SKU**, **Judul**, **Kategori**, **Tautan Gambar**, dan **Kode Produk** dipertahankan karena merupakan kunci skema eksternal.
+- Harga, biaya, stok, GTIN, berat, dimensi, tanggal, catatan gudang, tag merek/bahan/kegunaan, dan detail kombinasi-SKU dikecualikan dari skema admin.
+- Produk baru adalah draf. Pencocokan menggunakan identitas sumber terlebih dahulu dan SKU tepat kedua agar impor berulang tetap idempoten.
+- Nama, status, gambar, tutorial, FAQ, dan panduan masalah yang dikelola admin yang ada dipertahankan.
+- Gambar baru hanya diunduh dari host pasar HTTPS yang diperbolehkan, divalidasi sebagai JPG/PNG/WebP hingga 5 MB, dan disalin ke `product-images`.
 
-Import result on September 10, 2026: 109 source rows were normalized; 108 new draft products were created; existing SKU `GRS-915` was preserved; 107 images were copied. SKU `GHO 50 HP` remains a draft without an image because the source had no image link. Products absent from the workbook were not deleted.
+Hasil impor pada 10 September 2026: 109 baris sumber dinormalisasi; 108 produk draf baru dibuat; SKU `GRS-915` yang ada dipertahankan; 107 gambar disalin. SKU `GHO 50 HP` tetap draf tanpa gambar karena sumber tidak memiliki link gambar. Produk yang tidak ada di buku kerja tidak dihapus.

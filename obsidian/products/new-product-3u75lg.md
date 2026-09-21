@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRS-02PRO
 - **Model:** Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/new-product-3u75lg
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/new-product-3u75lg
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789547204759-x88tm|Apa benar Garansi?]]
 - [[../knowledge/approved/admin-faq-faq-1789547222990-1rf3j|Apakah regulator GASCOMP GRS-02 Pro dengan adjuster pressure cocok dan aman untuk kompor double tungku 8 jet + tornado?~]]

@@ -10,19 +10,19 @@ generated: true
 
 # Berapa panjang selang regulator ini?~
 
-Product: [[../../products/new-product-3xubi4|GASCOMP Paket Regulator Gas Superlock GRS 915 PRO Regulator Gas Superlock Anti Bocor Dengan Pengunci Double Lock dan Fitur Memaksimalkan Gas Dengan Sempurna]]
+Produk: [[../../products/new-product-3xubi4|GASCOMP Paket Regulator Gas Superlock GRS 915 PRO Regulator Gas Superlock Anti Bocor Dengan Pengunci Double Lock dan Fitur Memaksimalkan Gas Dengan Sempurna]]
 
-## Question
+## Pertanyaan
 
 Berapa panjang selang regulator ini?~
 
-## Approved answer
+## Jawaban disetujui
 
 Panjang selang regulator ini adalah 1,8 meter ya kak! Selang ini sudah dilengkapi dengan lapisan 5 pelindung anti tikus dan anti kusut yang awet hingga puluhan tahun.
 
-Product guide: https://support.gascompsuperlock.com/produk/new-product-3xubi4
+Panduan produk: https://support.gascompsuperlock.com/produk/new-product-3xubi4
 
-## Search triggers
+## Pemicu pencarian
 
 - Berapa panjang selang regulator ini?~
 - GASCOMP Paket Regulator Gas Superlock GRS 915 PRO Regulator Gas Superlock Anti Bocor Dengan Pengunci Double Lock dan Fitur Memaksimalkan Gas Dengan Sempurna

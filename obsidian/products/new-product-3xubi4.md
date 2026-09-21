@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRS-915-PRO
 - **Model:** Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/new-product-3xubi4
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/new-product-3xubi4
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789554405325-2bmam|Berapa panjang selang regulator ini?~]]
 - [[../knowledge/approved/admin-faq-faq-1789554434879-4svvi|Di kota saya, apakah tersedia service center? Jika butuh perbaikan, harus dibawa ke mana? Apakah ada garansi dengan dukungan service center?]]

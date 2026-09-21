@@ -1,41 +1,47 @@
-# Admin authentication
+<a id="admin-authentication"></a>
+# Autentikasi Admin
 
 [Workspace map](../../../CONTEXT.md) · [Root rules](../../../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `src/features/auth` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `src/features/auth` dan turunan-nya kecuali jika konteks yang lebih dekat terdaftar dalam peta workspace.
 
-Own administrator login, session verification, and logout. Member authentication belongs to GascompCare.
+Login administrator sendiri, verifikasi sesi, dan logout. Autentikasi anggota milik GascompCare.
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi yang relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
-- [Admin specification](../../../docs/product/features/admin.md)
-- [Placement and dependencies](../../../docs/architecture/project-structure.md)
+- [Spesifikasi Admin](../../../docs/product/features/admin.md)
+- [Penempatan dan ketergantungan](../../../docs/architecture/project-structure.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan backlog otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta untuk bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| Login or logout | Trace form submission through server actions and session helpers. | Correct redirects and session lifecycle. |
-| Protected operations | Check both the entrypoint and the owning server mutation. | Unauthorized requests remain rejected. |
+| Login atau logout | Jejak pengiriman formulir melalui aksi server dan helper sesi. | Arahkan dengan benar dan siklus sesi. |
+| Operasi dilindungi | Periksa baik titik masuk maupun mutasi server yang memiliki hak milik. | Permintaan yang tidak berotorisasi tetap ditolak. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Keep credentials and cookie signing on the server.
-- Do not merge administrator and member session contracts.
-- Keep business logic within its owning feature; respect server/client boundaries and the root verification rules.
-- Treat dated specification status as evidence to verify, not proof of current behavior.
+- Pertahankan kredensial dan penandatangan cookie di sisi server.
+- Jangan gabungkan kontrak sesi administrator dan anggota.
+- Pertahankan logika bisnis dalam fitur yang memilikinya; hormati batas server/klien dan aturan verifikasi akar.
+- Perlakukan status spesifikasi bertanggal sebagai bukti untuk diverifikasi, bukan sebagai bukti perilaku saat ini.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-Use `components/` for feature UI, `model/` for domain types and pure logic, `server/` for protected storage/actions, and existing `hooks/` where applicable. Create subfolders only when real modules need them. Update the owning specification and save unfinished progress.
+Gunakan `components/` untuk UI fitur, `model/` untuk tipe domain dan logika murni, `server/` untuk penyimpanan/aksi dilindungi, dan `hooks/` yang ada jika berlaku. Buat subfolder hanya ketika modul nyata membutuhkannya. Perbarui spesifikasi yang memiliki hak milik dan simpan kemajuan yang belum selesai.
 
-For TypeScript/JavaScript changes, run `npm run lint`, `npm run typecheck`, and `npm run test`. Add `npm run build` for route/rendering/dependency/build changes. For visible changes, check the affected desktop/mobile flow and loading, empty, and error states in a browser when available. Report any blocked checks.
+Untuk perubahan TypeScript/JavaScript, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`. Tambahkan `npm run build` untuk perubahan rute/rendering/ketergantungan/build. Untuk perubahan yang terlihat, periksa alur desktop/mobile yang terpengaruh dan status loading, kosong, dan kesalahan di browser jika tersedia. Laporkan pemeriksaan yang terhambat.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../../docs/work/README.md) and [continuity workflow](../../../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta workspace. Untuk pekerjaan yang belum selesai, gunakan
+[indeks serah terima](../../../docs/work/README.md) dan [aliran kontinuitas](../../../docs/work/workflow.md).

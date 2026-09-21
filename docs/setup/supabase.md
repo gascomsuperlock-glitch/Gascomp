@@ -1,7 +1,8 @@
-# Set up Gascomp Supabase
+<a id="set-up-gascomp-supabase"></a>
+# Mengatur Gascomp Supabase
 
-1. Open the target Supabase project and inspect existing objects in the Table Editor.
-2. For a new project, run these files in order in the SQL Editor:
+1. Buka proyek Supabase tujuan dan periksa objek yang ada di Editor Tabel.
+2. Untuk proyek baru, jalankan file-file berikut secara berurutan di SQL Editor:
    - `supabase/migrations/202609100001_catalog.sql`
    - `supabase/migrations/202609100002_warranty.sql`
    - `supabase/migrations/202609110001_english_system_defaults.sql`
@@ -16,109 +17,62 @@
    - `supabase/migrations/202609150004_gascomp_care_coverage.sql`
    - `supabase/migrations/202609150005_gascomp_care_member_deletion.sql`
    - `supabase/migrations/202609160001_service_centers.sql`
-3. Copy the project URL, publishable key, and secret key into `.env.local`. Keep the secret server-only and never give it a `NEXT_PUBLIC_` prefix. The code also accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` name when required.
-4. Restart the development server after changing environment variables.
-5. Create a draft product, upload an image, and publish it. Confirm that public visitors cannot read drafts and another browser can read the published product.
-6. Submit a warranty claim and confirm that only an authenticated administrator can query the ticket or download evidence.
+3. Salin URL proyek, kunci publik, dan kunci rahasia ke `.env.local`. Pertahankan kunci server-hanya dan jangan pernah memberikan awalan `NEXT_PUBLIC_`. Kode juga menerima nama `SUPABASE_SERVICE_ROLE_KEY` legacy saat diperlukan.
+4. Ulangi menjalankan server pengembangan setelah mengubah variabel lingkungan.
+5. Buat draf produk, unggah gambar, dan publikasikannya. Konfirmasi bahwa pengunjung publik tidak dapat membaca draf dan browser lain dapat membaca produk yang dipublikasikan.
+6. Serahkan klaim garansi dan konfirmasi bahwa hanya administrator yang telah otentikasi yang dapat menelusuri tiket atau mengunduh bukti.
 
-If SQL returns `42P07: relation "products" already exists`, do not delete the table or rerun the initial migration blindly. Inspect which migrations already exist and apply only the missing later migrations.
+Jika SQL mengembalikan `42P07: relation "products" already exists`, jangan hapus tabel atau jalankan ulang migrasi awal secara buta. Periksa migrasi mana saja yang sudah ada dan terapkan hanya migrasi selanjutnya yang hilang.
 
-The `product-images` and `product-videos` buckets are public and must contain only customer-visible product photos and tutorials. Video uploads support MP4/WebM up to 50 MB, using signed upload URLs issued by the admin endpoint. The tutorial video migration is optional for existing catalogs: Save detects the schema and supports the legacy URL column. The `product-videos` bucket must exist with the documented size and MIME limits before uploading videos. The `warranty-evidence` bucket is private. Product draft metadata is protected by row-level security, but a known URL in a public bucket remains accessible.
+Bucket `product-images` dan `product-videos` bersifat publik dan harus berisi hanya foto produk yang terlihat oleh pelanggan serta tutorial. Unggahan video mendukung MP4/WebM hingga 50 MB, menggunakan URL unggah bertanda yang diterbitkan oleh endpoint admin. Migrasi video tutorial bersifat opsional untuk katalog yang sudah ada: Save mendeteksi skema dan mendukung kolom URL legacy. Bucket `product-videos` harus ada dengan batas ukuran dan MIME yang didokumentasikan sebelum mengunggah video. Bucket `warranty-evidence` bersifat privat. Metadata draf produk dilindungi oleh keamanan tingkat baris, tetapi URL yang diketahui dalam bucket publik tetap dapat diakses.
 
-The application and `product-videos` bucket use the same inclusive 52,428,800-byte limit (50 MB). No bucket-limit increase or plan upgrade is required.
+Aplikasi dan bucket `product-videos` menggunakan batas inklusif yang sama sebesar 52.428.800 byte (50 MB). Tidak diperlukan peningkatan batas bucket atau upgrade rencana.
 
-For existing projects, apply `202609110004_warranty_video_upload_limit.sql` before deploying the 50 MB warranty-video limit. Keep `warranty-evidence` private. Invoice and photo limits remain 4 MB; the 72 MB Server Action request limit covers combined evidence and multipart overhead.
+Untuk proyek yang sudah ada, terapkan `202609110004_warranty_video_upload_limit.sql` sebelum membatasi video garansi 50 MB saat deploy. Pertahankan `warranty-evidence` bersifat privat. Batas faktur dan foto tetap 4 MB; batas permintaan Server Action 72 MB mencakup bukti gabungan dan overhead multipart.
 
-Run the read-only connection check after configuration:
+Jalankan pemeriksaan koneksi hanya baca setelah konfigurasi:
 
 ```bash
 npm run supabase:check
 ```
 
-## GascompCare accounts
+<a id="gascompcare-accounts"></a>
+## Akun GascompCare
 
-For an existing project, inspect and apply only the new GascompCare migration
-when explicitly authorized. It uses the existing server-only Supabase URL and
-secret configuration; there is no customer signup or dependency on Supabase Auth
-email delivery. No new public table grants or Storage buckets are needed.
+Untuk proyek yang sudah ada, periksa dan terapkan hanya migrasi GascompCare baru ketika secara eksplisit diotorisasi. Migrasi ini menggunakan URL dan konfigurasi rahasia server-only Supabase yang sudah ada; tidak ada pendaftaran pelanggan atau ketergantungan pada pengiriman email Supabase Auth. Tidak perlu pemberian hak akses tabel publik baru atau bucket Storage baru.
 
-After the migration in an isolated staging project, open **GascompCare** in the
-authenticated admin dashboard, create a fictional test member, and manually
-exercise the temporary credentials. Confirm
-that first login requires a password change, the member sees only their own card,
-and an admin password reset revokes the previous session. Remove test credentials
-from delivery drafts and use non-production data for validation.
+Setelah migrasi dalam proyek staging terisolasi, buka **GascompCare** di dashboard admin yang telah otentikasi, buat anggota tes fiktif, dan secara manual uji kredensial sementara. Konfirmasi bahwa login pertama memerlukan perubahan kata sandi, anggota hanya melihat kartu mereka sendiri, dan pengembalian kata sandi admin membatalkan sesi sebelumnya. Hapus kredensial tes dari draf pengiriman dan gunakan data non-produksi untuk validasi.
 
-An account is not a Care purchase: the optional marketplace order reference does
-not activate coverage. Marketplace synchronization remains deferred. Administrators can record verified
-purchases and approved claim usage after the separate coverage migration. See the [GascompCare specification](../product/features/gascomp-care.md).
+Akun bukan pembelian Care: referensi pesanan pasar yang opsional tidak mengaktifkan cakupan. Sinkronisasi pasar tetap ditangguhkan. Administrator dapat mencatat pembelian yang diverifikasi dan penggunaan klaim yang disetujui setelah migrasi cakupan terpisah. Lihat [Spesifikasi GascompCare](../product/features/gascomp-care.md).
 
-The hosting proxy must preserve the public `Host` for same-origin checks and
-append or replace `X-Forwarded-For` with a trusted client IP. Member authentication
-uses the final valid IP hop for shared limits; missing or invalid values share a
-conservative fallback bucket. Verify this behavior on the target hosting setup
-before enabling accounts for customers.
+Proxy hosting harus mempertahankan `Host` publik untuk pemeriksaan same-origin dan menambahkan atau mengganti `X-Forwarded-For` dengan alamat IP klien yang dipercaya. Otentikasi anggota menggunakan loncat IP akhir yang valid untuk batas bersama; nilai yang hilang atau tidak valid berbagi bucket fallback konservatif. Verifikasi perilaku ini pada pengaturan hosting target sebelum mengaktifkan akun untuk pelanggan.
 
+<a id="preserve-existing-production-data-when-adding-gascompcare"></a>
+## Jaga data produksi yang ada saat menambahkan GascompCare
 
-## Preserve existing production data when adding GascompCare
+Persiapan kode atau publikasinya ke GitHub tidak mengotorisasi penulisan database produksi. Dapatkan persetujuan terpisah sebelum menerapkan migrasi produksi atau membuat akun tes produksi. Validasi lokal di bawah ini tidak menetapkan bahwa cadangan produksi atau pengaturan hosting telah diverifikasi.
 
-Preparing code or publishing it to GitHub does not authorize production database
-writes. Obtain separate approval before applying a production migration or
-creating production test accounts. The local validation below does not establish
-that a production backup or hosting setting has been verified.
+1. Konfirmasi proyek produksi Supabase yang dimaksud tanpa menyalin rahasia ke dalam laporan. Periksa riwayat migrasi dan katalog, garansi, Perawatan (Care), serta objek Penyimpanan yang ada. Catat jumlah baris sebelum migrasi dan nilai checksum konten untuk produk, garansi, bukti, dan metadata Penyimpanan yang ada.
+2. Ambil dan verifikasi cadangan database yang dapat dipulihkan. Cadangkan file objek Penyimpanan secara terpisah dan verifikasi objek yang diekspor; cadangan database berisi metadata Penyimpanan, bukan byte gambar, video, atau file bukti. Pertahankan kedua cadangan tersebut secara rahasia.
+3. Jika Perawatan (Care) tidak ada dan migrasinya belum diterapkan, terapkan hanya `supabase/migrations/202609150003_gascomp_care_accounts.sql` setelah persetujuan.
+   Ini membuat tabel dan fungsi Perawatan baru di dalam `BEGIN`/`COMMIT` dan tidak menggantikan data katalog, garansi, atau Penyimpanan yang ada. Jangan jalankan ulang migrasi katalog/garansi awal, reset database, ganti skema lengkap, potong tabel, atau impor fixture pratinjau lokal ke produksi.
+4. Jika objek Perawatan atau versi migrasi sudah ada, berhentilah dan bandingkan skema yang terpasang sebelum mengambil tindakan lebih lanjut. Migrasi ini sengaja menolak tabrakan nama alih-alih menggantikan akun yang ada. Jika sesi SQL dibiarkan dalam transaksi yang dibatalkan, izinkan `ROLLBACK`; jangan hapus objek bertabrakan atau hapus datanya untuk memaksa migrasi berjalan.
+5. Bandingkan jumlah data yang ada dan checksum terhadap baseline pribadi. Lakukan perbandingan dalam jendela terkontrol atau hitung penulisan langsung yang diotorisasi. Konfirmasi visibilitas Penyimpanan dan aksesibilitas gambar/bukti yang ada secara representatif secara terpisah. Verifikasi tabel Perawatan, hak fungsi, RLS, dan `care_schema_ready()` melalui akses server yang diotorisasi.
+6. Jalankan aplikasi mengikuti [prosedur rilis situs yang sudah ada](../product/operations/deployment.md#gascompcare-release-to-an-existing-site).
+   Jika perlu pengunduran aplikasi, jalankan kembali revisi aplikasi sebelumnya sambil mempertahankan tabel Perawatan tambahan dan data anggota baru. Jangan gunakan reset database atau hapus tabel Perawatan sebagai mekanisme pengunduran aplikasi.
 
-1. Confirm the intended production Supabase project without copying secrets into
-   reports. Inspect migration history and the existing catalog, warranty, Care,
-   and Storage objects. Record private before-migration row counts and content
-   checksums for existing product, warranty, evidence, and Storage metadata.
-2. Take and verify a restorable database backup. Back up Storage object files
-   separately and verify the exported objects; a database backup contains Storage
-   metadata, not the image, video, or evidence file bytes. Keep both backups private.
-3. If Care is absent and its migration has not been applied, apply only
-   `supabase/migrations/202609150003_gascomp_care_accounts.sql` after approval.
-   It creates new Care tables and functions within `BEGIN`/`COMMIT` and does not
-   replace existing catalog, warranty, or Storage data. Do not rerun the initial
-   catalog/warranty migrations, reset the database, replace the full schema,
-   truncate tables, or import local preview fixtures into production.
-4. If a Care object or migration version already exists, stop and compare the
-   installed schema before taking further action. The migration deliberately
-   rejects a name collision instead of replacing existing accounts. If an SQL
-   session is left in an aborted transaction, issue `ROLLBACK`; do not drop the
-   conflicting object or remove its data to force the migration through.
-5. Compare existing-data counts and checksums against the private baseline.
-   Perform the comparison in a controlled window or account for authorized live
-   writes. Confirm Storage visibility and representative existing image/evidence
-   accessibility separately. Verify Care tables, function grants, RLS, and
-   `care_schema_ready()` through authorized server access.
-6. Deploy the application following the
-   [existing-site release procedure](../product/operations/deployment.md#gascompcare-release-to-an-existing-site).
-   If application rollback is needed, redeploy the previous application revision
-   while retaining the additive Care tables and any new member data. Do not use a
-   database reset or drop Care tables as an application rollback mechanism.
+Suite regresinya SQL sekali pakai menabur produk, tiket, referensi bukti, bucket, dan metadata objek fiktif yang sudah ada. Ini memverifikasi bahwa migrasi Perawatan meninggalkan setiap baris yang ditabur tidak berubah dan bahwa mengulanginya gagal tanpa mengubah akun Perawatan yang ada atau data yang lebih lama. Ini juga menguji isolasi akun, akses peran, batas laju, kedaluwarsa, dan pengunduran transaksi kata sandi. Ini memverifikasi perilaku migrasi secara lokal; ini tidak membuat cadangan atau memeriksa proyek produksi.
 
-The disposable SQL regression suite seeds fictional existing products, tickets,
-evidence references, buckets, and object metadata. It verifies that the Care
-migration leaves every seeded row unchanged and that reapplying it fails without
-changing existing Care accounts or the older data. It also tests account isolation,
-role access, rate limits, expiry, and password-transaction rollback. This verifies
-migration behavior locally; it does not back up or inspect a production project.
+<a id="service-center-local-database-preview"></a>
+## Pratinjau database lokal Pusat Layanan
 
+Direktori Pusat Layanan menggunakan URL Supabase `.env.local` yang ada dan rahasia server. Migrasi `202609160001_service_centers.sql` diterapkan ke proyek yang dikonfigurasi. Ini membuat tabel kosong awal, hanya untuk server; baca dan tulis anonim langsung serta autentikasi API Supabase ditolak.
 
-## Service Center local database preview
+Jalankan `npm run dev -- --hostname 127.0.0.1`, lalu buka
+`http://localhost:3000/service-center` dan ruang kerja **Service Centers** di
+`http://localhost:3000/admin`. Gunakan kredensial admin lokal yang ada.
+Perubahan yang dibuat di sini bertahan di Supabase, meskipun aplikasi web berjalan secara lokal. Muncul pada direktori yang dihosting hanya setelah aplikasi dijalankan. Pertahankan lokasi uji coba teridentifikasi dengan jelas dan hapus hanya catatan mereka yang tepat setelah verifikasi; jangan reset database bersama.
 
-The Service Center directory uses the existing `.env.local` Supabase URL and
-server secret. Migration `202609160001_service_centers.sql` is applied to the
-configured project. It creates an initially empty, server-only table; direct
-anonymous and authenticated Supabase API reads and writes are denied.
-
-Run `npm run dev -- --hostname 127.0.0.1`, then open
-`http://localhost:3000/service-center` and the **Service Centers** workspace at
-`http://localhost:3000/admin`. Use the existing local admin credentials.
-Changes made here persist in Supabase, even though the web application runs
-locally. They appear on the hosted directory only after the application is
-deployed. Keep test locations clearly identified and remove only their exact
-records after verification; do not reset the shared database.
-
-Local testing does not authorize pushing the branch or deploying the application.
-Do not change hosting settings or expose the development server through a public
-tunnel. The local file fallback is used only when Supabase is unconfigured.
+Pengujian lokal tidak mengizinkan push branch atau deployment aplikasi.
+Jangan ubah pengaturan hosting atau membuka server pengembangan melalui tunnel publik.
+Fallback file lokal hanya digunakan ketika Supabase belum dikonfigurasi.

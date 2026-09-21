@@ -10,19 +10,19 @@ generated: true
 
 # New question
 
-Product: [[../../products/new-product-5bnxu5|GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
+Produk: [[../../products/new-product-5bnxu5|GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
 
-## Question
+## Pertanyaan
 
 New question
 
-## Approved answer
+## Jawaban disetujui
 
 Write an answer for the customer.
 
-Product guide: https://support.gascompsuperlock.com/produk/new-product-5bnxu5
+Panduan produk: https://support.gascompsuperlock.com/produk/new-product-5bnxu5
 
-## Search triggers
+## Pemicu pencarian
 
 - New question
 - GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock

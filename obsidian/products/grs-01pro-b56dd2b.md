@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRS-01PRO
 - **Model:** Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/grs-01pro-b56dd2b
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/grs-01pro-b56dd2b
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789366593440-q06cc|Apa ada service center?]]
 - [[../knowledge/approved/admin-faq-faq-1789366680800-9r3a2|Apakah regulator GASCOMP GRS-01 PRO ini cocok untuk gas 3 kg?]]

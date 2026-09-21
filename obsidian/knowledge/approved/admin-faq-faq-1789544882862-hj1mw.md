@@ -10,19 +10,19 @@ generated: true
 
 # Apakah regulator gas Homelife GRS-02 cocok untuk tabung Bright Gas 12 kg, dan apa keunggulan serta keamanannya?~
 
-Product: [[../../products/new-product-3sg0yv|GASCOMP Regulator Meter Superlock Putar (GRS-02) Regulator Gas Superlock Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
+Produk: [[../../products/new-product-3sg0yv|GASCOMP Regulator Meter Superlock Putar (GRS-02) Regulator Gas Superlock Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock]]
 
-## Question
+## Pertanyaan
 
 Apakah regulator gas Homelife GRS-02 cocok untuk tabung Bright Gas 12 kg, dan apa keunggulan serta keamanannya?~
 
-## Approved answer
+## Jawaban disetujui
 
 Regulator gas homelife GRS-02 cocok untuk tabung gas Bright Gas 12 KG. Pemasangan mudah dengan putaran, aman karena double pengunci superlock yang tahan hingga 50.000 kali dan anti bocor. Regulator ini memiliki sertifikasi SNI, aliran gas stabil, dan tahan benturan serta kerusakan. Cocok digunakan untuk kebutuhan memasak dengan keamanan terjamin.
 
-Product guide: https://support.gascompsuperlock.com/produk/new-product-3sg0yv
+Panduan produk: https://support.gascompsuperlock.com/produk/new-product-3sg0yv
 
-## Search triggers
+## Pemicu pencarian
 
 - Apakah regulator gas Homelife GRS-02 cocok untuk tabung Bright Gas 12 kg, dan apa keunggulan serta keamanannya?~
 - GASCOMP Regulator Meter Superlock Putar (GRS-02) Regulator Gas Superlock Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock

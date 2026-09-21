@@ -1,164 +1,102 @@
-# Customer support channels
+<a id="customer-support-channels"></a>
+# Saluran dukungan pelanggan
 
-[Specification index](../spec.md)
+[Indeks spesifikasi](../spec.md)
 
-Product support exposes these service actions:
+Dukungan produk membuka tindakan layanan berikut:
 
-| Action | Destination |
+| Tindakan | Tujuan |
 | --- | --- |
-| Warranty Claim | Internal `/klaim-garansi` flow with product and SKU context |
-| Gascomp Care | Official Gascomp customer-contact page |
-| Service Center | Internal `/service-center` directory, retaining product and SKU query context from product actions |
+| Klaim Garansi | Aliran `/klaim-garansi` internal dengan konteks produk dan SKU |
+| Gascomp Care | Halaman kontak pelanggan resmi Gascomp |
+| Pusat Layanan | Direktori `/service-center` internal, mempertahankan konteks pertanyaan produk dan SKU dari tindakan produk |
 
-The website also provides a separate **GascompCare** member navigation link.
-Member login and paid extensions are documented in [GascompCare](gascomp-care.md).
-The brand is always written as “Gascomp.” External contact actions open the official Gascomp site in a new tab.
+Website juga menyediakan tautan navigasi anggota **GascompCare** terpisah.
+Masuk anggota dan ekstensi berbayar didokumentasikan di [GascompCare](gascomp-care.md).
+Merek selalu ditulis sebagai "Gascomp." Tindakan kontak eksternal membuka situs Gascomp resmi di tab baru.
 
-WhatsApp links use the configured support number and include a short English product/issue context when available. Customers can edit the message before sending it. The support-hours setting is displayed on the home page.
+Tautan WhatsApp menggunakan nomor dukungan yang dikonfigurasi dan mencakup konteks produk/isu singkat bahasa Inggris jika tersedia. Pelanggan dapat mengedit pesan sebelum mengirimnya. Pengaturan jam dukungan ditampilkan pada halaman depan.
 
-A logo-only WhatsApp button remains fixed in the bottom-right corner on public application routes. It is hidden on `/admin` and all `/admin/` subroutes, including admin login. It opens a chat with the configured Gascomp admin number in a new tab. The button respects mobile safe areas and is hidden when no support number is configured.
+Tombol WhatsApp hanya logo tetap berada di sudut kanan bawah pada rute aplikasi publik. Tersembunyi di `/admin` dan semua subrute `/admin/`, termasuk masuk admin. Membuka percakapan dengan nomor admin Gascomp yang dikonfigurasi di tab baru. Tombol menghormati area aman mobile dan tersembunyi ketika tidak ada nomor dukungan yang dikonfigurasi.
 
-When the optional server-side `GASCOMP_AI_ASSISTANCE_ENABLED` flag is enabled,
-the [Gascomp Assistant panel](ai-assistance.md) replaces this floating button.
-The panel supplies the WhatsApp admin action inside a handoff response or service
-failure notice, rather than permanently below the chat composer. The flag defaults to off;
-other WhatsApp links and warranty redirects are unchanged.
+Ketika flag server-side opsional `GASCOMP_AI_ASSISTANCE_ENABLED` aktif,
+panel [Gascomp Assistant](ai-assistance.md) menggantikan tombol melayang ini.
+Panel menyediakan tindakan admin WhatsApp di dalam respons handoff atau pemberitahuan kegagalan layanan, daripada secara permanen di bawah komposer obrolan. Flag default off; tautan WhatsApp lain dan redirect garansi tidak berubah.
 
-## Service Center directory
+<a id="service-center-directory"></a>
+## Direktori Pusat Layanan
 
-The September 16, 2026 implementation introduces `/service-center`, accessible from the shared public navigation, product support, and existing admin product service action. The directory starts empty: no sample or inferred business locations are seeded.
+Implementasi 16 September 2026 memperkenalkan `/service-center`, dapat diakses dari navigasi publik bersama, dukungan produk, dan tindakan layanan produk admin yang ada. Direktori dimulai kosong: tidak ada lokasi bisnis sampel atau disimpulkan ditanam.
 
-- Customers search by center name, city/regency, or address and filter by any of Indonesia's 38 provinces. Province codes follow [BPS metadata](https://sirusa.web.bps.go.id/metadata/variabel/326536). English and Indonesian province labels accompany localized interface copy and the existing language selector.
-- Only active locations appear in public page data, search results, and map markers. Search and province filters combine. All provinces remain selectable even without a location.
-- Cards show the center name, province, city/regency, address, and optional opening hours, phone, and WhatsApp actions. Google Maps opens the saved HTTPS link or the location coordinates when no link is supplied.
-- An interactive Leaflet map uses OpenStreetMap tiles and visible attribution. Markers follow filters; selecting a card focuses its marker, and selecting a marker highlights its card. The empty map shows Indonesia without fabricated markers. Locations, directions, and contact actions remain usable when tiles fail to load.
-- Empty directory, no matching results, map loading/failure, and data-unavailable states have explicit messages. Database errors are not represented as an empty directory. Support links lead to the existing contact section.
-- Map tiles are requested directly by the browser under the [OpenStreetMap tile usage policy](https://operations.osmfoundation.org/policies/tiles/). The public map requires no geocoding, bulk tile fetching, API key, or customer location permission.
+- Pelanggan mencari berdasarkan nama pusat, kota/kabupaten, atau alamat dan menyaring oleh salah satu dari 38 provinsi Indonesia. Kode provinsi mengikuti [metadata BPS](https://sirusa.web.bps.go.id/metadata/variabel/326536). Label provinsi bahasa Inggris dan Indonesia menyertai salinan antarmuka yang dilokalisasi dan pemilih bahasa yang ada.
+- Hanya lokasi aktif muncul dalam data halaman publik, hasil pencarian, dan penanda peta. Pencarian dan penyaring provinsi dikombinasikan. Semua provinsi tetap dapat dipilih bahkan tanpa lokasi.
+- Kartu menampilkan nama pusat, provinsi, kota/kabupaten, alamat, dan jam buka opsional, telepon, dan tindakan WhatsApp. Google Maps membuka tautan HTTPS yang disimpan atau koordinat lokasi ketika tidak ada tautan yang disediakan.
+- Peta Leaflet interaktif menggunakan tile OpenStreetMap dan atribusi terlihat. Penanda mengikuti penyaring; memilih kartu memfokuskan penandarnya, dan memilih penanda menyoroti karta. Peta kosong menampilkan Indonesia tanpa penyangga palsu. Lokasi, arah, dan tindakan kontak tetap dapat digunakan ketika tile gagal dimuat.
+- Direktori kosong, tidak ada hasil yang cocok, pemuat peta/gagal, dan keadaan data-tidak-tersedia memiliki pesan eksplisit. Kesalahan database tidak direpresentasikan sebagai direktori kosong. Tautan dukungan mengarah ke bagian kontak yang ada.
+- Tile peta diminta langsung oleh browser sesuai [kebijakan penggunaan tile OpenStreetMap](https://operations.osmfoundation.org/policies/tiles/). Peta publik tidak memerlukan geocoding, pengambilan tile massal, kunci API, atau izin lokasi pelanggan.
 
-## Service Center administration
+<a id="service-center-administration"></a>
+## Administrasi Pusat Layanan
 
-The protected admin sidebar includes **Service Centers** as a separate workspace. Administrators can list/search, add, edit, deactivate, reactivate, and permanently delete locations.
+Sidebar admin yang dilindungi mencakup **Service Centers** sebagai ruang kerja terpisah. Administrator dapat membuat daftar/mencari, menambah, mengedit, menonaktifkan, mengaktifkan kembali, dan menghapus secara permanen lokasi.
 
-Required fields are name, province, city/regency, address, latitude, and longitude. Phone, WhatsApp, opening hours, and Google Maps URL are optional. The map picker and coordinate inputs refer to the same location. New forms start without coordinates. Server validation checks known Indonesian province codes, finite coordinates within Indonesia's bounding range, field limits, phone formatting, and HTTPS Google Maps destinations. The bounding range is a coarse geographic guard, not a province boundary or land-boundary verification; administrators must verify each point and address.
+Bidang wajib adalah nama, provinsi, kota/kabupaten, alamat, latitude, dan longitude. Telepon, WhatsApp, jam buka, dan URL Google Maps bersifat opsional. Pemilih peta dan input koordinat merujuk pada lokasi yang sama. Formulir baru dimulai tanpa koordinat. Validasi server memeriksa kode provinsi Indonesia yang dikenal, koordinat terbatas dalam rentang batas Indonesia, batasan bidang, format telepon, dan tujuan Google Maps HTTPS. Rentang batas adalah penjaga geografis kasar, bukan batas provinsi atau verifikasi batas daratan; administrator harus memverifikasi setiap titik dan alamat.
 
-**Save location** persists only the current location immediately and makes its active status effective publicly. Catalog Save/Cancel does not apply to this workspace. Failures preserve form values. Switching admin workspaces retains the mounted form, and abandoning a changed location inside this workspace asks the operator to discard changes. The UI supports desktop and mobile editing.
+**Save location** hanya menyimpan lokasi saat ini segera dan membuat status aktifnya berlaku efektif secara publik. Katalog Simpan/Batalkan tidak berlaku untuk ruang kerja ini. Kegagalan mempertahankan nilai formulir. Beralih antar ruang kerja admin mempertahankan formulir yang terpasang, dan meninggalkan lokasi yang berubah di dalam ruang kerja ini meminta operator untuk membuang perubahan. UI mendukung pengeditan desktop dan mobile.
 
-**Delete location** appears in the editor for saved locations, including inactive
-ones. Confirmation names the saved location and warns that deletion is permanent;
-any unsaved edits to that location are also discarded only after confirmation and
-a successful response. Deletion immediately removes the record from the admin
-list and public directory and closes the editor. It does not require catalog
-Save. Cancelling leaves the draft unchanged. Failed or unconfirmed requests retain
-the draft and show an error; a transport failure asks the administrator to refresh
-the list before retrying. Repeating a completed deletion safely confirms absence.
-Pending saves and deletions block other location mutations. Google Maps import
-responses that arrive after a confirmed deletion starts are ignored.
+**Delete location** muncul di editor untuk lokasi yang disimpan, termasuk yang tidak aktif. Konfirmasi menamai lokasi yang disimpan dan memperingatkan bahwa penghapusan bersifat permanen;
+edit yang belum disimpan untuk lokasi tersebut juga dibuang hanya setelah konfirmasi dan
+respons sukses. Penghapusan segera menghapus catatan dari daftar admin
+dan direktori publik serta menutup editor. Tidak memerlukan katalog
+Simpan. Membatalkan meninggalkan draf tidak berubah. Permintaan gagal atau tidak dikonfirmasi mempertahankan
+draf dan menampilkan kesalahan; kegagalan transport meminta administrator untuk memperbarui
+daftar sebelum mencoba lagi. Mengulangi penghapusan yang selesai dengan aman mengonfirmasi ketidakhadiran.
+Penyimpanan menunda dan penghapusan memblokir mutasi lokasi lain. Respons impor Google Maps
+yang tiba setelah penghapusan dikonfirmasi dimulai diabaikan.
 
-Every admin list request checks the existing admin session; mutations additionally verify the request origin. Supabase is the primary store with a separate ordered migration and server-only reads and writes. Anonymous and Supabase-authenticated API clients cannot access the table; the application server returns only active locations to directory pages. A missing or failed configured database reports unavailability instead of silently using local data. Development without Supabase uses an initially absent `.data/service-centers.json` file shared by the local admin and public server. This file mode is for single-process development only. See [Supabase storage](../integrations/supabase.md) for migration status.
+Setiap permintaan daftar admin memeriksa sesi admin yang ada; mutasi secara tambahan memverifikasi asal permintaan. Supabase adalah penyimpanan utama dengan migrasi berurutan terpisah dan baca/tulis hanya server. Klien API anonim dan terautentikasi Supabase tidak dapat mengakses tabel; server aplikasi mengembalikan hanya lokasi aktif ke halaman direktori. Database dikonfigurasi yang hilang atau gagal melaporkan ketidaktersediaan daripada menggunakan data lokal secara diam-diam. Pengembangan tanpa Supabase menggunakan file `.data/service-centers.json` yang awalnya tidak ada yang dibagikan oleh admin lokal dan server publik. Mode file ini hanya untuk pengembangan proses tunggal. Lihat [Supabase storage](../integrations/supabase.md) untuk status migrasi.
 
-Status: the owner authorized connecting local testing to the configured Supabase database on September 16, 2026, then authorized a GitHub push and Hostinger deployment after local verification. Migration `202609160001` is applied with server-only table access. Temporary test locations are removed after verification. See the [release record](../operations/deployment.md#service-center-release-on-september-16-2026) for deployment readiness and verification scope.
+Status: pemilik mengotorisasi penghubungan pengujian lokal ke database Supabase yang dikonfigurasi pada 16 September 2026, kemudian mengotorisasi push GitHub dan deployment Hostinger setelah verifikasi lokal. Migrasi `202609160001` diterapkan dengan akses tabel hanya server. Lokasi uji coba sementara dihapus setelah verifikasi. Lihat [catatan rilis](../operations/deployment.md#service-center-release-on-september-16-2026) untuk kesiapan deployment dan cakupan verifikasi.
 
-## Local verification on September 16, 2026
+<a id="local-verification-on-september-16-2026"></a>
+## Verifikasi lokal pada 16 September 2026
 
-Lint, TypeScript, and the production build passed. The Node suite passed 131 tests
-with three unrelated optional tests skipped; the service-center migration test
-ran against a disposable PGlite database and verified empty initialization,
-server-only database access, denied direct public reads/writes, and coordinate/province constraints.
+Lint, TypeScript, dan build produksi lulus. Suite Node lulus 131 tes
+dengan tiga tes opsional yang tidak terkait dilewati; tes migrasi service-center
+berjalan terhadap database PGlite yang dapat dibuang dan memverifikasi inisialisasi kosong,
+akses database hanya server, penolakan baca/tulis publik langsung, dan batasan koordinat/provinsi.
 
-Chromium checks covered empty/populated directories, all province options,
-combined filtering, synchronized markers, bilingual persistence, admin creation,
-editing, deactivation/reactivation, map coordinate selection, retained drafts,
-expired-session rejection, and storage failure/retry. Public layouts were checked
-at 320, 390, and 1440 pixels and admin editing at 390 pixels. No page errors or
-horizontal overflow occurred. Map tile responses were mocked to avoid automated
-third-party downloads; tile failures were tested separately. Live map-provider
-availability and production deployment remain outside this local verification.
-All temporary location records were removed, leaving the directory empty.
+Chromium memeriksa direktori kosong dan terisi, semua opsi provinsi, penyaringan gabungan, penanda sinkronisasi, persistensi bilingual, pembuatan admin, pengeditan, deaktivasi/aktivasi ulang, pemilihan koordinat peta, draf yang dipertahankan, penolakan sesi kadaluarsa, dan kegagalan penyimpanan/pengulangan. Tata letak publik diperiksa pada resolusi 320, 390, dan 1440 piksel serta pengeditan admin pada 390 piksel. Tidak terjadi kesalahan halaman atau tumpahan horizontal. Respons tile peta dimock untuk menghindari unduhan otomatis pihak ketiga; kegagalan tile diuji secara terpisah. Ketersediaan penyedia peta hidup dan deployment produksi tetap berada di luar verifikasi lokal ini. Semua catatan lokasi sementara telah dihapus, meninggalkan direktori kosong.
 
-## Supabase-backed local verification on September 16, 2026
+<a id="supabase-backed-local-verification-on-september-16-2026"></a>
+## Verifikasi lokal berbasis Supabase pada 16 September 2026
 
-The owner requested testing with the configured database while keeping the new
-application local until deployment. Chromium exercised the same directory and
-admin flows at `http://localhost:3000` using real Supabase persistence, including
-reload, edits, active/inactive visibility, and expired-session rejection. Two
-uniquely identified fictional centers were created and removed by their exact IDs.
-The directory is empty again and no local fallback file was written. Direct
-public API reads were denied even while active fixture rows existed.
+Pemilik meminta pengujian dengan database yang dikonfigurasi sambil menjaga aplikasi baru bersifat lokal hingga deployment. Chromium menjalankan alur direktori dan admin yang sama menggunakan `http://localhost:3000` dengan persistensi Supabase asli, termasuk reload, pengeditan, visibilitas aktif/non-aktif, dan penolakan sesi kadaluarsa. Dua pusat fiktif yang teridentifikasi secara unik dibuat dan dihapus menggunakan ID persis mereka. Direktori kosong sekali lagi dan tidak ada file fallback lokal yang ditulis. Baca langsung API publik ditolak meskipun baris fixture aktif masih ada.
 
-Before/after counts and content checksums verified all 247 existing rows across
-16 application and Storage metadata tables unchanged. The local report is
-`.data/service-center-validation/database-preservation.json`; browser results are
-in `database-browser-report.json` in the same directory. No hosting release or
-public tunnel was created. The existing local development server remains available
-for the owner's review using the configured local admin credentials.
+Sebelum/sesudah jumlah dan konten checksum memverifikasi semua 247 baris yang ada melintasi 16 tabel metadata aplikasi dan Penyimpanan yang tidak berubah. Laporan lokal adalah `.data/service-center-validation/database-preservation.json`; hasil browser ada di `database-browser-report.json` dalam direktori yang sama. Tidak ada rilis hosting atau terowongan publik yang dibuat. Server pengembangan lokal yang ada tetap tersedia untuk tinjauan pemilik menggunakan kredensial admin lokal yang dikonfigurasi.
 
-## Google Maps link auto-fill
+<a id="google-maps-link-auto-fill"></a>
+## Auto-fill tautan Google Maps
 
-Administrators can paste a Google Maps place Share link at the top of the location
-editor. Pasting starts a server-side lookup automatically; typing a link and
-leaving the field also starts lookup. **Read Google Maps link** retries it.
-No Google API key or additional database migration is required.
+Administrator dapat menempelkan tautan Share lokasi Google Maps di bagian atas editor lokasi. Menempelkan memulai pencarian server secara otomatis; mengetik tautan dan meninggalkan bidang juga memulai pencarian. **Read Google Maps link** melakukan ulang pencobaannya. Tidak diperlukan kunci API Google atau migrasi database tambahan.
 
-The server follows HTTPS redirects only through supported Google Maps hosts and
-reads the selected place from public Maps data. When the initial HTML declares a
-same-origin `/maps/preview/place` resource, it reads that resource once. There is
-no login, CAPTCHA solving, executable page evaluation, geocoding service, or
-Google Places API. Requests have bounded redirects, a 12-second timeout, and a
-3 MB response limit, and do not forward admin cookies or credentials. Both admin
-authentication and a matching request origin are required before any lookup.
+Server mengikuti redirect HTTPS hanya melalui host Google Maps yang didukung dan membaca lokasi yang dipilih dari data Maps publik. Ketika HTML awal mendeklarasikan sumber `/maps/preview/place` yang sama asalnya, ia membaca sumber tersebut sekali. Tidak ada login, pemecahan CAPTCHA, evaluasi halaman eksekutif, layanan geocoding, atau API Places Google. Permintaan memiliki redirect terbatas, batas waktu 12 detik, dan batas respons 3 MB, dan tidak mengirim cookie admin atau kredensial. Autentikasi admin dan asal permintaan yang cocok diperlukan sebelum pencarian apa pun.
 
-Available name, full address, city/regency, recognized Indonesian province,
-phone, regular opening hours, and selected-place coordinates fill empty fields.
-The parser ignores camera coordinates and unrelated search results. Explicit
-foreign countries or coordinates outside the Indonesian bounds are rejected.
-Coordinates from a pin-only link can produce a partial result requiring manual
-name/address entry. Missing or unsupported fields remain unchanged and are listed
-for review. A phone number is never automatically copied to WhatsApp.
+Nama tersedia, alamat lengkap, kota/kabupaten, provinsi Indonesia yang diakui, telepon, jam buka reguler, dan koordinat lokasi yang dipilih mengisi bidang kosong. Parser mengabaikan koordinat kamera dan hasil pencarian tidak terkait. Negara asing eksplisit atau koordinasi di luar batas Indonesia ditolak. Koordinasi dari tautan pin-hanya dapat menghasilkan hasil parsial yang memerlukan input nama/alamat manual. Bidang yang hilang atau tidak didukung tetap tidak berubah dan dicatat untuk tinjauan. Nomor telepon tidak pernah disalin otomatis ke WhatsApp.
 
-Existing form values are retained. **Replace matching fields** lets the operator
-explicitly replace only the returned fields after confirmation. A changed link,
-closed editor, or discarded draft invalidates an older lookup response. Automatic
-lookup never saves a location: the administrator reviews and corrects the draft,
-then selects **Save location**. The existing Supabase persistence and visibility
-rules remain in effect.
+Nilai formulir yang ada dipertahankan. **Replace matching fields** memungkinkan operator secara eksplisit mengganti hanya bidang yang dikembalikan setelah konfirmasi. Perubahan tautan, penutupan editor, atau draf yang dibuang akan membuat respons pencarian lama menjadi tidak valid. Pencarian otomatis tidak pernah menyimpan lokasi: administrator meninjau dan memperbaiki draf, kemudian memilih **Save location**. Aturan persistensi dan visibilitas Supabase yang ada tetap berlaku.
 
-This is a best-effort parser of public Google Maps page data, whose undocumented
-structure may change. Unsupported links, provider blocks, and network failures
-show a manual-entry/retry message without discarding the form. It cannot guarantee
-complete details for every shared link. Maps pages are requested in English for the admin interface; imported place
-names and addresses retain the values provided by Google. The owner authorized deployment after local verification.
+Ini adalah parser terbaik upaya untuk data halaman Google Maps publik, di mana struktur yang tidak didokumentasikan dapat berubah. Tautan yang tidak didukung, blok penyedia, dan kegagalan jaringan menampilkan pesan "masukkan secara manual/ulangi percobaan" tanpa menghapus formulir. Tidak dapat menjamin detail lengkap untuk setiap tautan yang dibagikan. Halaman Maps diminta dalam bahasa Inggris untuk antarmuka admin; nama tempat dan alamat yang diimport mempertahankan nilai yang disediakan oleh Google. Pemilik mengotorisasi penyebaran setelah verifikasi lokal.
 
-Local verification passed lint, TypeScript, the production build, and 146 Node
-tests (three unrelated optional tests skipped). Fifteen import regressions cover
-public data parsing, current/legacy regular hours, province matching, foreign
-places, malformed responses, pin versus camera coordinates, redirect/resource
-restrictions, response limits, and admin authentication/origin checks.
+Verifikasi lokal lulus linting, TypeScript, build produksi, dan 146 uji coba Node (tiga uji coba opsional tidak terkait dilewati). Lima belas uji coba regresinya mencakup parsing data publik, jam buka saat ini/legacy, pencocokan provinsi, tempat asing, respons yang rusak, koordinat pin versus kamera, pembatasan redirect/sumber, batas respons, dan autentikasi/admin asal pemeriksaan.
 
-Chromium verified automatic paste using a real public Google Maps short link,
-manual-field preservation, explicit replacement, invalid-link errors, stale
-response rejection, mobile layout, and expired-session handling. A reviewed,
-uniquely named inactive test record was saved to the configured Supabase database,
-reloaded, and removed by exact ID. Existing location identities and visibility
-were unchanged. No location is saved during lookup. The real public Monas response
-also verified extraction of current-format weekly opening hours. Reports and the
-local browser script are under `.data/service-center-maps/`.
+Chromium memverifikasi tempel otomatis menggunakan tautan pendek Google Maps publik asli, preservasi bidang manual, penggantian eksplisit, kesalahan tautan tidak valid, penolakan respons usang, tata letak mobile, dan penanganan sesi kadaluarsa. Rekor uji coba tidak aktif yang ditinjau dan diberi nama unik disimpan ke database Supabase yang dikonfigurasi, dimuat ulang, dan dihapus dengan ID yang tepat. Identitas lokasi yang ada dan visibilitas tidak berubah. Tidak ada lokasi yang disimpan selama pencarian. Respons publik Monas asli juga memverifikasi ekstraksi jam buka mingguan format saat ini. Laporan dan skrip browser lokal berada di bawah `.data/service-center-maps/`.
 
-## Service Center deletion verification on September 16, 2026
+<a id="service-center-deletion-verification-on-september-16-2026"></a>
+## Verifikasi penghapusan Pusat Layanan pada 16 September 2026
 
-Deletion passed lint, typecheck, the production build, and 164 Node tests; four
-optional SQL tests were skipped. Regression tests cover authentication, origin
-and ID validation, exact-ID database deletion, safe retries, database failures,
-public revalidation, and concurrent local edits without recreating deleted rows.
+Penghapusan lulus linting, pengecekan tipe, build produksi, dan 164 uji coba Node; empat uji coba SQL opsional dilewati. Uji coba regresinya mencakup autentikasi, validasi asal dan ID, penghapusan database dengan ID yang tepat, ulang percobaan aman, kegagalan database, revalidasi publik, dan edit lokal bersamaan tanpa membuat ulang baris yang dihapus.
 
-Chromium used localhost with the configured Supabase database to verify cancel,
-transport failure, successful deletion, expired sessions, reload persistence,
-mobile layout, and absence of the action on unsaved new locations. Two temporary
-inactive records were created and removed; the pre-existing location remained
-unchanged. No test location was made public. Browser checks reported no page
-JavaScript errors or horizontal overflow. Local evidence is recorded in
-`.data/service-center-delete/browser-report.json`.
+Chromium menggunakan localhost dengan database Supabase yang dikonfigurasi untuk memverifikasi pembatalan, kegagalan transport, penghapusan sukses, sesi kadaluarsa, persistensi reload, tata letak mobile, dan ketiadaan aksi pada lokasi baru yang belum disimpan. Dua rekor tidak aktif sementara dibuat dan dihapus; lokasi yang ada sebelumnya tetap tidak berubah. Tidak ada lokasi uji coba yang dibuat publik. Pemeriksaan browser melaporkan tidak ada kesalahan JavaScript halaman atau tumpahan horizontal. Bukti lokal dicatat di `.data/service-center-delete/browser-report.json`.
 
-No migration is needed. The owner authorized pushing the verified deletion change
-to GitHub and deploying through the existing Hostinger automatic release path.
-See the [release record](../operations/deployment.md#service-center-deletion-release-on-september-16-2026)
-for production verification scope.
+Tidak perlu migrasi. Pemilik mengotorisasi mendorong perubahan penghapusan terverifikasi ke GitHub dan penyebaran melalui jalur rilis otomatis Hostinger yang ada. Lihat [rekor rilis](../operations/deployment.md#service-center-deletion-release-on-september-16-2026) untuk cakupan verifikasi produksi.

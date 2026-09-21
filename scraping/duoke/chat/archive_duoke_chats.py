@@ -108,32 +108,32 @@ def render_note(record: dict[str, Any]) -> str:
         f"message_count: {len(messages)}", f"expected_message_count: {record['expected_messages']}",
         f"history_complete: {str(record['complete']).lower()}",
         "privacy: automated_redaction", "---", "",
-        f"# Conversation {ref}", "", "[[Conversation archive index|Archive index]]", "",
-        "This transcript is an unreviewed source archive. Automated redaction may require manual review.",
-        "Attachment binaries are not downloaded; full source payloads are stored in the private local archive.",
+        f"# Percakapan {ref}", "", "[[Conversation archive index|Indeks arsip]]", "",
+        "Transkrip ini adalah arsip sumber yang belum ditinjau. Penyamaran otomatis mungkin memerlukan tinjauan manual.",
+        "Lampiran biner tidak diunduh; muatan sumber lengkap disimpan dalam arsip lokal privat.",
         "",
     ]
     context = record.get("product_context") or {}
     context_review = record.get("product_context_review") or {}
     related = {item["ref"]: item for matches in context.values() for item in matches}
     if related:
-        lines.extend(["## Related products", "", "Links identify explicit product references; verify the variant before using product-specific guidance.", ""])
+        lines.extend(["## Produk terkait", "", "Tautan mengidentifikasi rujukan produk eksplisit; verifikasi variasinya sebelum menggunakan panduan khusus produk.", ""])
         for item in sorted(related.values(), key=lambda item: item["name"]):
             display = str(item["name"]).replace("|", " / ").replace("[", "(").replace("]", ")").replace("\n", " ")
             lines.append(f"- [[{note_link(item['note'])}|{display}]]")
         lines.append("")
     if context_review:
-        lines.extend([f"Product context requires review for {len(context_review)} messages; see the markers in the transcript.", ""])
+        lines.extend([f"Konteks produk memerlukan tinjauan untuk {len(context_review)} pesan; lihat penandanya dalam transkrip.", ""])
     lines.extend(["## Transcript", ""])
     for message in messages:
-        role = {1: "Customer", 2: "Seller"}.get(message.get("fromAccountType"), "System or unknown")
+        role = {1: "Pelanggan", 2: "Penjual"}.get(message.get("fromAccountType"), "Sistem atau tidak diketahui")
         kind = str(message.get("messageType") or "unknown")
-        lines.extend([f"### {timestamp(message.get('createdTimestamp'))} — {role}", "", f"Type: {kind}", ""])
+        lines.extend([f"### {timestamp(message.get('createdTimestamp'))} — {role}", "", f"Tipe: {kind}", ""])
         if message_key(message) in context_review:
-            lines.extend(["Product context review: " + context_review[message_key(message)], ""])
+            lines.extend(["Tinjauan konteks produk: " + context_review[message_key(message)], ""])
         for match in context.get(message_key(message), []):
             display = str(match["name"]).replace("|", " / ").replace("[", "(").replace("]", ")").replace("\n", " ")
-            lines.extend([f"Product reference: [[{note_link(match['note'])}|{display}]] (match: {match['method']})", ""])
+            lines.extend([f"Rujukan produk: [[{note_link(match['note'])}|{display}]] (pencocokan: {match['method']})", ""])
         raw = message.get("messageContent")
         try:
             content = json.loads(raw) if isinstance(raw, str) else raw
@@ -149,12 +149,12 @@ def render_note(record: dict[str, Any]) -> str:
             # Indentation prevents source content from closing a Markdown fence.
             lines.extend("    " + line for line in json.dumps(content, ensure_ascii=False, indent=2).splitlines())
         if message.get("quotedMsg"):
-            lines.extend(["", "Quoted message:", ""])
+            lines.extend(["", "Pesan yang dikutip:", ""])
             quote = redact_value(message["quotedMsg"], buyer, buyer_id)
             lines.extend("    " + line for line in json.dumps(quote, ensure_ascii=False, indent=2).splitlines())
         lines.append("")
     if not messages:
-        lines.extend(["No messages were returned by the source API.", ""])
+        lines.extend(["API sumber tidak mengembalikan pesan.", ""])
     lines.extend(["## Manual notes", "", MANUAL_MARKER, ""])
     return "\n".join(lines)
 
@@ -178,26 +178,26 @@ def render_index(summary: dict[str, Any], items: list[dict[str, Any]], folder: P
     groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
     for entry in summary["conversations"]:
         item = by_ref[entry["ref"]]
-        group = (str(item["platform"]), str(item.get("shopName") or "Unknown store"))
+        group = (str(item["platform"]), str(item.get("shopName") or "Toko tidak diketahui"))
         groups.setdefault(group, []).append(entry)
-    lines = ["# Duoke conversation archive", "", f"Captured: {summary['finished_at']}", "",
-             f"Conversations: {len(items)}", f"Messages: {summary['total_messages']}",
-             f"All histories complete: {str(summary['complete']).lower()}", "",
-             "Scope: all conversations returned by the authorized account with no store or conversation filters.",
-             "This is an unreviewed archive, not an approved answer source.", "",
-             "Conversations are grouped by store and sorted by the latest activity in the list snapshot.", ""]
+    lines = ["# Arsip percakapan Duoke", "", f"Diambil: {summary['finished_at']}", "",
+             f"Percakapan: {len(items)}", f"Pesan: {summary['total_messages']}",
+             f"Semua riwayat lengkap: {str(summary['complete']).lower()}", "",
+             "Cakupan: semua percakapan yang dikembalikan akun berizin tanpa filter toko atau percakapan.",
+             "Ini arsip yang belum ditinjau, bukan sumber jawaban yang disetujui.", "",
+             "Percakapan dikelompokkan berdasarkan toko dan diurutkan menurut aktivitas terakhir dalam cuplikan daftar.", ""]
     if (folder.parent / "Produk" / "Product catalog index.md").exists():
-        lines.extend(["[[Duoke/Produk/Product catalog index|Product catalog]]", ""])
+        lines.extend(["[[Duoke/Produk/Product catalog index|Katalog produk]]", ""])
     for (platform, shop), entries in sorted(groups.items()):
-        lines.extend([f"## {shop} ({platform})", "", f"Conversations: {len(entries)}", ""])
+        lines.extend([f"## {shop} ({platform})", "", f"Percakapan: {len(entries)}", ""])
         for entry in sorted(entries, key=lambda x: int(by_ref[x["ref"]].get("lastMessageTimestamp") or 0), reverse=True):
             note = f"Conversation {entry['ref']}"
             date = timestamp(by_ref[entry["ref"]].get("lastMessageTimestamp"))[:10]
-            state = "complete" if entry["complete"] else "incomplete"
+            state = "lengkap" if entry["complete"] else "tidak lengkap"
             if (folder / f"{note}.md").exists():
-                lines.append(f"- [[{note}|{date} — {note}]] — {entry.get('messages', 0)} messages; {state}")
+                lines.append(f"- [[{note}|{date} — {note}]] — {entry.get('messages', 0)} pesan; {state}")
             else:
-                lines.append(f"- {note} — capture failed")
+                lines.append(f"- {note} — pengambilan gagal")
         lines.append("")
     lines.extend(["## Manual notes", "", MANUAL_MARKER, ""])
     return "\n".join(lines)

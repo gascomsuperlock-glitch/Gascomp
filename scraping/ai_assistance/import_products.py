@@ -149,7 +149,7 @@ def _fact_reason(text: str) -> str | None:
 def _description(lines: list[str], start: int) -> tuple[tuple[FactLine, ...], tuple[tuple[int, str], ...]]:
     section = None
     for index in range(start, len(lines)):
-        if lines[index].strip() == "## Source description":
+        if lines[index].strip() in {"## Source description", "## Deskripsi sumber"}:
             section = index + 1
             break
     if section is None:
@@ -509,27 +509,27 @@ def _knowledge_markdown(entry: dict[str, Any]) -> str:
 def _review_markdown(candidate: dict[str, Any]) -> str:
     entry = candidate["entry"]
     lines = [
-        f"# Product candidate {candidate['id']}",
+        f"# Kandidat produk {candidate['id']}",
         "",
-        "Status: **UNAPPROVED / REVIEW REQUIRED**",
+        "Status: **UNAPPROVED / PERLU TINJAUAN**",
         "",
-        "## Flags",
+        "## Penanda risiko",
         "",
         *(f"- `{flag}`" for flag in candidate["flags"]),
         "",
-        "## Proposed exact source excerpt",
+        "## Kutipan sumber persis yang diusulkan",
         "",
     ]
     if entry:
         lines.extend(f"> {line}" for line in entry["answer"].splitlines())
     else:
-        lines.append("No common stable source excerpt was found.")
-    lines.extend(["", "## Provenance", ""])
+        lines.append("Tidak ditemukan kutipan sumber bersama yang stabil.")
+    lines.extend(["", "## Asal sumber", ""])
     for source in candidate["provenance"]:
         lines.append(f"- `{source['path']}` (`{source['sha256']}`)")
     lines.extend([
         "",
-        "This generated review file cannot publish active knowledge.",
+        "File tinjauan yang dihasilkan ini tidak dapat menerbitkan pengetahuan aktif.",
         "",
     ])
     return "\n".join(lines)
@@ -575,11 +575,11 @@ def write_review(candidates: list[dict[str, Any]], report: dict[str, Any],
     _private_write(output / "report.json",
                    json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
     readme = (
-        "# Product answer review\n\n"
-        "All files are private and unapproved. `staging/` contains mechanically "
-        "eligible exact source excerpts. Duplicate SKUs with differing stable "
-        "descriptions remain in `review-required/`. This importer never publishes "
-        "to the active customer-support vault.\n"
+        "# Tinjauan jawaban produk\n\n"
+        "Semua file bersifat privat dan belum disetujui. `staging/` berisi kutipan "
+        "sumber persis yang lolos pemeriksaan mekanis. SKU duplikat dengan "
+        "deskripsi stabil yang berbeda tetap berada di `review-required/`. "
+        "Pengimpor ini tidak pernah menerbitkan isi ke vault dukungan pelanggan aktif.\n"
     )
     _private_write(output / "README.md", readme)
 

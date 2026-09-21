@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 
 from mcp.server.fastmcp import FastMCP
 
-from scraping.duoke.reply.desktop_browser import DesktopBrowser
+from scraping.duoke.reply.desktop_browser import DesktopBrowser, DeliveryAdapterError
 from scraping.duoke.reply.desktop_service import DesktopService
 
 
@@ -29,7 +29,11 @@ async def safe_call(function, *args):
     try:
         return await function(*args)
     except Exception as error:
-        return {"status": "error", "reason": type(error).__name__, "sent": False,
+        allowed = {"authentication_required", "navigation_timeout", "application_not_ready",
+                   "chat_not_ready", "account_restricted", "sdk_rejected",
+                   "sdk_not_acknowledged", "adapter_result_invalid"}
+        reason = error.reason if isinstance(error, DeliveryAdapterError) and error.reason in allowed else type(error).__name__
+        return {"status": "error", "reason": reason, "sent": False,
                 "action": "Check session, knowledge, and local controls. Do not retry delivery blindly."}
 
 

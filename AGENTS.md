@@ -1,67 +1,67 @@
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+# Ini bukan Next.js seperti yang Anda kenal
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+Versi ini memiliki perubahan yang dapat memutus kompatibilitas. API, konvensi, dan struktur file mungkin berbeda dari data pelatihan Anda. Baca panduan terkait di `node_modules/next/dist/docs/` (dihitung dari direktori file ini; pada monorepo, paket `next` mungkin tidak terlihat dari akar repo) sebelum menulis kode. Ikuti pemberitahuan deprekasi.
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+Blok ini ditulis dan ditambahkan kembali oleh `next dev`; verifikasi di `node_modules/next/dist/server/lib/generate-agent-files.js`. Menghapusnya dari diff hanya akan membuat perubahan yang belum di-commit muncul kembali; menyertakannya dalam commit membuat pohon kerja tetap bersih.
 
 <!-- END:nextjs-agent-rules -->
 
-## Read specifications by task
+## Baca spesifikasi sesuai tugas
 
-- Start with the [specification index](docs/product/spec.md), then read only the topic documents relevant to the task.
-- Use the [workspace context map](CONTEXT.md) to select the owning folder context. Before working in that area, read its inputs, Tasks table, boundaries, and verification requirements. Technical descendants inherit the closest mapped context; do not load every context or execute every task row.
-- Open cross-topic references only when needed; do not load the entire specification folder by default.
-- Record changes in the document that owns the topic. Keep `spec.md` as a concise index.
-- Follow the [English language standard](docs/architecture/language-standard.md). Preserve listed compatibility values exactly.
+- Mulai dari [indeks spesifikasi](docs/product/spec.md), lalu baca hanya dokumen topik yang relevan dengan tugas.
+- Gunakan [peta konteks ruang kerja](CONTEXT.md) untuk memilih konteks folder pemilik. Sebelum bekerja di area itu, baca input, tabel tugas, batasan, dan ketentuan verifikasinya. Turunan teknis mewarisi konteks terdekat; jangan memuat semua konteks atau menjalankan setiap baris tugas.
+- Buka rujukan lintas topik hanya bila diperlukan; jangan memuat seluruh folder spesifikasi secara bawaan.
+- Catat perubahan di dokumen pemilik topik. Jaga `spec.md` tetap sebagai indeks ringkas.
+- Ikuti [standar bahasa](docs/architecture/language-standard.md). Tulis Markdown milik proyek dalam bahasa Indonesia dan pertahankan nilai kompatibilitas serta nama teknis persis seperti aslinya.
 
-## Work continuity
+## Keberlanjutan pekerjaan
 
-- Use the specification index as the task router; its "Start in" column points to implementation owners. Read the selected topic and relevant code, expanding only when dependencies require it.
-- Follow the [work continuity workflow](docs/work/workflow.md) when starting, resuming, or handing off work. Find existing notes in the [handoff index](docs/work/README.md).
-- Treat pickup/handoff and equivalent natural-language requests as workflow instructions. A status-only request is read-only; a request to continue authorizes progress within the stated task.
-- Before ending a session with unfinished work, update its focused handoff and verify it from disk. Reconcile dated notes with current Git status and code; never infer completion, test results, or deployment from a note alone.
-- Keep product decisions in their owning specification and temporary progress in handoffs. Link to existing rules rather than duplicating them. Customer knowledge stays in its documented data/vault locations.
+- Gunakan indeks spesifikasi sebagai pengarah tugas; kolom "Mulai di" menunjukkan pemilik implementasi. Baca topik terpilih dan kode terkait; perluas bacaan hanya ketika ketergantungan memerlukannya.
+- Ikuti [alur keberlanjutan pekerjaan](docs/work/workflow.md) saat memulai, melanjutkan, atau menyerahkan pekerjaan. Temukan catatan yang ada melalui [indeks serah terima](docs/work/README.md).
+- Perlakukan permintaan untuk melanjutkan atau menyerahkan pekerjaan, termasuk ungkapan yang setara, sebagai instruksi alur kerja. Permintaan status saja hanya untuk dibaca; permintaan melanjutkan mengizinkan kemajuan dalam cakupan tugas tersebut.
+- Sebelum mengakhiri sesi dengan pekerjaan yang belum selesai, perbarui catatan serah terima yang terfokus dan verifikasi isinya dari disk. Cocokkan catatan bertanggal dengan status Git dan kode saat ini; jangan menyimpulkan penyelesaian, hasil pengujian, atau deployment hanya dari catatan.
+- Simpan keputusan produk pada spesifikasi pemilik dan kemajuan sementara pada catatan serah terima. Tautkan aturan yang sudah ada, jangan menduplikasinya. Pengetahuan pelanggan tetap berada di lokasi data atau vault yang didokumentasikan.
 
-## Learn from corrections
+## Belajar dari koreksi
 
-- When the owner corrects behavior or establishes a reusable constraint, follow the [dialogue-to-procedure workflow](docs/work/learning.md). Capture the source, scope, decision, stated reason, assumptions, and acceptance evidence in the owning document.
-- Link reusable procedures from their folder context. Keep actual run results in handoffs and distinguish proposed, source-reviewed, partially verified, and verified behavior. Do not treat an inferred preference or passing mocked test as a verified product decision.
+- Ketika pemilik mengoreksi perilaku atau menetapkan batasan yang bisa digunakan kembali, ikuti [alur mengubah dialog menjadi prosedur](docs/work/learning.md). Catat sumber, cakupan, keputusan, alasan yang disebutkan, asumsi, dan bukti penerimaan pada dokumen pemilik.
+- Tautkan prosedur yang dapat digunakan kembali dari konteks foldernya. Simpan hasil pelaksanaan yang sebenarnya dalam catatan serah terima, serta bedakan perilaku yang baru diusulkan, ditinjau dari sumber, diverifikasi sebagian, dan sudah diverifikasi. Jangan menganggap preferensi yang disimpulkan atau pengujian tiruan yang lulus sebagai keputusan produk yang telah diverifikasi.
 
-## Language requirement
+## Ketentuan bahasa
 
-- Communicate with the user in Indonesian unless they request another language. This applies to conversation, progress updates, questions, and final explanations.
-- Use English for code, configuration, documentation, comments, tests, logs, generated content, and other project-owned output.
-- Keep only the exact external values listed as compatibility exceptions in the [English language standard](docs/architecture/language-standard.md).
+- Berkomunikasi dengan pengguna dalam bahasa Indonesia kecuali mereka meminta bahasa lain. Ini berlaku untuk percakapan, pembaruan kemajuan, pertanyaan, dan penjelasan akhir.
+- Gunakan bahasa Indonesia untuk semua dokumen dan instruksi `.md` milik proyek. Pertahankan nama database, tabel, kolom, folder, file, path, perintah, pengenal, dan nilai kompatibilitas. Gunakan bahasa Inggris untuk kode, konfigurasi, komentar, pengujian, log, dan keluaran non-Markdown lainnya.
+- Pertahankan nilai eksternal yang harus persis sama sesuai [standar bahasa](docs/architecture/language-standard.md).
 
-## Douke Web coding agent
+## Agen pengodean Douke Web
 
-Act as the coding agent for `douke-web`. Implement features, fix bugs, refactor existing modules, and review changes against the product specifications. Carry implementation requests through verification and report the result.
+Bertindak sebagai agen pengodean untuk `douke-web`. Implementasikan fitur, perbaiki bug, refaktor modul yang ada, dan tinjau perubahan terhadap spesifikasi produk. Selesaikan permintaan implementasi melalui verifikasi dan laporkan hasilnya.
 
-### Working process
+### Proses kerja
 
-1. Inspect `git status --short` and the relevant code before editing. Preserve existing user changes and keep the diff focused on the requested task.
-2. Read the specification index above and the relevant topic documents. Follow [project structure](docs/architecture/project-structure.md) for file placement and dependencies. Verify installed versions and available commands in `package.json`.
-3. For Next.js changes, read the relevant installed framework documentation required above before writing code. Follow existing repository patterns and distinguish server and client responsibilities.
-4. Make reasonable implementation decisions within the requested scope. Ask a concise question only when missing information materially affects behavior or prevents progress.
-5. Implement the complete change and update the owning specification when behavior or a product decision changes. Avoid unrelated refactors and dependencies.
-6. Run the applicable checks below, inspect the final diff, and report what changed, what was verified, and any unresolved limitations. Do not claim a check passed unless it was run successfully.
+1. Periksa `git status --short` dan kode terkait sebelum mengedit. Pertahankan perubahan pengguna yang sudah ada dan batasi diff pada tugas yang diminta.
+2. Baca indeks spesifikasi dan dokumen topik yang relevan. Ikuti [struktur proyek](docs/architecture/project-structure.md) untuk penempatan file dan ketergantungan. Periksa versi terpasang serta perintah yang tersedia di `package.json`.
+3. Untuk perubahan Next.js, baca dokumentasi framework terpasang yang relevan sebagaimana diwajibkan di atas sebelum menulis kode. Ikuti pola repo yang ada dan bedakan tanggung jawab server dan klien.
+4. Ambil keputusan implementasi yang wajar dalam cakupan permintaan. Ajukan pertanyaan singkat hanya jika informasi yang kurang berpengaruh besar pada perilaku atau menghalangi kemajuan.
+5. Implementasikan perubahan secara lengkap dan perbarui spesifikasi pemilik bila perilaku atau keputusan produk berubah. Hindari refaktor dan dependensi yang tidak terkait.
+6. Jalankan pemeriksaan yang berlaku di bawah ini, periksa diff akhir, lalu laporkan perubahan, verifikasi, dan batasan yang belum terselesaikan. Jangan menyatakan pemeriksaan lulus jika belum dijalankan dengan berhasil.
 
-### Implementation boundaries
+### Batasan implementasi
 
-- Keep routing and composition in `src/app`, business logic in the owning `src/features` module, and reusable infrastructure in `src/shared`. Respect the dependency rules in the architecture document.
-- Preserve public routes, printed QR destinations, external identifiers, and other documented compatibility values.
-- Keep credentials and private customer data out of source code, client bundles, fixtures, and reports. Preserve server-only boundaries and existing authorization checks.
-- Use ordered files in `supabase/migrations` for database schema changes and inspect the relevant Supabase specification first.
-- Use the centralized path helpers for Node and Python import workflows. Prefer previews or dry runs when validating import changes.
-- A coding request alone does not authorize sending customer replies, applying production imports or migrations, or deploying. Perform external writes only when the user's task authorizes them.
+- Simpan routing dan komposisi di `src/app`, logika bisnis di modul pemilik `src/features`, dan infrastruktur yang dapat digunakan kembali di `src/shared`. Patuhi aturan ketergantungan dalam dokumen arsitektur.
+- Pertahankan rute publik, tujuan QR yang sudah dicetak, pengenal eksternal, dan nilai kompatibilitas lain yang didokumentasikan.
+- Jauhkan kredensial dan data pelanggan pribadi dari kode sumber, bundle klien, fixture, dan laporan. Pertahankan batas hanya-server dan pemeriksaan otorisasi yang ada.
+- Gunakan file berurutan di `supabase/migrations` untuk perubahan skema database dan periksa spesifikasi Supabase terkait terlebih dahulu.
+- Gunakan pembantu path terpusat untuk alur impor Node dan Python. Utamakan pratinjau atau dry run saat memvalidasi perubahan impor.
+- Permintaan pengodean saja tidak mengizinkan pengiriman balasan pelanggan, penerapan impor atau migrasi produksi, maupun deployment. Lakukan penulisan eksternal hanya bila tugas pengguna mengizinkannya.
 
-### Verification
+### Verifikasi
 
-- For TypeScript or JavaScript implementation changes, run `npm run lint`, `npm run typecheck`, and `npm run test`.
-- For Python scraping or knowledge workflow changes, run `npm run duoke:test` using the repository virtual environment.
-- For changes affecting application routes, rendering, dependencies, or build configuration, also run `npm run build`.
-- For visible UI changes, check the affected flow in a browser when available, including mobile layout and relevant loading, empty, and error states.
-- Add meaningful regression tests for changed behavior when appropriate. Documentation-only changes need link and diff checks rather than application tests.
-- If a check is blocked by missing dependencies, credentials, or services, state the blocker and which behavior remains unverified.
+- Untuk perubahan implementasi TypeScript atau JavaScript, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`.
+- Untuk perubahan scraping Python atau alur pengetahuan, jalankan `npm run duoke:test` dengan lingkungan virtual repo.
+- Untuk perubahan yang memengaruhi rute aplikasi, rendering, dependensi, atau konfigurasi build, jalankan juga `npm run build`.
+- Untuk perubahan UI yang terlihat, periksa alur terkait di browser bila tersedia, termasuk tata letak ponsel serta keadaan memuat, kosong, dan galat yang relevan.
+- Tambahkan pengujian regresi yang bermakna untuk perilaku yang berubah bila sesuai. Perubahan dokumentasi saja memerlukan pemeriksaan tautan dan diff, bukan pengujian aplikasi.
+- Jika pemeriksaan terhalang oleh dependensi, kredensial, atau layanan yang hilang, jelaskan penghalang dan perilaku yang belum terverifikasi.

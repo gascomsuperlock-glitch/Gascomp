@@ -23,12 +23,16 @@ _PROVENANCE = {"historical_reply_requires_review", "outcome_not_verified",
 _PRIVATE = {"privacy_redacted", "account_specific_response", "possible_role_misattribution",
             "source_contains_local_or_unsafe_link", "roles_inferred_requires_review", "incomplete_history"}
 _MEDIA = re.compile(r"\b(?:foto|gambar|video|lampiran|seperti\s+ini|yang\s+ini|yang\s+itu)\b", re.I)
-_FILLERS = {"kak", "kakak", "min", "halo", "hallo", "ya", "nya", "dong", "ingin", "barang", "saja"}
-_INTENTS = {"return", "garansi", "bocor", "rusak", "install", "material", "power", "size", "color"}
+_FILLERS = {"kak", "kakak", "min", "halo", "hallo", "ya", "nya", "dong", "ingin", "barang", "saja", "tidak", "bukan", "belum", "gak", "nggak", "ga", "ngga", "sudah", "udah"}
+_INTENTS = {"return", "garansi", "bocor", "rusak", "install", "material", "power", "size", "color", "lock"}
 
 
 def terms(text):
-    return set(_canonical_terms(text)) - _FILLERS
+    normalized = re.sub(r"\b(?:dikunci|mengunci|terkunci|kunci|menutup|ditutup|tertutup|tutup)\b", "lock", text, flags=re.I)
+    aliases = {"dpt": "include", "dapet": "include", "dapat": "include",
+               "termasuk": "include", "dilengkapi": "include",
+               "pembuanganya": "pembuangan", "pembuangannya": "pembuangan"}
+    return {aliases.get(term, term) for term in _canonical_terms(normalized)} - _FILLERS
 
 
 def load_references(source):
@@ -58,6 +62,7 @@ def load_references(source):
         answer = "\n".join(turn["text"] for turn in item["historicalSellerTurns"])
         flags = set(item["flags"]) - _PROVENANCE
         if (flags & _PRIVATE or unsafe_service_advice(question + "\n" + answer)
+                or re.search(r"\[(?:IDENTIFIER|BANK_ACCOUNT|PHONE|ADDRESS|ORDER_NUMBER|NAME|EMAIL|USERNAME)\]", question + "\n" + answer)
                 or _MEDIA.search(question + "\n" + answer) or len(answer) > 2500
                 or len(question) > 1500):
             counts["conversationPairsExcluded"] += 1

@@ -1,62 +1,41 @@
-# Customer support answer vault
+# Vault jawaban dukungan pelanggan
 
-This folder contains curated answers and bilingual templates for Gascomp
-Assistant. The worker can also read the complete scraped Obsidian archive through
-`GASCOMP_AI_SOURCE_VAULT`. In default grounded mode, Hermes uses these sources to
-write natural explanations, translations, and follow-up questions. Product facts
-must remain grounded; general explanations must not invent product details.
-Set `GASCOMP_AI_RESPONSE_MODE=exact` for the legacy verbatim-answer behavior.
+Folder ini berisi jawaban terkurasi dan templat dwibahasa untuk Gascomp Assistant. Worker juga dapat membaca seluruh arsip Obsidian hasil pengambilan data melalui `GASCOMP_AI_SOURCE_VAULT`. Dalam mode berbasis sumber bawaan, Hermes menggunakan sumber tersebut untuk menulis penjelasan, terjemahan, dan pertanyaan lanjutan yang alami. Fakta produk harus bersumber jelas; penjelasan umum tidak boleh mengarang detail produk. Gunakan `GASCOMP_AI_RESPONSE_MODE=exact` untuk perilaku lama yang mengirim jawaban sumber persis.
 
-## Current local pilot
+<a id="current-local-pilot"></a>
+## Pilot lokal saat ini
 
-This folder contains 35 curated entries, including sixteen earlier catalog
-excerpts. The worker also indexes all 1,334 notes from the connected Obsidian
-source: 902 conversation notes and 432 product notes. The former `Archive` and
-`Catalog` contents now live directly in `Duoke/Percakapan` and `Duoke/Produk`.
-Their index notes are `Conversation archive index.md` and
-`Product catalog index.md`; no source folder is excluded. The combined snapshot
-has 445 entries: 35 curated entries and 410 eligible exact source passages.
+Folder ini memuat 35 entri terkurasi, termasuk enam belas kutipan katalog yang lebih lama. Worker juga mengindeks seluruh 1.334 catatan dari sumber Obsidian yang terhubung: 902 catatan percakapan dan 432 catatan produk. Isi `Archive` dan `Catalog` sebelumnya sekarang berada langsung di `Duoke/Percakapan` dan `Duoke/Produk`. Catatan indeksnya bernama `Conversation archive index.md` dan `Product catalog index.md`; tidak ada folder sumber yang dikecualikan. Cuplikan gabungan berisi 445 entri: 35 entri terkurasi dan 410 kutipan sumber persis yang memenuhi syarat.
 
-Duplicate products require matching marketplace/store/listing identity and note
-content. Different stores, posts, variants, and content revisions are retained;
-a SKU match alone does not justify removing a note. The migration preserved all
-original notes and updated only their paths and Obsidian link targets.
+Produk duplikat memerlukan kecocokan identitas marketplace, toko, listing, dan isi catatan. Toko, unggahan, variasi, serta revisi isi yang berbeda tetap dipertahankan; SKU yang sama saja tidak cukup untuk menghapus catatan. Migrasi mempertahankan semua catatan asli dan hanya memperbarui path serta target tautan Obsidian.
 
-Grounded mode can explain Indonesian source facts in the selected language.
-Exact mode requires source text in that language. Try `Apa bahan PISAU-6SET?` with Indonesian selected.
-See the [full-source setup workflow](../../docs/setup/ai-assistance.md#connect-the-complete-scraped-obsidian-archive)
-for the connection, private reports, and release checks.
+Mode berbasis sumber dapat menjelaskan fakta sumber berbahasa Indonesia dalam bahasa yang dipilih pelanggan. Mode persis memerlukan teks sumber dalam bahasa tersebut. Coba `Apa bahan PISAU-6SET?` dengan bahasa Indonesia. Lihat [alur penyiapan seluruh sumber](../../docs/setup/ai-assistance.md#connect-the-complete-scraped-obsidian-archive) untuk koneksi, laporan privat, dan pemeriksaan rilis.
 
-## Authoring format
+<a id="authoring-format"></a>
+## Format penulisan
 
-The `conversation-` ID prefix is reserved for short conversational replies such
-as thanks, acknowledgements, identity, wellbeing, available help, and goodbyes.
-Use `kind: answer` and explicit full-message aliases in `questions`. Greetings
-and clarifications also require full-message alias matches after bounded
-politeness/spelling normalization. Do not place product facts under this prefix.
-In exact mode, conversational matching must not hide an additional unsupported question.
+Awalan ID `conversation-` digunakan untuk balasan percakapan singkat seperti ucapan terima kasih, konfirmasi, identitas, kabar, bantuan yang tersedia, dan penutup. Gunakan `kind: answer` serta alias pesan lengkap yang eksplisit dalam `questions`. Salam dan permintaan klarifikasi juga memerlukan kecocokan alias pesan lengkap setelah normalisasi kesopanan dan ejaan yang terbatas. Jangan letakkan fakta produk di bawah awalan ini. Dalam mode persis, pencocokan percakapan tidak boleh menyembunyikan pertanyaan tambahan yang belum didukung.
 
-Copy `answer.md.example` to a `.md` file and replace every placeholder. Each Markdown file represents one answer in one language. The worker ignores this README, hidden files, and files that do not end in `.md`. Do not use symlinks.
+Salin `answer.md.example` ke file `.md` dan ganti seluruh placeholder. Setiap file Markdown mewakili satu jawaban dalam satu bahasa. Worker mengabaikan README ini, file tersembunyi, dan file yang tidak berakhiran `.md`. Jangan gunakan symlink.
 
-The authoring schema remains compatible with both response modes. Source bodies
-are preserved in the snapshot; grounded responses may paraphrase them.
+Skema penulisan tetap kompatibel dengan kedua mode respons. Isi sumber dipertahankan dalam cuplikan; respons berbasis sumber boleh menjelaskannya ulang.
 
-The first line must be `---`, followed by a JSON metadata object, then a closing `---` line. The remaining body is the reusable source passage (and the final customer-facing answer in exact mode). Every character after the closing delimiter's newline is preserved, including leading blank lines, whitespace, and the final newline. CRLF is normalized to LF when reading. The worker never rewrites the original note. Only exact response mode requires the displayed answer to match its body verbatim. Ordinary text and public HTTPS links work; Obsidian wikilinks and local/non-HTTPS destinations are rejected.
+Baris pertama harus `---`, diikuti objek metadata JSON, lalu baris penutup `---`. Sisanya adalah kutipan sumber yang dapat digunakan kembali, sekaligus jawaban akhir untuk pelanggan dalam mode persis. Setiap karakter setelah baris baru pada pembatas penutup dipertahankan, termasuk baris kosong awal, spasi, dan baris baru terakhir. CRLF dinormalisasi menjadi LF saat dibaca. Worker tidak pernah menulis ulang catatan asli. Hanya mode persis yang mewajibkan jawaban yang ditampilkan sama persis dengan isinya. Teks biasa dan tautan HTTPS publik dapat digunakan; wikilink Obsidian serta tujuan lokal atau non-HTTPS ditolak.
 
-Required metadata:
+Metadata wajib:
 
-- `id`: stable lowercase ASCII identifier, up to 80 characters, using letters, digits, `.`, `_`, or `-`.
-- `kind`: `answer`, `greeting`, `clarification`, or `handoff`.
-- `language`: `en` or `id`.
-- `questions`: one to 50 nonempty questions or alternate phrasings in that language, each up to 500 characters. These are retrieval aliases, not answer text.
-- `sku`: optional exact product SKU, only for `answer` entries. Leave absent for general answers.
+- `id`: pengenal ASCII huruf kecil yang stabil, maksimal 80 karakter, menggunakan huruf, angka, `.`, `_`, atau `-`.
+- `kind`: `answer`, `greeting`, `clarification`, atau `handoff`.
+- `language`: `en` atau `id`.
+- `questions`: satu sampai 50 pertanyaan tidak kosong atau variasi frasa dalam bahasa tersebut, masing-masing maksimal 500 karakter. Ini adalah alias pencarian, bukan teks jawaban.
+- `sku`: SKU produk persis yang bersifat opsional dan hanya berlaku untuk entri `answer`. Kosongkan untuk jawaban umum.
 
-Before activation, provide exactly one `greeting`, one `clarification`, and one `handoff` for **each** language. Author both fallback languages explicitly so service failures never depend on model translation. The handoff text should explain that the customer can choose WhatsApp, without claiming a message has been sent. The website attaches the configured WhatsApp link inside the handoff message, without changing its answer text. It does not show a permanent WhatsApp action beneath the composer.
+Sebelum aktivasi, sediakan tepat satu `greeting`, satu `clarification`, dan satu `handoff` untuk **setiap** bahasa. Tulis kedua bahasa cadangan secara eksplisit agar kegagalan layanan tidak bergantung pada terjemahan model. Teks handoff harus menjelaskan bahwa pelanggan dapat memilih WhatsApp tanpa mengklaim pesan telah terkirim. Situs menambahkan tautan WhatsApp yang dikonfigurasi ke dalam pesan handoff tanpa mengubah teks jawabannya. Situs tidak menampilkan tindakan WhatsApp permanen di bawah kotak percakapan.
 
-The body must be nonempty and at most 12,000 characters. Each note is limited to 64 KB and the combined snapshot to 2,000 entries. The complete serialized publication, including metadata and JSON overhead, must fit within 4 MiB of UTF-8 data. IDs must be unique across both languages; use separate IDs such as `welcome-en` and `welcome-id`.
+Isi jawaban tidak boleh kosong dan maksimal 12.000 karakter. Setiap catatan dibatasi 64 KB dan cuplikan gabungan dibatasi 2.000 entri. Seluruh publikasi terserialisasi, termasuk metadata dan overhead JSON, harus muat dalam 4 MiB data UTF-8. ID harus unik pada kedua bahasa; gunakan ID terpisah seperti `welcome-en` dan `welcome-id`.
 
-The worker checks for changes every second, invalidates the current version before replacing it, and publishes a full validated snapshot. A malformed note, missing template, deleted source, or duplicate ID disables source answering. The backend retains the last published handoff templates for outages. Edits during a model turn prevent its old answer from being sent.
+Worker memeriksa perubahan setiap detik, membatalkan versi saat ini sebelum menggantinya, lalu menerbitkan cuplikan lengkap yang telah divalidasi. Catatan yang rusak, templat yang hilang, sumber yang dihapus, atau ID duplikat menonaktifkan jawaban berbasis sumber. Backend mempertahankan templat handoff terakhir yang diterbitkan saat layanan terganggu. Perubahan saat model sedang memproses mencegah jawaban lamanya dikirim.
 
-Snapshot versions are SHA-256 of the UTF-8, compact JSON array of entries sorted by ID, with each object's keys sorted alphabetically and Unicode kept unescaped. Empty optional SKU metadata is omitted. Answer whitespace is part of the hash.
+Versi cuplikan menggunakan SHA-256 dari array JSON ringkas berformat UTF-8 yang diurutkan menurut ID, dengan kunci setiap objek diurutkan menurut alfabet dan Unicode tidak di-escape. Metadata SKU opsional yang kosong dihilangkan. Spasi dalam jawaban merupakan bagian dari hash.
 
-Use `scraping/.venv/bin/python -m scraping.ai_assistance.worker --check` after configuring the worker environment. This validates local configuration and knowledge without connecting to the website or a model. `--watch` and `--once` publish to the configured website and must be used only when that publication is authorized. `--probe-links` uses local Chrome to inspect allowlisted HTTPS links; browser content never becomes answer material.
+Jalankan `scraping/.venv/bin/python -m scraping.ai_assistance.worker --check` setelah mengatur lingkungan worker. Perintah ini memvalidasi konfigurasi lokal dan pengetahuan tanpa menghubungkan ke situs atau model. `--watch` dan `--once` menerbitkan ke situs yang dikonfigurasi dan hanya boleh digunakan ketika publikasi tersebut diizinkan. `--probe-links` memakai Chrome lokal untuk memeriksa tautan HTTPS yang diizinkan; isi browser tidak pernah menjadi bahan jawaban.

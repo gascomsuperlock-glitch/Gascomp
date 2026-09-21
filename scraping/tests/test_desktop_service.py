@@ -6,11 +6,11 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, AsyncMock, MagicMock
 
 from playwright.async_api import async_playwright
 
-from scraping.duoke.reply.desktop_browser import DesktopBrowser
+from scraping.duoke.reply.desktop_browser import DesktopBrowser, DeliveryAdapterError
 from scraping.duoke.reply.desktop_service import DesktopService
 from scraping.tests.test_hermes_drafts import FakeReader, MESSAGE, SESSION, CONVERSATION, make_vault
 from scraping.tests.test_ai_assistance_corpus import conversation, pair, product
@@ -145,6 +145,25 @@ class DesktopServiceTests(unittest.IsolatedAsyncioTestCase):
                 query = "memperbaiki regulator" if "memperbaiki" in question else "pengembalian regulator"
                 self.assertFalse((await self.service.search(query))["references"])
 
+    async def test_lock_symptom_does_not_match_shared_negation_or_catalog(self):
+        self.source_note(pair("Regulator ini tidak tersedia?", "Produk masih dalam promosi."))
+        result = await self.service.search("Regulator tidak bisa ditutup")
+        self.assertFalse(result["references"])
+        self.assertIn("WhatsApp", result["customerReply"])
+        self.source_note(pair("Regulator tidak bisa dikunci", "Hubungi admin untuk bantuan pemasangan."))
+        result = await self.service.search("Regulator tidak bisa menutup")
+        self.assertEqual(result["references"][0]["answer"], "Hubungi admin untuk bantuan pemasangan.")
+
+    async def test_admin_chat_abbreviations_match_normalized_customer_question(self):
+        self.source_note(pair("ini udah dpt selang pembuanganya?", "Selang pembuangan sudah termasuk."))
+        result = await self.service.search("Apakah sudah termasuk selang pembuangan?")
+        self.assertEqual(result["references"][0]["sources"][0]["sourceKind"], "conversation")
+        self.assertEqual(result["references"][0]["answer"], "Selang pembuangan sudah termasuk.")
+
+    async def test_identifier_placeholders_never_reach_reference_answers(self):
+        self.source_note(pair("Regulator tidak bisa dikunci", "Hubungi nomor [IDENTIFIER] untuk bantuan."))
+        self.assertFalse((await self.service.search("Regulator tidak bisa dikunci"))["references"])
+
     async def test_conversation_search_respects_explicit_product_scope(self):
         from scraping.duoke.reply.conversation_references import search_references
         from scraping.duoke.reply.knowledge_bundle import load_knowledge
@@ -157,6 +176,31 @@ class DesktopServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(search_references(bundle, "membersihkan DEMO-9"))
         self.assertFalse(search_references(bundle, "membersihkan DEMO-8"))
         self.assertFalse(search_references(bundle, "membersihkan UNKNOWN-77"))
+
+    async def test_unready_chat_is_not_reserved_or_sent(self):
+        self.service.enabled.touch()
+        job = await self.job()
+        async def prepare():
+            raise DeliveryAdapterError("chat_not_ready")
+        self.transport.prepare_send = prepare
+        result = await self.service.reply(job["ticket"], "material")
+        self.assertEqual(result, {"status": "not_ready", "reason": "chat_not_ready", "sent": False})
+        self.assertEqual(self.transport.send_count, 0)
+        self.assertEqual(self.service.state(), {})
+
+    async def test_sdk_rejection_has_a_bounded_reason_and_is_not_retried(self):
+        self.service.enabled.touch()
+        job = await self.job()
+        async def reject(*args):
+            self.transport.send_count += 1
+            raise DeliveryAdapterError("sdk_rejected")
+        self.transport.send = reject
+        result = await self.service.reply(job["ticket"], "material")
+        self.assertEqual(result, {"status": "uncertain", "reason": "sdk_rejected", "sent": False})
+        await self.service.reply(job["ticket"], "material")
+        self.assertEqual(self.transport.send_count, 1)
+        audit = json.loads((self.root / "runtime/audit.jsonl").read_text().splitlines()[-1])
+        self.assertEqual(audit["reason"], "sdk_rejected")
 
     async def test_delivery_verified_and_never_repeated_after_restart(self):
         self.service.enabled.touch()
@@ -236,6 +280,39 @@ class DesktopServiceTests(unittest.IsolatedAsyncioTestCase):
             await self.service.poll()
         self.assertEqual(calls[1]["offset"], "next")
 
+    async def test_login_redirect_is_reported_without_generic_timeout(self):
+        page = MagicMock()
+        page.goto = AsyncMock()
+        page.wait_for_function = AsyncMock()
+        page.evaluate = AsyncMock(return_value=False)
+        context = MagicMock()
+        context.new_page = AsyncMock(return_value=page)
+        browser = MagicMock()
+        browser.new_context = AsyncMock(return_value=context)
+        browser.close = AsyncMock()
+        playwright = MagicMock()
+        playwright.chromium.launch = AsyncMock(return_value=browser)
+        playwright.stop = AsyncMock()
+        manager = MagicMock()
+        manager.start = AsyncMock(return_value=playwright)
+        storage = self.root / "storage.json"
+        storage.write_text("{}")
+        adapter = DesktopBrowser()
+        with (patch("scraping.duoke.reply.desktop_browser.async_playwright", return_value=manager),
+              patch("scraping.duoke.reply.desktop_browser.DUOKE_DESKTOP_STORAGE", storage)):
+            with self.assertRaisesRegex(DeliveryAdapterError, "authentication_required"):
+                await adapter.open()
+        self.assertEqual(page.goto.call_args.args[0], "https://web.duoke.com/#/dk/main/chat")
+        browser.close.assert_awaited_once()
+        playwright.stop.assert_awaited_once()
+        self.assertIsNone(adapter.page)
+        from playwright.async_api import Error as BrowserError
+        request = MagicMock()
+        request.url = "https://web.duoke.com/"
+        request.all_headers = AsyncMock(side_effect=BrowserError("Target closed"))
+        callback = context.on.call_args.args[1]
+        await callback(request)
+
     async def test_real_chrome_action_receives_only_validated_message(self):
         async with async_playwright() as p:
             browser = await p.chromium.launch(channel="chrome", headless=True)
@@ -248,17 +325,30 @@ class DesktopServiceTests(unittest.IsolatedAsyncioTestCase):
                 await page.evaluate("""() => {
                     window.calls=[];
                     document.querySelector('#app').__vue__={$store:{
-                      _actions:{'Chat/send-message':true}, state:{System:{user:{uid:'fixture'}}},
-                      dispatch:async(name,value)=>{window.calls.push({name,value});}
-                    }};
+                      _actions:{'Chat/send-message':true},
+                      state:{System:{user:{uid:'fixture'}},Socket:{imUserStatus:'onLine'}},
+                      dispatch:async(name,value)=>{
+                        window.calls.push({name,value});
+                        if(name==='Chat/send-message') value.msg.pendingFlag=window.rejectSend?2:0;
+                      }
+                    },$dkChat:{createCustomMessage(){},sendMessage(){}}};
                 }""")
                 adapter = DesktopBrowser()
                 adapter.page = page
+                # The synthetic page is already open and has no saved login.
+                adapter.open = AsyncMock()
                 await adapter.send({**CONVERSATION, "groupId": "fixture-group"}, "Exact source text")
                 calls = await page.evaluate("window.calls")
                 self.assertEqual(calls[-1]["name"], "Chat/send-message")
                 self.assertEqual(calls[-1]["value"]["msg"]["content"], {"text": "Exact source text"})
                 self.assertEqual(calls[-1]["value"]["msg"]["conversationId"], "conversation-1")
+                await page.evaluate("window.rejectSend=true; window.calls=[]")
+                with self.assertRaisesRegex(DeliveryAdapterError, "sdk_rejected"):
+                    await adapter.send(CONVERSATION, "Exact source text")
+                await page.evaluate("document.querySelector('#app').__vue__.$store.state.Socket.imUserStatus='offLine';window.calls=[]")
+                with self.assertRaisesRegex(DeliveryAdapterError, "chat_not_ready"):
+                    await adapter.send(CONVERSATION, "Exact source text")
+                self.assertEqual(await page.evaluate("window.calls"), [])
             finally:
                 await browser.close()
 

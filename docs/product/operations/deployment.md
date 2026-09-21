@@ -1,430 +1,214 @@
-# Domain and deployment
+<a id="domain-and-deployment"></a>
+# Domain dan deployment
 
-[Specification index](../spec.md)
+[Indeks spesifikasi](../spec.md)
 
-## AI assistance activation
+<a id="ai-assistance-activation"></a>
+## Aktivasi bantuan AI
 
-AI assistance is disabled by default. Its migration and feature release must use
-the existing verified release sequence; preparing source files does not apply a
-production migration or enable the public panel. Configure a distinct worker
-token on the website and Mac, publish validated bilingual Obsidian knowledge,
-verify the owner-installed local model, and complete the synthetic endurance
-checks before enabling `GASCOMP_AI_ASSISTANCE_ENABLED=true`. See
-[AI assistance setup](../../setup/ai-assistance.md). Restore the flag to false
-and redeploy to return to the original floating WhatsApp button. macOS worker
-activation is separate from Hostinger deployment.
+Bantuan AI dinonaktifkan secara default. Migrasi dan rilis fitur harus menggunakan urutan rilis yang sudah diverifikasi yang ada; menyiapkan file sumber tidak menerapkan migrasi produksi atau mengaktifkan panel publik. Konfigurasi token pekerja yang berbeda di website dan Mac, terbitkan pengetahuan bilingual Obsidian yang divalidasi, verifikasi model lokal yang dipasang pemilik, dan selesaikan pemeriksaan ketahanan sintetis sebelum mengaktifkan `GASCOMP_AI_ASSISTANCE_ENABLED=true`. Lihat
+[Pengaturan bantuan AI](../../setup/ai-assistance.md). Kembalikan flag menjadi false
+dan deploy ulang untuk kembali ke tombol WhatsApp melayang asli. Aktivasi pekerja macOS terpisah dari deployment Hostinger.
 
-## AI assistance deployment on September 17, 2026
+<a id="ai-assistance-deployment-on-september-17-2026"></a>
+## Deployment bantuan AI pada 17 September 2026
 
-The owner authorized public deployment of commit
-`c41d5d60a1c3dfe23c654b157c620617decc9cb4`. GitHub Actions run
+Pemilik mengizinkan deployment publik komit
+`c41d5d60a1c3dfe23c654b157c620617decc9cb4`. GitHub Actions menjalankan
 [35206731571](https://github.com/gascomsuperlock-glitch/Gascomp/actions/runs/35206731571)
-passed verification, applied the three ordered AI migrations, and promoted the
-same commit to `main`.
+melalui verifikasi, menerapkan tiga migrasi AI yang berurutan, dan mempromosikan komit yang sama ke `main`.
 
-Hostinger's automatic Git build `01a0aec2-af81-714d-95ab-4ac9c5824b83`
-failed and returned no build log. A source-only `git archive` of that exact
-verified commit was uploaded through Hostinger's JavaScript deployment API.
-Archive build `01a0aec8-071a-7306-a975-b02fd622a5d9` completed successfully.
-This restored delivery without identifying the cause of the automatic Git
-failure; future automatic builds still need monitoring. Archive auto-detection
-used Node 20; the stored Git build settings remain Node 22.
+Build Git otomatis Hostinger `01a0aec2-af81-714d-95ab-4ac9c5824b83`
+gagal dan tidak mengembalikan log build. Sebuah `git archive` hanya sumber dari komit tersebut yang diverifikasi diunggah melalui API deployment JavaScript Hostinger.
+Arsip build `01a0aec8-071a-7306-a975-b02fd622a5d9` selesai dengan sukses.
+Ini mengembalikan pengiriman tanpa mengidentifikasi penyebab kegagalan Git otomatis; pembangunan otomatis masa depan masih perlu pemantauan. Deteksi arsip otomatis menggunakan Node 20; pengaturan build Git yang disimpan tetap menggunakan Node 22.
 
-Hostinger's environment API replaces the entire set. The seven existing keys
-were preserved using the local configuration; the local admin password and
-session signing configuration were verified against production first. A distinct
-production worker token and the enabled AI flag were added. Secret values and
-rollback environment data remain in owner-only, ignored local files.
+API lingkungan Hostinger menggantikan seluruh setnya. Tujuh kunci yang ada dipertahankan menggunakan konfigurasi lokal; konfigurasi kata sandi admin lokal dan penandatanganan sesi diverifikasi terhadap produksi terlebih dahulu. Token pekerja produksi yang berbeda dan flag AI yang diaktifkan ditambahkan. Nilai rahasia dan data lingkungan rollback tetap hanya milik pemilik, diabaikan file lokal.
 
-The public assistant and admin status endpoint reported enabled, knowledge ready,
-worker online, and no pending jobs. Real HTTPS tests covered product facts,
-same-session recall, GRS-01 troubleshooting clarification and follow-up, and
-explicit WhatsApp handoff. Desktop/mobile checks through local Chrome CDP passed
-session reset, reload persistence, keyboard dismissal, and layout checks without
-page errors. Only the synthetic sessions created for these checks were removed.
-Evidence is stored locally under `.data/ai-deployment/`.
+Asisten publik dan status endpoint admin melaporkan aktif, pengetahuan siap,
+pekerja online, dan tidak ada tugas yang menunggu. Uji HTTPS asli mencakup fakta produk, pengingat sesi yang sama, klarifikasi pemecahan masalah GRS-01 dan tindak lanjut, serta transfer WhatsApp eksplisit. Pemeriksaan desktop/mobile melalui Chrome CDP lokal lulus reset sesi, keawetan reload, penolakan keyboard, dan pemeriksaan tata letak tanpa kesalahan halaman. Hanya sesi sintetis yang dibuat untuk pemeriksaan ini yang dihapus.
+Bukti disimpan secara lokal di bawah `.data/ai-deployment/`.
 
-Production Mac supervision uses the dedicated
-`com.gascomp.ai-assistance.production.worker` and
-`com.gascomp.ai-assistance.production.chrome` user LaunchAgents. The worker uses
-Hermes with local Ollama, and `caffeinate -i` prevents idle system sleep while it
-runs. Login, power, network, and model availability remain operational
-dependencies. The 24-hour endurance evaluation and independent database Cron
-schedule verification have not been completed; deployment smoke checks do not
-establish those results. See the [AI setup](../../setup/ai-assistance.md) for
-retention scheduling and rollback procedures.
+Supervisi Mac produksi menggunakan dedikasi
+`com.gascomp.ai-assistance.production.worker` dan
+`com.gascomp.ai-assistance.production.chrome` user LaunchAgents. Pekerja menggunakan Hermes dengan Ollama lokal, dan `caffeinate -i` mencegah tidur sistem idle saat berjalan. Login, daya, jaringan, dan ketersediaan model tetap menjadi ketergantungan operasional. Evaluasi ketahanan 24 jam dan verifikasi jadwal Cron database independen belum selesai; pemeriksaan asap deployment tidak menetapkan hasil tersebut. Lihat [Pengaturan AI](../../setup/ai-assistance.md) untuk
+jadwal retensi dan prosedur rollback.
 
-## Automated releases
+<a id="automated-releases"></a>
+## Rilis otomatis
 
-The September 16 release workflow preserves Hostinger's existing `main` source
-branch. Push reviewed candidates to `release`. GitHub Actions runs lint,
-typecheck, all Node/isolated PGlite SQL tests, and the production build before
-using the Supabase Management API to preview, apply, and verify migrations.
-Only then does it fast-forward `main` to the exact verified candidate, triggering
-the existing Hostinger integration. Pull requests run checks without production
-credentials. Manual workflow runs release only when the selected branch is
-`release`; a run on `main` only verifies code.
+Alur rilis bulan September mempertahankan cabang sumber `main` yang ada milik Hostinger. Dorong kandidat yang telah ditinjau ke `release`. GitHub Actions menjalankan linting, pengecekan tipe, semua tes SQL Node/isolated PGlite, dan pembangunan produksi sebelum menggunakan Supabase Management API untuk melihat pratinjau, menerapkan, dan memverifikasi migrasi. Baru kemudian ia melakukan fast-forward `main` ke kandidat yang diverifikasi secara tepat, memicu integrasi Hostinger yang ada. Permintaan tarik (pull requests) menjalankan pemeriksaan tanpa kredensial produksi. Jalur kerja manual hanya merilis ketika cabang yang dipilih adalah `release`; jalankan pada `main` hanya memverifikasi kode.
 
-The workflow uses `SUPABASE_ACCESS_TOKEN` and `SUPABASE_PROJECT_ID` repository
-secrets. It does not use `SUPABASE_DB_PASSWORD`, application service keys, or
-MCP OAuth credentials. The token needs migration read/write permission for the
-configured project. The Actions job needs `contents: write` to advance `main`.
-Do not push application changes directly to `main`, because that bypasses the
-database-before-hosting sequence. Make changes on `release` or merge reviewed
-feature branches into it. Hostinger must continue tracking `main`.
+Alur kerja menggunakan rahasia repositori `SUPABASE_ACCESS_TOKEN` dan `SUPABASE_PROJECT_ID`. Tidak menggunakan `SUPABASE_DB_PASSWORD`, kunci layanan aplikasi, atau kredensial OAuth MCP. Token memerlukan izin baca/tulis migrasi untuk proyek yang dikonfigurasi. Tugas Actions memerlukan `contents: write` untuk memajukan `main`. Jangan dorong perubahan aplikasi langsung ke `main`, karena itu melewati urutan database-sebelum-hosting. Lakukan perubahan pada `release` atau gabungkan cabang fitur yang telah ditinjau ke dalamnya. Hostinger harus terus melacak `main`.
 
-Concurrent production releases are serialized and never canceled during a
-database write. Before migration and promotion, the candidate must still be the
-latest `release` revision and descend from current `main`. A newer candidate
-supersedes queued work. A failed migration or non-fast-forward branch update
-prevents promotion; additive database changes remain if hosting subsequently
-fails. No database reset, rollback of customer data, fixture import, or Storage
-upload is part of the workflow.
+Rilis produksi bersamaan diserialisasi dan tidak pernah dibatalkan selama penulisan database. Sebelum migrasi dan promosi, kandidat masih harus menjadi revisi `release` terbaru dan turunan dari `main` saat ini. Kandidat yang lebih baru menggantikan pekerjaan yang antri. Migrasi gagal atau pembaruan cabang non-fast-forward mencegah promosi; perubahan database aditif tetap ada jika hosting kemudian gagal. Tidak ada bagian alur kerja untuk reset database, pembatalan data pelanggan, impor fixture, atau unggah Storage.
 
-The [migration baseline](../integrations/supabase.md#automated-migration-baseline)
-defines the intentional boundary around historical manual changes. The script
-defaults to preview; `--apply` is explicit. Provider errors are summarized
-without printing credentials, customer records, or SQL response bodies.
+[Dasar migrasi](../integrations/supabase.md#automated-migration-baseline) mendefinisikan batas sengaja di sekitar perubahan manual historis. Skrip secara default melihat pratinjau; `--apply` adalah eksplisit. Kesalahan penyedia dirangkum tanpa mencetak kredensial, catatan pelanggan, atau tubuh respons SQL.
 
-A successful Actions run proves code verification, migration verification, and
-GitHub promotion. It does not prove Hostinger deployment. Confirm the same
-commit in hPanel and test the affected production flows before reporting live
-success. Hostinger remains responsible for its own dependency install and build.
+Pelaksanaan GitHub Actions yang sukses membuktikan verifikasi kode, verifikasi migrasi, dan promosi GitHub. Tidak membuktikan deployment Hostinger. Konfirmasi commit yang sama di hPanel dan uji alur produksi yang terpengaruh sebelum melaporkan kesuksesan live. Hostinger tetap bertanggung jawab atas instalasi dependensi dan pembangunannya sendiri.
 
-References: [Supabase migration API](https://supabase.com/docs/reference/api/v1-apply-a-migration),
-[Hostinger GitHub deployments](https://www.hostinger.com/support/how-to-redeploy-a-node-js-application/).
+Referensi: [API migrasi Supabase](https://supabase.com/docs/reference/api/v1-apply-a-migration), [Deployment GitHub Hostinger](https://www.hostinger.com/support/how-to-redeploy-a-node-js-application/).
 
-- Connect the Gascomp Help Center to `support.gascompsuperlock.com`, replacing `bantuan.gascompsuperlock.com` to follow the English language standard. Confirm the deployment target before changing DNS.
-- The deployment needs a server runtime for admin authentication, Server Actions, Supabase access, and warranty claims.
-- Configure production Supabase, admin-authentication, and `GASCOMP_PUBLIC_BASE_URL` environment variables in the application host.
-- Enable HTTPS and verify customer pages, admin login, images, QR targets, claim submission, and private evidence access through the final domain.
-- Preserve existing website and email services. Limit DNS changes to records required by the chosen hostname.
-- Keep product help paths stable because printed QR codes depend on them.
+- Hubungkan Pusat Bantuan Gascomp ke `support.gascompsuperlock.com` sebagai pengganti `bantuan.gascompsuperlock.com` sesuai keputusan domain yang sudah berlaku. Pastikan tujuan deployment sebelum mengubah DNS.
+- Deployment memerlukan runtime server untuk autentikasi admin, Server Actions, akses Supabase, dan klaim garansi.
+- Konfigurasi Supabase produksi, autentikasi admin, dan variabel lingkungan `GASCOMP_PUBLIC_BASE_URL` di host aplikasi.
+- Aktifkan HTTPS dan verifikasi halaman pelanggan, login admin, gambar, target QR, pengajuan klaim, dan akses bukti pribadi melalui domain akhir.
+- Pertahankan layanan website dan email yang ada. Batasi perubahan DNS pada catatan yang diperlukan oleh hostname yang dipilih.
+- Pertahankan jalur bantuan produk stabil karena kode QR cetak bergantung padanya.
 
-Open items: hosting dashboard access, production environment verification, and Cloudflare DNS access.
+Poin terbuka: akses dashboard hosting, verifikasi lingkungan produksi, dan akses DNS Cloudflare.
 
-## DNS diagnosis on September 11, 2026
+<a id="dns-diagnosis-on-september-11-2026"></a>
+## Diagnosis DNS pada 11 September 2026
 
-The domain's published nameservers are `damien.ns.cloudflare.com` and
-`kenia.ns.cloudflare.com`. Direct A queries to `damien.ns.cloudflare.com` and
-queries through `1.1.1.1` returned `NXDOMAIN` for both support hostnames.
-Neither hostname exists in the active DNS zone at the time of the check.
-Creating a subdomain in Hostinger alone does not publish it in this
-Cloudflare-managed zone. DNS failure prevents checking hosting and HTTPS;
-their state is still unknown.
+Nama server domain yang diterbitkan adalah `damien.ns.cloudflare.com` dan `kenia.ns.cloudflare.com`. Pertanyaan A langsung ke `damien.ns.cloudflare.com` dan pertanyaan melalui `1.1.1.1` mengembalikan `NXDOMAIN` untuk kedua nama host dukungan. Tidak ada nama host yang ada di zona DNS aktif pada saat pemeriksaan. Membuat subdomain hanya di Hostinger tidak menerbitkannya di zona ini yang dikelola Cloudflare. Kegagalan DNS mencegah pemeriksaan hosting dan HTTPS; keadaan mereka masih belum diketahui.
 
-## Follow-up TLS diagnosis on September 11, 2026
+<a id="follow-up-tls-diagnosis-on-september-11-2026"></a>
+## Diagnosis TLS lanjutan pada 11 September 2026
 
-At 06:31 UTC, `support.gascompsuperlock.com` resolved to Cloudflare proxy
-addresses and a live HTTPS request returned HTTP 525. The earlier NXDOMAIN
-observation no longer describes this hostname. Cloudflare is reachable, but
-its TLS handshake with the configured origin fails. The origin address,
-hostname binding, and certificate still require verification; the response
-alone does not identify which origin setting is wrong.
+Pada pukul 06:31 UTC, `support.gascompsuperlock.com` terurai ke alamat proxy Cloudflare dan permintaan HTTPS langsung mengembalikan HTTP 525. Pengamatan NXDOMAIN sebelumnya tidak lagi menggambarkan nama host ini. Cloudflare dapat diakses, tetapi negosiasi TLS-nya dengan asal yang dikonfigurasi gagal. Alamat asal, pengikatan nama host, dan sertifikat masih memerlukan verifikasi; respons saja tidak mengidentifikasi pengaturan asal mana yang salah.
 
-Check the `support` DNS record against the application's hosting target,
-confirm the custom hostname is attached to that application, and verify that
-the origin serves HTTPS for this exact hostname. Do not change unrelated DNS
-records or weaken the zone's SSL mode as a workaround.
+Periksa catatan DNS `support` terhadap tujuan hosting aplikasi, pastikan nama host kustom terikat pada aplikasi tersebut, dan verifikasi bahwa asal melayani HTTPS untuk nama host ini secara tepat. Jangan ubah catatan DNS yang tidak terkait atau melemahkan mode SSL zona sebagai solusi sementara.
 
-At 06:34 UTC, a direct request to the user-supplied origin `145.223.108.57`
-with the `support.gascompsuperlock.com` Host header returned HTTP 200 and the
-Gascomp Help Center page over HTTP. The response identified Hostinger and
-LiteSpeed. A direct HTTPS request with the same hostname/SNI reached port 443
-but failed with `tlsv1 alert internal error`. This reproduces the TLS failure
-without Cloudflare; HTTP routing reaches the expected application, while
-origin HTTPS remains broken. Certificate provisioning or the hostname's TLS
-configuration must be checked in Hostinger.
+Pada pukul 06:34 UTC, permintaan langsung ke asal yang disediakan pengguna `145.223.108.57` dengan header Host `support.gascompsuperlock.com` mengembalikan HTTP 200 dan halaman Gascomp Help Center melalui HTTP. Respons mengidentifikasi Hostinger dan LiteSpeed. Permintaan HTTPS langsung dengan nama host/SNI yang sama mencapai port 443 tetapi gagal dengan `tlsv1 alert internal error`. Ini mereproduksi kegagalan TLS tanpa Cloudflare; routing HTTP mencapai aplikasi yang diharapkan, sementara HTTPS asal tetap rusak. Penawaran sertifikat atau konfigurasi TLS nama host harus diperiksa di Hostinger.
 
-Hostinger recommends temporarily setting the affected A record to **DNS only**
-while completing SSL installation. Keep `145.223.108.57` as the target, inspect
-the SSL status for the exact support hostname, and retry a failed installation
-if offered. Verify direct HTTPS before restoring proxying. Switching to DNS
-only alone does not repair the origin's TLS failure.
+Hostinger merekomendasikan secara sementara mengatur catatan A yang terpengaruh ke **DNS only** sambil menyelesaikan instalasi SSL. Pertahankan `145.223.108.57` sebagai target, periksa status SSL untuk nama host dukungan yang tepat, dan ulangi instalasi yang gagal jika ditawarkan. Verifikasi HTTPS langsung sebelum memulihkan proxying. Beralih hanya ke DNS tidak memperbaiki kegagalan TLS asal.
 
-Reference: [Hostinger failed Lifetime SSL installation](https://www.hostinger.com/support/5613445-how-to-fix-a-failed-lifetime-ssl-installation-in-hostinger/).
+Referensi: [Hostinger gagal Instalasi Lifetime SSL](https://www.hostinger.com/support/5613445-how-to-fix-a-failed-lifetime-ssl-installation-in-hostinger/).
 
-Reference: [Cloudflare error 525](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-525/).
+Referensi: [Cloudflare error 525](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-525/).
 
-## HTTPS verification on September 11, 2026
+<a id="https-verification-on-september-11-2026"></a>
+## Verifikasi HTTPS pada 11 September 2026
 
-At 07:13 UTC, direct origin HTTPS and the public hostname both returned HTTP
-200 with certificate verification enabled. The certificate matched
-`support.gascompsuperlock.com` and was issued by Google Trust Services. DNS
-resolved directly to `145.223.108.57`. This supersedes the earlier origin TLS
-failure; subsequent changes to Cloudflare proxying require a separate check.
+Pada pukul 07:13 UTC, HTTPS asal langsung dan nama host publik keduanya mengembalikan HTTP 200 dengan verifikasi sertifikat diaktifkan. Sertifikat cocok dengan `support.gascompsuperlock.com` dan diterbitkan oleh Google Trust Services. DNS terurai langsung ke `145.223.108.57`. Ini menggantikan kegagalan TLS asal sebelumnya; perubahan selanjutnya pada proxying Cloudflare memerlukan pemeriksaan terpisah.
 
-## Connection procedure
+<a id="connection-procedure"></a>
+## Prosedur koneksi
 
-1. Identify the application's hosting service and its supplied IP address or
-   CNAME target. This Next.js application needs a compatible server runtime.
-2. Connect `support.gascompsuperlock.com` to the application in the hosting
-   dashboard. For a Hostinger Node.js app on a temporary domain, use
-   **Websites → Connect domain** and follow its instructions.
-3. In Cloudflare's `gascompsuperlock.com` zone, add a record named `support`.
-   Use an A record for the provider's IPv4 address or a CNAME for its hostname,
-   following the provider's required record type, proxy setting, and ownership
-   verification records. Do not guess the target from the main website's IP.
-   Keep existing nameservers, apex, `www`, and mail records unchanged.
-4. Set `GASCOMP_PUBLIC_BASE_URL=https://support.gascompsuperlock.com` and the
-   Supabase and admin variables from `.env.example` in production. Apply the
-   required database migrations. For standard Node.js hosting, build with
-   `npm run build` and start with `npm run start`.
-5. Complete HTTPS and verify the new site before routing the old hostname to
-   the same application. The old hostname also needs DNS, a hosting binding,
-   and HTTPS for its redirect to work.
-6. Verify customer pages, admin login, images, QR destinations, a controlled
-   warranty submission, and private evidence access. Regenerate support
-   knowledge exports if they contain localhost or old-hostname links.
+1. Identifikasi layanan hosting aplikasi dan alamat IP atau target CNAME yang disediakannya. Aplikasi Next.js ini memerlukan runtime server yang kompatibel.
+2. Hubungkan `support.gascompsuperlock.com` ke aplikasi di dashboard hosting. Untuk aplikasi Hostinger Node.js pada domain sementara, gunakan **Websites → Connect domain** dan ikuti instruksinya.
+3. Di zona `gascompsuperlock.com` Cloudflare, tambahkan catatan bernama `support`. Gunakan tipe catatan A untuk alamat IPv4 penyedia atau CNAME untuk nama hostnya, mengikuti tipe catatan yang diperlukan oleh penyedia, pengaturan proxy, dan catatan verifikasi kepemilikan. Jangan menebak target dari IP situs web utama. Pertahankan nameserver yang ada, apex, `www`, dan catatan surat elektronik tanpa perubahan.
+4. Tetapkan `GASCOMP_PUBLIC_BASE_URL=https://support.gascompsuperlock.com` dan variabel Supabase serta admin dari `.env.example` dalam produksi. Terapkan migrasi database yang diperlukan. Untuk hosting Node.js standar, bangun dengan `npm run build` dan mulai dengan `npm run start`.
+5. Selesaikan HTTPS dan verifikasi situs baru sebelum merutekan nama host lama ke aplikasi yang sama. Nama host lama juga memerlukan DNS, pengikatan hosting, dan HTTPS agar pengalihan berfungsi.
+6. Verifikasi halaman pelanggan, login admin, gambar, tujuan QR, pengiriman garansi yang dikendalikan, dan akses bukti pribadi. Regenerasi ekspor pengetahuan dukungan jika mereka berisi tautan localhost atau nama host lama.
 
-## Warranty video verification runtime
+<a id="warranty-video-verification-runtime"></a>
+## Waktu verifikasi video garansi
 
-Warranty submissions decode videos using the single-threaded WebAssembly build
-in `@ffmpeg/core`, inside a Node.js worker thread. This replaces `ffmpeg-static`:
-native executable verification returned an unavailable error in production.
-No executable download, child process, or writable temporary directory is needed.
-`npm ci` installs the JavaScript and WASM assets with the dependency itself.
+Pengiriman garansi mendekode video menggunakan pembangunan WebAssembly berinti tunggal di `@ffmpeg/core`, di dalam thread worker Node.js. Ini menggantikan `ffmpeg-static`: verifikasi eksekusi native mengembalikan kesalahan tidak tersedia dalam produksi. Tidak perlu mengunduh eksekusi, proses anak, atau direktori sementara yang dapat ditulis. `npm ci` menginstal aset JavaScript dan WASM bersama dengan dependensinya sendiri.
 
-Next.js keeps the package external and explicitly traces its UMD JavaScript,
-WASM file, package manifest, and the unbundled worker entrypoint. Start the app
-from its project root, as with `npm run start`, so the worker path resolves in
-both regular and standalone deployments. The runtime must support Node worker
-threads and WebAssembly. Each check owns an in-memory filesystem and its worker
-is terminated after completion, failure, or a 30-second timeout. Verify actual
-valid and damaged submissions after deployment, not only metadata validation.
+Next.js menjaga paket eksternal dan secara eksplisit melacak UMD JavaScript-nya, file WASM, manifest paket, dan titik masuk worker yang tidak dibundling. Mulai aplikasi dari akar proyeknya, seperti `npm run start`, agar jalur worker terpecah dalam deployment reguler maupun mandiri. Runtime harus mendukung thread worker Node dan WebAssembly. Setiap pemeriksaan memiliki sistem file memori sendiri dan worker-nya dihentikan setelah penyelesaian, kegagalan, atau batas waktu 30 detik. Verifikasi pengiriman yang valid dan rusak aktual setelah deployment, bukan hanya validasi metadata.
 
-## Legacy links
+<a id="legacy-links"></a>
+## Tautan warisan
 
-`next.config.ts` issues HTTP 308 redirects from the exact
-`bantuan.gascompsuperlock.com` hostname to `https://support.gascompsuperlock.com`,
-preserving paths and query parameters. Existing route segments such as
-`/produk/[slug]` remain stable. Verify an old product URL redirects to its new
-equivalent after both hostnames are connected.
+`next.config.ts` mengeluarkan pengalihan HTTP 308 dari nama host `bantuan.gascompsuperlock.com` yang tepat ke `https://support.gascompsuperlock.com`, mempertahankan jalur dan parameter kueri. Segmen rute yang ada seperti `/produk/[slug]` tetap stabil. Verifikasi bahwa tautan produk lama berpindah ke ekuivalennya baru setelah kedua nama host terhubung.
 
 ## Status
 
-The environment example, application redirect, and deployment instructions are
-prepared locally. No production environment, DNS, hosting, or certificate
-settings were changed by the agent. The user-supplied Hostinger origin serves
-the expected home page and passed HTTPS verification. The live admin login
-page reports that authentication is not configured; production credentials
-and the latest application deployment still require verification.
+Contoh lingkungan, pengalihan aplikasi, dan instruksi deployment disiapkan secara lokal. Tidak ada perubahan pada lingkungan produksi, DNS, hosting, atau pengaturan sertifikat oleh agen. Asal Hostinger yang disediakan pengguna melayani halaman depan yang diharapkan dan lulus verifikasi HTTPS. Halaman login admin live melaporkan bahwa otentikasi tidak dikonfigurasi; kredensial produksi dan deployment aplikasi terbaru masih memerlukan verifikasi.
 
-## Provider references
+<a id="provider-references"></a>
+## Referensi penyedia
 
-- [Hostinger: Connect a custom domain to a Node.js application](https://www.hostinger.com/support/how-to-connect-a-custom-domain-to-a-node-js-application/)
-- [Cloudflare: Create subdomain records](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-subdomain/)
+- [Hostinger: Hubungkan domain kustom ke aplikasi Node.js](https://www.hostinger.com/support/how-to-connect-a-custom-domain-to-a-node-js-application/)
+- [Cloudflare: Buat catatan subdomain](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-subdomain/)
 
-## Tutorial video limit deployment on September 11, 2026
+## Deployment batas video tutorial pada 11 September 2026
 
-Commit `6e89c7f949a3ae2ae546ba88c2b41be9f7f62482` was pushed to `main`
-and verified live at `https://support.gascompsuperlock.com` at 09:28 UTC.
-The production admin displays the 150 MB tutorial upload limit; desktop browser
-checks reported no JavaScript errors and the mobile layout had no horizontal
-overflow. An authenticated upload authorization request for 157,286,401 bytes
-returned HTTP 400 with the new 150 MB validation message. The isolated release
-passed lint, typecheck, all 31 Node tests, and the production build.
+Commit `6e89c7f949a3ae2ae546ba88c2b41be9f7f62482` telah dipush ke `main`
+dan diverifikasi live di `https://support.gascompsuperlock.com` pada pukul 09:28 UTC.
+Admin produksi menampilkan batas upload tutorial 150 MB; browser desktop melaporkan tidak ada kesalahan JavaScript dan tata letak mobile tidak memiliki overflow horizontal. Permintaan otorisasi upload terautentikasi untuk 157,286,401 byte mengembalikan HTTP 400 dengan pesan validasi baru 150 MB. Release terisolasi tersebut lulus lint, typecheck, semua 31 tes Node, dan build produksi.
 
-Storage is still blocked separately: Supabase rejected the bucket-limit increase
-with HTTP 413, and a subsequent read confirmed the existing 52,428,800-byte limit.
-Uploads above 50 MB remain unavailable until the project-wide Storage limit and
-bucket limit can be raised. See [Supabase storage](../integrations/supabase.md#tutorial-upload-limit-increase).
-The verification report is stored locally at
+Penyimpanan masih diblokir secara terpisah: Supabase menolak peningkatan batas bucket dengan HTTP 413, dan pembacaan berikutnya mengonfirmasi batas eksisting 52,428,800 byte. Upload di atas 50 MB tetap tidak tersedia hingga batas penyimpanan proyek-wide dan batas bucket dapat ditingkatkan. Lihat [Supabase storage](../integrations/supabase.md#tutorial-upload-limit-increase).
+Laporan verifikasi disimpan secara lokal di
 `.data/video-limit-deployment/production-verification.json`.
 
-### Restore the supported 50 MB limit
+### Kembalikan batas 50 MB yang didukung
 
-At the user's request, commit `0830ac5` restores the tutorial upload limit to
-50 MB (52,428,800 bytes) and removes the unapplied bucket-limit increase migration.
-It passed lint, typecheck, all 33 Node tests, and the production build before
-being pushed to `main`. The production upload endpoint was verified to reject
-52,428,801 bytes with HTTP 400 and the 50 MB validation message. Supabase's
-`product-videos` bucket was independently verified at 52,428,800 bytes.
-This supersedes the earlier 150 MB application rollout; no Storage increase
-or plan upgrade is needed.
+Atas permintaan pengguna, commit `0830ac5` mengembalikan batas upload tutorial ke 50 MB (52,428,800 byte) dan menghapus migrasi peningkatan batas bucket yang belum diterapkan. Ia lulus lint, typecheck, semua 33 tes Node, dan build produksi sebelum dipush ke `main`. Endpoint upload produksi diverifikasi untuk menolak 52,428,801 byte dengan HTTP 400 dan pesan validasi 50 MB. Bucket Supabase `product-videos` diverifikasi secara independen pada 52,428,800 byte.
+Ini menggantikan rollout aplikasi sebelumnya 150 MB; tidak perlu peningkatan Storage atau upgrade plan.
 
-## Hero release and duplicate deployment targets on September 11, 2026
+## Rilis hero dan target deployment ganda pada 11 September 2026
 
-The intended automatic release path is GitHub repository
-`gascomsuperlock-glitch/Gascomp`, branch `main`, to
+Rute rilis otomatis yang direncanakan adalah repositori GitHub
+`gascomsuperlock-glitch/Gascomp`, cabang `main`, ke
 `support.gascompsuperlock.com`.
 
-Commit `38660e4ee07a47833bec4b123d994f3d0eeac547` contains the brand-guideline
-hero redesign. The push triggered Git builds for both support hostnames at
-09:42:14 UTC. The `bantuan` build completed, while the `support` build failed
-after four seconds and returned no build log. Hostinger reports that both
-Node.js website records share the document root `public_html/bantuan`.
-The shared directory and duplicate triggers are confirmed; the API results
-do not establish the exact cause of the failed Git build.
+Commit `38660e4ee07a47833bec4b123d994f3d0eeac547` berisi redesign hero panduan merek. Push memicu build Git untuk kedua hostname support pada 09:42:14 UTC. Build `bantuan` selesai, sedangkan build `support` gagal setelah empat detik dan mengembalikan log build kosong. Hostinger melaporkan bahwa kedua record Node.js website berbagi root dokumen `public_html/bantuan`.
+Direktori bersama dan pemicu duplikasi dikonfirmasi; hasil API tidak menetapkan penyebab pasti dari build Git yang gagal.
 
-A source archive from the same commit was explicitly deployed to `support`.
-Build `01a08fdb-1a04-71ec-be8f-a3fb349aaf50` completed at 09:46:13 UTC.
-This manual release does not repair the GitHub auto-deployment mapping.
+Arsip sumber dari commit yang sama secara eksplisit dideploy ke `support`.
+Build `01a08fdb-1a04-71ec-be8f-a3fb349aaf50` selesai pada pukul 09:46:13 UTC.
+Rilis manual ini tidak memperbaiki pemetaan auto-deployment GitHub.
 
-The website-level GitHub connection must be reviewed in hPanel so that only
-`support` receives releases from this repository. The available Hostinger
-hosting API exposes builds and build settings, but no operation to change
-or disconnect a website's GitHub repository. Do not delete either website
-as a connection-reset workaround: both records currently share application
-files. Preserve the legacy hostname's redirect and existing public paths.
+Koneksi GitHub tingkat website harus ditinjau di hPanel sehingga hanya
+`support` yang menerima rilis dari repositori ini. API hosting Hostinger yang tersedia mengekspos build dan pengaturan build, tetapi tidak ada operasi untuk mengubah atau memutus koneksi repositori GitHub website. Jangan hapus salah satu website sebagai workaround koneksi-reset: kedua record saat ini berbagi file aplikasi. Pertahankan redirect hostname legacy dan jalur publik eksisting.
 
-## Warranty video limit deployment on September 11, 2026
+## Deployment batas video garansi pada 11 September 2026
 
-Commit `7e6c99d` was deployed and verified on the production claim form.
-Warranty videos now allow up to 50 MB, matching the private `warranty-evidence`
-bucket. Videos of 1 MB and 23 MB are accepted; nonempty smaller videos remain
-allowed. The request limit is 72 MB to cover all evidence and multipart overhead.
+Commit `7e6c99d` telah dideploy dan diverifikasi pada formulir klaim produksi.
+Video garansi sekarang mengizinkan hingga 50 MB, sesuai dengan bucket `warranty-evidence` privat. Video 1 MB dan 23 MB diterima; video kecil nonkosong tetap diizinkan. Batas permintaan adalah 72 MB untuk mencakup semua bukti dan overhead multipart.
 
-Complete local claims passed with playable synthetic 1 MB, 23 MB, and 50 MB
-videos, including a 70 MB combined-evidence request. Production transport and
-size validation passed for the same sizes using an intentionally invalid name
-to prevent ticket creation. A synthetic 23 MB video was also uploaded to private
-production Storage, its recorded size checked, and the test object removed.
-Desktop/mobile checks had no JavaScript errors or horizontal overflow. Lint,
-typecheck, all 34 Node tests, and the production build passed. Verification is
-recorded locally in `.data/warranty-video-limit/production-verification.json`.
+Laporan klaim lokal lengkap dengan video sintetik yang dapat dimainkan berukuran 1 MB, 23 MB, dan 50 MB, termasuk permintaan bukti gabungan sebesar 70 MB. Transportasi produksi dan validasi ukuran berhasil untuk ukuran yang sama menggunakan nama yang disengkan tidak valid untuk mencegah pembuatan tiket. Video sintetik berukuran 23 MB juga diunggah ke Penyimpanan Produksi privat, ukurannya dicatat, dan objek uji coba dihapus. Pemeriksaan desktop/mobile tidak memiliki kesalahan JavaScript atau tumpahan horizontal. Lint, pengecekan tipe, semua 34 uji coba Node, dan build produksi berhasil. Verifikasi tercatat secara lokal di `.data/warranty-video-limit/production-verification.json`.
 
+<a id="gascompcare-release-to-an-existing-site"></a>
+## Pelepasan GascompCare ke situs yang ada
 
-## GascompCare release to an existing site
+Perintah aplikasi repositori adalah `npm run build` (`next build --webpack`) dan `npm run start` (`next start`). Tidak ada perintah yang menerapkan migrasi database, mereset Supabase, mengimpor fixture, atau mengunggah objek Penyimpanan. Saat ini tidak ada direktori alur kerja `.github` dalam checkout ini. Ini tidak memverifikasi pengaturan deploymen Hostinger/GitHub eksternal, yang dapat menjalankan perintah di luar repositori.
 
-The repository's application commands are `npm run build` (`next build --webpack`)
-and `npm run start` (`next start`). Neither command applies a database migration,
-resets Supabase, imports fixtures, or uploads Storage objects. There is currently
-no `.github` workflow directory in this checkout. This does not verify external
-Hostinger/GitHub deployment settings, which can run commands outside the repository.
+Sebelum pelepasan yang sah:
 
-Before an authorized release:
+1. Periksa target deploymen hosting, cabang, perintah build/start, dan setiap hook pra/post-deploy. Konfirmasi bahwa proyek Supabase yang dimaksud yang sudah ada dan kredensial server-saja tetap dikonfigurasi. Pertahankan domain publik yang ada, jalur QR produk, bucket Penyimpanan, dan data pelanggan. Selesaikan target deploymen duplikat yang didokumentasikan sebelumnya sebelum mengasumsikan push memiliki satu target.
+2. Ikuti prosedur [Supabase preservation](../../setup/supabase.md#preserve-existing-production-data-when-adding-gascompcare): verifikasi cadangan database dan file Penyimpanan independen, periksa skema yang terpasang, dan dapatkan persetujuan spesifik sebelum menerapkan hanya migrasi Care tambahan. Jangan tambahkan reset database, penggantian skema penuh, atau impor fixture lokal ke hook build atau startup otomatis.
+3. Pertahankan konfigurasi pratinjau lokal dan akun fiktif di luar lingkungan produksi. Jangan aktifkan `GASCOMP_LOCAL_HTTP_PREVIEW` pada layanan hosting. Cookie pelanggan dan administrator produksi harus tetap dilindungi HTTPS.
+4. Jalankan verifikasi repositori dan deploymen revisi aplikasi yang ditinjau hanya ketika sah. Jika migrasi Care tidak ada, Care harus menampilkan keadaan tidak tersedia daripada membuat skema atau data anggota palsu selama startup.
+5. Bandingkan baseline data sebelum/sesudah privat, periksa halaman katalog yang ada, gambar produk dan tujuan QR cetak, dan verifikasi bahwa bukti garansi privat tetap dilindungi. Validasi login dan rotasi password Care di staging; setiap pembuatan akun produksi atau klaim uji coba memerlukan otorisasi eksplisit.
+6. Jika aplikasi perlu rollback, kembalikan revisi aplikasi sebelumnya dan pertahankan skema Care tambahan dan catatan anggota. Jangan hapus tabel, kembalikan database lama atas penulisan hidup, atau hapus file Penyimpanan sebagai rollback aplikasi.
 
-1. Inspect the hosting deployment target, branch, build/start commands, and any
-   pre/post-deploy hooks. Confirm that the intended existing Supabase project and
-   server-only credentials remain configured. Preserve the existing public domain,
-   product QR paths, Storage buckets, and customer data. Resolve the previously
-   documented duplicate deployment targets before assuming a push has one target.
-2. Follow the [Supabase preservation procedure](../../setup/supabase.md#preserve-existing-production-data-when-adding-gascompcare):
-   verify independent database and Storage-file backups, inspect the installed
-   schema, and obtain specific approval before applying only the missing additive
-   Care migration. Do not add database reset, full-schema replacement, or local
-   fixture import to an automatic build or startup hook.
-3. Keep local preview configuration and fictional accounts out of the production
-   environment. Do not enable `GASCOMP_LOCAL_HTTP_PREVIEW` on the hosting service.
-   Production customer and administrator cookies must keep their HTTPS protection.
-4. Run repository verification and deploy the reviewed application revision only
-   when authorized. If the Care migration is absent, Care must show its unavailable
-   state rather than creating a schema or fake member data during startup.
-5. Compare private before/after data baselines, check existing catalog pages,
-   product images and printed-QR destinations, and verify that private warranty
-   evidence remains protected. Validate Care login and password rotation in staging;
-   any production account creation or test claim needs explicit authorization.
-6. If the application needs rollback, restore the previous application revision
-   and retain the additive Care schema and member records. Do not delete tables,
-   restore an old database over live writes, or remove Storage files as an app rollback.
+Uji coba lokal menetapkan bahwa migrasi Care mempertahankan baris yang ada ditanam dan gagal dengan aman pada tabel Care yang sudah ada. Mereka tidak menetapkan bahwa cadangan jarak jauh, hook deploymen, kredensial proyek, atau sejarah migrasi benar. Tidak ada migrasi produksi, push, deploymen, atau perubahan hosting yang diotorisasi oleh persiapan ini saja.
 
-Local tests establish that the Care migration preserves seeded existing rows and
-fails safely on an already-existing Care table. They do not establish that remote
-backups, deployment hooks, project credentials, or migration history are correct.
-No production migration, push, deployment, or hosting change is authorized by this
-preparation alone.
+<a id="gascompcare-release-preparation-on-september-15-2026"></a>
+### Persiapan pelepasan GascompCare pada 15 September 2026
 
+Pemilik mengotorisasi *push* GitHub dan deploymen Hostinger. Rilis yang ditinjau mencakup manajemen akun Care, penggantian password wajib dengan minimal 8 karakter, kartu anggota, navigasi publik, serta peningkatan admin mobile yang ada. Pembelian Care dan aktivasi hak tetap ditunda. Lint, pengecekan tipe, semua 117 uji coba Node (termasuk SQL), dan build produksi telah lulus. Chromium dan WebKit memverifikasi pembuatan anggota, penggantian password delapan karakter, persistensi sesi, logout, dan login berikutnya secara lokal.
 
-### GascompCare release preparation on September 15, 2026
+Migrasi Care tambahan diterapkan dan pemeliharaan data yang ada diverifikasi; lihat [Integrasi Supabase](../integrations/supabase.md#gascompcare-member-accounts).
+Variabel pratinjau lokal, anggota fiktif, backup, dan kredensial tetap berada di luar rilis. Pemeriksaan produksi awal menemukan halaman rumah dan garansi tersedia dan `/gascomp-care/login` mengembalikan 404. API GitHub yang tersedia melaporkan tidak ada webhook repositori, jalannya Actions, catatan deploymen, atau status komitmen yang menetapkan pemetaan deploymen Hostinger. Akses hosting Hostinger belum terhubung dalam sesi ini; *push* sukses saja tidak boleh dilaporkan sebagai deploymen hosting yang terverifikasi.
 
-The owner authorized a GitHub push and Hostinger deployment. The reviewed release
-includes Care account management, mandatory password replacement with an
-8-character minimum, member cards, public navigation, and the existing mobile
-admin improvements. Care purchases and entitlement activation remain deferred.
-Lint, typecheck, all 117 Node tests (including SQL), and the production build
-passed. Chromium and WebKit verified member creation, an eight-character password
-replacement, session persistence, logout, and subsequent login locally.
+<a id="coverage-claim-confirmation-and-deletion-release"></a>
+### Rilis cakupan, konfirmasi klaim, dan penghapusan
 
-The additive Care migration was applied and existing data preservation verified;
-see [Supabase integration](../integrations/supabase.md#gascompcare-member-accounts).
-Local preview variables, fictional members, backups, and credentials remain
-outside the release. Initial production checks found the home and warranty pages
-available and `/gascomp-care/login` returning 404. The available GitHub API
-reported no repository webhooks, Actions runs, deployment records, or commit
-statuses establishing the Hostinger release mapping. Hostinger hosting access
-was not connected in this session; a successful push alone must not be reported
-as a verified hosting deployment.
+Pemilik mengotorisasi *push* GitHub berikutnya dan deploymen Hostinger selanjutnya. Rilis ini menambahkan tampilan klaim sisa/kekadaluwarsa pelanggan, catatan pembelian administrator dan Konfirmasi Klaim, pemilihan anggota, serta penghapusan lunak tunggal/bulk. Telah lulus lint, pengecekan tipe, semua 147 uji coba Node, build produksi, dan alur kerja browser lokal, termasuk batas konfirmasi, ulang penghapusan, pencabutan akses, pemeliharaan riwayat, dan tata letak mobile.
 
+Kedua migrasi database baru (`202609150004` dan `202609150005`) telah diterapkan; pemeliharaan data yang ada dicatat dalam [Spesifikasi Supabase](../integrations/supabase.md#gascompcare-member-deletion).
+Tidak ada akun fixture atau pembelian yang disalin ke produksi. Akses hosting Hostinger masih tidak tersedia dalam sesi ini; plugin pencarian hanya menemukan Hostinger Mail untuk penyedia tersebut. *Push* bukan bukti deploymen hosting.
 
-### Coverage, claim confirmation, and deletion release
+<a id="service-center-release-on-september-16-2026"></a>
+### Rilis Pusat Layanan pada 16 September 2026
 
-The owner authorized the next GitHub push and Hostinger deployment. The release
-adds customer remaining-claim/expiry views, administrator purchase records and
-Confirm Claim, member selection, and single/bulk soft deletion. It passed lint,
-typecheck, all 147 Node tests, production build, and local browser workflows,
-including confirmation limits, deletion retries, access revocation, history
-preservation, and mobile layouts.
+Pemilik mengotorisasi memindahkan direktori Pusat Layanan, peta interaktif, manajemen lokasi administrator, dan impor tautan Google Maps tanpa kunci API ke `main`, serta mengonfirmasi bahwa deploymen otomatis Hostinger dikonfigurasi. Rilis ini menargetkan aplikasi `support.gascompsuperlock.com` yang ada. Lint, pengecekan tipe, build produksi, dan 146 uji coba Node telah lulus; tiga uji coba opsional tidak terkait dilewati. Pemeriksaan browser lokal mencakup impor Google Maps asli, penggantian bidang eksplisit, respons kadaluwarsa, persistensi database, autentikasi administrator, dan tata letak mobile tanpa tumpahan horizontal.
 
-Both new database migrations (`202609150004` and `202609150005`) are applied;
-existing data preservation is recorded in the
-[Supabase specification](../integrations/supabase.md#gascompcare-member-deletion).
-No fixture accounts or purchases were copied to production. Hostinger hosting
-access was still unavailable in this session; the plugin search found only
-Hostinger Mail for that provider. A push is not proof of hosting deployment.
+Migrasi tambahan `202609160001` sudah diterapkan. Kesiapan rilis query mengonfirmasi nol baris pusat layanan, mengaktifkan RLS, dan tidak ada akses baca tabel untuk `anon` atau `authenticated`. Tidak diperlukan migrasi atau impor fixture selama deploymen. Administrator mengisi lokasi setelah rilis.
 
-### Service Center release on September 16, 2026
+Alat hosting Hostinger tidak tersedia dalam sesi ini, sehingga pengaturan build penyedia dan log tidak dapat diperiksa secara langsung. API GitHub tidak mengekspos hook repositori, jalannya Actions, atau catatan deploymen untuk pemetaan saat ini. Verifikasi rute publik setelah *push* sebelum melaporkan rilis sebagai aktif.
 
-The owner authorized pushing the Service Center directory, interactive map,
-administrator location management, and Google Maps link import without an API
-key to `main`, and confirmed that Hostinger automatic deployment is configured.
-The release targets the existing `support.gascompsuperlock.com` application.
-Lint, typecheck, the production build, and 146 Node tests passed; three unrelated
-optional tests were skipped. Local browser checks covered real Google Maps
-imports, explicit field replacement, stale responses, database persistence,
-administrator authentication, and mobile layout without horizontal overflow.
+Komit `afea6bc5031a38c4cb3e3e14e7df2607b4822e93` telah dipush ke `main`.
+Pada pukul 02:52 UTC, rute publik `/service-center` mengembalikan HTTP 200 dengan direktori baru. Pemeriksaan Chromium produksi memverifikasi kondisi kosong, semua opsi provinsi 38, reset filter, kontrol peta interaktif, respons tile OpenStreetMap yang sukses, perpindahan bahasa Inggris/Indonesia, dan tata letak mobile. Login administrator dan import short-link Google Maps asli berhasil di host produksi.
+Draft yang diimport tidak disimpan; kueri database berikutnya mengonfirmasi nol baris lokasi. Pemeriksaan mencatat tidak ada kesalahan JavaScript halaman. Halaman utama, login admin, dan login Care juga mengembalikan HTTP 200. Bukti lokal disimpan di `.data/service-center-release/production-verification.json`.
 
-The additive migration `202609160001` is already applied. The release readiness
-query confirmed zero service center rows, enabled RLS, and no table read access
-for `anon` or `authenticated`. No migration or fixture import is required during
-deployment. Administrators populate locations after release.
+<a id="warranty-submission-performance-release-on-september-16-2026"></a>
+### Pelepasan kinerja pengajuan garansi pada 16 September 2026
 
-Hostinger hosting tools are unavailable in this session, so provider build
-settings and logs cannot be inspected directly. The GitHub API exposes no
-repository hooks, Actions runs, or deployment records for the current mapping.
-Verify the public route after the push before reporting the release as live.
+Pemilik mengizinkan push perubahan pengajuan garansi yang diverifikasi ke `main` dan deployment melalui jalur pelepasan otomatis Hostinger yang ada. Pelepasan ini menambahkan persentase upload, umpan balik pemrosesan terpisah, transport dan permintaan penyedia terbatas, bukti upload konkuren, dan metadata bukti batched. Tidak diperlukan migrasi skema atau perubahan lingkungan hosting. Rute publik dan akses bukti pribadi yang ada tetap tidak berubah.
 
-Commit `afea6bc5031a38c4cb3e3e14e7df2607b4822e93` was pushed to `main`.
-At 02:52 UTC, the public `/service-center` route returned HTTP 200 with the new
-directory. Production Chromium checks verified the empty state, all 38 province
-options, filter reset, interactive map controls, successful OpenStreetMap tile
-responses, English/Indonesian switching, and mobile layout. Administrator login
-and a real Google Maps short-link import succeeded on the production host.
-The imported draft was not saved; a subsequent database query confirmed zero
-location rows. The checks recorded no page JavaScript errors. The home page,
-admin login, and Care login also returned HTTP 200. Local evidence is stored in
-`.data/service-center-release/production-verification.json`.
+Verifikasi lokal lulus lint, typecheck, build produksi, dan 160 uji Node; empat uji SQL opsional dilewati. Chromium memverifikasi upload sintetik 46,4 MiB terhadap simulasi penyimpanan lokal, termasuk progress upload throttled, decoding video penuh, umpan balik kegagalan, dan retensi file. Verifikasi produksi akan menggunakan nama pelanggan yang sengaja tidak valid sehingga transport dan validasi dapat diperiksa tanpa membuat tiket atau menyimpan bukti.
 
+<a id="service-center-deletion-release-on-september-16-2026"></a>
+### Pelepasan penghapusan Pusat Layanan pada 16 September 2026
 
-### Warranty submission performance release on September 16, 2026
+Pemilik mengizinkan push fitur penghapusan Pusat Layanan yang diverifikasi ke `main` dan deployment melalui jalur pelepasan otomatis Hostinger yang ada di `support.gascompsuperlock.com`. Tidak diperlukan migrasi atau perubahan lingkungan.
+Fitur ini menambahkan aksi hapus permanen satu lokasi dengan konfirmasi, autentikasi admin, validasi asal dan ID, revalidasi direktori publik, dan umpan balik kesalahan yang mempertahankan draf saat ini.
 
-The owner authorized pushing the verified warranty submission changes to `main`
-and deploying through the existing Hostinger automatic release path. The release
-adds upload percentage, separate processing feedback, bounded transport and
-provider requests, concurrent evidence uploads, and batched evidence metadata.
-No schema migration or hosting environment change is required. Existing public
-routes and private evidence access remain unchanged.
-
-Local verification passed lint, typecheck, the production build, and 160 Node
-tests; four optional SQL tests were skipped. Chromium verified a synthetic
-46.4 MiB upload against a local storage simulation, including throttled upload
-progress, full video decoding, failure feedback and file retention. Production
-verification will use an intentionally invalid customer name so transport and
-validation can be checked without creating a ticket or storing evidence.
-
-
-### Service Center deletion release on September 16, 2026
-
-The owner authorized pushing the verified Service Center deletion feature to
-`main` and deploying through the existing Hostinger automatic release path at
-`support.gascompsuperlock.com`. No migration or environment change is required.
-The feature adds a permanent, single-location delete action with confirmation,
-admin authentication, origin and ID validation, public directory revalidation,
-and error feedback that preserves the current draft.
-
-Lint, typecheck, the production build, 164 Node tests, and local desktop/mobile
-browser checks passed; four optional SQL tests were skipped. Local database
-verification removed only two temporary inactive locations and preserved the
-existing location. Production verification checks the rendered button and
-cancels confirmation so existing locations remain untouched. Deployment evidence
-is kept locally under `.data/service-center-delete-release/`.
+Lint, typecheck, build produksi, 164 uji Node, dan pemeriksaan browser desktop/mobile lokal lulus; empat uji SQL opsional dilewati. Verifikasi database lokal menghapus hanya dua lokasi tidak aktif sementara dan mempertahankan lokasi yang ada. Verifikasi produksi memeriksa tombol yang dirender dan membatalkan konfirmasi sehingga lokasi yang ada tetap tidak tersentuh. Bukti deployment disimpan secara lokal di bawah `.data/service-center-delete-release/`.

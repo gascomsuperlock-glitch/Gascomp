@@ -10,20 +10,20 @@ generated: true
 
 # Jika butuh perbaikan, harus dibawa ke mana?
 
-Product: [[../../products/grs-925-d2a7488|Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman]]
+Produk: [[../../products/grs-925-d2a7488|Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman]]
 
-## Question
+## Pertanyaan
 
 Jika butuh perbaikan, harus dibawa ke mana?
 
-## Approved answer
+## Jawaban disetujui
 
 Halo kak 👋 
 Service center ada di Jakarta ya 🙏. Tapi tenang, produk ini bergaransi 1 tahun dan bisa klaim langsung lewat kami supaya kendala kakak cepat terselesaikan.
 
-Product guide: https://support.gascompsuperlock.com/produk/grs-925-d2a7488
+Panduan produk: https://support.gascompsuperlock.com/produk/grs-925-d2a7488
 
-## Search triggers
+## Pemicu pencarian
 
 - Jika butuh perbaikan, harus dibawa ke mana?
 - Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman

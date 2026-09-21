@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRT-924E
 - **Model:** Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/new-product-5be8g9
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/new-product-5be8g9
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789636764066-tidkm|Apakah regulator ini tipe terbaru?~]]
 - [[../knowledge/approved/admin-faq-faq-1789636795243-28nn2|Apa perbedaan antara GRT-924E dan GRP-924E terkait bahan, ketahanan, serta fitur keamanannya?]]

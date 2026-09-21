@@ -267,10 +267,10 @@ def write_review_notes(candidates: list[dict[str, Any]]) -> None:
     for old in REVIEW_DIR.glob("history-*.md"):
         old.unlink()
     index_lines = [
-        "# Knowledge Candidates from Duoke History",
+        "# Kandidat pengetahuan dari riwayat Duoke",
         "",
-        "These notes have been anonymized, but they must not be used for automated replies yet.",
-        "Historical answers require review because an old reply does not prove that the customer issue was resolved.",
+        "Catatan ini telah dianonimkan, tetapi belum boleh digunakan untuk balasan otomatis.",
+        "Jawaban dalam riwayat memerlukan tinjauan karena balasan lama tidak membuktikan masalah pelanggan telah selesai.",
         "",
     ]
     for candidate in candidates:
@@ -278,7 +278,7 @@ def write_review_notes(candidates: list[dict[str, Any]]) -> None:
         product_links = "\n".join(
             f"- [[../../products/{product['slug']}|{product['name']} · {product['sku']}]]"
             for product in candidate.get("products", [])
-        ) or "- Not identified"
+        ) or "- Belum teridentifikasi"
         topics = ", ".join(candidate["topics"]) or "unclassified"
         note = "\n".join([
             "---",
@@ -290,27 +290,27 @@ def write_review_notes(candidates: list[dict[str, Any]]) -> None:
             f"flags: {yaml_value(candidate['flags'])}",
             "---",
             "",
-            f"# Candidate {candidate['id']}",
+            f"# Kandidat {candidate['id']}",
             "",
-            "## Customer question",
+            "## Pertanyaan pelanggan",
             "",
             candidate["question"],
             "",
-            "## Previous support reply",
+            "## Balasan dukungan sebelumnya",
             "",
             candidate["historicalAnswer"],
             "",
-            "## Suggested answer",
+            "## Jawaban yang diusulkan",
             "",
             candidate["suggestedAnswer"],
             "",
-            "## Product relationship",
+            "## Hubungan produk",
             "",
             product_links,
             "",
-            f"Topics: {topics}",
+            f"Topik: {topics}",
             "",
-            "Resolution status: **not verified**.",
+            "Status penyelesaian: **belum diverifikasi**.",
             "",
         ])
         (REVIEW_DIR / filename).write_text(note, encoding="utf-8")

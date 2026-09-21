@@ -1,45 +1,50 @@
-# Customer AI assistance
+<a id="customer-ai-assistance"></a>
+# Bantuan AI pelanggan
 
-[Workspace map](../../../CONTEXT.md) · [Root rules](../../../AGENTS.md)
+[Peta ruang kerja](../../../CONTEXT.md) · [Aturan akar](../../../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `src/features/ai-assistance` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `src/features/ai-assistance` dan turunannya, kecuali jika peta ruang kerja menunjukkan konteks yang lebih dekat.
 
-Own the public chat panel, admin runtime controls, API handlers, sessions, and worker-facing database contracts.
+Fitur ini memiliki panel percakapan publik, kontrol runtime admin, handler API, sesi, dan kontrak database yang digunakan worker.
 
-## Inputs
+<a id="inputs"></a>
+## Masukan
 
-Read the relevant references for the requested task, not every linked document.
+Baca rujukan yang relevan dengan tugas, bukan semua dokumen tertaut.
 
-- [AI assistance specification](../../../docs/product/features/ai-assistance.md)
-- [Database and migration specification](../../../docs/product/integrations/supabase.md)
-- [Worker setup](../../../docs/setup/ai-assistance.md)
-- [Language and compatibility](../../../docs/architecture/language-standard.md)
+- [Spesifikasi bantuan AI](../../../docs/product/features/ai-assistance.md)
+- [Spesifikasi database dan migrasi](../../../docs/product/integrations/supabase.md)
+- [Penyiapan worker](../../../docs/setup/ai-assistance.md)
+- [Bahasa dan kompatibilitas](../../../docs/architecture/language-standard.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Tanggung jawab berikut berlaku sesuai permintaan saat ini, bukan daftar pekerjaan otomatis.
 
-| When asked to work on | Process | Expected result |
+| Saat diminta mengerjakan | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| Customer conversation | Trace client session state, requests, and response ownership. | Localized states and new conversations without stale replies. |
-| Worker/API contract | Coordinate schema and protocol changes with the Python worker. | Compatible requests, job lifecycle, and failure handling. |
-| Answer behavior | Read the grounded-answer policy and applicable knowledge source contracts. | Product facts remain grounded and handoff actions follow policy. |
+| Percakapan pelanggan | Telusuri keadaan sesi klien, permintaan, dan kepemilikan respons. | Keadaan sesuai bahasa pilihan dan percakapan baru tanpa balasan usang. |
+| Kontrak worker/API | Selaraskan perubahan skema dan protokol dengan worker Python. | Permintaan, siklus pekerjaan, dan penanganan kegagalan tetap kompatibel. |
+| Perilaku jawaban | Baca kebijakan jawaban berbasis sumber dan kontrak sumber pengetahuan yang berlaku. | Fakta produk tetap bersumber dan tindakan handoff mengikuti kebijakan. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Keep customer conversation data private and respect session/origin validation.
-- This module is separate from the Duoke automatic reply runner.
-- Customer chat cannot approve knowledge or claim operational actions occurred.
-- Keep business logic within its owning feature; respect server/client boundaries and the root verification rules.
-- Treat dated specification status as evidence to verify, not proof of current behavior.
+- Jaga kerahasiaan data percakapan pelanggan dan patuhi validasi sesi serta asal permintaan.
+- Modul ini terpisah dari runner balasan otomatis Duoke.
+- Percakapan pelanggan tidak dapat menyetujui pengetahuan atau mengklaim tindakan operasional telah terjadi.
+- Simpan logika bisnis dalam fitur pemiliknya; patuhi batas server/klien dan aturan verifikasi akar.
+- Perlakukan status spesifikasi bertanggal sebagai bukti yang perlu diperiksa, bukan bukti perilaku saat ini.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Keluaran dan verifikasi
 
-Use `components/` for feature UI, `model/` for domain types and pure logic, `server/` for protected storage/actions, and existing `hooks/` where applicable. Create subfolders only when real modules need them. Update the owning specification and save unfinished progress.
+Gunakan `components/` untuk UI fitur, `model/` untuk tipe domain dan logika murni, `server/` untuk penyimpanan dan tindakan terlindungi, serta `hooks/` yang sudah ada bila sesuai. Buat subfolder hanya ketika modul nyata memerlukannya. Perbarui spesifikasi pemilik dan simpan kemajuan yang belum selesai.
 
-For TypeScript/JavaScript changes, run `npm run lint`, `npm run typecheck`, and `npm run test`. Add `npm run build` for route/rendering/dependency/build changes. For visible changes, check the affected desktop/mobile flow and loading, empty, and error states in a browser when available. Report any blocked checks.
+Untuk perubahan TypeScript/JavaScript, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`. Tambahkan `npm run build` untuk perubahan rute, rendering, dependensi, atau build. Untuk perubahan yang terlihat, periksa alur desktop/ponsel dan keadaan memuat, kosong, serta galat di browser bila tersedia. Laporkan pemeriksaan yang terhalang.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../../docs/work/README.md) and [continuity workflow](../../../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan [indeks serah terima](../../../docs/work/README.md) dan [alur keberlanjutan](../../../docs/work/workflow.md).

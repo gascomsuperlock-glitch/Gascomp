@@ -1,302 +1,153 @@
-# Supabase storage
+<a id="supabase-storage"></a>
+# Penyimpanan Supabase
 
-[Specification index](../spec.md)
+[Indeks spesifikasi](../spec.md)
 
-Supabase PostgreSQL is the primary shared database; Supabase Storage holds product images and warranty evidence.
+Supabase PostgreSQL adalah database bersama utama; Supabase Storage menyimpan gambar produk dan bukti garansi.
 
-| Requirement | Store |
+| Kebutuhan | Penyimpanan |
 | --- | --- |
-| Products, variations, help content, publication state | PostgreSQL |
-| Tutorial video files | Public `product-videos` bucket; signed admin uploads, MP4/WebM up to 50 MB |
-| Tutorial video thumbnails | Public `product-images` bucket under `tutorial-thumbnails/`; signed admin uploads, generated WebP/JPEG/PNG up to 1 MB |
-| Product image files | Public `product-images` bucket |
-| Image metadata and product/variation relationships | PostgreSQL |
-| Warranty tickets and evidence metadata | Private PostgreSQL tables |
-| GascompCare accounts, sessions, and login limits | Private PostgreSQL tables; server-only access |
-| Service center locations | PostgreSQL; public reads limited to active locations |
-| Warranty evidence files | Private `warranty-evidence` bucket; video files up to 50 MB |
-| Duoke source identity and import history | PostgreSQL |
-| AI assistance sessions, jobs, knowledge snapshots, and runtime status | Private PostgreSQL tables; server and worker access through the application |
-| Product/knowledge graph notes | Project Obsidian vault |
+| Produk, variasi, konten bantuan, dan status publikasi | PostgreSQL |
+| File video tutorial | Bucket `product-videos` publik; unggahan admin ditandatangani, MP4/WebM hingga 50 MB |
+| Thumbnail video tutorial | Bucket `product-images` publik di bawah `tutorial-thumbnails/`; unggahan admin ditandatangani, WebP/JPEG/PNG yang dihasilkan hingga 1 MB |
+| File gambar produk | Bucket `product-images` publik |
+| Metadata gambar dan hubungan produk/variasi | PostgreSQL |
+| Tiket garansi dan metadata bukti | Tabel PostgreSQL privat |
+| Akun GascompCare, sesi, dan batas login | Tabel PostgreSQL privat; akses hanya server |
+| Lokasi pusat layanan | PostgreSQL; pembacaan publik terbatas pada lokasi aktif |
+| File bukti garansi | Bucket `warranty-evidence` privat; file video hingga 50 MB |
+| Identitas sumber Duoke dan riwayat impor | PostgreSQL |
+| Sesi bantuan AI, tugas, snapshot pengetahuan, dan status runtime | Tabel PostgreSQL privat; akses server dan worker melalui aplikasi |
+| Catatan grafik produk/pengetahuan | Arsip Obsidian proyek |
 
-Public clients can read only published products and their related content. Archived products that were published remain readable by their stable URL. Drafts, tickets, evidence, import runs, and all writes require the server-side secret key. Server Actions and the admin content-save endpoint verify the admin session before protected changes. The content-save endpoint also verifies the request origin.
+Klien publik hanya dapat membaca produk yang dipublikasikan dan konten terkait mereka. Produk yang diarsipkan yang pernah dipublikasikan tetap dapat dibaca melalui URL stabilnya. Draf, tiket, bukti, run impor, dan semua penulisan memerlukan kunci rahasia sisi server. Server Actions dan endpoint admin content-save memverifikasi sesi admin sebelum perubahan dilindungi. Endpoint content-save juga memverifikasi asal permintaan.
 
-The application preserves stable source identities to prevent duplicates. Duoke and warehouse imports update source-owned fields while retaining content maintained by administrators.
+Aplikasi mempertahankan identitas sumber yang stabil untuk mencegah duplikat. Impor Duoke dan gudang memperbarui bidang milik sumber sambil mempertahankan konten yang dikelola oleh administrator.
 
-Data flow: **Duoke or warehouse → validation/normalization → Supabase → admin panel and customer website**. Obsidian notes are generated from the same product and knowledge records.
+Alur data: **Duoke atau gudang → validasi/normalisasi → Supabase → panel admin dan website pelanggan**. Catatan Obsidian dihasilkan dari catatan produk dan pengetahuan yang sama.
 
-Status: catalog, help-content, import-history, warranty-ticket, and evidence tables are implemented. The `product-images` and `warranty-evidence` buckets are configured. See [Supabase setup](../../setup/supabase.md).
+Status: tabel katalog, konten bantuan, riwayat impor, tiket garansi, dan bukti telah diimplementasikan. Bucket `product-images` dan `warranty-evidence` dikonfigurasi. Lihat [penyiapan Supabase](../../setup/supabase.md).
 
-## Automated migration baseline
+<a id="automated-migration-baseline"></a>
+## Baseline migrasi otomatis
 
-`supabase/release-baseline.json` pins the existing project, hashes of SQL files
-before `202609160002`, and the five migration-history entries observed during
-release setup on September 16. Historical files are frozen and excluded from
-automatic execution. This does **not** mark untracked migrations as applied:
-some changes were applied manually, and the optional tutorial source-column
-migration remains deferred. Do not use a blanket `supabase db push` against
-this history. Reconcile a legacy change separately if it becomes required.
+`supabase/release-baseline.json` mengunci proyek yang ada, hash file SQL sebelum `202609160002`, dan lima entri riwayat migrasi yang diamati selama
+persiapan rilis pada 16 September. File historis dibekukan dan dikeluarkan dari
+eksekusi otomatis. Ini tidak menandai migrasi yang tidak dilacak sebagai sudah diterapkan:
+beberapa perubahan diterapkan secara manual, dan migrasi sumber kolom tutorial opsional tetap ditunda. Jangan gunakan blanket `supabase db push` terhadap
+riwayat ini. Rekonsiliasi perubahan legacy secara terpisah jika menjadi diperlukan.
 
-New ordered SQL files from `202609160002` onward are applied through the
-Management API by `scripts/supabase/release-migrations.mjs`. The remote name is
-`release_<local-version>_<full-SHA256-of-SQL>`, while Supabase assigns the remote
-version. This preserves a verifiable local-file identity without changing
-Supabase's historical version records. Editing/deleting an applied file,
-introducing a migration before an already applied automated migration, changing
-legacy SQL, selecting another project, or encountering unexpected remote
-history stops the release for review.
+File SQL baru berurutan dari `202609160002` ke depan diterapkan melalui
+API Manajemen oleh `scripts/supabase/release-migrations.mjs`. Nama remote adalah
+`release_<local-version>_<full-SHA256-of-SQL>`, sementara Supabase menetapkan versi remote. Ini mempertahankan identitas file lokal yang dapat diverifikasi tanpa mengubah
+catatan versi historis Supabase. Mengedit/hapus file yang diterapkan, memperkenalkan migrasi sebelum migrasi otomatis yang sudah diterapkan, mengubah SQL legacy, memilih proyek lain, atau menghadapi riwayat remote yang tidak terduga menghentikan rilis untuk ditinjau.
 
-Each successful POST must be confirmed in remote history before the next file
-or application promotion. No failed POST is automatically retried. After an
-ambiguous network failure, inspect remote history and schema before rerunning;
-if the recorded name matches, the next run skips it. Database writes through
-other clients must not run concurrently with a release. Local and remote CLI
-version identifiers intentionally differ for automated releases; the API runner
-is the production release mechanism.
+Setiap POST sukses harus dikonfirmasi dalam riwayat remote sebelum promosi file atau aplikasi berikutnya. Tidak ada POST gagal yang otomatis diulang. Setelah kegagalan jaringan ambigu, periksa riwayat remote dan skema sebelum menjalankan ulang; jika nama yang tercatat cocok, jalannya berikutnya akan melewatinya. Penulisan database melalui klien lain tidak boleh berjalan secara bersamaan dengan rilis. Identifikasi versi CLI lokal dan remote sengaja berbeda untuk rilis otomatis; API runner adalah mekanisme rilis produksi.
 
-The first automated migration expands only the existing warranty solution
-constraint to accept `usage_guidance`. Its isolated SQL test verifies historical
-row preservation, old/new values, rejected invalid values, and existing RLS.
+Migrasi otomatis pertama memperluas hanya batasan solusi jaminan eksisting untuk menerima `usage_guidance`. Uji SQL terisolasinya memverifikasi pelestarian baris historis, nilai lama/baru, nilai yang ditolak yang tidak valid, dan RLS yang ada.
 
-## Product image diagnosis on September 11, 2026
+<a id="product-image-diagnosis-on-september-11-2026"></a>
+## Diagnosis gambar produk pada 11 September 2026
 
-The live website contains the image URLs recorded in `product_images`, but
-sample public image requests return HTTP 400 with `Object not found` / `NoSuchKey`.
-The `product-images` bucket is public; listing its root and the `warehouse` and
-`products` prefixes returns no objects. There are 29 image metadata records.
-This is missing Storage content, rather than a frontend URL or bucket-visibility issue.
+Website live berisi URL gambar yang tercatat dalam `product_images`, tetapi permintaan gambar publik sampel mengembalikan HTTP 400 dengan `Object not found` / `NoSuchKey`. Bucket `product-images` bersifat publik; daftar root dan prefiks `warehouse` serta `products` tidak mengembalikan objek. Ada 29 catatan metadata gambar. Ini adalah kekurangan konten Storage, bukan masalah URL frontend atau visibilitas bucket.
 
-The user authorized production recovery from the supplied warehouse workbook.
-All 29 referenced images have now been restored to their existing Storage paths.
-Twenty-eight JPG files came from their original warehouse links. The replacement
-for the manually uploaded `GRS-915` photo came from the exact SKU's workbook link
-and was converted to PNG to preserve its existing public URL. No product or image
-metadata changed, and no existing Storage object was overwritten.
+Pengguna mengotorisasi pemulihan produksi dari buku kerja gudang yang disediakan. Semua 29 gambar referensi kini telah dipulihkan ke jalur Storage mereka yang ada. Dua puluh delapan file JPG berasal dari link gudang asli mereka. Pengganti untuk foto `GRS-915` yang diunggah secara manual berasal dari link buku kerja SKU yang tepat dan dikonversi menjadi PNG untuk mempertahankan URL publiknya yang ada. Tidak ada perubahan metadata produk atau gambar, dan tidak ada objek Storage yang ditimpa.
 
-Verification: all 29 public image URLs return HTTP 200 with image content, the
-live Hostinger home page contains all 29 image references, and the `GRS-915`
-product page returns HTTP 200 with its restored image. An authenticated request
-to the live admin panel rendered 29 image URLs, all accessible. Recovery checksums
-and results are recorded locally in `.data/image-recovery/restoration-result.json`
-and `.data/image-recovery/production-verification.json`. Restoring the existing
-Storage URLs takes effect in the deployed application without a code deployment.
-Headless Chromium checks passed on desktop (1440 px) and mobile (390 px):
-all nine product images on the first public catalog page and all 29 admin product
-images loaded with nonzero natural dimensions. Screenshots and the browser
-verification report are stored in `.data/image-recovery/`.
+Verifikasi: semua 29 URL gambar publik mengembalikan HTTP 200 dengan konten gambar, halaman home Hostinger live berisi semua 29 referensi gambar, dan halaman produk `GRS-915` mengembalikan HTTP 200 dengan gambarnya yang dipulihkan. Permintaan terautentikasi ke panel admin live merender 29 URL gambar, semuanya dapat diakses. Ceksum pemulihan dan hasilnya dicatat secara lokal di `.data/image-recovery/restoration-result.json`
+dan `.data/image-recovery/production-verification.json`. Memulihkan URL Storage yang ada berlaku dalam aplikasi yang dideploy tanpa deployment kode. Cek Chromium Headless lulus di desktop (1440 px) dan mobile (390 px): semua sembilan gambar produk pada halaman katalog publik pertama dan semua 29 gambar produk admin dimuat dengan dimensi alami bukan nol. Screenshot dan laporan verifikasi browser disimpan di `.data/image-recovery/`.
 
-## Tutorial video source migration
+<a id="tutorial-video-source-migration"></a>
+## Migrasi sumber video tutorial
 
-`202609110002_tutorial_video_sources.sql` adds nullable `video_url` and
-`storage_path` columns to `tutorial_videos`, backfills legacy YouTube links, and
-creates the public `product-videos` bucket with a 50 MB limit and MP4/WebM MIME
-allowlist. The application also supports the existing schema: it stores all video
-source URLs in the legacy `youtube_url` column and derives uploaded file paths
-from Storage URLs. When the optional columns exist, saves populate both URL
-columns and `storage_path`. This permits rolling deployment without interrupting
-Save. No anonymous Storage write policy is introduced. The SQL migration is
-prepared locally and has not been applied to production.
+`202609110002_tutorial_video_sources.sql` menambahkan kolom `video_url` dan
+`storage_path` yang nullable ke `tutorial_videos`, mengisi kembali link YouTube legacy, dan
+membuat bucket publik `product-videos` dengan batas 50 MB dan daftar izin MIME MP4/WebM. Aplikasi juga mendukung skema eksisting: ia menyimpan semua URL sumber video di kolom `youtube_url` legacy dan menurunkan jalur file yang diunggah dari URL Storage. Ketika kolom opsional ada, simpan mengisi kedua kolom URL dan `storage_path`. Ini memungkinkan deployment bergulir tanpa mengganggu Simpan. Tidak ada kebijakan penulisan Storage anonim yang diperkenalkan. Migrasi SQL disiapkan secara lokal dan belum diterapkan ke produksi.
 
-On September 11, 2026, the production `product-videos` bucket was created and
-verified as public with a 52,428,800-byte limit and only `video/mp4` and
-`video/webm` accepted. The metadata SQL migration remains optional and unapplied;
-the deployed application can use the existing catalog schema.
+Pada 11 September 2026, bucket produksi `product-videos` dibuat dan diverifikasi sebagai publik dengan batas 52.428.800 byte dan hanya `video/mp4` dan
+`video/webm` yang diterima. Migrasi SQL metadata tetap opsional dan belum diterapkan; aplikasi yang dideploy dapat menggunakan skema katalog eksisting.
 
-### Tutorial upload limit increase
+<a id="tutorial-upload-limit-increase"></a>
+### Peningkatan batas unggah tutorial
 
-The attempted 150 MB increase on September 11, 2026 was rejected by Supabase
-with HTTP 413. The user subsequently chose to retain 50 MB. Application labels,
-browser validation, server validation, and the production `product-videos`
-bucket now use the same inclusive 52,428,800-byte limit. The unapplied
-`202609110003_tutorial_video_upload_limit.sql` migration was withdrawn; no
-Storage or plan change is required.
+Peningkatan kapasitas sebesar 150 MB pada tanggal 11 September 2026 ditolak oleh Supabase dengan HTTP 413. Pengguna kemudian memilih untuk mempertahankan 50 MB. Label aplikasi, validasi browser, validasi server, dan bucket `product-videos` produksi sekarang menggunakan batas inklusif yang sama sebesar 52.428.800 byte. Migrasi `202609110003_tutorial_video_upload_limit.sql` yang belum diterapkan ditarik kembali; tidak ada perubahan Storage atau rencana yang diperlukan.
 
-## Tutorial video thumbnail migration
+## Migrasi thumbnail video tutorial
 
-`202609140002_tutorial_video_thumbnails.sql` adds nullable `thumbnail_url` and
-`thumbnail_storage_path` columns to `tutorial_videos`. The browser extracts four
-frames from a selected MP4/WebM file and uploads only the administrator's chosen
-WebP, JPEG, or PNG thumbnail to the existing public `product-images` bucket. The browser
-prefers WebP and preserves its actual canvas fallback type when WebP encoding is unavailable. The same metadata
-also supports replacing a thumbnail on an existing uploaded tutorial without
-re-uploading its video. The customer tutorial list and native player poster read
-the saved URL.
+`202609140002_tutorial_video_thumbnails.sql` menambahkan kolom `thumbnail_url` dan `thumbnail_storage_path` yang dapat bernilai null ke `tutorial_videos`. Browser mengekstrak empat frame dari file MP4/WebM yang dipilih dan mengunggah hanya thumbnail WebP, JPEG, atau PNG yang dipilih administrator ke bucket `product-images` publik yang ada. Browser lebih menyukai WebP dan mempertahankan tipe canvas fallback aslinya ketika enkoding WebP tidak tersedia. Metadata yang sama juga mendukung penggantian thumbnail pada tutorial yang sudah diunggah tanpa mengunggah ulang videonya. Daftar tutorial pelanggan dan poster player native membaca URL yang disimpan.
 
-The application continues to read tutorial rows before this additive migration.
-It does not issue a thumbnail upload URL or save thumbnail metadata until the new
-columns are available, so an older database receives an actionable error without
-losing the staged editor state.
+Aplikasi terus membaca baris tutorial sebelum migrasi penambahan ini. Ia tidak mengeluarkan URL unggah thumbnail atau menyimpan metadata thumbnail sampai kolom baru tersedia, sehingga database lama menerima kesalahan yang dapat ditindaklanjuti tanpa kehilangan status editor yang dipangkas.
 
-On September 14, 2026, this migration was applied to production and its remote
-history was aligned with local version `202609140002`. Both columns are available,
-all eight existing tutorial rows retained the same content checksum, and their new
-thumbnail values remained null. The existing `product-images` bucket remained
-public with a 5 MB object limit and WebP support. Verification records are stored
-locally in `.data/tutorial-thumbnail-migration/`.
+Pada tanggal 14 September 2026, migrasi ini diterapkan ke produksi dan riwayat remote-nya diselaraskan dengan versi lokal `202609140002`. Kedua kolom tersedia, semua delapan baris tutorial yang ada mempertahankan checksum konten yang sama, dan nilai thumbnail baru mereka tetap null. Bucket `product-images` yang ada tetap publik dengan batas objek 5 MB dan dukungan WebP. Rekam verifikasi disimpan secara lokal di `.data/tutorial-thumbnail-migration/`.
 
-## Warranty video upload limit
+## Batas unggah video garansi
 
-`202609110004_warranty_video_upload_limit.sql` raises the private
-`warranty-evidence` bucket's per-file limit to 52,428,800 bytes (50 MB), matching
-warranty video validation. It preserves visibility, allowed MIME types, objects,
-and policies. Invoice and photo uploads remain limited to 4 MB by the application.
-The Server Action request limit is 72 MB to accommodate all permitted evidence
-in one submission. No new public access or upload policy is introduced.
+`202609110004_warranty_video_upload_limit.sql` meningkatkan batas per-file bucket `warranty-evidence` privat menjadi 52.428.800 byte (50 MB), sejalan dengan validasi video garansi. Ia mempertahankan visibilitas, tipe MIME yang diizinkan, objek, dan kebijakan. Pengunggahan faktur dan foto tetap dibatasi hingga 4 MB oleh aplikasi. Batas permintaan Server Action adalah 72 MB untuk mengakomodasi semua bukti yang diperbolehkan dalam satu pengajuan. Tidak ada akses publik baru atau kebijakan unggah yang diperkenalkan.
 
-On September 11, 2026, the equivalent production bucket update was applied
-through the Storage API and verified: `warranty-evidence` now allows 52,428,800
-bytes, remains private, and retains its existing MIME allowlist. No ticket,
-evidence object, or access policy was changed.
+Pada tanggal 11 September 2026, pembaruan bucket produksi ekuivalen diterapkan melalui API Storage dan diverifikasi: `warranty-evidence` sekarang mengizinkan 52.428.800 byte, tetap privat, dan mempertahankan daftar izin MIME yang ada. Tidak ada tiket, objek bukti, atau kebijakan akses yang diubah.
 
-## Warranty video formats
+## Format video garansi
 
-`202609140001_warranty_video_formats.sql` extends the private warranty bucket's
-MIME allowlist with Matroska, AVI, 3GP, MPEG, MPEG-TS, WMV, FLV, and Ogg video.
-The application detects containers from bytes, fully verifies video decoding,
-and stores canonical video MIME types rather than trusting browser metadata.
+`202609140001_warranty_video_formats.sql` memperluas daftar izin MIME bucket garansi privat dengan Matroska, AVI, 3GP, MPEG, MPEG-TS, WMV, FLV, dan Ogg video. Aplikasi mendeteksi kontainer dari byte, memverifikasi sepenuhnya decoding video, dan menyimpan tipe MIME video kanonik daripada mempercayai metadata browser.
 
-On September 14, 2026, the equivalent additive update was applied through the
-Storage API and verified: all 15 MIME types are allowed, the bucket remains
-private, and its file limit remains 52,428,800 bytes. Existing objects and
-access policies are unchanged. Local verification records are in
-`.data/warranty-video-formats/bucket-before.json` and `bucket-after.json`.
+Pada tanggal 14 September 2026, pembaruan penambahan ekuivalen diterapkan melalui API Storage dan diverifikasi: semua 15 tipe MIME diizinkan, bucket tetap privat, dan batas filenya tetap 52.428.800 byte. Objek yang ada dan kebijakan akses tidak berubah. Rekam verifikasi lokal berada di `.data/warranty-video-formats/bucket-before.json` dan `bucket-after.json`.
 
-## Warranty claim eligibility
+## Kelayakan klaim garansi
 
-`202609140003_warranty_claim_eligibility.sql` adds a `BEFORE INSERT` trigger for
-new warranty tickets. It rejects future or expired purchase dates and uses a
-transaction-level advisory lock to serialize submissions with the same trimmed,
-case-insensitive order number and SKU before checking for an existing ticket.
-Historical tickets remain unchanged, and the supporting expression index is not
-unique so existing duplicate records do not block migration. Apply this migration
-before relying on database-level protection for simultaneous submissions.
+`202609140003_warranty_claim_eligibility.sql` menambahkan pemicu `BEFORE INSERT` untuk tiket garansi baru. Ia menolak tanggal pembelian masa depan atau kadaluarsa dan menggunakan kunci transaksi tingkat advisory untuk menserikan pengiriman dengan nomor pesanan yang dipotong (trimmed) dan tidak sensitif huruf besar-kecilan serta SKU yang sama sebelum memeriksa tiket yang ada. Tiket historis tetap tidak berubah, dan indeks ekspresi pendukung tidak unik sehingga catatan duplikat yang ada tidak menghalangi migrasi. Terapkan migrasi ini sebelum mengandalkan perlindungan tingkat database untuk pengiriman simultan.
 
-## Warranty ticket deletion
+<a id="warranty-ticket-deletion"></a>
+## Penghapusan tiket garansi
 
-`202609150001_warranty_ticket_deletion.sql` adds the nullable `deleted_at`
-timestamp used for soft deletion. Deleted tickets and their private evidence stay
-in PostgreSQL and Storage so claim identity remains available to the one-claim
-rule, while application reads omit them from the admin inbox and reject direct
-evidence access. Apply this migration before enabling deletion in a Supabase-backed
-deployment.
+`202609150001_warranty_ticket_deletion.sql` menambahkan stempel waktu `deleted_at` yang dapat bernilai null yang digunakan untuk penghapusan lunak. Tiket yang dihapus dan bukti pribadinya tetap berada di PostgreSQL dan Storage sehingga identitas klaim tetap tersedia bagi aturan satu-klaim, sementara pembacaan aplikasi mematahkannya dari kotak masuk admin dan menolak akses bukti langsung. Terapkan migrasi ini sebelum mengaktifkan penghapusan dalam deployment berbasis Supabase.
 
-## GascompCare member accounts
+<a id="gascompcare-member-accounts"></a>
+## Akun anggota GascompCare
 
-`202609150003_gascomp_care_accounts.sql` introduces private member accounts,
-hashed sessions, shared login-attempt limits, and transactional authentication
-functions. It does not create Care purchases or modify existing warranty rules.
-See [GascompCare](../features/gascomp-care.md) for behavior and security boundaries.
-On September 15, 2026, the authorized release applied this migration to the
-existing production project and aligned its history with local version
-`202609150003`. All 247 existing rows across nine application tables and two
-Storage metadata tables remained identical. RLS is enabled on all three Care
-tables; anonymous readiness calls are denied and the service role is allowed.
-No production member or test ticket was created.
+`202609150003_gascomp_care_accounts.sql` memperkenalkan akun anggota pribadi, sesi yang di-hash, batas percobaan login yang dibagikan, dan fungsi autentikasi transaksional. Ia tidak membuat pembelian Care atau mengubah aturan garansi yang ada. Lihat [GascompCare](../features/gascomp-care.md) untuk perilaku dan batas keamanan. Pada 15 September 2026, rilis yang diotorisasi oleh pemilik menerapkan migrasi ini ke proyek produksi yang ada dan menyelaraskan sejarahnya dengan versi lokal `202609150003`. Semua 247 baris yang ada di sembilan tabel aplikasi dan dua tabel metadata Storage tetap identik. RLS diaktifkan pada ketiga tabel Care; panggilan kesiapan anonim ditolak dan peran layanan diperbolehkan. Tidak dibuat anggota produksi atau tiket uji coba.
 
-Private application-data snapshots, schema definitions, and a data restoration
-script are saved under `.data/gascomp-care-release/`. All 247 rows were restored
-with relational constraints in a disposable PostgreSQL engine, and the Care
-migration preserved that restored data. All 88 Storage files (113,326,093 bytes)
-were downloaded and verified by size and SHA-256 readback. This is an
-application-data and Storage backup, not a full managed-project/role backup;
-`pg_dump` was unavailable because Docker/Podman was not installed.
+Salinan data aplikasi pribadi, definisi skema, dan skrip pemulihan data disimpan di bawah `.data/gascomp-care-release/`. Semua 247 baris dipulihkan dengan kendala relasional dalam mesin PostgreSQL yang dapat dibuang, dan migrasi Care mempertahankan data yang dipulihkan itu. Semua 88 file Storage (113.326.093 byte) didownload dan diverifikasi berdasarkan ukuran dan pembacaan SHA-256. Ini adalah cadangan data aplikasi dan Storage, bukan cadangan proyek terkelola/peran penuh; `pg_dump` tidak tersedia karena Docker/Podman belum terinstal.
 
-Without the migration, Care reports unavailability while the existing catalog
-and warranty features retain their behavior.
+Tanpa migrasi, Care melaporkan ketidaktersediaan sementara katalog yang ada dan fitur garansi mempertahankan perilakunya.
 
 
-## GascompCare coverage and claim usage
+<a id="gascompcare-coverage-and-claim-usage"></a>
+## Jangkauan GascompCare dan penggunaan klaim
 
-`202609150004_gascomp_care_coverage.sql` adds private Care purchase and approved
-claim ledgers. Each verified purchase has a calendar-based period and a quota
-of three claims per purchased year. Restricted mutation functions enforce
-ownership, normalized unique references, dates, and serialized claim limits;
-public roles have no access. Existing account, catalog, warranty, and Storage
-records are unchanged. Account order notes are not converted into coverage.
+`202609150004_gascomp_care_coverage.sql` menambahkan buku pembelian Care pribadi dan buku klaim yang disetujui. Setiap pembelian yang diverifikasi memiliki periode berbasis kalender dan kuota tiga klaim per tahun pembelian. Fungsi mutasi yang dibatasi menegakkan kepemilikan, referensi unik yang dinormalisasi, tanggal, dan batas klaim yang terserikat; peran publik tidak memiliki akses. Catatan akun, katalog, garansi, dan Storage yang ada tidak berubah. Catatan pesanan akun tidak dikonversi menjadi jangkauan.
 
-On September 15, 2026, the owner-authorized release applied this migration to
-production with history version `202609150004`. No purchases or claims were
-created during rollout. A missing coverage migration displays an explicit
-coverage error while account access continues.
+Pada 15 September 2026, rilis yang diotorisasi oleh pemilik menerapkan migrasi ini ke produksi dengan versi sejarah `202609150004`. Tidak dibuat pembelian atau klaim selama peluncuran. Cadangan jangkauan yang hilang menampilkan kesalahan jangkauan eksplisit sementara akses akun berlanjut.
 
 
-## GascompCare member deletion
+<a id="gascompcare-member-deletion"></a>
+## Penghapusan anggota GascompCare
 
-`202609150005_gascomp_care_member_deletion.sql` adds soft deletion with atomic
-batch handling and session revocation. Authentication and coverage mutations
-reject deleted accounts, including requests racing with deletion. Accounts,
-purchases, claims, usernames, and purchase references remain retained; no Storage
-or warranty data is removed. The admin list reads only active accounts.
+`202609150005_gascomp_care_member_deletion.sql` menambahkan penghapusan lunak dengan penanganan batch atomik dan pencabutan sesi. Mutasi autentikasi dan cakupan menolak akun yang dihapus, termasuk permintaan yang bersaing dengan penghapusan. Akun, pembelian, klaim, nama pengguna, dan referensi pembelian tetap dipertahankan; tidak ada data penyimpanan atau garansi yang dihapus. Daftar admin hanya membaca akun aktif.
 
-On September 15, 2026, the owner-authorized release applied this migration after
-coverage and aligned history version `202609150005`. No member was deleted during
-rollout. RLS remains enabled, public roles cannot confirm claims or delete members,
-and the service role retains the required protected operations.
+Pada 15 September 2026, rilis yang diotoritaskan pemilik menerapkan migrasi ini setelah cakupan dan menyelaraskan versi sejarah `202609150005`. Tidak ada anggota yang dihapus selama penyebaran. RLS tetap aktif, peran publik tidak dapat mengonfirmasi klaim atau menghapus anggota, dan peran layanan mempertahankan operasi perlindungan yang diperlukan.
 
-Fresh snapshots of 14 pre-existing tables verified all 247 rows unchanged after
-both migrations (allowing the added nullable deletion marker). All 88 Storage
-files were verified against unchanged remote metadata and local SHA-256 backups.
-Data restoration and both migrations passed on a disposable database before the
-production changes. Private records are in `.data/gascomp-care-release-2/`.
-Application hosting deployment still requires separate verification.
+Snapshot baru dari 14 tabel yang sudah ada memverifikasi bahwa seluruh 247 baris tetap sama setelah kedua migrasi, selain penanda penghapusan nullable yang baru. Seluruh 88 file Storage diverifikasi terhadap metadata remote yang tidak berubah dan cadangan SHA-256 lokal. Pemulihan data dan kedua migrasi lulus pada database sementara sebelum perubahan produksi. Catatan privat berada di `.data/gascomp-care-release-2/`. Deployment aplikasi ke hosting masih memerlukan verifikasi terpisah.
 
-## Service center directory
+<a id="service-center-directory"></a>
+## Direktori Pusat Layanan
 
-`202609160001_service_centers.sql` creates an initially empty `service_centers`
-table with the location, contact details, opening hours, optional Google Maps
-link, required coordinates, and active status. Province codes follow the
-[BPS province classification](https://sirusa.web.bps.go.id/metadata/variabel/326536)
-covering all 38 Indonesian provinces. Coordinate bounds provide a coarse
-Indonesia-area validation; administrators remain responsible for placing pins
-at the correct address and province.
+`202609160001_service_centers.sql` membuat tabel `service_centers` yang awalnya kosong dengan lokasi, detail kontak, jam buka, tautan Google Maps opsional, koordinat wajib, dan status aktif. Kode provinsi mengikuti [Klasifikasi Provinsi BPS](https://sirusa.web.bps.go.id/metadata/variabel/326536) mencakup seluruh 38 provinsi Indonesia. Batas koordinat memberikan validasi kasar area Indonesia; administrator tetap bertanggung jawab untuk menempatkan pin di alamat dan provinsi yang benar.
 
-RLS is enabled and anonymous/authenticated table grants are revoked for both
-reads and writes. The application server uses the server-only service key and
-returns only active locations to the directory. Admin mutations verify the
-admin session and request origin. Reads are paginated so directories beyond the API row limit
-remain complete. Deactivation retains the record for future editing.
+RLS aktif dan hak akses tabel anonim/terotentikasi dicabut untuk baca dan tulis. Server aplikasi menggunakan kunci layanan server-hanya dan mengembalikan hanya lokasi aktif ke direktori. Mutasi admin memverifikasi sesi admin dan asal permintaan. Baca dibagikan sehingga direktori di luar batas baris API tetap lengkap. Deaktivasi mempertahankan catatan untuk pengeditan masa depan.
 
-When Supabase is entirely unconfigured, single-process local development uses
-the ignored `.data/service-centers.json` file, initially absent and treated as an
-empty list. File writes are serialized within the process and atomically
-replaced. A partially configured database, missing migration, or database error
-returns an explicit unavailable state and never switches to local data.
+Ketika Supabase sepenuhnya tidak dikonfigurasi, pengembangan lokal satu-proses menggunakan file `.data/service-centers.json` yang diabaikan, awalnya tidak ada dan diperlakukan sebagai daftar kosong. Penulisan file diserialisasi dalam proses dan diganti secara atomik. Database parsial yang dikonfigurasi, migrasi hilang, atau kesalahan database mengembalikan keadaan tidak tersedia eksplisit dan tidak pernah beralih ke data lokal.
 
-On September 16, 2026, the owner authorized database-backed testing through
-localhost. This migration was applied to the configured Supabase project and
-aligned with history version `202609160001`. Direct public API access remains
-denied, including for active rows. The application has not been deployed; the
-live `/service-center` route still returns 404.
+Pada 16 September 2026, pemilik mengotoritaskan pengujian berbasis database melalui localhost. Migrasi ini diterapkan ke proyek Supabase yang dikonfigurasi dan diselaraskan dengan versi sejarah `202609160001`. Akses API publik langsung tetap ditolak, termasuk untuk baris aktif. Aplikasi belum diimplementasikan; rute `/service-center` live masih mengembalikan 404.
 
-Database-backed browser checks used only the local application. The two temporary
-location records were removed by exact ID, leaving `service_centers` empty.
-Before/after checksums confirmed all 247 existing rows across 16 application and
-Storage metadata tables unchanged. Anonymous and authenticated API reads were
-verified as denied. Local verification records are in
-`.data/service-center-validation/`.
+Pemeriksaan browser berbasis database hanya menggunakan aplikasi lokal. Dua catatan lokasi sementara dihapus dengan ID yang tepat, meninggalkan `service_centers` kosong. Ceksum sebelum/sesudah mengonfirmasi bahwa seluruh 247 baris yang ada di tabel metadata aplikasi dan Penyimpanan 16 tidak berubah. Baca API anonim dan terotentikasi diverifikasi sebagai ditolak. Catatan verifikasi lokal berada di `.data/service-center-validation/`.
 
-## AI assistance product context migration
+<a id="ai-assistance-product-context-migration"></a>
+## Migrasi konteks produk bantuan AI
 
-`202609170002_ai_assistance_resolved_sku.sql` extends authenticated worker
-completion with `resolvedSku` for a uniquely inferred product name or SKU. An
-explicit job SKU cannot be overridden. The selected entry must match the
-effective context; snapshot, language, lease, and deadline checks remain in
-force. The local AI preview applies migrations in order without deleting
-conversations. Production application uses the authorized release workflow.
+`202609170002_ai_assistance_resolved_sku.sql` memperluas penyelesaian pekerja terautentikasi dengan `resolvedSku` untuk menghasilkan nama produk atau SKU yang secara unik dapat disimpulkan. Sebuah SKU tugas eksplisit tidak dapat ditimpa. Entri yang dipilih harus sesuai dengan konteks efektif; pemeriksaan snapshot, bahasa, sewa, dan tenggat waktu tetap berlaku. Pratinjau AI lokal menerapkan migrasi secara berurutan tanpa menghapus percakapan. Aplikasi produksi menggunakan alur rilis yang diotorisasi.
 
-## AI assistance generated response migration
+<a id="ai-assistance-generated-response-migration"></a>
+## Migrasi respons bantuan AI yang dihasilkan
 
-`202609170003_ai_assistance_grounded_responses.sql` adds the grounded response
-contract alongside legacy answer-ID completion. Source IDs and response basis
-are retained with generated assistant messages. Claims carry a bounded history
-from the same session only; customer requests cannot supply a different session
-or arbitrary trusted history. Ambiguous product context remains explicit and
-permits general clarification without publishing guessed product facts.
+`202609170003_ai_assistance_grounded_responses.sql` menambahkan kontrak respons berbasis fakta bersama penyelesaian jawaban-ID warisan. ID sumber dan dasar respons dipertahankan dengan pesan asisten yang dihasilkan. Klaim membawa sejarah terbatas hanya dari sesi yang sama; permintaan pelanggan tidak dapat menyediakan sesi berbeda atau sejarah terpercaya sembarang. Konteks produk yang ambigu tetap eksplisit dan memungkinkan klarifikasi umum tanpa mempublikasikan fakta produk yang ditebak.
 
-Generated completion validates response shape, plain text, active provenance,
-product context, readiness, snapshot version, job lease, and deadline. Only
-handoff-kind responses enable the contextual WhatsApp link. Existing opaque
-cookie access, RLS, private worker credentials, retention, and retry protections
-remain in force. The local preview applies this migration after the previous two
-AI migrations without deleting stored conversations. Production remains subject
-to the authorized release workflow.
+Penyelesaian yang dihasilkan memvalidasi bentuk respons, teks biasa, asal usul aktif, konteks produk, kesiapan, versi snapshot, sewa tugas, dan tenggat waktu. Hanya respons jenis handoff yang memungkinkan tautan WhatsApp kontekstual. Akses cookie tidak transparan, RLS, kredensial pekerja pribadi, retensi, dan perlindungan ulang tetap berlaku. Pratinjau lokal menerapkan migrasi ini setelah dua migrasi AI sebelumnya tanpa menghapus percakapan yang disimpan. Produksi tetap tunduk pada alur rilis yang diotorisasi.

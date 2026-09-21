@@ -1,49 +1,55 @@
-# Warranty claims and tickets
+<a id="warranty-claims-and-tickets"></a>
+# Klaim garansi dan tiket
 
-[Workspace map](../../../CONTEXT.md) · [Root rules](../../../AGENTS.md)
+[Peta ruang kerja ](../../../CONTEXT.md) · [Aturan akar ](../../../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `src/features/warranty` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `src/features/warranty` dan turunan-nya kecuali jika konteks yang lebih dekat terdaftar dalam peta ruang kerja.
 
-Own claim eligibility, submission, private evidence, ticket status, resolutions, and exports.
+Kelayakan klaim sendiri, pengiriman bukti, bukti pribadi, status tiket, resolusi, dan ekspor.
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi yang relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
-- [Warranty specification](../../../docs/product/features/warranty.md)
-- [Admin specification](../../../docs/product/features/admin.md)
-- [Database and migration specification](../../../docs/product/integrations/supabase.md)
-- [Language and compatibility](../../../docs/architecture/language-standard.md)
+- [Spesifikasi garansi ](../../../docs/product/features/warranty.md)
+- [Spesifikasi admin ](../../../docs/product/features/admin.md)
+- [Spesifikasi database dan migrasi ](../../../docs/product/integrations/supabase.md)
+- [Bahasa dan kompatibilitas ](../../../docs/architecture/language-standard.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tugas otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta untuk bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| Claim submission or evidence | Trace input validation, transport, decoding, and storage confirmation. | A claim is confirmed only after required storage succeeds. |
-| Ticket status or solutions | Check inbox state, authenticated actions, and status/solution persistence together. | Changes follow the owning specification and preserve unrelated saved/draft values. |
-| Export or private downloads | Check filters, labels, authorization, and evidence access. | Correct exports and protected evidence access. |
+| Pengiriman klaim atau bukti | Jejak validasi input, transportasi, dekoding, dan konfirmasi penyimpanan. | Klaim dikonfirmasi hanya setelah penyimpanan yang diperlukan berhasil. |
+| Status tiket atau solusi | Periksa kondisi kotak masuk, tindakan terautentikasi, dan persistensi status/solusi bersama-sama. | Perubahan mengikuti spesifikasi pemilik dan mempertahankan nilai disimpan/rancangan yang tidak terkait. |
+| Ekspor atau unduhan pribadi | Periksa filter, label, otorisasi, dan akses bukti. | Ekspor yang benar dan akses bukti yang dilindungi. |
 
-For status and solution work, follow the [concrete procedure](../../../docs/work/procedures/warranty-status.md) and check its linked evidence before reuse.
+Untuk pekerjaan status dan solusi, ikuti [prosedur konkret ](../../../docs/work/procedures/warranty-status.md) dan periksa buktinya sebelum digunakan kembali.
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Preserve ticket identifiers, compatibility labels, and private storage boundaries.
-- Do not infer the current status-label requirement from older dated paragraphs; reconcile the relevant specification section and current request.
-- Ordinary warranty work does not automatically allocate GascompCare usage.
-- Keep business logic within its owning feature; respect server/client boundaries and the root verification rules.
-- Treat dated specification status as evidence to verify, not proof of current behavior.
+- Pertahankan identifikasi tiket, label kompatibilitas, dan batas penyimpanan pribadi.
+- Jangan menyimpulkan persyaratan status-label saat ini dari paragraf yang berumur; selaraskan bagian spesifikasi yang relevan dan permintaan saat ini.
+- Pekerjaan garansi biasa tidak secara otomatis mengalokasikan penggunaan GascompCare.
+- Pertahankan logika bisnis dalam fitur pemiliknya; hormati batas server/klien dan aturan verifikasi akar.
+- Anggap status spesifikasi berumur sebagai bukti untuk diverifikasi, bukan bukti perilaku saat ini.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-Use `components/` for feature UI, `model/` for domain types and pure logic, `server/` for protected storage/actions, and existing `hooks/` where applicable. Create subfolders only when real modules need them. Update the owning specification and save unfinished progress.
+Gunakan `components/` untuk antarmuka fitur, `model/` untuk tipe domain dan logika murni, `server/` untuk penyimpanan/tindakan dilindungi, dan `hooks/` yang ada jika berlaku. Buat subfolder hanya ketika modul nyata membutuhkannya. Perbaiki spesifikasi pemilik dan simpan kemajuan yang belum selesai.
 
-For TypeScript/JavaScript changes, run `npm run lint`, `npm run typecheck`, and `npm run test`. Add `npm run build` for route/rendering/dependency/build changes. For visible changes, check the affected desktop/mobile flow and loading, empty, and error states in a browser when available. Report any blocked checks.
+Untuk perubahan TypeScript/JavaScript, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`. Tambahkan `npm run build` untuk perubahan rute/rendering/gantung/pembangunan. Untuk perubahan yang terlihat, periksa alur desktop/mobile yang terpengaruh dan keadaan loading, kosong, dan kesalahan di browser jika tersedia. Laporkan pemeriksaan yang diblokir.
 
-Existing work: [status-control handoff](../../../docs/work/handoffs/handoff-warranty-review-v1.md). Verify its dated observations before continuing.
+Pekerjaan yang ada: [pindahan kendali status ](../../../docs/work/handoffs/handoff-warranty-review-v1.md). Verifikasi pengamatannya berumur sebelum melanjutkan.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../../docs/work/README.md) and [continuity workflow](../../../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan
+[indeks pindahan ](../../../docs/work/README.md) dan [aliran kontinuitas ](../../../docs/work/workflow.md).

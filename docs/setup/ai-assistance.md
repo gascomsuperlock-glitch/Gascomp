@@ -1,37 +1,24 @@
-# AI assistance setup
+<a id="ai-assistance-setup"></a>
+# Pengaturan bantuan AI
 
-[Behavior specification](../product/features/ai-assistance.md)
+[Spesifikasi perilaku](../product/features/ai-assistance.md)
 
-## Prerequisites and boundaries
+<a id="prerequisites-and-boundaries"></a>
+## Prasyarat dan batasan
 
-- Apply the ordered AI assistance migrations through `202609170003` to an isolated
-  development database first.
-  Use the existing release workflow for a subsequently authorized production release.
-- Configure `GASCOMP_AI_ASSISTANCE_ENABLED=true` on the development website and a
-  distinct random `GASCOMP_AI_WORKER_TOKEN` of at least 32 characters. Keep the
-  public deployment flag false until acceptance checks pass.
-- The Mac needs the repository Python environment, a Hermes installation with
-  working dependencies, an owner-installed local model endpoint, and Chrome.
-- The Mac must remain powered, awake, and connected. Process supervision cannot
-  guarantee service during sleep, a power outage, or network loss.
+- Terapkan migrasi bantuan AI berurutan melalui `202609170003` ke database pengembangan terisolasi terlebih dahulu. Gunakan alur rilis yang ada untuk rilis produksi yang selanjutnya diotorisasi.
+- Konfigurasi `GASCOMP_AI_ASSISTANCE_ENABLED=true` pada situs web pengembangan dan `GASCOMP_AI_WORKER_TOKEN` acak yang berbeda dengan panjang minimal 32 karakter. Pertahankan flag deployment publik false hingga pemeriksaan penerimaan berhasil.
+- Mac memerlukan lingkungan Python repositori, instalasi Hermes dengan ketergantungan berfungsi, endpoint model lokal yang diinstal pemilik, dan Chrome.
+- Mac harus tetap menyala, terjaga, dan terhubung. Pengawasan proses tidak dapat menjamin layanan selama tidur, pemadaman listrik, atau kehilangan jaringan.
 
-The website stores knowledge and conversations in private Supabase tables.
-Nothing in this setup authorizes production writes or sends WhatsApp messages.
-Never expose the local model endpoint, Chrome debugging port, or worker token to
-the internet or client bundle.
+Situs web menyimpan pengetahuan dan percakapan dalam tabel Supabase pribadi. Tidak ada dalam pengaturan ini yang mengotorisasi penulisan produksi atau mengirim pesan WhatsApp. Jangan pernah mengekspos endpoint model lokal, port debugging Chrome, atau token pekerja ke internet atau bundle klien.
 
-### Independent retention scheduler
+<a id="independent-retention-scheduler"></a>
+### Penjadwal retensi independen
 
-The migration provides a private `gascomp_ai_cleanup()` function and registers
-`gascomp-ai-retention` every 15 minutes when `pg_cron` is already installed.
-Cleanup deletes sessions older than 30 days and cascades their messages/jobs,
-including while AI chat is disabled. The practical retention window is about
-30 days plus the scheduler interval. The function also runs during normal queue
-operations, but queue traffic is not a substitute for the scheduler.
+Migrasi menyediakan fungsi `gascomp_ai_cleanup()` pribadi dan mendaftarkan `gascomp-ai-retention` setiap 15 menit ketika `pg_cron` sudah terinstal. Pembersihan menghapus sesi yang lebih tua dari 30 hari dan meruntuhkan pesan/job mereka, termasuk saat chat AI dinonaktifkan. Jendela retensi praktis adalah sekitar 30 hari plus interval penjadwalan. Fungsi juga berjalan selama operasi antrian normal, tetapi lalu lintas antrian bukan pengganti penjadwal.
 
-Before public activation, verify the named job exists and is active in
-`cron.job`. If the migration reports that `pg_cron` is absent, enable Supabase
-Cron through the authorized database setup, then register the job:
+Sebelum aktivasi publik, verifikasi bahwa job bernama ada dan aktif di `cron.job`. Jika migrasi melaporkan bahwa `pg_cron` tidak ada, aktifkan Supabase Cron melalui pengaturan database yang diotorisasi, kemudian mendaftarkan job:
 
 ```sql
 select cron.schedule(
@@ -41,84 +28,43 @@ select cron.schedule(
 );
 ```
 
-Monitor job execution through Supabase Cron. Database scheduler configuration is
-not applied by a local code check or the Mac service generator.
+Monitor eksekusi job melalui Supabase Cron. Konfigurasi penjadwalan database tidak diterapkan oleh pemeriksaan kode lokal atau generator layanan Mac.
 
-## Local preview without a production migration
+<a id="local-preview-without-a-production-migration"></a>
+## Pratinjau lokal tanpa migrasi produksi
 
-For local UI and worker development, set `GASCOMP_AI_PREVIEW_URL` to
-`http://127.0.0.1:54330` and `GASCOMP_AI_PREVIEW_KEY` to a distinct random value
-of at least 32 characters in `.env.local`. Run `npm run ai:preview-db` in one
-terminal and `npm run dev` in another. Keep the preview database process running
-while using the chat panel.
+Untuk pengembangan antarmuka UI dan worker, atur `GASCOMP_AI_PREVIEW_URL` ke `http://127.0.0.1:54330` dan `GASCOMP_AI_PREVIEW_KEY` ke nilai acak yang berbeda dengan panjang minimal 32 karakter di `.env.local`. Jalankan `npm run ai:preview-db` di satu terminal dan `npm run dev` di terminal lainnya. Pertahankan proses database pratinjau berjalan saat menggunakan panel obrolan.
 
-The preview bridge runs the ordered AI SQL migrations inside local PGlite, storing
-private data in `.data/ai-assistance/preview/postgres`. Only the AI feature uses
-this override; the catalog and other features keep their existing connections.
-It is explicit, development-only configuration. Invalid settings or a stopped
-preview server cause unavailability, never a fallback write to the main database.
-Production builds ignore these variables. No sample knowledge or replies are
-seeded, and no Supabase migration is applied by this command.
+Jembatan pratinjau menjalankan migrasi AI SQL berurutan di dalam PGlite lokal, menyimpan data pribadi di `.data/ai-assistance/preview/postgres`. Hanya fitur AI yang menggunakan penyetelan ini; katalog dan fitur lainnya mempertahankan koneksi mereka yang ada. Ini adalah konfigurasi eksplisit yang hanya untuk pengembangan. Pengaturan yang tidak valid atau server pratinjau yang berhenti menyebabkan ketidaktersediaan, bukan fallback penulisan ke database utama. Pembangun produksi mengabaikan variabel ini. Tidak ada pengetahuan sampel atau balasan yang disemai, dan tidak ada migrasi Supabase yang diterapkan oleh perintah ini.
 
-An empty preview database can open and preserve a conversation, but reports the
-assistant as unavailable until approved knowledge and a ready worker exist.
-Configuring storage does not start a model. The local database survives process
-restarts, refuses incompatible migration fingerprints, and performs retention
-cleanup while its process is running. Do not use this development bridge as a
-production database service.
+Database pratinjau kosong dapat dibuka dan mempertahankan percakapan, tetapi melaporkan asisten sebagai tidak tersedia hingga pengetahuan disetujui dan worker siap tersedia. Konfigurasi penyimpanan tidak memulai model. Database lokal bertahan dari restart proses, menolak jejak migrasi yang tidak kompatibel, dan melakukan pembersihan retensi saat prosesnya berjalan. Jangan gunakan jembatan pengembangan ini sebagai layanan database produksi.
 
-## Knowledge authoring
+<a id="knowledge-authoring"></a>
+## Penulisan Pengetahuan
 
-Read [the vault authoring guide](../../obsidian/customer-support/README.md).
-Author both English and Indonesian versions of the
-greeting, clarification, and handoff templates, then add verified product answers.
-Do not use real customer chat as a fixture or copy private account data into notes.
+Baca [panduan penulisan vault](../../obsidian/customer-support/README.md).
+Tulis versi bahasa Inggris dan Indonesia untuk template sapaan, klarifikasi, dan handoff, lalu tambahkan jawaban produk yang diverifikasi. Jangan gunakan obrolan pelanggan asli sebagai fixture atau salin data akun pribadi ke catatan.
 
-In the default `grounded` mode, note bodies are factual reference material.
-Hermes can explain, paraphrase, and translate relevant passages while preserving
-product facts. It can give general explanations and ask useful clarifying
-questions when an exact source answer is absent. Keep private account data,
-unverified claims, and unsafe repair instructions out of reusable knowledge.
-Use clear product names, SKUs, source questions, and verified facts rather than
-trying to author every possible customer wording.
+Dalam mode `grounded` default, isi tubuh catatan adalah materi referensi faktual. Hermes dapat menjelaskan, memparafrasekan, dan menerjemahkan bagian yang relevan sambil mempertahankan fakta produk. Ia dapat memberikan penjelasan umum dan mengajukan pertanyaan klarifikasi yang berguna ketika jawaban sumber yang tepat tidak ada. Pertahankan data akun pribadi, klaim yang belum diverifikasi, dan instruksi perbaikan yang tidak aman di luar pengetahuan yang dapat digunakan kembali. Gunakan nama produk yang jelas, SKU, pertanyaan sumber, dan fakta yang diverifikasi daripada mencoba menulis setiap kemungkinan formulasi pelanggan.
 
-The worker watches saved changes, validates the full folder, and publishes a
-versioned snapshot. Invalid edits disable readiness rather than silently serving
-stale facts. Published bilingual greeting/handoff templates remain useful for
-initial display and service failures. The worker does not write to the notes.
+Worker memantau perubahan yang disimpan, memvalidasi folder lengkap, dan menerbitkan snapshot versi. Edit yang tidak valid menonaktifkan kesiapan daripada melayani fakta usang secara diam-diam. Template sapaan/handoff bilingual yang diterbitkan tetap berguna untuk tampilan awal dan kegagalan layanan. Worker tidak menulis ke catatan.
 
-`GASCOMP_AI_RESPONSE_MODE=exact` restores the original ID-selection behavior:
-only the selected note body is sent, without translation or paraphrasing.
-Conversational aliases and `conversation-` entries remain supported in that
-mode. The grounded mode uses recent same-session history and no longer needs an
-exact greeting or small-talk alias to have an ordinary support conversation.
+`GASCOMP_AI_RESPONSE_MODE=exact` mengembalikan perilaku pemilihan ID asli:
+hanya isi tubuh catatan yang dipilih yang dikirim, tanpa terjemahan atau parafrase. Alias percakapan dan entri `conversation-` tetap didukung dalam mode tersebut. Mode grounded menggunakan riwayat sesi yang sama yang terbaru dan tidak lagi memerlukan sapaan yang tepat atau alias obrolan kecil untuk memiliki percakapan dukungan biasa.
 
-### Connect the complete scraped Obsidian archive
+<a id="connect-the-complete-scraped-obsidian-archive"></a>
+### Menghubungkan arsip Obsidian yang lengkap yang discraper
 
-Set `GASCOMP_AI_SOURCE_VAULT` in the worker's private environment to the `Duoke`
-parent containing both `Percakapan` and `Produk`, for example:
+Atur `GASCOMP_AI_SOURCE_VAULT` di lingkungan pribadi worker ke `Duoke` induk yang berisi `Percakapan` dan `Produk`, misalnya:
 
 ```text
 /Users/surya/Documents/douke-chat/knowledge/approved/Douke Knowledge Base/Duoke
 ```
 
-The worker indexes readable Markdown files in both trees, builds exact reusable
-answer passages, and merges them with the dedicated answer vault. It watches
-all sources for saved changes, including additions, moves, and deletions.
-Conversation and product captures live directly in `Percakapan` and `Produk`;
-their index notes are `Conversation archive index.md` and
-`Product catalog index.md`. Folder organization does not exclude unique knowledge.
-Product copies are deduplicated only when marketplace/store/listing identity and
-content agree. SKU equality alone cannot remove a different store, listing,
-variant, or unidentified source.
-Do not copy the original transcripts into the public answer folder. Private
-customer/account details, operational promises, volatile prices/stock, and
-unresolved facts do not become customer answers. Documents without eligible
-answers remain searchable locally and can guide a clarification or handoff.
-The complete private transcript index is never included in a model prompt or
-browser response.
+Pekerja mengindeks file Markdown yang dapat dibaca di kedua pohon, membangun paragraf jawaban yang dapat digunakan kembali secara tepat, dan menggabungkannya dengan gudang jawaban khusus. Ia memantau semua sumber untuk perubahan yang disimpan, termasuk penambahan, pemindahan, dan penghapusan. Percakapan dan tangkapan produk langsung tersimpan di `Percakapan` dan `Produk`; catatan indeks mereka adalah `Conversation archive index.md` dan `Product catalog index.md`. Organisasi folder tidak mengecualikan pengetahuan unik. Salinan produk hanya dideduplikasi ketika identitas pasar/toko/daftar dan konten setuju. Kesamaan SKU saja tidak dapat menghapus toko yang berbeda, daftar, varian, atau sumber yang tidak teridentifikasi.
+Jangan menyalin transkrip asli ke dalam folder jawaban publik. Detail pelanggan/perusahaan pribadi, janji operasional, harga/tersedia yang berubah-ubah, dan fakta yang belum diselesaikan tidak menjadi jawaban pelanggan. Dokumen tanpa jawaban yang layak tetap dapat dicari secara lokal dan dapat mengarahkan pada klarifikasi atau serah terima. Indeks transkrip privat lengkap tidak pernah disertakan dalam prompt model atau respons browser.
 
-Preview extraction and optionally write private audit artifacts:
+Ekstraksi pratinjau dan secara opsional menulis artefak audit pribadi:
 
 ```bash
 scraping/.venv/bin/python -m scraping.ai_assistance.corpus \
@@ -126,87 +72,55 @@ scraping/.venv/bin/python -m scraping.ai_assistance.corpus \
   --write
 ```
 
-The command writes only to ignored `scraping/.private/ai-assistance/full-corpus`:
-`corpus.json`, `report.json`, and generated staged entries. It does not activate
-knowledge or change either source vault. The live worker reads the original
-source directory directly; staging is not an extra activation step. Combined
-publication must fit 2,000 entries and 4 MiB; the complete private corpus has a
-separate size and is not uploaded.
+Perintah ini menulis hanya ke `scraping/.private/ai-assistance/full-corpus` yang diabaikan: `corpus.json`, `report.json`, dan entri staged yang dihasilkan. Ia tidak mengaktifkan pengetahuan atau mengubah salah satu sumber vault. Live worker membaca direktori sumber asli secara langsung; staging bukan langkah aktivasi tambahan. Publikasi gabungan harus muat 2.000 entri dan 4 MiB; korpus privat lengkap memiliki ukuran terpisah dan tidak diunggah.
 
-The optional `import_duoke --write-review` and `import_products --write-review`
-commands still prepare manually editable review material. Their narrow pilot
-eligibility rules no longer limit the full-source runtime. Do not edit generated
-corpus artifacts to author permanent answers: put curated final answers in
-`obsidian/customer-support/`. Grounded mode can translate verified source facts into the selected chat language.
-Exact mode still requires source text in that language.
+Perintah opsional `import_duoke --write-review` dan `import_products --write-review` masih menyiapkan materi review yang bisa diedit secara manual. Aturan kepatutan pilot sempit mereka lagi tidak membatasi runtime sumber penuh. Jangan edit artefak korpus yang dihasilkan untuk membuat jawaban permanen: masukkan jawaban akhir yang dikurasi ke `obsidian/customer-support/`. Mode Grounded dapat menerjemahkan fakta sumber terverifikasi ke bahasa obrolan yang dipilih. Mode Exact masih memerlukan teks sumber dalam bahasa tersebut.
 
-When upgrading an existing local preview, stop its process and restart
-`npm run ai:preview-db` to apply migration `202609170003` while retaining existing
-conversations. This adds bounded same-session history and validated generated
-responses while preserving legacy exact responses, leases, and version checks.
-Restart the worker after
-adding the source path to `worker-environment.json`; changing `.env.local` alone
-does not update its existing private configuration.
+Saat memperbarui preview lokal yang ada, hentikan prosesnya dan jalankan ulang `npm run ai:preview-db` untuk menerapkan migrasi `202609170003` sambil mempertahankan percakapan yang ada. Ini menambahkan riwayat sesi yang sama yang terbatas dan respons yang dihasilkan terverifikasi sambil mempertahankan respons exact legacy, sewa (leases), dan pengecekan versi. Jalankan ulang worker setelah menambahkan jalur sumber ke `worker-environment.json`; mengubah `.env.local` saja tidak memperbarui konfigurasi privat yang ada.
 
-## Worker configuration
+<a id="worker-configuration"></a>
+## Konfigurasi Worker
 
-Set environment variables in the worker process, separately from the website's
-environment. `.env.example` documents names but is not a secret store.
+Atur variabel lingkungan dalam proses worker, terpisah dari lingkungan website. `.env.example` mendokumentasikan nama tetapi bukan tempat penyimpanan rahasia.
 
 | Variable | Purpose |
 | --- | --- |
-| `GASCOMP_AI_SITE_URL` | HTTPS website origin; loopback HTTP is for local development only |
-| `GASCOMP_AI_WORKER_TOKEN` | Same dedicated bearer secret as the website |
-| `GASCOMP_AI_MODEL_BASE_URL` | Owner-installed loopback model API endpoint |
-| `GASCOMP_AI_MODEL` | Exact identifier accepted by that endpoint |
-| `GASCOMP_AI_RESPONSE_MODE` | `grounded` (default) for natural responses; `exact` for the legacy selector |
-| `GASCOMP_AI_HERMES_ROOT` | Optional Hermes source installation path |
-| `GASCOMP_AI_HERMES_PYTHON` | Optional Python interpreter containing Hermes dependencies |
-| `GASCOMP_AI_VAULT` | Optional curated answer directory; default `obsidian/customer-support` |
-| `GASCOMP_AI_SOURCE_VAULT` | Optional full scraped `Duoke` root containing `Percakapan` and `Produk` |
-| `GASCOMP_AI_CHROME_CDP_URL` | Local Chrome debugging endpoint |
-| `GASCOMP_AI_BROWSER_HOSTS` | Explicit allowlist for optional link probes |
+| `GASCOMP_AI_SITE_URL` | Asal website HTTPS; loopback HTTP hanya untuk pengembangan lokal |
+| `GASCOMP_AI_WORKER_TOKEN` | Bearer secret dedikasi yang sama dengan website |
+| `GASCOMP_AI_MODEL_BASE_URL` | Titik akhir API model loopback yang dipasang oleh pemilik |
+| `GASCOMP_AI_MODEL` | Identifier exact yang diterima oleh titik akhir tersebut |
+| `GASCOMP_AI_RESPONSE_MODE` | `grounded` (default) untuk respons alami; `exact` untuk selector legacy |
+| `GASCOMP_AI_HERMES_ROOT` | Jalur instalasi sumber Hermes opsional |
+| `GASCOMP_AI_HERMES_PYTHON` | Interpreter Python yang berisi dependensi Hermes |
+| `GASCOMP_AI_VAULT` | Direktori jawaban dikurasi opsional; default `obsidian/customer-support` |
+| `GASCOMP_AI_SOURCE_VAULT` | Jalur akar `Duoke` full scraped opsional yang berisi `Percakapan` dan `Produk` |
+| `GASCOMP_AI_CHROME_CDP_URL` | Titik akhir debugging Chrome lokal |
+| `GASCOMP_AI_BROWSER_HOSTS` | Allowlist eksplisit untuk probe link opsional |
 
-The Hermes harness uses a separate private home and disables personal context,
-personal memory, unrelated tools, and cloud fallback. Grounded responses carry
-plain text, a response kind, a general/knowledge basis, and validated source IDs.
-Recent website chat history is limited to the current session; it does not enable
-personal Hermes memory. Invalid generations use a published fallback.
+Harness Hermes menggunakan rumah privat terpisah dan menonaktifkan konteks pribadi, memori pribadi, alat yang tidak terkait, dan fallback cloud. Respons Grounded membawa teks biasa, jenis respons, dasar umum/pengetahuan, dan ID sumber terverifikasi. Riwayat obrolan website terbaru dibatasi ke sesi saat ini; ia tidak mengaktifkan memori Hermes pribadi. Generasi yang tidak valid menggunakan fallback yang diterbitkan.
 
-### Connect the local website worker
+<a id="connect-the-local-website-worker"></a>
+### Hubungkan worker website lokal
 
-The interactive Hermes chat and the website worker are separate processes.
-Selecting Ollama in `hermes model` configures interactive Hermes; the website
-uses the explicit worker configuration described above.
+Obrolan Hermes interaktif dan worker website adalah proses terpisah. Memilih Ollama di `hermes model` mengkonfigurasi Hermes interaktif; website menggunakan konfigurasi worker eksplisit yang dijelaskan di atas.
 
-For local development, put the worker variables in the ignored `.env.local`,
-with `GASCOMP_AI_SITE_URL=http://localhost:3000`, then generate the private
-configuration once (Node must support `--env-file`):
+Untuk pengembangan lokal, masukkan variabel worker ke `.env.local` yang diabaikan, dengan `GASCOMP_AI_SITE_URL=http://localhost:3000`, lalu buat konfigurasi privat sekali (Node harus mendukung `--env-file`):
 
 ```bash
 node --env-file=.env.local scripts/ai-assistance/launchd.mjs --generate
 ```
 
-This copies only the allowed worker variables into a private file and generates
-service definitions without installing or activating launchd. If those files
-already exist, edit the private configuration instead of regenerating it.
-With Ollama, the local preview database, and Next.js running, start the worker:
+Ini menyalin hanya variabel pekerja yang diizinkan ke dalam file pribadi dan menghasilkan definisi layanan tanpa menginstal atau mengaktifkan launchd. Jika file tersebut sudah ada, edit konfigurasi pribadi daripada merenovasinya lagi. Dengan Ollama, database pratinjau lokal, dan Next.js berjalan, mulai pekerja:
 
 ```bash
 node scripts/ai-assistance/worker-launcher.mjs scraping/.private/ai-assistance/services/worker-environment.json
 ```
 
-Keep that terminal open; `Ctrl+C` stops the worker. Run only one worker for the
-pilot. Changes to `.env.local` do not update this generated private copy; keep
-the worker token synchronized with the website and restart affected processes.
-Never paste the private configuration into chat or commit it.
+Jaga terminal tetap terbuka; `Ctrl+C` menghentikan pekerja. Jalankan hanya satu pekerja untuk pilot. Perubahan pada `.env.local` tidak memperbarui salinan privat yang dihasilkan ini; pertahankan token pekerja sinkron dengan situs web dan mulai ulang proses yang terpengaruh.
+Jangan pernah menempel konfigurasi privat ke dalam obrolan atau mengkomitkannya.
 
-A recent heartbeat confirms the worker can reach the website. With an empty
-vault it reports `ready=false`; the admin `workerOnline` field requires both
-readiness and a recent heartbeat, so it remains false until knowledge is valid.
-Provide one greeting, clarification, and handoff for each language, together
-with approved answer notes. The running worker automatically validates and
-publishes saved notes to its configured local website.
+Detak jantung terbaru mengonfirmasi bahwa pekerja dapat mencapai situs web. Dengan gudang kosong, ia melaporkan `ready=false`; bidang admin `workerOnline` memerlukan kesiapan dan detak jantung terbaru, sehingga tetap bernilai false hingga pengetahuan valid.
+Berikan satu salam, klarifikasi, dan serah terima untuk setiap bahasa, bersama dengan catatan jawaban yang disetujui. Pekerja yang berjalan secara otomatis memvalidasi dan menerbitkan catatan yang disimpan ke situs web lokal yang dikonfigurasinya.
 
 ```bash
 # Local validation only; no website publication or customer reply.
@@ -222,103 +136,51 @@ npm run ai:watch
 npm run ai:probe-links
 ```
 
-The worker model and endpoint are explicit owner configuration.
-For the owner's downloaded `qwen3.5:4b`, use model base URL
-`http://127.0.0.1:11434/v1`. The selector disables thinking for `qwen3.5:*`
-models and requests JSON with temperature zero, so reasoning does not consume
-the 80-token answer-ID budget. This setting does not replace relevance testing.
-The endpoint must implement OpenAI-compatible chat completions and expose
-`/models` relative to the configured API base; its model list must contain the
-configured identifier before the worker reports ready.
-A mocked selector is suitable for integration tests but is not proof of
-real-model relevance or latency.
+Model pekerja dan endpoint adalah konfigurasi pemilik eksplisit.
+Untuk `qwen3.5:4b` yang diunduh oleh pemilik, gunakan model base URL `http://127.0.0.1:11434/v1`. Selector ini menonaktifkan pemikiran untuk model `qwen3.5:*` dan meminta JSON dengan suhu nol, sehingga penalaran tidak mengonsumsi anggaran jawaban-ID 80 token. Pengaturan ini tidak menggantikan pengujian relevansi.
+Endpoint harus mengimplementasikan penyelesaian percakapan kompatibel OpenAI dan mengekspos `/models` relatif terhadap basis API yang dikonfigurasi; daftar modelnya harus berisi identifikasi yang dikonfigurasi sebelum pekerja melaporkan siap.
+Selector tiruan cocok untuk uji integrasi tetapi bukan bukti relevansi atau latensi model asli.
 
-### Current working localhost pilot
+<a id="current-working-localhost-pilot"></a>
+### Pilot localhost yang sedang berjalan
 
-The local pilot combines 35 curated template/conversation/product notes with
-reusable excerpts from all 1,334 scraped source notes (902 conversation notes
-and 432 product notes), producing 445 active entries. The former `Archive` and
-`Catalog` contents have been moved into their parent folders with updated links;
-all unique knowledge remains eligible. Counts of publishable answers can change
-as sources are edited or conflicts are resolved; indexed documents are not
-necessarily answer entries.
+Pilot lokal menggabungkan 35 catatan template/percakapan/produk yang dikurasi dengan kutipan dapat digunakan dari semua 1.334 catatan sumber yang diskrapping (902 catatan percakapan dan 432 catatan produk), menghasilkan 445 entri aktif. Isi `Archive` dan `Catalog` sebelumnya telah dipindahkan ke folder induknya dengan tautan yang diperbarui; semua pengetahuan unik tetap memenuhi syarat. Jumlah jawaban yang dapat diterbitkan dapat berubah saat sumber diedit atau konflik diselesaikan; dokumen terindeks tidak haruslah entri jawaban.
 
-Open `http://localhost:3000`, choose Indonesian, and ask a product question such
-as `Apa bahan PISAU-6SET?`. The grounded model explains relevant source facts naturally and may ask a
-follow-up question. Also test the actual complaint `Kenapa GRS-01 saya gak bisa
-nyala?`, then answer its clarification in the same chat. A fresh New chat must not
-remember that context. English responses may translate Indonesian source facts;
-unsupported specifications must remain explicitly unknown.
+Buka `http://localhost:3000`, pilih Bahasa Indonesia, dan ajukan pertanyaan produk seperti `Apa bahan PISAU-6SET?`. Model yang berakar menjelaskan fakta sumber yang relevan secara alami dan mungkin mengajukan pertanyaan lanjutan. Juga uji keluhan asli `Kenapa GRS-01 saya gak bisa nyala?`, lalu jawab klarifikasinya dalam chat yang sama. Chat baru harus tidak mengingat konteks tersebut. Respons Bahasa Inggris dapat menerjemahkan fakta sumber Bahasa Indonesia; spesifikasi yang tidak didukung harus tetap eksplisit tidak diketahui.
 
-Keep the local database, Next.js server, Ollama, and foreground worker running.
-Automatic launchd startup, production deployment, and the 24-hour endurance test
-remain separate release steps. See the behavior specification for dated test
-results and the limits of each local verification.
+Pertahankan database lokal, server Next.js, Ollama, dan pekerja foreground berjalan. Peluncuran otomatis launchd, deployment produksi, dan uji ketahanan 24 jam tetap merupakan langkah rilis terpisah. Lihat spesifikasi perilaku untuk hasil uji berlabel dan batas verifikasi lokal masing-masing.
 
-## Acceptance and rollback
+<a id="acceptance-and-rollback"></a>
+## Penerimaan dan pembatalan
 
-1. Validate bilingual notes and known, unknown, ambiguous, and product-specific
-   questions against the selected local model. Verify factual grounding, useful
-   clarification, history isolation, and rejection of unsafe repair instructions.
-   Include the owner's GRS-01 symptom and its follow-up, not only specifications.
-2. Verify desktop/mobile chat, language, session continuity, and WhatsApp handoff.
-3. Verify cross-session access denial, worker authentication, invalid snapshots,
-   duplicate submissions, restart, network loss, timeout, and stale results.
-4. Exercise pause/resume from **AI Assistance** in the existing admin panel.
-5. Complete a 24-hour synthetic pilot on an isolated website/database. Record
-   elapsed duration, accepted jobs, handoffs, timeouts, duplicate replies, and
-   restart recovery. Do not use customer accounts or claim this passed after a
-   shorter smoke test.
-6. Only after owner-approved publication and deployment, enable the production
-   feature flag. Check the deployed revision and actual customer flow.
+1. Validasi catatan bilingual dan pertanyaan yang diketahui, tidak diketahui, ambigu, dan spesifik produk terhadap model lokal yang dipilih. Verifikasi penancapan faktual, klarifikasi berguna, isolasi sejarah, dan penolatan instruksi perbaikan yang tidak aman. Termasuk gejala GRS-01 pemilik dan tindak lanjutnya, bukan hanya spesifikasi.
+2. Verifikasi chat desktop/mobile, bahasa, kesinambungan sesi, dan alih WhatsApp.
+3. Verifikasi penolatan akses lintas-sesi, autentikasi pekerja, snapshot tidak valid, pengiriman duplikat, restart, kehilangan jaringan, timeout, dan hasil usang.
+4. Uji jeda/resume dari **AI Assistance** di panel admin yang ada.
+5. Selesaikan pilot sintetik 24 jam pada website/database terisolasi. Catat durasi berlalu, pekerjaan yang diterima, alih, timeout, respons duplikat, dan pemulihan restart. Jangan gunakan akun pelanggan atau klaim ini telah lulus setelah uji asap lebih pendek.
+6. Hanya setelah publikasi dan deployment disetujui pemilik, aktifkan flag fitur produksi. Periksa revisi yang dideploy dan aliran pelanggan aktual.
 
-Pause stops new AI processing while retaining the handoff path. For UI rollback,
-set `GASCOMP_AI_ASSISTANCE_ENABLED=false` and redeploy: the original floating
-WhatsApp control returns and stored conversations are retained. Rotate both
-copies of the worker token together if it is exposed. For response-mode rollback,
-set `GASCOMP_AI_RESPONSE_MODE=exact` in the private worker environment and restart
-only the worker; keep the additive database migration and existing chats.
+Jeda menghentikan pemrosesan AI baru sambil mempertahankan jalur alih. Untuk pembatalan UI, tetapkan `GASCOMP_AI_ASSISTANCE_ENABLED=false` dan deploy ulang: kontrol WhatsApp mengambang asli kembali dan percakapan tersimpan dipertahankan. Putar kedua salinan token pekerja bersama-sama jika itu terekspos. Untuk pembatalan mode respons, tetapkan `GASCOMP_AI_RESPONSE_MODE=exact` di lingkungan pekerja pribadi dan restart hanya pekerja; pertahankan migrasi database aditif dan chat yang ada.
 
-## Mac services
+<a id="mac-services"></a>
+## Layanan Mac
 
-The service generator previews by default and never calls `launchctl`. Supply the
-worker variables above through your trusted local environment, then run:
+Generator layanan secara default melakukan pratinjau dan tidak pernah memanggil `launchctl`. Sediakan variabel pekerja di atas melalui lingkungan lokal terpercaya Anda, lalu jalankan:
 
 ```bash
 npm run ai:services
 npm run ai:services -- --generate
 ```
 
-Generation creates `scraping/.private/ai-assistance/services/` with owner-only
-permissions, two launchd property lists, and `worker-environment.json`. The token
-is stored only in that private JSON file, never in a plist, process argument, or
-preview output. Existing files are not overwritten. Edit that file privately to
-change configuration; keep mode `600` and restart the worker afterward. Never
-paste the JSON into a report or commit it. The launcher reads it at startup,
-passes only explicit worker variables and basic OS variables to Python, and
-does not inherit personal provider credentials. Launchd does not source shell
-profiles or `.env` files.
+Pembuatan menghasilkan `scraping/.private/ai-assistance/services/` dengan izin hanya pemilik, dua daftar properti launchd, dan `worker-environment.json`. Token disimpan hanya dalam file JSON pribadi tersebut, tidak pernah dalam plist, argumen proses, atau output pratinjau. File yang ada tidak ditimpa. Edit file tersebut secara pribadi untuk mengubah konfigurasi; pertahankan mode `600` dan restart pekerja setelahnya. Jangan pernah menempelkan JSON ke laporan atau mengkomitkannya. Peluncur membacanya saat startup, hanya meneruskan variabel pekerja eksplisit dan variabel OS dasar ke Python, dan tidak mewarisi kredensial penyedia pribadi. Launchd tidak mengambil profil shell atau file `.env`.
 
-The generated worker uses the repository's `scraping/.venv/bin/python`; the
-separate Hermes interpreter defaults to `<GASCOMP_AI_HERMES_ROOT>/venv/bin/python`.
-Configure `GASCOMP_AI_HERMES_PYTHON` if your Hermes installation uses another
-interpreter. The absolute Node executable used during generation is also stored
-in the worker plist. Regenerate service files after moving the repository or
-changing that executable. No dependencies are installed by the generator.
+Pekerja yang dihasilkan menggunakan `scraping/.venv/bin/python` dari repositori; interpreter Hermes terpisah secara default menggunakan `<GASCOMP_AI_HERMES_ROOT>/venv/bin/python`. Konfigurasi `GASCOMP_AI_HERMES_PYTHON` jika instalasi Hermes Anda menggunakan interpreter lain. Eksekutor Node absolut yang digunakan selama pembuatan juga disimpan dalam plist pekerja. Regenerasi file layanan setelah memindahkan repositori atau mengubah eksekutor tersebut. Tidak ada ketergantungan yang diinstal oleh pembuat.
 
-Chrome defaults to `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`,
-uses its own private profile, and binds CDP to `127.0.0.1`. Generated services
-require `GASCOMP_AI_CHROME_CDP_URL=http://127.0.0.1:PORT` (default port `9222`).
-Check that the port is free before activation; never reuse a personal browser
-profile or expose CDP through a public tunnel. The independent Chrome service
-can fail without restarting the worker. Both services restart on failure with a
-15-second launch throttle. Logs are private `worker.log` and `chrome.log` files
-inside the service directory; periodically inspect their size and rotate them
-while the services are stopped. Worker logs must remain generic and must not
-contain customer messages or credentials.
+Chrome secara default menggunakan `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`,
+menggunakan profil pribadi sendiri, dan mengikat CDP ke `127.0.0.1`. Layanan yang dihasilkan memerlukan `GASCOMP_AI_CHROME_CDP_URL=http://127.0.0.1:PORT` (port default `9222`).
+Periksa bahwa port tersebut bebas sebelum aktivasi; jangan pernah menggunakan ulang profil browser pribadi atau mengekspos CDP melalui terowongan publik. Layanan Chrome independen dapat gagal tanpa restart pekerja. Kedua layanan restart pada kegagalan dengan throttling peluncuran 15 detik. Log adalah file `worker.log` dan `chrome.log` pribadi di dalam direktori layanan; periksa ukuran mereka secara berkala dan putar mereka saat layanan dihentikan. Log pekerja harus tetap umum dan tidak boleh berisi pesan pelanggan atau kredensial.
 
-After explicit runtime activation is authorized, validate the generated plists
-and bootstrap them into the current login session from the repository root:
+Setelah aktivasi runtime eksplisit diizinkan, validasi plist yang dihasilkan dan bootstrappingnya ke sesi login saat ini dari akar repositori:
 
 ```bash
 AI_SERVICE_DIR="$PWD/scraping/.private/ai-assistance/services"
@@ -329,49 +191,31 @@ launchctl bootstrap "gui/$(id -u)" "$AI_SERVICE_DIR/com.gascomp.ai-assistance.wo
 launchctl print "gui/$(id -u)/com.gascomp.ai-assistance.worker"
 ```
 
-These bootstrap commands activate the worker and therefore can publish knowledge
-and process queued customer messages. Do not run them merely to validate setup.
-For an authorized automatic start at login, copy the validated plist files into
-`~/Library/LaunchAgents/` with mode `600`; keep the JSON in its private location.
-Services run only while that user is logged in. A reboot requires login again,
-and a logout ends the user services. An awake Mac, stable power, network, and the
-local model server are separate operational requirements. Launchd does not keep
-the computer awake or start the owner's model server.
+Perintah bootstrap ini mengaktifkan pekerja dan karenanya dapat menerbitkan pengetahuan serta memproses pesan pelanggan yang antrean. Jangan jalankan perintah tersebut hanya untuk memvalidasi pengaturan.
+Untuk memulai secara otomatis yang diotorisasi saat login, salin file plist yang divalidasi ke dalam `~/Library/LaunchAgents/` dengan mode `600`; pertahankan JSON di lokasinya yang privat.
+Layanan berjalan hanya selama pengguna tersebut sedang masuk (logged in). Sebuah reboot memerlukan login ulang, dan logout mengakhiri layanan pengguna. Mac yang bangun, daya stabil, jaringan, dan server model lokal adalah persyaratan operasional terpisah. Launchd tidak menjaga komputer tetap bangun atau memulai server model pemilik.
 
-For an authorized restart after changing configuration:
+Untuk restart yang diotorisasi setelah mengubah konfigurasi:
 
 ```bash
 launchctl kickstart -k "gui/$(id -u)/com.gascomp.ai-assistance.worker"
 ```
 
-Pause/resume in the admin panel controls AI processing without unloading the
-services. To stop local processing and Chrome entirely:
+**Jeda/Selanjutnya di Panel Admin Mengatur Pemrosesan AI Tanpa Melepaskan Layanan.** Untuk menghentikan pemrosesan lokal dan Chrome sepenuhnya:
 
 ```bash
 launchctl bootout "gui/$(id -u)/com.gascomp.ai-assistance.worker"
 launchctl bootout "gui/$(id -u)/com.gascomp.ai-assistance.chrome"
 ```
 
-If automatic login startup was configured, also remove only these two Gascomp
-plists from `~/Library/LaunchAgents/`. Keep the private configuration and source
-notes for recovery. The website will consider the worker offline after its
-heartbeat expires and retain the WhatsApp handoff. Do not consider process
-restart checks a substitute for the 24-hour pilot.
+Jika startup login otomatis dikonfigurasi, juga hapus hanya dua plists Gascomp berikut dari `~/Library/LaunchAgents/`. Pertahankan konfigurasi privat dan catatan sumber untuk pemulihan. Website akan menganggap pekerja offline setelah detak jantungnya kadaluarsa dan mempertahankan transfer WhatsApp. Jangan anggap pemeriksaan ulang proses sebagai pengganti uji coba 24 jam.
 
-## Synthetic transport pilot
+<a id="synthetic-transport-pilot"></a>
+## Uji coba transportasi sintetis
 
-`npm run ai:pilot` is a dry run: it performs no requests or writes. The explicit
-`--run` mode replaces knowledge with synthetic fixtures, creates synthetic chat
-sessions, and simulates worker selection through the real website endpoints.
-Use an exclusive disposable website and database with no real customer data,
-notes, other workers, or tunnels. Apply the migration to that database first,
-point the local website's Supabase configuration at it, and enable the feature.
-Both website and database origins must be loopback. The isolation environment
-variable is the operator's confirmation that the website actually uses that
-disposable database; the pilot cannot inspect a server's database configuration.
+`npm run ai:pilot` adalah simulasi kering: ia tidak melakukan permintaan atau menulis apa pun. Mode eksplisit `--run` menggantikan pengetahuan dengan fixture sintetis, membuat sesi obrolan sintetis, dan mensimulasikan pemilihan pekerja melalui endpoint website asli. Gunakan website dan database yang dapat dibuang secara eksklusif tanpa data pelanggan asli, catatan, pekerja lain, atau terowongan. Terapkan migrasi ke database tersebut terlebih dahulu, arahkan konfigurasi Supabase dari website lokal kepadanya, dan aktifkan fitur tersebut. Kedua asal website dan database harus berupa loopback. Variabel lingkungan isolasi adalah konfirmasi operator bahwa website tersebut benar-benar menggunakan database yang dapat dibuang tersebut; uji coba tidak dapat memeriksa konfigurasi database server.
 
-Provide `GASCOMP_AI_WORKER_TOKEN` through the environment, matching the disposable
-website's token. Do not put the secret in CLI arguments. Then run:
+Berikan `GASCOMP_AI_WORKER_TOKEN` melalui lingkungan, mencocokkan token dari website yang dapat dibuang tersebut. Jangan masukkan rahasia dalam argumen CLI. Kemudian jalankan:
 
 ```bash
 export GASCOMP_AI_SITE_URL=http://localhost:3100
@@ -379,33 +223,12 @@ export GASCOMP_AI_PILOT_DATABASE_URL=http://127.0.0.1:54329
 export GASCOMP_AI_PILOT_ISOLATED=true
 npm run ai:pilot
 npm run ai:pilot -- --run --duration-seconds 60
-# Transport endurance, using only synthetic fixtures and a simulated worker:
+# Uji ketahanan transport hanya dengan fixture sintetis dan pekerja simulasi:
 npm run ai:pilot -- --run --duration-seconds 86400
 ```
 
-The smoke test takes at least 60 seconds plus setup because it verifies the real
-customer deadline. This is a legacy exact-response transport check, not an
-evaluation of grounded conversational quality. It checks bilingual exact-source
-answers, unknown-question handoff,
-duplicate submissions and completions, session continuity and isolation, source
-replacement during an active job, simulated offline/recovery, and rejection of
-a late result. The requested duration is a minimum; initial scenarios finish
-even if that duration has elapsed. Longer runs then alternate language-specific
-known answers with five seconds between cycles, staying below session limits.
-The tool disables its simulated worker readiness after completion or caught failure and leaves the
-synthetic fixture database available for inspection; discard that database
-afterward. Never reuse it for production.
+Uji singkat memerlukan sedikitnya 60 detik ditambah penyiapan karena memverifikasi tenggat waktu pelanggan yang sebenarnya. Ini adalah pemeriksaan transport untuk respons persis versi lama, bukan evaluasi kualitas percakapan berbasis sumber. Pemeriksaan ini mencakup jawaban dwibahasa dari sumber persis, serah terima ketika pertanyaan tidak diketahui, pengajuan dan penyelesaian ganda, kesinambungan serta isolasi sesi, penggantian sumber saat tugas aktif, simulasi offline/pemulihan, dan penolakan hasil yang terlambat. Durasi yang diminta adalah batas minimum; skenario awal tetap diselesaikan meskipun waktu tersebut telah terlewati. Pada durasi lebih panjang, jawaban yang diketahui untuk tiap bahasa diuji bergantian dengan jeda lima detik antarsiklus agar tetap di bawah batas sesi. Setelah selesai atau gagal, alat menonaktifkan kesiapan pekerja simulasinya dan membiarkan database fixture sintetis tersedia untuk diperiksa. Buang database itu setelahnya; jangan pernah menggunakannya untuk produksi.
 
-Content-free JSON reports are written beneath ignored `.data/ai-assistance/pilot/`
-using repository-root paths. Reports contain scenario outcomes, elapsed time,
-request latency totals/maxima, answer/handoff counts, late-result rejections,
-and duplicate reply counts. A failed scenario exits nonzero. Reports omit
-message text, response bodies, tokens, and cookies.
+Laporan JSON tanpa konten pelanggan ditulis di bawah `.data/ai-assistance/pilot/` yang diabaikan Git, menggunakan path dari akar repositori. Laporan mencakup hasil skenario, waktu berlalu, total dan maksimum latensi permintaan, jumlah jawaban dan serah terima, penolakan hasil terlambat, serta jumlah balasan duplikat. Skenario yang gagal menghasilkan kode keluar bukan nol. Laporan tidak memuat teks pesan, isi respons, token, atau cookie.
 
-This checks website/database transport with a simulated selector. Offline
-recovery is simulated through heartbeat state; it does not restart launchd,
-Chrome, or Hermes. It does not validate actual model relevance, browser behavior,
-model latency, or real process restart recovery. A successful short smoke test
-is not a 24-hour result. Full acceptance still needs the owner's configured local
-model, approved bilingual notes, actual service restart checks, and a separate
-24-hour run with the real Hermes worker in an isolated environment.
+Pemeriksaan ini menguji transport website dan database dengan pemilih jawaban simulasi. Pemulihan offline disimulasikan melalui status heartbeat; pemeriksaan tidak memulai ulang launchd, Chrome, atau Hermes. Ini tidak memvalidasi relevansi model yang sebenarnya, perilaku browser, latensi model, atau pemulihan setelah proses nyata dimulai ulang. Uji singkat yang berhasil bukan hasil uji 24 jam. Penerimaan lengkap masih memerlukan model lokal yang dikonfigurasi pemilik, catatan dwibahasa yang disetujui, pemeriksaan restart layanan nyata, dan uji 24 jam terpisah dengan pekerja Hermes asli dalam lingkungan terisolasi.

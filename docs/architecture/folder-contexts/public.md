@@ -1,41 +1,47 @@
-# Public folder context
+<a id="public-folder-context"></a>
+# Konteks folder publik
 
-[Workspace map](../../../CONTEXT.md) · [Root rules](../../../AGENTS.md)
+[Peta ruang kerja ](../../../CONTEXT.md) · [Aturan akar ](../../../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `public` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `public` dan turunan-nya kecuali jika konteks yang lebih dekat terdaftar dalam peta ruang kerja.
 
-Own files served directly under public URLs, including fonts, licenses, and brand assets.
+File sendiri yang diserve langsung di bawah URL publik, termasuk font, lisensi, dan aset merek.
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi yang relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
-- [Brand specification](../../product/design/brand.md)
-- [QR and stable URLs](../../product/features/qr.md)
-- [Placement and dependencies](../project-structure.md)
+- [Spesifikasi merek ](../../product/design/brand.md)
+- [QR dan URL stabil ](../../product/features/qr.md)
+- [Penempatan dan ketergantungan ](../project-structure.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tugas otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta untuk bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| Brand assets | Locate consumers and the approved brand reference before replacement. | Correct assets with stable referenced URLs. |
-| fonts/ | Check font consumers and retain supplied license files. | Working fonts and preserved licensing. |
-| Asset cleanup | Trace all consumers and documented URL contracts before removal or renaming. | No broken application or externally shared asset links. |
+| Aset merek | Temukan konsumen dan referensi merek yang disetujui sebelum penggantian. | Aset yang benar dengan URL referensi yang stabil. |
+| fonts/ | Periksa konsumen font dan pertahankan file lisensi yang disediakan. | Font yang berfungsi dan lisensi yang dipertahankan. |
+| Pembersihan aset | Jejak semua konsumen dan kontrak URL yang didokumentasikan sebelum penghapusan atau penamaan ulang. | Tidak ada tautan aplikasi yang rusak atau tautan aset yang dibagikan secara eksternal. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Do not place internal CONTEXT.md or task notes inside publicly served asset folders.
-- Do not rename externally referenced assets merely to apply workflow status naming.
+- Jangan letakkan internal CONTEXT.md atau catatan tugas di dalam folder aset yang diserve secara publik.
+- Jangan rename aset yang dirujuk secara eksternal hanya untuk menerapkan penamaan status alur kerja.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-Keep the actual files in their existing stable folder. This context is stored outside the data/asset tree and linked from the workspace map.
+Pertahankan file asli dalam folder stabil yang ada. Konteks ini disimpan di luar pohon data/aset dan terhubung dari peta ruang kerja.
 
-For documentation-only changes, validate relative links, inspect the final diff including new files, and run `git diff --check`. If producers, retrieval behavior, or rendering change, run the root checks for that implementation.
+Untuk perubahan dokumentasi saja, validasi tautan relatif, periksa diff akhir termasuk file baru, dan jalankan `git diff --check`. Jika produsen, perilaku pengambilan, atau rendering berubah, jalankan pemeriksaan akar untuk implementasi tersebut.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../work/README.md) and [continuity workflow](../../work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan
+[indeks serah terima ](../../work/README.md) dan [alur kontinuitas ](../../work/workflow.md).

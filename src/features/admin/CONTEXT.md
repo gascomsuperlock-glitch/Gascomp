@@ -1,41 +1,47 @@
-# Admin workspace composition
+<a id="admin-workspace-composition"></a>
+# Komposisi ruang kerja Admin
 
-[Workspace map](../../../CONTEXT.md) · [Root rules](../../../AGENTS.md)
+[Rapet ruang kerja](../../../CONTEXT.md) · [Aturan akar](../../../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `src/features/admin` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `src/features/admin` dan turunan-nya kecuali jika konteks yang lebih dekat terdaftar dalam peta ruang kerja.
 
-Own dashboard composition, navigation, and cross-feature summaries.
+Komposisi dashboard, navigasi, dan ringkasan lintas fitur milik sendiri.
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi yang relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
-- [Admin specification](../../../docs/product/features/admin.md)
-- [Placement and dependencies](../../../docs/architecture/project-structure.md)
+- [Spesifikasi Admin](../../../docs/product/features/admin.md)
+- [Penempatan dan ketergantungan](../../../docs/architecture/project-structure.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tugas otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta untuk bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| Dashboard or navigation | Identify the owning feature for each workspace and preserve its local state. | Consistent navigation and summaries. |
-| Cross-feature view | Compose feature components rather than moving their business logic here. | A workspace with clear feature ownership and correct save behavior. |
+| Dashboard atau navigasi | Identifikasi fitur pemilik untuk setiap ruang kerja dan pertahankan keadaan lokalnya. | Navigasi dan ringkasan yang konsisten. |
+| Tampilan lintas fitur | Susun komponen fitur daripada memindahkan logika bisnis mereka di sini. | Ruang kerja dengan kepemilikan fitur yang jelas dan perilaku simpan yang benar. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Keep catalog staged Save separate from immediate warranty, Care, and service center mutations.
-- Other features must not import admin; admin may compose them.
-- Keep business logic within its owning feature; respect server/client boundaries and the root verification rules.
-- Treat dated specification status as evidence to verify, not proof of current behavior.
+- Pertahankan katalog tahap Simpan terpisah dari mutasi jaminan, Perawatan, dan pusat layanan segera.
+- Fitur lain tidak boleh mengimpor admin; admin dapat menyusun mereka.
+- Pertahankan logika bisnis di dalam fitur pemiliknya; hormati batas server/klien dan aturan verifikasi akar.
+- Perlakukan status spesifikasi bertanggal sebagai bukti untuk diverifikasi, bukan bukti perilaku saat ini.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-Use `components/` for feature UI, `model/` for domain types and pure logic, `server/` for protected storage/actions, and existing `hooks/` where applicable. Create subfolders only when real modules need them. Update the owning specification and save unfinished progress.
+Gunakan `components/` untuk UI fitur, `model/` untuk tipe domain dan logika murni, `server/` untuk penyimpanan/aksi yang dilindungi, dan `hooks/` yang ada jika berlaku. Buat subfolder hanya ketika modul nyata membutuhkannya. Perbarui spesifikasi pemilik dan simpan kemajuan yang belum selesai.
 
-For TypeScript/JavaScript changes, run `npm run lint`, `npm run typecheck`, and `npm run test`. Add `npm run build` for route/rendering/dependency/build changes. For visible changes, check the affected desktop/mobile flow and loading, empty, and error states in a browser when available. Report any blocked checks.
+Untuk perubahan TypeScript/JavaScript, jalankan `npm run lint`, `npm run typecheck`, dan `npm run test`. Tambahkan `npm run build` untuk perubahan rute/rendering/ketergantungan/build. Untuk perubahan yang terlihat, periksa alur desktop/mobile yang terpengaruh dan keadaan loading, kosong, dan kesalahan di browser jika tersedia. Laporkan pemeriksaan yang diblokir.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../../docs/work/README.md) and [continuity workflow](../../../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan
+[indeks serah terima](../../../docs/work/README.md) dan [aliran kontinuitas](../../../docs/work/workflow.md).

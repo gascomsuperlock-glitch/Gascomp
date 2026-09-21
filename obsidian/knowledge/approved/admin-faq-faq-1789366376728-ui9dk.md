@@ -10,19 +10,19 @@ generated: true
 
 # Mengapa regulator gas tidak bisa digunakan untuk dua kompor sekaligus dan api menjadi kecil saat digunakan bersamaan?
 
-Product: [[../../products/grs-925f-93200e1|GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas]]
+Produk: [[../../products/grs-925f-93200e1|GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas]]
 
-## Question
+## Pertanyaan
 
 Mengapa regulator gas tidak bisa digunakan untuk dua kompor sekaligus dan api menjadi kecil saat digunakan bersamaan?
 
-## Approved answer
+## Jawaban disetujui
 
 Hal ini normal terjadi karena regulator gas memiliki kapasitas aliran tertentu. Ketika 2 kompor dinyalakan bersamaan, aliran gas terbagi sehingga tekanan ke masing-masing kompor berkurang dan api menjadi lebih kecil. Ini adalah karakteristik umum regulator gas low pressure. Untuk hasil optimal, disarankan menggunakan satu kompor dalam satu waktu atau mengatur penggunaan secara bergantian.
 
-Product guide: https://support.gascompsuperlock.com/produk/grs-925f-93200e1
+Panduan produk: https://support.gascompsuperlock.com/produk/grs-925f-93200e1
 
-## Search triggers
+## Pemicu pencarian
 
 - Mengapa regulator gas tidak bisa digunakan untuk dua kompor sekaligus dan api menjadi kecil saat digunakan bersamaan?
 - GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas

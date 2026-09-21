@@ -1,44 +1,43 @@
-# Data folder context
+# Konteks folder data
 
-[Workspace map](../../../CONTEXT.md) · [Root rules](../../../AGENTS.md)
+[Peta ruang kerja](../../../CONTEXT.md) · [Aturan akar](../../../AGENTS.md)
 
-## Context
+## Konteks
 
-Scope: `data` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `data` dan turunannya, kecuali jika peta ruang kerja menunjukkan konteks yang lebih dekat.
 
-Own normalized catalog records, runtime knowledge, and synchronization reports.
+Folder ini memiliki catatan katalog ternormalisasi, pengetahuan runtime, dan laporan sinkronisasi.
 
-## Inputs
+## Masukan
 
-Read the relevant references for the requested task, not every linked document.
+Baca rujukan yang relevan untuk tugas yang diminta, bukan semua dokumen tertaut.
 
-- [Placement and dependencies](../project-structure.md)
-- [Duoke catalog specification](../../product/integrations/duoke-catalog.md)
-- [Knowledge and replies specification](../../product/integrations/duoke-support.md)
-- [Warehouse import specification](../../product/integrations/warehouse.md)
+- [Penempatan dan ketergantungan](../project-structure.md)
+- [Spesifikasi katalog Duoke](../../product/integrations/duoke-catalog.md)
+- [Spesifikasi pengetahuan dan balasan](../../product/integrations/duoke-support.md)
+- [Spesifikasi impor gudang](../../product/integrations/warehouse.md)
 
-## Tasks
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Tanggung jawab ini berlaku ketika diminta, bukan daftar pekerjaan otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta mengerjakan | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| catalog/ | Identify the normalizer/importer and inspect stable source identities. | Validated normalized records with explicit provenance. |
-| knowledge/ | Trace the exporter/review pipeline and approval metadata. | Knowledge consistent with the intended published/reviewed source. |
-| reports/ | Generate through the owning workflow and distinguish preview from applied results. | Dated, non-sensitive reports with actual outcomes. |
+| `catalog/` | Identifikasi normalizer/importer dan periksa identitas sumber yang stabil. | Catatan ternormalisasi yang divalidasi dengan asal sumber yang jelas. |
+| `knowledge/` | Telusuri alur ekspor/tinjauan dan metadata persetujuan. | Pengetahuan yang diterbitkan/ditinjau konsisten dengan sumber yang dimaksud. |
+| `reports/` | Hasilkan melalui alur pemilik dan bedakan pratinjau dari hasil yang diterapkan. | Laporan bertanggal tanpa data sensitif, dengan hasil aktual. |
 
-## Boundaries
+## Batasan
 
-- Do not rename generated files independently of their producers and consumers.
-- Do not treat a generated record as a manual instruction or proof of approval.
+- Jangan ganti nama file hasil secara terpisah dari produsen dan konsumennya.
+- Jangan perlakukan catatan hasil sebagai instruksi manual atau bukti persetujuan.
 
-## Outputs and verification
+## Keluaran dan verifikasi
 
-Keep the actual files in their existing stable folder. This context is stored outside the data/asset tree and linked from the workspace map.
+Pertahankan file asli dalam folder stabil yang ada. Konteks ini disimpan di luar pohon data/aset dan ditautkan dari peta ruang kerja.
 
-For documentation-only changes, validate relative links, inspect the final diff including new files, and run `git diff --check`. If producers, retrieval behavior, or rendering change, run the root checks for that implementation.
+Untuk perubahan dokumentasi saja, validasi tautan relatif, periksa diff akhir termasuk file baru, dan jalankan `git diff --check`. Jika produsen, perilaku pengambilan, atau rendering berubah, jalankan pemeriksaan implementasi dari instruksi akar.
 
-Existing work: [knowledge handoff](../../work/handoffs/handoff-knowledge-review-v1.md).
+Pekerjaan yang ada: [serah terima pengetahuan](../../work/handoffs/handoff-knowledge-review-v1.md).
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../../work/README.md) and [continuity workflow](../../work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan [indeks serah terima](../../work/README.md) dan [alur keberlanjutan](../../work/workflow.md).

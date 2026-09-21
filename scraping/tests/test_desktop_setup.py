@@ -67,3 +67,46 @@ class InstructionRefreshTests(unittest.TestCase):
                 path.write_text(json.dumps(migrated))
                 setup.refresh_instructions()
                 self.assertEqual(json.loads(path.read_text()), migrated)
+
+    def test_refresh_exposes_concrete_mcp_tools_without_changing_model_or_filters(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            profile = root / ".hermes/profiles/duoke-support"
+            profile.mkdir(parents=True)
+            (profile / ".douke-web-owned").write_text(str(setup.ROOT))
+            config = setup.profile_config()
+            config.pop("tools")
+            config["mcp_servers"]["duoke"]["tools"] = {"include": ["duoke_search"]}
+            config["custom_setting"] = "keep"
+            path = profile / "config.yaml"
+            path.write_text(json.dumps(config))
+            with (patch.object(setup.Path, "home", return_value=root),
+                  patch.object(setup, "DUOKE_DESKTOP_DIR", root / "runtime"),
+                  patch.object(setup.shutil, "which", return_value="hermes")):
+                setup.refresh_instructions()
+                setup.refresh_instructions()
+            updated = json.loads(path.read_text())
+            self.assertEqual(updated["tools"]["tool_search"]["enabled"], "off")
+            self.assertEqual(updated["mcp_servers"]["duoke"]["tools"],
+                             {"include": ["duoke_search"], "resources": False, "prompts": False})
+            self.assertEqual(updated["model"], config["model"])
+            self.assertEqual(updated["custom_setting"], "keep")
+            self.assertEqual(json.loads((root / "runtime/instruction-backup/config-before-direct-tools.yaml").read_text()), config)
+
+    def test_failed_login_check_explains_authentication_without_enabling(self):
+        import io
+        from contextlib import redirect_stdout
+        from unittest.mock import AsyncMock
+        from scraping.duoke.reply.desktop_browser import DeliveryAdapterError
+        with tempfile.TemporaryDirectory() as directory:
+            marker = Path(directory) / "DELIVERY_ENABLED"
+            output = io.StringIO()
+            with (patch("sys.argv", ["desktop_setup", "enable", "--send"]),
+                  patch.object(setup, "check", AsyncMock(side_effect=DeliveryAdapterError("authentication_required"))),
+                  patch.object(setup, "STOP_FILE", Path(directory) / "STOP"),
+                  patch.object(setup, "DUOKE_DESKTOP_ENABLED", marker), redirect_stdout(output)):
+                self.assertEqual(setup.main(), 2)
+            self.assertFalse(marker.exists())
+            self.assertIn("authentication_required", output.getvalue())
+            self.assertIn("Quit Hermes Desktop", output.getvalue())
+            self.assertNotIn("Check Ollama", output.getvalue())

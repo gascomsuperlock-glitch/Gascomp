@@ -1,41 +1,47 @@
-# Database migration workspace
+<a id="database-migration-workspace"></a>
+# Ruang kerja migrasi database
 
-[Workspace map](../CONTEXT.md) · [Root rules](../AGENTS.md)
+[Peta ruang kerja ](../CONTEXT.md) · [Aturan akar ](../AGENTS.md)
 
-## Context
+<a id="context"></a>
+## Konteks
 
-Scope: `supabase` and its descendants unless a closer context is listed in the workspace map.
+Cakupan: `supabase` dan turunan-nya kecuali jika konteks yang lebih dekat terdaftar dalam peta ruang kerja.
 
-Own ordered migration files and the pinned release baseline.
+File migrasi berurutan sendiri dan garis dasar rilis yang ditandai (pinned).
 
-## Inputs
+<a id="inputs"></a>
+## Input
 
-Read the relevant references for the requested task, not every linked document.
+Baca referensi yang relevan untuk tugas yang diminta, bukan setiap dokumen yang terhubung.
 
-- [Database and migration specification](../docs/product/integrations/supabase.md)
-- [Database setup](../docs/setup/supabase.md)
-- [Release script context](../scripts/CONTEXT.md)
+- [Spesifikasi database dan migrasi ](../docs/product/integrations/supabase.md)
+- [Pembentukan database ](../docs/setup/supabase.md)
+- [Konteks skrip rilis ](../scripts/CONTEXT.md)
 
-## Tasks
+<a id="tasks"></a>
+## Tugas
 
-These are responsibilities triggered by the current request, not an automatic backlog.
+Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tugas otomatis.
 
-| When asked to work on | Process | Expected result |
+| Ketika diminta untuk bekerja pada | Proses | Hasil yang diharapkan |
 | --- | --- | --- |
-| migrations/ | Read the affected feature specification and release baseline; add an ordered migration for a new schema change. | Reviewable SQL preserving historical identities and access policy. |
-| release-baseline.json | Reconcile against the documented release protocol and actual evidence. | A baseline change only when the requested release task requires it. |
+| migrations/ | Baca spesifikasi fitur yang terkena dampak dan garis dasar rilis; tambahkan migrasi berurutan untuk perubahan skema baru. | SQL yang dapat ditinjau kembali yang mempertahankan identitas historis dan kebijakan akses. |
+| release-baseline.json | Selaraskan dengan protokol rilis yang didokumentasikan dan bukti aktual. | Perubahan garis dasar hanya ketika tugas rilis yang diminta membutuhkannya. |
 
-## Boundaries
+<a id="boundaries"></a>
+## Batasan
 
-- Do not rename or rewrite frozen/applied migrations for naming consistency.
-- Do not infer that a local SQL file has been applied remotely.
-- Production application requires authorization and the documented history reconciliation.
+- Jangan rename atau tulis ulang migrasi yang dibekukan/terlaksana untuk konsistensi penamaan.
+- Jangan menyimpulkan bahwa file SQL lokal telah diterapkan secara remote.
+- Aplikasi produksi memerlukan otorisasi dan rekonsiliasi sejarah yang didokumentasikan.
 
-## Outputs and verification
+<a id="outputs-and-verification"></a>
+## Output dan verifikasi
 
-New schema changes use ordered SQL files and meaningful local schema tests where appropriate. Coordinate consumers in their owning feature.
+Perubahan skema baru menggunakan file SQL berurutan dan tes skema lokal yang bermakna jika sesuai. Koordinasikan konsumen dalam fitur mereka sendiri.
 
-Run applicable local schema tests and root checks for changed consumers. Do not use a live migration as a test. Documentation-only edits use link and diff checks.
+Jalankan tes skema lokal yang berlaku dan pemeriksaan akar untuk konsumen yang berubah. Jangan gunakan migrasi live sebagai tes. Perubahan hanya dokumentasi menggunakan pemeriksaan link dan diff.
 
-For an unrelated request, return to the workspace map. For unfinished work, use the
-[handoff index](../docs/work/README.md) and [continuity workflow](../docs/work/workflow.md).
+Untuk permintaan yang tidak terkait, kembali ke peta ruang kerja. Untuk pekerjaan yang belum selesai, gunakan
+[indeks serah terima ](../docs/work/README.md) dan [aliran kelangsungan ](../docs/work/workflow.md).

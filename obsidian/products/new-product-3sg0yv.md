@@ -10,9 +10,9 @@ generated: true
 
 - **SKU:** GRS-02
 - **Model:** Kompor & Regulator Gas
-- **Help page:** https://support.gascompsuperlock.com/produk/new-product-3sg0yv
+- **Halaman bantuan:** https://support.gascompsuperlock.com/produk/new-product-3sg0yv
 
-## Approved knowledge
+## Pengetahuan disetujui
 
 - [[../knowledge/approved/admin-faq-faq-1789544825871-5gf2f|Mengapa regulator ini tidak bisa digunakan?]]
 - [[../knowledge/approved/admin-faq-faq-1789544854166-sh0t8|Apakah regulator ini bisa dipasang pada water heater gas, dan apakah perlu melepas steel ball untuk aliran gas yang lancar?~]]
