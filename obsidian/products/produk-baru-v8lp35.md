@@ -2,7 +2,7 @@
 product_id: "product-1789027198529-gwix6"
 sku: "GRS-915"
 status: "published"
-synced_at: "2026-09-10T09:16:57.436Z"
+synced_at: "2026-09-17T10:46:43.674Z"
 generated: true
 ---
 
@@ -10,8 +10,11 @@ generated: true
 
 - **SKU:** GRS-915
 - **Model:** Regulator
-- **Help page:** http://localhost:3000/produk/produk-baru-v8lp35
+- **Help page:** https://support.gascompsuperlock.com/produk/produk-baru-v8lp35
 
 ## Approved knowledge
 
-- [[../knowledge/approved/admin-tutorial-video-1789027754007-fbb4s|New tutorial]]
+- [[../knowledge/approved/admin-faq-faq-1789027787646-imiwo|Mengapa regulator ini tidak bisa digunakan?~]]
+- [[../knowledge/approved/admin-faq-faq-1789360552185-ggzdb|Apa fungsi dan keunggulan selang berwarna oranye pada regulator GASCOMP Superlock GRS-915?]]
+- [[../knowledge/approved/admin-faq-faq-1789360577647-x9rr2|Apakah regulator GRS-915 bisa dipasang tanpa karet seal di tabung gas, dan apakah tetap memenuhi standar SNI?~]]
+- [[../knowledge/approved/admin-faq-faq-1789360633258-qb7m8|Beda selang tekanan rendah dan tekanan tinggi apa ya?~]]

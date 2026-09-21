@@ -11,9 +11,23 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Read specifications by task
 
 - Start with the [specification index](docs/product/spec.md), then read only the topic documents relevant to the task.
+- Use the [workspace context map](CONTEXT.md) to select the owning folder context. Before working in that area, read its inputs, Tasks table, boundaries, and verification requirements. Technical descendants inherit the closest mapped context; do not load every context or execute every task row.
 - Open cross-topic references only when needed; do not load the entire specification folder by default.
 - Record changes in the document that owns the topic. Keep `spec.md` as a concise index.
 - Follow the [English language standard](docs/architecture/language-standard.md). Preserve listed compatibility values exactly.
+
+## Work continuity
+
+- Use the specification index as the task router; its "Start in" column points to implementation owners. Read the selected topic and relevant code, expanding only when dependencies require it.
+- Follow the [work continuity workflow](docs/work/workflow.md) when starting, resuming, or handing off work. Find existing notes in the [handoff index](docs/work/README.md).
+- Treat pickup/handoff and equivalent natural-language requests as workflow instructions. A status-only request is read-only; a request to continue authorizes progress within the stated task.
+- Before ending a session with unfinished work, update its focused handoff and verify it from disk. Reconcile dated notes with current Git status and code; never infer completion, test results, or deployment from a note alone.
+- Keep product decisions in their owning specification and temporary progress in handoffs. Link to existing rules rather than duplicating them. Customer knowledge stays in its documented data/vault locations.
+
+## Learn from corrections
+
+- When the owner corrects behavior or establishes a reusable constraint, follow the [dialogue-to-procedure workflow](docs/work/learning.md). Capture the source, scope, decision, stated reason, assumptions, and acceptance evidence in the owning document.
+- Link reusable procedures from their folder context. Keep actual run results in handoffs and distinguish proposed, source-reviewed, partially verified, and verified behavior. Do not treat an inferred preference or passing mocked test as a verified product decision.
 
 ## Language requirement
 

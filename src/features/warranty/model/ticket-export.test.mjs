@@ -29,7 +29,7 @@ test('CSV preserves delimiters and newlines and neutralizes formulas', () => {
   assert.ok(csv.includes('"\' \t=HYPERLINK(""bad"")"'));
   assert.ok(csv.includes('"00123456789","000123456789012345678"'));
   assert.ok(csv.includes('"01/09/2026"'));
-  assert.ok(csv.includes('"Done","Refund dana sebagian"'));
+  assert.ok(csv.includes('"Closed","Refund dana sebagian"'));
   assert.ok(csv.includes('"Line 1\n""Line 2"""'));
   assert.equal(ticketCsv([]).split('\r\n').length, 2);
   assert.equal(isWarrantySolution('toString'), false);
@@ -41,6 +41,6 @@ test('usage guidance survives ticket normalization and exports the owner-request
   const ticket = normalizeLocalTicket({ ticketId: 'GWC-20260916-AAAAAA',
     status: 'closed', solution: 'usage_guidance', submittedAt: '2026-09-16T00:00:00Z' });
   assert.equal(ticket.solution, 'usage_guidance');
-  assert.ok(ticketCsv([ticket]).includes('"Done","Edukasi cara pemakaian/kendala"'));
+  assert.ok(ticketCsv([ticket]).includes('"Closed","Edukasi cara pemakaian/kendala"'));
   assert.equal(normalizeLocalTicket({ ...ticket, solution: undefined }).solution, null);
 });

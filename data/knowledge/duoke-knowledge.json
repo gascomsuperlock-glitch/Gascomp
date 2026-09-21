@@ -1,25 +1,20 @@
 {
   "schemaVersion": 1,
   "source": "gascomp-approved-content",
-  "generatedAt": "2026-09-10T09:16:57.436Z",
-  "baseUrl": "http://localhost:3000",
+  "generatedAt": "2026-09-17T10:46:43.674Z",
+  "baseUrl": "https://support.gascompsuperlock.com",
   "entries": [
     {
-      "id": "admin-tutorial-video-1789027754007-fbb4s",
-      "kind": "tutorial",
+      "id": "admin-faq-faq-1789027787646-imiwo",
+      "kind": "faq",
       "approval": "approved",
-      "title": "New tutorial",
-      "question": "How do I use GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium?",
-      "answer": "Watch the tutorial directly on the Gascomp page: http://localhost:3000/produk/produk-baru-v8lp35#tutorial",
+      "title": "Mengapa regulator ini tidak bisa digunakan?~",
+      "question": "Mengapa regulator ini tidak bisa digunakan?~",
+      "answer": "Halo Kak! Untuk masalah regulator yang tidak bisa dipakai, coba periksa beberapa hal: \n1) Pastikan pemasangan sudah benar dengan teknologi Superlock - klik hingga terkunci sempurna, \n2) Periksa karet seal di tabung gas, jika keras bisa diganti yang lebih lentur atau dicoba tanpa seal dulu, \n3) Pastikan tabung gas masih ada isinya. Regulator GRS-915 dilengkapi teknologi anti bocor dan sudah bersertifikat SNI untuk keamanan maksimal. Jika masih bermasalah, kami siap bantu dengan garansi 1 tahun!\n\nProduct guide: https://support.gascompsuperlock.com/produk/produk-baru-v8lp35",
       "triggers": [
-        "New tutorial",
-        "How do I use GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium?",
+        "Mengapa regulator ini tidak bisa digunakan?~",
         "GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium",
-        "GRS-915",
-        "tutorial",
-        "video",
-        "how to use",
-        "usage instructions"
+        "GRS-915"
       ],
       "product": {
         "id": "product-1789027198529-gwix6",
@@ -29,15 +24,1569 @@
         "model": "Regulator",
         "variationSkus": []
       },
-      "sourceRef": "tutorial:video-1789027754007-fbb4s",
-      "sourceUrl": "http://localhost:3000/produk/produk-baru-v8lp35#tutorial",
+      "sourceRef": "faq:faq-1789027787646-imiwo",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/produk-baru-v8lp35",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789117426641-pgjiu",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Yg tipe 915f bisa utk semua tabung jg?",
+      "question": "Yg tipe 915f bisa utk semua tabung jg?",
+      "answer": "Ya Kak, GRS-915F ini sangat fleksibel dan bisa digunakan pada berbagai jenis tabung gas! 😊 Regulatornya dirancang khusus untuk memberikan kemudahan dalam pemasangan dan penyesuaian, jadi cocok untuk berbagai kebutuhan rumah tangga dan komersial.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-915f-d218061",
+      "triggers": [
+        "Yg tipe 915f bisa utk semua tabung jg?",
+        "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible Hitam 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 915 F Lebih Fexible Mudah Pasang",
+        "GRS-915F"
+      ],
+      "product": {
+        "id": "warehouse-88000085",
+        "slug": "grs-915f-d218061",
+        "sku": "GRS-915F",
+        "name": "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible Hitam 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 915 F Lebih Fexible Mudah Pasang",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789117426641-pgjiu",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-915f-d218061",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789117426798-g7s26",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator GRS-915F cocok untuk semua jenis tabung gas, termasuk untuk kebutuhan rumah tangga dan komersial?",
+      "question": "Apakah regulator GRS-915F cocok untuk semua jenis tabung gas, termasuk untuk kebutuhan rumah tangga dan komersial?",
+      "answer": "Ya Kak, GRS-915F ini sangat fleksibel dan dirancang untuk memberikan kemudahan dalam pemasangan dan penyesuaian pada berbagai jenis tabung gas! Regulatornya cocok untuk kebutuhan rumah tangga dan komersial, bisa digunakan dengan kompor gas, pemanas air, dan peralatan gas lainnya. 😊\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-915f-d218061",
+      "triggers": [
+        "Apakah regulator GRS-915F cocok untuk semua jenis tabung gas, termasuk untuk kebutuhan rumah tangga dan komersial?",
+        "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible Hitam 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 915 F Lebih Fexible Mudah Pasang",
+        "GRS-915F"
+      ],
+      "product": {
+        "id": "warehouse-88000085",
+        "slug": "grs-915f-d218061",
+        "sku": "GRS-915F",
+        "name": "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible Hitam 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 915 F Lebih Fexible Mudah Pasang",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789117426798-g7s26",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-915f-d218061",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789117426917-9unpl",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Yg grs 01 ada yg satu set ama selang?",
+      "question": "Yg grs 01 ada yg satu set ama selang?",
+      "answer": "Ya Kak, regulator GASCOMP Superlock GRS 915 F ini bisa digunakan untuk kompor GASCOMP Kakak! Produk ini dirancang fleksibel sehingga kompatibel dengan berbagai merek kompor gas, termasuk kompor meja, kompor portable, dan kompor tanam. Regulator ini cocok untuk berbagai kebutuhan rumah tangga dan ideal digunakan dengan kompor gas dari merek apapun, termasuk GASCOMP.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-915f-d218061",
+      "triggers": [
+        "Yg grs 01 ada yg satu set ama selang?",
+        "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible Hitam 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 915 F Lebih Fexible Mudah Pasang",
+        "GRS-915F"
+      ],
+      "product": {
+        "id": "warehouse-88000085",
+        "slug": "grs-915f-d218061",
+        "sku": "GRS-915F",
+        "name": "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible Hitam 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 915 F Lebih Fexible Mudah Pasang",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789117426917-9unpl",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-915f-d218061",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789352598848-jndql",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Jadi bunyi mendesis itu aman dan bukan tanda kebocoran gas, benar?~",
+      "question": "Jadi bunyi mendesis itu aman dan bukan tanda kebocoran gas, benar?~",
+      "answer": "Iya kak, bunyi mendesis itu aman dan bukan gas bocor! Suara tersebut normal karena ada komponen pengunci di dalam regulator sebagai fitur keamanan teknologi Superlock. Regulator ini sudah bersertifikasi SNI dengan sistem pengunci ganda kekuatan 50.000 kali, jadi sangat aman digunakan. Yang penting pastikan tidak ada bau gas tercium ya kak! 😊\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-01-15e7a17",
+      "triggers": [
+        "Jadi bunyi mendesis itu aman dan bukan tanda kebocoran gas, benar?~",
+        "GASCOMP Regulator Meter Superlock 01 Klik GRS-01 Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRS-01"
+      ],
+      "product": {
+        "id": "warehouse-88000060",
+        "slug": "grs-01-15e7a17",
+        "sku": "GRS-01",
+        "name": "GASCOMP Regulator Meter Superlock 01 Klik GRS-01 Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789352598848-jndql",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-01-15e7a17",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789352617895-qq6ro",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Kenapa kadang susah banget nyalanya padahal meteran gasnya udah naik?~",
+      "question": "Kenapa kadang susah banget nyalanya padahal meteran gasnya udah naik?~",
+      "answer": "Halo Kak! 😊 Untuk masalah susah nyala meski meteran gas sudah naik, bisa jadi karena beberapa hal: \n1) Pastikan pemasangan regulator sudah benar dan kencang, \n2) Cek apakah ada kotoran di pin atau lubang gas, \n3) Pastikan karet seal masih dalam kondisi baik. Regulator GASCOMP Superlock memiliki pin dan lubang gas yang presisi untuk memudahkan pemasangan dan aliran gas yang stabil. Jika masih bermasalah, bisa hubungi kami untuk bantuan lebih lanjut ya! 🔧\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-01-15e7a17",
+      "triggers": [
+        "Kenapa kadang susah banget nyalanya padahal meteran gasnya udah naik?~",
+        "GASCOMP Regulator Meter Superlock 01 Klik GRS-01 Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRS-01"
+      ],
+      "product": {
+        "id": "warehouse-88000060",
+        "slug": "grs-01-15e7a17",
+        "sku": "GRS-01",
+        "name": "GASCOMP Regulator Meter Superlock 01 Klik GRS-01 Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789352617895-qq6ro",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-01-15e7a17",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789352646150-8ntgp",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Karet tabung masih perlu dipasang yaa??~",
+      "question": "Karet tabung masih perlu dipasang yaa??~",
+      "answer": "Ya kak, karet tabung tetap perlu dipasang. Ini wajib berdasarkan standar SNI untuk keamanan. Meskipun regulator GASCOMP Superlock sudah dilengkapi teknologi anti bocor, karet tabung tetap diperlukan sebagai komponen keselamatan standar yang harus ada pada instalasi gas.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-01-15e7a17",
+      "triggers": [
+        "Karet tabung masih perlu dipasang yaa??~",
+        "GASCOMP Regulator Meter Superlock 01 Klik GRS-01 Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRS-01"
+      ],
+      "product": {
+        "id": "warehouse-88000060",
+        "slug": "grs-01-15e7a17",
+        "sku": "GRS-01",
+        "name": "GASCOMP Regulator Meter Superlock 01 Klik GRS-01 Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789352646150-8ntgp",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-01-15e7a17",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789360552185-ggzdb",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apa fungsi dan keunggulan selang berwarna oranye pada regulator GASCOMP Superlock GRS-915?",
+      "question": "Apa fungsi dan keunggulan selang berwarna oranye pada regulator GASCOMP Superlock GRS-915?",
+      "answer": "Selang berwarna oranye pada produk GASCOMP Superlock Regulator GRS-915 bisa digunakan untuk tekanan rendah (low pressure) maupun tekanan tinggi (high pressure). Selang ini memiliki konstruksi lima lapis yang terdiri dari 3 lapisan bahan dan 2 lapisan benang, membuatnya lebih aman dan tahan lama untuk penggunaan gas di dapur Anda.\n\nProduct guide: https://support.gascompsuperlock.com/produk/produk-baru-v8lp35",
+      "triggers": [
+        "Apa fungsi dan keunggulan selang berwarna oranye pada regulator GASCOMP Superlock GRS-915?",
+        "GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium",
+        "GRS-915"
+      ],
+      "product": {
+        "id": "product-1789027198529-gwix6",
+        "slug": "produk-baru-v8lp35",
+        "sku": "GRS-915",
+        "name": "GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium",
+        "model": "Regulator",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789360552185-ggzdb",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/produk-baru-v8lp35",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789360577647-x9rr2",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator GRS-915 bisa dipasang tanpa karet seal di tabung gas, dan apakah tetap memenuhi standar SNI?~",
+      "question": "Apakah regulator GRS-915 bisa dipasang tanpa karet seal di tabung gas, dan apakah tetap memenuhi standar SNI?~",
+      "answer": "Ya Kak, GRS-915 bisa dipasang tanpa karet merah di tabung gas karena sudah dilengkapi seal anti bocor bawaan di regulator. Namun berdasarkan standar SNI, semua regulator tetap wajib menggunakan karet seal pada tabung gas. Regulator ini memiliki teknologi EXTRA double pengunci dengan kekuatan 50.000x dan pin lubang presisi untuk pemasangan yang mudah dan aman!\n\nProduct guide: https://support.gascompsuperlock.com/produk/produk-baru-v8lp35",
+      "triggers": [
+        "Apakah regulator GRS-915 bisa dipasang tanpa karet seal di tabung gas, dan apakah tetap memenuhi standar SNI?~",
+        "GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium",
+        "GRS-915"
+      ],
+      "product": {
+        "id": "product-1789027198529-gwix6",
+        "slug": "produk-baru-v8lp35",
+        "sku": "GRS-915",
+        "name": "GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium",
+        "model": "Regulator",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789360577647-x9rr2",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/produk-baru-v8lp35",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789360633258-qb7m8",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Beda selang tekanan rendah dan tekanan tinggi apa ya?~",
+      "question": "Beda selang tekanan rendah dan tekanan tinggi apa ya?~",
+      "answer": "Selang tekanan rendah digunakan untuk kompor rumah tangga biasa dengan tekanan gas yang lebih rendah dan stabil. Selang tekanan tinggi untuk kompor industri atau komersial yang butuh tekanan gas lebih besar. Produk ini menggunakan selang tekanan rendah yang cocok untuk kompor rumah tangga, lebih aman dan hemat gas.\n\nProduct guide: https://support.gascompsuperlock.com/produk/produk-baru-v8lp35",
+      "triggers": [
+        "Beda selang tekanan rendah dan tekanan tinggi apa ya?~",
+        "GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium",
+        "GRS-915"
+      ],
+      "product": {
+        "id": "product-1789027198529-gwix6",
+        "slug": "produk-baru-v8lp35",
+        "sku": "GRS-915",
+        "name": "GASCOMP Paket Superlock Regulator Gas (GRS-915) SNI Anti Bocor & Hemat Gas Otomatis Tekanan Rendah + Selang LPG Premium",
+        "model": "Regulator",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789360633258-qb7m8",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/produk-baru-v8lp35",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789365880517-vnevh",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Jika butuh perbaikan, harus dibawa ke mana?",
+      "question": "Jika butuh perbaikan, harus dibawa ke mana?",
+      "answer": "Halo kak 👋 \nService center ada di Jakarta ya 🙏. Tapi tenang, produk ini bergaransi 1 tahun dan bisa klaim langsung lewat kami supaya kendala kakak cepat terselesaikan.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-925-d2a7488",
+      "triggers": [
+        "Jika butuh perbaikan, harus dibawa ke mana?",
+        "Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman",
+        "GRS-925"
+      ],
+      "product": {
+        "id": "warehouse-88000061",
+        "slug": "grs-925-d2a7488",
+        "sku": "GRS-925",
+        "name": "Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789365880517-vnevh",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-925-d2a7488",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789365942356-c5xwx",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah bunyi pada regulator GASCOMP Superlock normal dan apa fungsinya?",
+      "question": "Apakah bunyi pada regulator GASCOMP Superlock normal dan apa fungsinya?",
+      "answer": "Ya kak, bunyi itu normal karena ada steel ball di dalam regulator yang berfungsi sebagai safety mechanism. Bunyi tersebut menandakan regulator bekerja dengan baik dan aman digunakan. Regulator GASCOMP Superlock sudah SNI dan memiliki sistem keamanan berlapis untuk mencegah kebocoran gas.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-925-d2a7488",
+      "triggers": [
+        "Apakah bunyi pada regulator GASCOMP Superlock normal dan apa fungsinya?",
+        "Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman",
+        "GRS-925"
+      ],
+      "product": {
+        "id": "warehouse-88000061",
+        "slug": "grs-925-d2a7488",
+        "sku": "GRS-925",
+        "name": "Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789365942356-c5xwx",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-925-d2a7488",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789365977267-aq5qb",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Halo kak, kepala knop regulatornya terbuat dari plastik atau besi, dan bagian body-nya dari apa?",
+      "question": "Halo kak, kepala knop regulatornya terbuat dari plastik atau besi, dan bagian body-nya dari apa?",
+      "answer": "Halo Kak! Untuk knop pemutarannya plastik ya kak, sedangkan untuk body regulatornya menggunakan zinc alloy yang kuat dan tahan lama. Produk ini dilengkapi dengan body besar dan kuat yang antipecah dan rusak, serta sistem pengunci putar yang mudah dipasang hanya dengan satu jari.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-925-d2a7488",
+      "triggers": [
+        "Halo kak, kepala knop regulatornya terbuat dari plastik atau besi, dan bagian body-nya dari apa?",
+        "Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman",
+        "GRS-925"
+      ],
+      "product": {
+        "id": "warehouse-88000061",
+        "slug": "grs-925-d2a7488",
+        "sku": "GRS-925",
+        "name": "Gascomp- Paket Regulator Superlock Putar (GRS-925) + Free Karet Seal Cadangan Regulator Anti Bocor Regulator Aman",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789365977267-aq5qb",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-925-d2a7488",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789366313059-s45pr",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator ini bisa digunakan tanpa karet kecil merah?",
+      "question": "Apakah regulator ini bisa digunakan tanpa karet kecil merah?",
+      "answer": "Regulator ini dirancang untuk digunakan dengan sistem superlock yang fleksibel dan mudah dipasang. Untuk penggunaan yang optimal dan aman, sebaiknya menggunakan semua komponen yang disediakan sesuai standar keamanan gas. Jika ada keraguan tentang pemasangan, disarankan berkonsultasi dengan teknisi gas untuk memastikan keamanan penggunaan.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-925f-93200e1",
+      "triggers": [
+        "Apakah regulator ini bisa digunakan tanpa karet kecil merah?",
+        "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas",
+        "GRS-925F"
+      ],
+      "product": {
+        "id": "warehouse-88000088",
+        "slug": "grs-925f-93200e1",
+        "sku": "GRS-925F",
+        "name": "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789366313059-s45pr",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-925f-93200e1",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789366376728-ui9dk",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Mengapa regulator gas tidak bisa digunakan untuk dua kompor sekaligus dan api menjadi kecil saat digunakan bersamaan?",
+      "question": "Mengapa regulator gas tidak bisa digunakan untuk dua kompor sekaligus dan api menjadi kecil saat digunakan bersamaan?",
+      "answer": "Hal ini normal terjadi karena regulator gas memiliki kapasitas aliran tertentu. Ketika 2 kompor dinyalakan bersamaan, aliran gas terbagi sehingga tekanan ke masing-masing kompor berkurang dan api menjadi lebih kecil. Ini adalah karakteristik umum regulator gas low pressure. Untuk hasil optimal, disarankan menggunakan satu kompor dalam satu waktu atau mengatur penggunaan secara bergantian.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-925f-93200e1",
+      "triggers": [
+        "Mengapa regulator gas tidak bisa digunakan untuk dua kompor sekaligus dan api menjadi kecil saat digunakan bersamaan?",
+        "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas",
+        "GRS-925F"
+      ],
+      "product": {
+        "id": "warehouse-88000088",
+        "slug": "grs-925f-93200e1",
+        "sku": "GRS-925F",
+        "name": "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789366376728-ui9dk",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-925f-93200e1",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789366392822-clm4r",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah GASCOMP Superlock GRS 925 F merupakan regulator gas bertekanan rendah?",
+      "question": "Apakah GASCOMP Superlock GRS 925 F merupakan regulator gas bertekanan rendah?",
+      "answer": "Ya, GASCOMP Superlock GRS 925 F adalah regulator gas bertekanan rendah (low pressure). Produk ini dirancang khusus untuk penggunaan tekanan rendah dengan sistem superlock yang fleksibel dan mudah dipasang pada berbagai jenis tabung gas.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-925f-93200e1",
+      "triggers": [
+        "Apakah GASCOMP Superlock GRS 925 F merupakan regulator gas bertekanan rendah?",
+        "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas",
+        "GRS-925F"
+      ],
+      "product": {
+        "id": "warehouse-88000088",
+        "slug": "grs-925f-93200e1",
+        "sku": "GRS-925F",
+        "name": "GASCOMP Superlock Regulator Gas Low Pressure dengan Selang Flexible 5 Lapisan  Kuat dan Awet Selang Anti Bocor Gascomp Superlock GRS 925 F Lebih Fexible Mudah Pasang Regulator Gascomp Superlock Hydrolic Putaran Tanpa Batas",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789366392822-clm4r",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-925f-93200e1",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789366593440-q06cc",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apa ada service center?",
+      "question": "Apa ada service center?",
+      "answer": "Halo kak 👋 \nService center ada di Jakarta ya 🙏. Tapi tenang, produk ini bergaransi 1 tahun dan bisa klaim langsung lewat kami supaya kendala kakak cepat terselesaikan.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-01pro-b56dd2b",
+      "triggers": [
+        "Apa ada service center?",
+        "GASCOMP Regulator Gas Superlock Anti Bocor GRS 01 Pro Adjuster Low Pressure Maksimalkan Habiskan Gas Tanpa Sisa Regulator Superlock GRS 01 Adjuster Anti Bocor Double Lock",
+        "GRS-01PRO"
+      ],
+      "product": {
+        "id": "warehouse-88000064",
+        "slug": "grs-01pro-b56dd2b",
+        "sku": "GRS-01PRO",
+        "name": "GASCOMP Regulator Gas Superlock Anti Bocor GRS 01 Pro Adjuster Low Pressure Maksimalkan Habiskan Gas Tanpa Sisa Regulator Superlock GRS 01 Adjuster Anti Bocor Double Lock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789366593440-q06cc",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-01pro-b56dd2b",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789366680800-9r3a2",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator GASCOMP GRS-01 PRO ini cocok untuk gas 3 kg?",
+      "question": "Apakah regulator GASCOMP GRS-01 PRO ini cocok untuk gas 3 kg?",
+      "answer": "Ya Kak, regulator GASCOMP GRS-01 PRO ini cocok untuk gas 3 kg! Regulator ini adalah low pressure yang kompatibel dengan tabung gas standar termasuk gas 3 kg. Dilengkapi sistem adjuster yang bisa memaksimalkan penggunaan gas tanpa sisa, plus fitur anti bocor dengan double lock untuk keamanan ekstra. Pemasangannya juga mudah dengan pin dan lubang gas yang presisi! 😊\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-01pro-b56dd2b",
+      "triggers": [
+        "Apakah regulator GASCOMP GRS-01 PRO ini cocok untuk gas 3 kg?",
+        "GASCOMP Regulator Gas Superlock Anti Bocor GRS 01 Pro Adjuster Low Pressure Maksimalkan Habiskan Gas Tanpa Sisa Regulator Superlock GRS 01 Adjuster Anti Bocor Double Lock",
+        "GRS-01PRO"
+      ],
+      "product": {
+        "id": "warehouse-88000064",
+        "slug": "grs-01pro-b56dd2b",
+        "sku": "GRS-01PRO",
+        "name": "GASCOMP Regulator Gas Superlock Anti Bocor GRS 01 Pro Adjuster Low Pressure Maksimalkan Habiskan Gas Tanpa Sisa Regulator Superlock GRS 01 Adjuster Anti Bocor Double Lock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789366680800-9r3a2",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-01pro-b56dd2b",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789366750858-5wzbb",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Ini untuk tekanan tinggi atau rendah ya",
+      "question": "Ini untuk tekanan tinggi atau rendah ya",
+      "answer": "Regulator GASCOMP GRS 01 Pro ini adalah untuk tekanan rendah (Low Pressure), bukan untuk tekanan tinggi. Produk ini dilengkapi sistem adjuster putar untuk memaksimalkan gas dan efisiensi api, serta fitur EXTRA double pengunci dengan kekuatan 50.000 kali untuk keamanan maksimal.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grs-01pro-b56dd2b",
+      "triggers": [
+        "Ini untuk tekanan tinggi atau rendah ya",
+        "GASCOMP Regulator Gas Superlock Anti Bocor GRS 01 Pro Adjuster Low Pressure Maksimalkan Habiskan Gas Tanpa Sisa Regulator Superlock GRS 01 Adjuster Anti Bocor Double Lock",
+        "GRS-01PRO"
+      ],
+      "product": {
+        "id": "warehouse-88000064",
+        "slug": "grs-01pro-b56dd2b",
+        "sku": "GRS-01PRO",
+        "name": "GASCOMP Regulator Gas Superlock Anti Bocor GRS 01 Pro Adjuster Low Pressure Maksimalkan Habiskan Gas Tanpa Sisa Regulator Superlock GRS 01 Adjuster Anti Bocor Double Lock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789366750858-5wzbb",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grs-01pro-b56dd2b",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789367738977-o1985",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Kalau rusak, bisa klaim garansi nggak Kak?",
+      "question": "Kalau rusak, bisa klaim garansi nggak Kak?",
+      "answer": "Halo Kak! 😊\nProduk ini bergaransi 1 tahun (12 bulan), jadi Kakak tidak perlu khawatir ya 🛠️✨\n\n✅ Syarat klaim garansi:\n– Sertakan video unboxing saat paket dibuka\n– Sertakan video permasalahan pada produk\n\nJika terjadi kendala, Kakak bisa langsung hubungi kami melalui no berikut:\n📞 +6285283841315\n\nKami siap bantu Kakak dengan senang hati! 🤗💬\n\nAtau klik logo WhatsApp di bawah\n\nProduct guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc",
+      "triggers": [
+        "Kalau rusak, bisa klaim garansi nggak Kak?",
+        "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRT-2D"
+      ],
+      "product": {
+        "id": "warehouse-88000063",
+        "slug": "grt-2d-6d5b4dc",
+        "sku": "GRT-2D",
+        "name": "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789367738977-o1985",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789367833647-wheyq",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Bagaimana cara melepas karet seal di regulator?",
+      "question": "Bagaimana cara melepas karet seal di regulator?",
+      "answer": "Untuk melepas karet seal di regulator, tinggal dicongkel saja kak menggunakan obeng min. Karet seal ini kadang terlalu tebal sehingga membuat regulator sulit mengunci. Setelah dilepas, regulator akan lebih mudah dipasang dan dikunci dengan baik.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc",
+      "triggers": [
+        "Bagaimana cara melepas karet seal di regulator?",
+        "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRT-2D"
+      ],
+      "product": {
+        "id": "warehouse-88000063",
+        "slug": "grt-2d-6d5b4dc",
+        "sku": "GRT-2D",
+        "name": "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789367833647-wheyq",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789367881319-1vv4b",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Hallo ka mau tanya regulator meter bersuara apa itu aman atau berbahaya",
+      "question": "Hallo ka mau tanya regulator meter bersuara apa itu aman atau berbahaya",
+      "answer": "Halo Kak! 😊\n\nUntuk regulator meter yang bersuara, ini adalah hal yang normal pada regulator GASCOMP GRT-2D. Suara tersebut biasanya muncul saat tekanan gas berubah. \n\nRegulator ini dilengkapi dengan fitur keamanan seperti:\n- Neo Meter untuk melihat tekanan gas\n- Auto Cut-Off system yang otomatis menghentikan aliran gas jika terjadi kebocoran\n- Sertifikasi SNI 7369:2012 & ISO 9001\n\nSelama tidak ada bau gas yang tercium, regulator masih berfungsi dengan baik. Jika Kakak masih khawatir, bisa cek kembali pemasangan regulator pada tabung gas untuk memastikan terpasang dengan benar. 🙏\n\nProduct guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc",
+      "triggers": [
+        "Hallo ka mau tanya regulator meter bersuara apa itu aman atau berbahaya",
+        "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRT-2D"
+      ],
+      "product": {
+        "id": "warehouse-88000063",
+        "slug": "grt-2d-6d5b4dc",
+        "sku": "GRT-2D",
+        "name": "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789367881319-1vv4b",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789381680355-1t0uk",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "New question",
+      "question": "New question",
+      "answer": "Write an answer for the customer.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5",
+      "triggers": [
+        "New question",
+        "GASCOMP Paket Regulator Gas LPG Premium GRP-934E + Selang Flexible 1.8M Anti Tikus & Bocor Garansi 1 Tahun SNI",
+        "GRP-934E"
+      ],
+      "product": {
+        "id": "warehouse-88000168",
+        "slug": "grp-934e-b2c4ed5",
+        "sku": "GRP-934E",
+        "name": "GASCOMP Paket Regulator Gas LPG Premium GRP-934E + Selang Flexible 1.8M Anti Tikus & Bocor Garansi 1 Tahun SNI",
+        "model": "Kompor & Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789381680355-1t0uk",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789381682004-q5vvx",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "New question",
+      "question": "New question",
+      "answer": "Write an answer for the customer.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5",
+      "triggers": [
+        "New question",
+        "GASCOMP Paket Regulator Gas LPG Premium GRP-934E + Selang Flexible 1.8M Anti Tikus & Bocor Garansi 1 Tahun SNI",
+        "GRP-934E"
+      ],
+      "product": {
+        "id": "warehouse-88000168",
+        "slug": "grp-934e-b2c4ed5",
+        "sku": "GRP-934E",
+        "name": "GASCOMP Paket Regulator Gas LPG Premium GRP-934E + Selang Flexible 1.8M Anti Tikus & Bocor Garansi 1 Tahun SNI",
+        "model": "Kompor & Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789381682004-q5vvx",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789381682147-jcwrx",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "New question",
+      "question": "New question",
+      "answer": "Write an answer for the customer.\n\nProduct guide: https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5",
+      "triggers": [
+        "New question",
+        "GASCOMP Paket Regulator Gas LPG Premium GRP-934E + Selang Flexible 1.8M Anti Tikus & Bocor Garansi 1 Tahun SNI",
+        "GRP-934E"
+      ],
+      "product": {
+        "id": "warehouse-88000168",
+        "slug": "grp-934e-b2c4ed5",
+        "sku": "GRP-934E",
+        "name": "GASCOMP Paket Regulator Gas LPG Premium GRP-934E + Selang Flexible 1.8M Anti Tikus & Bocor Garansi 1 Tahun SNI",
+        "model": "Kompor & Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789381682147-jcwrx",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grp-934e-b2c4ed5",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789544825871-5gf2f",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Mengapa regulator ini tidak bisa digunakan?",
+      "question": "Mengapa regulator ini tidak bisa digunakan?",
+      "answer": "Halo Kak! Untuk masalah regulator yang tidak bisa dipakai, coba periksa beberapa hal: \n1) Pastikan pemasangan sudah benar dengan teknologi Superlock - klik hingga terkunci sempurna, \n2) Periksa karet seal di tabung gas, jika keras bisa diganti yang lebih lentur atau dicoba tanpa seal dulu, \n3) Pastikan tabung gas masih ada isinya. Regulator GRS-915 dilengkapi teknologi anti bocor dan sudah bersertifikat SNI untuk keamanan maksimal. Jika masih bermasalah, kami siap bantu dengan garansi 1 tahun!\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3sg0yv",
+      "triggers": [
+        "Mengapa regulator ini tidak bisa digunakan?",
+        "GASCOMP Regulator Meter Superlock Putar (GRS-02) Regulator Gas Superlock Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRS-02"
+      ],
+      "product": {
+        "id": "product-1789544255719-3svf9",
+        "slug": "new-product-3sg0yv",
+        "sku": "GRS-02",
+        "name": "GASCOMP Regulator Meter Superlock Putar (GRS-02) Regulator Gas Superlock Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Kompor & Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789544825871-5gf2f",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3sg0yv",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789544854166-sh0t8",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator ini bisa dipasang pada water heater gas, dan apakah perlu melepas steel ball untuk aliran gas yang lancar?~",
+      "question": "Apakah regulator ini bisa dipasang pada water heater gas, dan apakah perlu melepas steel ball untuk aliran gas yang lancar?~",
+      "answer": "Ya, regulator ini bisa dipasang ke water heater gas. Namun untuk pemakaian water heater, oven, atau laundry, steel ball perlu dilepas agar aliran gas lancar. Regulator GRS-02 ini memiliki sistem Superlock yang aman dengan teknologi anti bocor dan sudah berstandar SNI untuk keamanan maksimal.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3sg0yv",
+      "triggers": [
+        "Apakah regulator ini bisa dipasang pada water heater gas, dan apakah perlu melepas steel ball untuk aliran gas yang lancar?~",
+        "GASCOMP Regulator Meter Superlock Putar (GRS-02) Regulator Gas Superlock Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRS-02"
+      ],
+      "product": {
+        "id": "product-1789544255719-3svf9",
+        "slug": "new-product-3sg0yv",
+        "sku": "GRS-02",
+        "name": "GASCOMP Regulator Meter Superlock Putar (GRS-02) Regulator Gas Superlock Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Kompor & Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789544854166-sh0t8",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3sg0yv",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789544882862-hj1mw",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator gas Homelife GRS-02 cocok untuk tabung Bright Gas 12 kg, dan apa keunggulan serta keamanannya?~",
+      "question": "Apakah regulator gas Homelife GRS-02 cocok untuk tabung Bright Gas 12 kg, dan apa keunggulan serta keamanannya?~",
+      "answer": "Regulator gas homelife GRS-02 cocok untuk tabung gas Bright Gas 12 KG. Pemasangan mudah dengan putaran, aman karena double pengunci superlock yang tahan hingga 50.000 kali dan anti bocor. Regulator ini memiliki sertifikasi SNI, aliran gas stabil, dan tahan benturan serta kerusakan. Cocok digunakan untuk kebutuhan memasak dengan keamanan terjamin.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3sg0yv",
+      "triggers": [
+        "Apakah regulator gas Homelife GRS-02 cocok untuk tabung Bright Gas 12 kg, dan apa keunggulan serta keamanannya?~",
+        "GASCOMP Regulator Meter Superlock Putar (GRS-02) Regulator Gas Superlock Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRS-02"
+      ],
+      "product": {
+        "id": "product-1789544255719-3svf9",
+        "slug": "new-product-3sg0yv",
+        "sku": "GRS-02",
+        "name": "GASCOMP Regulator Meter Superlock Putar (GRS-02) Regulator Gas Superlock Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Kompor & Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789544882862-hj1mw",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3sg0yv",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789546730635-tyt6u",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "regulator yg tanpa selang",
+      "question": "regulator yg tanpa selang",
+      "answer": "Ya benar kak, regulator GASCOMP GRS-05 ini adalah regulator saja tanpa selang. Produk ini dilengkapi dengan fitur Superlock Double Lock untuk sistem penguncian ganda yang lebih aman dan mencegah kebocoran gas. Regulator ini juga memiliki fitur Anti Bocor & Auto Cut-Off System yang akan otomatis menutup aliran gas jika terjadi tekanan tidak normal. Sebagai bonus, kami memberikan FREE karet regulator (2 pcs) selama persediaan masih ada. Regulator ini sudah bersertifikat SNI dan memiliki garansi resmi 1 tahun.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3tr2e3",
+      "triggers": [
+        "regulator yg tanpa selang",
+        "GASCOMP Regulator Gas LPG GRS-05 Superlock Double Lock | Regulator Tabung Gas Anti Bocor Auto Cut Off Low Pressure Garansi 1 Tahun SNI",
+        "GRS-05"
+      ],
+      "product": {
+        "id": "product-1789546450395-iw8t3",
+        "slug": "new-product-3tr2e3",
+        "sku": "GRS-05",
+        "name": "GASCOMP Regulator Gas LPG GRS-05 Superlock Double Lock | Regulator Tabung Gas Anti Bocor Auto Cut Off Low Pressure Garansi 1 Tahun SNI",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789546730635-tyt6u",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3tr2e3",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789546745381-qk91j",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Kalau rusak, bisa klaim garansi nggak Kak?",
+      "question": "Kalau rusak, bisa klaim garansi nggak Kak?",
+      "answer": "Halo Kak! 😊 Produk ini bergaransi 1 tahun (12 bulan), jadi Kakak tidak perlu khawatir ya 🛠️✨ ✅ Syarat klaim garansi: – Sertakan video unboxing saat paket dibuka – Sertakan video permasalahan pada produk Jika terjadi kendala, Kakak bisa langsung hubungi kami melalui no berikut: \n📞 +6285283841315\n Kami siap bantu Kakak dengan senang hati! 🤗💬 Atau klik logo WhatsApp di bawah\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3tr2e3",
+      "triggers": [
+        "Kalau rusak, bisa klaim garansi nggak Kak?",
+        "GASCOMP Regulator Gas LPG GRS-05 Superlock Double Lock | Regulator Tabung Gas Anti Bocor Auto Cut Off Low Pressure Garansi 1 Tahun SNI",
+        "GRS-05"
+      ],
+      "product": {
+        "id": "product-1789546450395-iw8t3",
+        "slug": "new-product-3tr2e3",
+        "sku": "GRS-05",
+        "name": "GASCOMP Regulator Gas LPG GRS-05 Superlock Double Lock | Regulator Tabung Gas Anti Bocor Auto Cut Off Low Pressure Garansi 1 Tahun SNI",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789546745381-qk91j",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3tr2e3",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789546781486-vh56l",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Hallo ka mau tanya regulator meter bersuara apa itu aman atau berbahaya",
+      "question": "Hallo ka mau tanya regulator meter bersuara apa itu aman atau berbahaya",
+      "answer": "Halo Kak! 😊 Untuk regulator meter yang bersuara, ini adalah hal yang normal pada regulator GASCOMP GRT-2D. Suara tersebut biasanya muncul saat tekanan gas berubah. Regulator ini dilengkapi dengan fitur keamanan seperti: - Neo Meter untuk melihat tekanan gas - Auto Cut-Off system yang otomatis menghentikan aliran gas jika terjadi kebocoran - Sertifikasi SNI 7369:2012 & ISO 9001 Selama tidak ada bau gas yang tercium, regulator masih berfungsi dengan baik. Jika Kakak masih khawatir, bisa cek kembali pemasangan regulator pada tabung gas untuk memastikan terpasang dengan benar. 🙏\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3tr2e3",
+      "triggers": [
+        "Hallo ka mau tanya regulator meter bersuara apa itu aman atau berbahaya",
+        "GASCOMP Regulator Gas LPG GRS-05 Superlock Double Lock | Regulator Tabung Gas Anti Bocor Auto Cut Off Low Pressure Garansi 1 Tahun SNI",
+        "GRS-05"
+      ],
+      "product": {
+        "id": "product-1789546450395-iw8t3",
+        "slug": "new-product-3tr2e3",
+        "sku": "GRS-05",
+        "name": "GASCOMP Regulator Gas LPG GRS-05 Superlock Double Lock | Regulator Tabung Gas Anti Bocor Auto Cut Off Low Pressure Garansi 1 Tahun SNI",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789546781486-vh56l",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3tr2e3",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789547204759-x88tm",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apa benar Garansi?",
+      "question": "Apa benar Garansi?",
+      "answer": "Ya benar, produk GASCOMP Regulator Gas LPG GRS-02 Pro ini memiliki garansi resmi 1 tahun langsung dari Gascomp sebagai jaminan kualitas. Garansi ini adalah manufacturer warranty yang sah dan dapat diklaim melalui QR Code produk yang disertakan dalam paket pembelian.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3u75lg",
+      "triggers": [
+        "Apa benar Garansi?",
+        "GASCOMP Regulator Gas LPG GRS-02 Pro Superlock with Adjuster + Pressure Gauge | Regulator Tabung Gas Anti Bocor Low Pressure 1 Tahun Garansi",
+        "GRS-02PRO"
+      ],
+      "product": {
+        "id": "product-1789547201044-2yk7l",
+        "slug": "new-product-3u75lg",
+        "sku": "GRS-02PRO",
+        "name": "GASCOMP Regulator Gas LPG GRS-02 Pro Superlock with Adjuster + Pressure Gauge | Regulator Tabung Gas Anti Bocor Low Pressure 1 Tahun Garansi",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789547204759-x88tm",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3u75lg",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789547222990-1rf3j",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator GASCOMP GRS-02 Pro dengan adjuster pressure cocok dan aman untuk kompor double tungku 8 jet + tornado?~",
+      "question": "Apakah regulator GASCOMP GRS-02 Pro dengan adjuster pressure cocok dan aman untuk kompor double tungku 8 jet + tornado?~",
+      "answer": "Ya kak, sangat cocok dan aman! GASCOMP GRS-02 Pro ini dirancang khusus untuk kebutuhan rumah tangga dan usaha kuliner. Regulator ini menggunakan teknologi Low Pressure yang memberikan api stabil dan hemat gas, dilengkapi Adjuster untuk mengatur tekanan gas sesuai kebutuhan kompor double tungku. Dengan fitur Pressure Gauge bisa memantau tekanan gas secara akurat. Sudah bersertifikat SNI jadi terjamin keamanannya untuk kompor 8 jet + tornado kakak.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3u75lg",
+      "triggers": [
+        "Apakah regulator GASCOMP GRS-02 Pro dengan adjuster pressure cocok dan aman untuk kompor double tungku 8 jet + tornado?~",
+        "GASCOMP Regulator Gas LPG GRS-02 Pro Superlock with Adjuster + Pressure Gauge | Regulator Tabung Gas Anti Bocor Low Pressure 1 Tahun Garansi",
+        "GRS-02PRO"
+      ],
+      "product": {
+        "id": "product-1789547201044-2yk7l",
+        "slug": "new-product-3u75lg",
+        "sku": "GRS-02PRO",
+        "name": "GASCOMP Regulator Gas LPG GRS-02 Pro Superlock with Adjuster + Pressure Gauge | Regulator Tabung Gas Anti Bocor Low Pressure 1 Tahun Garansi",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789547222990-1rf3j",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3u75lg",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789547239879-vsx2r",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Untuk mengatur besar kecilnya api, apakah diputar ke kiri atau kanan?",
+      "question": "Untuk mengatur besar kecilnya api, apakah diputar ke kiri atau kanan?",
+      "answer": "Untuk mengatur besar kecilnya api menggunakan adjuster (tombol merah), putar ke kiri untuk memaksimalkan penggunaan gas (api lebih besar), dan putar ke kanan untuk efisiensi penggunaan gas (api lebih kecil). Fitur ini membantu mengoptimalkan penggunaan gas sesuai kebutuhan memasak kakak.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3u75lg",
+      "triggers": [
+        "Untuk mengatur besar kecilnya api, apakah diputar ke kiri atau kanan?",
+        "GASCOMP Regulator Gas LPG GRS-02 Pro Superlock with Adjuster + Pressure Gauge | Regulator Tabung Gas Anti Bocor Low Pressure 1 Tahun Garansi",
+        "GRS-02PRO"
+      ],
+      "product": {
+        "id": "product-1789547201044-2yk7l",
+        "slug": "new-product-3u75lg",
+        "sku": "GRS-02PRO",
+        "name": "GASCOMP Regulator Gas LPG GRS-02 Pro Superlock with Adjuster + Pressure Gauge | Regulator Tabung Gas Anti Bocor Low Pressure 1 Tahun Garansi",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789547239879-vsx2r",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3u75lg",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789554405325-2bmam",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Berapa panjang selang regulator ini?~",
+      "question": "Berapa panjang selang regulator ini?~",
+      "answer": "Panjang selang regulator ini adalah 1,8 meter ya kak! Selang ini sudah dilengkapi dengan lapisan 5 pelindung anti tikus dan anti kusut yang awet hingga puluhan tahun.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3xubi4",
+      "triggers": [
+        "Berapa panjang selang regulator ini?~",
+        "GASCOMP Paket Regulator Gas Superlock GRS 915 PRO Regulator Gas Superlock Anti Bocor Dengan Pengunci Double Lock dan Fitur Memaksimalkan Gas Dengan Sempurna",
+        "GRS-915-PRO"
+      ],
+      "product": {
+        "id": "product-1789553320637-21kr5",
+        "slug": "new-product-3xubi4",
+        "sku": "GRS-915-PRO",
+        "name": "GASCOMP Paket Regulator Gas Superlock GRS 915 PRO Regulator Gas Superlock Anti Bocor Dengan Pengunci Double Lock dan Fitur Memaksimalkan Gas Dengan Sempurna",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789554405325-2bmam",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3xubi4",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789554434879-4svvi",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Di kota saya, apakah tersedia service center? Jika butuh perbaikan, harus dibawa ke mana? Apakah ada garansi dengan dukungan service center?",
+      "question": "Di kota saya, apakah tersedia service center? Jika butuh perbaikan, harus dibawa ke mana? Apakah ada garansi dengan dukungan service center?",
+      "answer": "Halo kak 👋 \nService center ada di Jakarta ya 🙏. Tapi tenang, produk ini bergaransi 1 tahun dan bisa klaim langsung lewat kami supaya kendala kakak cepat terselesaikan.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3xubi4",
+      "triggers": [
+        "Di kota saya, apakah tersedia service center? Jika butuh perbaikan, harus dibawa ke mana? Apakah ada garansi dengan dukungan service center?",
+        "GASCOMP Paket Regulator Gas Superlock GRS 915 PRO Regulator Gas Superlock Anti Bocor Dengan Pengunci Double Lock dan Fitur Memaksimalkan Gas Dengan Sempurna",
+        "GRS-915-PRO"
+      ],
+      "product": {
+        "id": "product-1789553320637-21kr5",
+        "slug": "new-product-3xubi4",
+        "sku": "GRS-915-PRO",
+        "name": "GASCOMP Paket Regulator Gas Superlock GRS 915 PRO Regulator Gas Superlock Anti Bocor Dengan Pengunci Double Lock dan Fitur Memaksimalkan Gas Dengan Sempurna",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789554434879-4svvi",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3xubi4",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789554476492-2kr14",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Kak ini bs buat oven deck getra?",
+      "question": "Kak ini bs buat oven deck getra?",
+      "answer": "Halo, regulator gas Gascomp GRS 915 PRO ini dirancang untuk penggunaan dengan kompor gas standar. Untuk oven deck Getra, Anda perlu memastikan kompatibilitas karena produk ini adalah regulator gas tekanan rendah (low pressure) dengan fitur Superlock. Produk ini memiliki fitur anti bocor, anti tikus, dan sistem adjuster putar untuk memaksimalkan penggunaan gas. Sebaiknya periksa spesifikasi teknis oven Getra Anda untuk memastikan kecocokan dengan regulator ini.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-3xubi4",
+      "triggers": [
+        "Kak ini bs buat oven deck getra?",
+        "GASCOMP Paket Regulator Gas Superlock GRS 915 PRO Regulator Gas Superlock Anti Bocor Dengan Pengunci Double Lock dan Fitur Memaksimalkan Gas Dengan Sempurna",
+        "GRS-915-PRO"
+      ],
+      "product": {
+        "id": "product-1789553320637-21kr5",
+        "slug": "new-product-3xubi4",
+        "sku": "GRS-915-PRO",
+        "name": "GASCOMP Paket Regulator Gas Superlock GRS 915 PRO Regulator Gas Superlock Anti Bocor Dengan Pengunci Double Lock dan Fitur Memaksimalkan Gas Dengan Sempurna",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789554476492-2kr14",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-3xubi4",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789609447104-2jxew",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apa perbedaan selang high pressure pada paket GRS-925 Pro dengan selang low pressure?~",
+      "question": "Apa perbedaan selang high pressure pada paket GRS-925 Pro dengan selang low pressure?~",
+      "answer": "Selang high pressure pada paket GRS-925 Pro ini dirancang untuk kompor yang membutuhkan tekanan gas lebih tinggi seperti kompor wok atau kompor high pressure. Bedanya dengan selang low pressure adalah selang high pressure bisa mengalirkan gas dengan tekanan lebih kuat, cocok untuk masak cepat atau usaha kuliner. Selang ini juga lebih tahan lama dengan konstruksi yang lebih kuat dan tahan terhadap tekanan tinggi.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-4v1rne",
+      "triggers": [
+        "Apa perbedaan selang high pressure pada paket GRS-925 Pro dengan selang low pressure?~",
+        "GASCOMP Superlock GRS-925 Pro Paket Regulator Gas Low Pressure + Selang High Pressure 1.8M | SNI | Auto Cut Off | Anti Bocor | Garansi 1 Tahun",
+        "GRS-925-PRO"
+      ],
+      "product": {
+        "id": "product-1789609095482-2yxof",
+        "slug": "new-product-4v1rne",
+        "sku": "GRS-925-PRO",
+        "name": "GASCOMP Superlock GRS-925 Pro Paket Regulator Gas Low Pressure + Selang High Pressure 1.8M | SNI | Auto Cut Off | Anti Bocor | Garansi 1 Tahun",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789609447104-2jxew",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-4v1rne",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789609464956-5j561",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Kalau rusak, bisa klaim garansi nggak Kak?",
+      "question": "Kalau rusak, bisa klaim garansi nggak Kak?",
+      "answer": "Halo Kak! 😊 Produk ini bergaransi 1 tahun (12 bulan), jadi Kakak tidak perlu khawatir ya 🛠️✨ ✅ Syarat klaim garansi: – Sertakan video unboxing saat paket dibuka – Sertakan video permasalahan pada produk Jika terjadi kendala, Kakak bisa langsung hubungi kami melalui no berikut: 📞 +6285283841315 Kami siap bantu Kakak dengan senang hati! 🤗💬 Atau klik logo WhatsApp di bawah\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-4v1rne",
+      "triggers": [
+        "Kalau rusak, bisa klaim garansi nggak Kak?",
+        "GASCOMP Superlock GRS-925 Pro Paket Regulator Gas Low Pressure + Selang High Pressure 1.8M | SNI | Auto Cut Off | Anti Bocor | Garansi 1 Tahun",
+        "GRS-925-PRO"
+      ],
+      "product": {
+        "id": "product-1789609095482-2yxof",
+        "slug": "new-product-4v1rne",
+        "sku": "GRS-925-PRO",
+        "name": "GASCOMP Superlock GRS-925 Pro Paket Regulator Gas Low Pressure + Selang High Pressure 1.8M | SNI | Auto Cut Off | Anti Bocor | Garansi 1 Tahun",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789609464956-5j561",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-4v1rne",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789609485128-s21t4",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Bagaimana cara melepas karet seal di regulator?",
+      "question": "Bagaimana cara melepas karet seal di regulator?",
+      "answer": "Untuk melepas karet seal di regulator, tinggal dicongkel saja kak menggunakan obeng min. Karet seal ini kadang terlalu tebal sehingga membuat regulator sulit mengunci. Setelah dilepas, regulator akan lebih mudah dipasang dan dikunci dengan baik.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-4v1rne",
+      "triggers": [
+        "Bagaimana cara melepas karet seal di regulator?",
+        "GASCOMP Superlock GRS-925 Pro Paket Regulator Gas Low Pressure + Selang High Pressure 1.8M | SNI | Auto Cut Off | Anti Bocor | Garansi 1 Tahun",
+        "GRS-925-PRO"
+      ],
+      "product": {
+        "id": "product-1789609095482-2yxof",
+        "slug": "new-product-4v1rne",
+        "sku": "GRS-925-PRO",
+        "name": "GASCOMP Superlock GRS-925 Pro Paket Regulator Gas Low Pressure + Selang High Pressure 1.8M | SNI | Auto Cut Off | Anti Bocor | Garansi 1 Tahun",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789609485128-s21t4",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-4v1rne",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789612287098-izmvg",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Mengapa regulator ini tidak bisa digunakan?",
+      "question": "Mengapa regulator ini tidak bisa digunakan?",
+      "answer": "Halo Kak! Untuk masalah regulator yang tidak bisa dipakai, coba periksa beberapa hal: 1) Pastikan pemasangan sudah benar dengan teknologi Superlock - klik hingga terkunci sempurna, 2) Periksa karet seal di tabung gas, jika keras bisa diganti yang lebih lentur atau dicoba tanpa seal dulu, 3) Pastikan tabung gas masih ada isinya. Regulator GRS-915 dilengkapi teknologi anti bocor dan sudah bersertifikat SNI untuk keamanan maksimal. Jika masih bermasalah, kami siap bantu dengan garansi 1 tahun!\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-4uu6sw",
+      "triggers": [
+        "Mengapa regulator ini tidak bisa digunakan?",
+        "GASCOMP Paket Regulator Superlock GRS 915F PRO Regulator Gas Anti Bocor Low Pressure dengan Maksimalkan Sisa Gas dengan Adjuster Lebih Untung dan Lebih Maksimal",
+        "GRS915F-PRO"
+      ],
+      "product": {
+        "id": "product-1789608741872-09e5c",
+        "slug": "new-product-4uu6sw",
+        "sku": "GRS915F-PRO",
+        "name": "GASCOMP Paket Regulator Superlock GRS 915F PRO Regulator Gas Anti Bocor Low Pressure dengan Maksimalkan Sisa Gas dengan Adjuster Lebih Untung dan Lebih Maksimal",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789612287098-izmvg",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-4uu6sw",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789612439093-8aty4",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "apakah bisa semua jenis kompor tanam?",
+      "question": "apakah bisa semua jenis kompor tanam?",
+      "answer": "Regulator GASCOMP Superlock GRS 915F PRO ini kompatibel dengan berbagai jenis kompor gas termasuk kompor tanam. Produk ini dilengkapi pin dan lubang gas yang presisi sehingga memudahkan pemasangan pada berbagai jenis kompor. Sistem klik yang mudah hanya dengan satu jari membuat instalasi menjadi sangat praktis untuk semua jenis kompor gas.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-4uu6sw",
+      "triggers": [
+        "apakah bisa semua jenis kompor tanam?",
+        "GASCOMP Paket Regulator Superlock GRS 915F PRO Regulator Gas Anti Bocor Low Pressure dengan Maksimalkan Sisa Gas dengan Adjuster Lebih Untung dan Lebih Maksimal",
+        "GRS915F-PRO"
+      ],
+      "product": {
+        "id": "product-1789608741872-09e5c",
+        "slug": "new-product-4uu6sw",
+        "sku": "GRS915F-PRO",
+        "name": "GASCOMP Paket Regulator Superlock GRS 915F PRO Regulator Gas Anti Bocor Low Pressure dengan Maksimalkan Sisa Gas dengan Adjuster Lebih Untung dan Lebih Maksimal",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789612439093-8aty4",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-4uu6sw",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789612503955-k113g",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Regulator dan selang gas apa yang paling aman dari kebocoran, termasuk fitur lubang gasnya?",
+      "question": "Regulator dan selang gas apa yang paling aman dari kebocoran, termasuk fitur lubang gasnya?",
+      "answer": "GASCOMP Paket Regulator Superlock GRS 915F PRO adalah pilihan paling aman untuk mencegah kebocoran. Dilengkapi sistem pengunci ganda (double lock) dengan kekuatan 50.000 kali, selang lapis 5 pelindung metal anti tikus dan anti karat, plus pin dan lubang gas yang presisi untuk pemasangan yang mudah dan aman. Aliran gas sempurna dan stabil tanpa kebocoran.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-4uu6sw",
+      "triggers": [
+        "Regulator dan selang gas apa yang paling aman dari kebocoran, termasuk fitur lubang gasnya?",
+        "GASCOMP Paket Regulator Superlock GRS 915F PRO Regulator Gas Anti Bocor Low Pressure dengan Maksimalkan Sisa Gas dengan Adjuster Lebih Untung dan Lebih Maksimal",
+        "GRS915F-PRO"
+      ],
+      "product": {
+        "id": "product-1789608741872-09e5c",
+        "slug": "new-product-4uu6sw",
+        "sku": "GRS915F-PRO",
+        "name": "GASCOMP Paket Regulator Superlock GRS 915F PRO Regulator Gas Anti Bocor Low Pressure dengan Maksimalkan Sisa Gas dengan Adjuster Lebih Untung dan Lebih Maksimal",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789612503955-k113g",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-4uu6sw",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789636357653-gkzbj",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah GRS-02 Pro dan selang 5 lapis bisa dibeli terpisah?",
+      "question": "Apakah GRS-02 Pro dan selang 5 lapis bisa dibeli terpisah?",
+      "answer": "Untuk GRS-02 Pro + selang 5 lapis, kakak bisa beli terpisah ya. GRS-02 Pro regulatornya saja, lalu tambah selang 5 lapis GHS-03 yang sudah tersedia satuan. Kombinasi ini memberikan fleksibilitas lebih dengan regulator pro yang ada adjuster dan pressure gauge, plus selang premium 5 lapis anti gigitan tikus yang tahan lama.\n\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-5b3hoa",
+      "triggers": [
+        "Apakah GRS-02 Pro dan selang 5 lapis bisa dibeli terpisah?",
+        "GASCOMP Paket Regulator Gas Low Pressure + Selang 1.8M High Pressure GRS-935 | Anti Bocor | Anti Gigitan Tikus | Bahan 5 Lapis Premium | Garansi 1 Tahun",
+        "GRS-915F PRO"
+      ],
+      "product": {
+        "id": "product-1789636049722-r2fcs",
+        "slug": "new-product-5b3hoa",
+        "sku": "GRS-915F PRO",
+        "name": "GASCOMP Paket Regulator Gas Low Pressure + Selang 1.8M High Pressure GRS-935 | Anti Bocor | Anti Gigitan Tikus | Bahan 5 Lapis Premium | Garansi 1 Tahun",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789636357653-gkzbj",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-5b3hoa",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789636457140-6qkjb",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah produk ini sudah termasuk selang 1,8 meter dengan bahan 5 lapis premium anti gigitan tikus, tahan panas, tekanan tinggi, dan anti bocor?~",
+      "question": "Apakah produk ini sudah termasuk selang 1,8 meter dengan bahan 5 lapis premium anti gigitan tikus, tahan panas, tekanan tinggi, dan anti bocor?~",
+      "answer": "Untuk selangnya kak, produk ini sudah termasuk selang 1.8 meter dengan bahan 5 lapis premium anti gigitan tikus ya kak. Selangnya tahan panas, tekanan tinggi, dan anti bocor. Material 5 lapis ini memberikan keamanan maksimal dan awet digunakan hingga bertahun-tahun.\n\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-5b3hoa",
+      "triggers": [
+        "Apakah produk ini sudah termasuk selang 1,8 meter dengan bahan 5 lapis premium anti gigitan tikus, tahan panas, tekanan tinggi, dan anti bocor?~",
+        "GASCOMP Paket Regulator Gas Low Pressure + Selang 1.8M High Pressure GRS-935 | Anti Bocor | Anti Gigitan Tikus | Bahan 5 Lapis Premium | Garansi 1 Tahun",
+        "GRS-915F PRO"
+      ],
+      "product": {
+        "id": "product-1789636049722-r2fcs",
+        "slug": "new-product-5b3hoa",
+        "sku": "GRS-915F PRO",
+        "name": "GASCOMP Paket Regulator Gas Low Pressure + Selang 1.8M High Pressure GRS-935 | Anti Bocor | Anti Gigitan Tikus | Bahan 5 Lapis Premium | Garansi 1 Tahun",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789636457140-6qkjb",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-5b3hoa",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789636486144-g3q7w",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Kak, itu selangnya oren kan?",
+      "question": "Kak, itu selangnya oren kan?",
+      "answer": "Halo Kak! Iya benar, selang gas pada produk GASCOMP Paket Regulator Gas Low Pressure + Selang 1.8M High Pressure GRS-935 ini berwarna oranye. Selang ini terbuat dari 5 lapis bahan premium yang anti gigitan tikus dan tahan panas. Panjangnya 1,8 meter, cocok untuk kebutuhan dapur rumah tangga. Selain itu, paket ini juga dilengkapi regulator tekanan tinggi yang aman dan anti bocor. Jika ada pertanyaan lain, silakan tanyakan ya Kak.\n\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-5b3hoa",
+      "triggers": [
+        "Kak, itu selangnya oren kan?",
+        "GASCOMP Paket Regulator Gas Low Pressure + Selang 1.8M High Pressure GRS-935 | Anti Bocor | Anti Gigitan Tikus | Bahan 5 Lapis Premium | Garansi 1 Tahun",
+        "GRS-915F PRO"
+      ],
+      "product": {
+        "id": "product-1789636049722-r2fcs",
+        "slug": "new-product-5b3hoa",
+        "sku": "GRS-915F PRO",
+        "name": "GASCOMP Paket Regulator Gas Low Pressure + Selang 1.8M High Pressure GRS-935 | Anti Bocor | Anti Gigitan Tikus | Bahan 5 Lapis Premium | Garansi 1 Tahun",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789636486144-g3q7w",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-5b3hoa",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789636764066-tidkm",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator ini tipe terbaru?~",
+      "question": "Apakah regulator ini tipe terbaru?~",
+      "answer": "Regulator GASCOMP GRT-924E ini adalah produk dengan teknologi terkini yang dilengkapi fitur-fitur canggih seperti Neo Meter untuk deteksi kebocoran, sistem Auto Cut-Off untuk keamanan otomatis, dan anti-break system. Produk ini sudah bersertifikat SNI dan ISO 9001 TUV Nord dengan garansi 1 tahun, menunjukkan kualitas dan teknologi yang up-to-date.\n\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-5be8g9",
+      "triggers": [
+        "Apakah regulator ini tipe terbaru?~",
+        "GASCOMP Paket Regulator Meter + Selang (GRT-924E) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik",
+        "GRT-924E"
+      ],
+      "product": {
+        "id": "product-1789636550985-azu7b",
+        "slug": "new-product-5be8g9",
+        "sku": "GRT-924E",
+        "name": "GASCOMP Paket Regulator Meter + Selang (GRT-924E) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789636764066-tidkm",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-5be8g9",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789636795243-28nn2",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apa perbedaan antara GRT-924E dan GRP-924E terkait bahan, ketahanan, serta fitur keamanannya?",
+      "question": "Apa perbedaan antara GRT-924E dan GRP-924E terkait bahan, ketahanan, serta fitur keamanannya?",
+      "answer": "Perbedaan GRT-924E dan GRP-924E terletak pada bahan regulatornya. GRT-924E menggunakan bahan plat kaleng yang lebih tipis, sedangkan GRP-924E sudah menggunakan campuran zinc alloy yang lebih kuat dan tahan lama. Keduanya sama-sama dilengkapi fitur anti bocor, SNI certified, dan auto cut-off system untuk keamanan maksimal.\n\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-5be8g9",
+      "triggers": [
+        "Apa perbedaan antara GRT-924E dan GRP-924E terkait bahan, ketahanan, serta fitur keamanannya?",
+        "GASCOMP Paket Regulator Meter + Selang (GRT-924E) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik",
+        "GRT-924E"
+      ],
+      "product": {
+        "id": "product-1789636550985-azu7b",
+        "slug": "new-product-5be8g9",
+        "sku": "GRT-924E",
+        "name": "GASCOMP Paket Regulator Meter + Selang (GRT-924E) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789636795243-28nn2",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-5be8g9",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789636807444-tfywz",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator ini bisa digunakan untuk kompor portable?",
+      "question": "Apakah regulator ini bisa digunakan untuk kompor portable?",
+      "answer": "Ya, regulator ini bisa dipakai untuk kompor portable. Produk ini dapat digunakan untuk semua jenis tabung gas dan mampu melayani hingga 5 tungku. Dilengkapi dengan selang flexible sepanjang 1.8M yang memberikan fleksibilitas penggunaan untuk berbagai jenis kompor gas termasuk kompor portable.\n\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-5be8g9",
+      "triggers": [
+        "Apakah regulator ini bisa digunakan untuk kompor portable?",
+        "GASCOMP Paket Regulator Meter + Selang (GRT-924E) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik",
+        "GRT-924E"
+      ],
+      "product": {
+        "id": "product-1789636550985-azu7b",
+        "slug": "new-product-5be8g9",
+        "sku": "GRT-924E",
+        "name": "GASCOMP Paket Regulator Meter + Selang (GRT-924E) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789636807444-tfywz",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-5be8g9",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789637153198-vy8ar",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Regulator Gascomp GRP-2D ini bisa digunakan untuk tabung gas 12kg?~",
+      "question": "Regulator Gascomp GRP-2D ini bisa digunakan untuk tabung gas 12kg?~",
+      "answer": "Ya kak, regulator Gascomp GRP-2D ini bisa digunakan untuk tabung gas 12kg. Produk ini dirancang untuk tabung gas tekanan rendah dan sudah lulus uji SNI untuk keamanan. Pastikan pemasangan benar: posisi tuas OFF saat pasang, tekan dan masukkan regulator sampai rapat ke mulut tabung, lalu putar tuas ke LOCK. Regulator ini dilengkapi sistem auto cut-off untuk keamanan ekstra.\n\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-5bnxu5",
+      "triggers": [
+        "Regulator Gascomp GRP-2D ini bisa digunakan untuk tabung gas 12kg?~",
+        "GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRP-2D"
+      ],
+      "product": {
+        "id": "product-1789637003789-noqb3",
+        "slug": "new-product-5bnxu5",
+        "sku": "GRP-2D",
+        "name": "GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789637153198-vy8ar",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-5bnxu5",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789637161296-g6ae7",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "Apakah regulator Gascomp GRP-2D ini cocok untuk tabung gas besar 25kg, dan mengapa sering bocor saat dipasang?",
+      "question": "Apakah regulator Gascomp GRP-2D ini cocok untuk tabung gas besar 25kg, dan mengapa sering bocor saat dipasang?",
+      "answer": "Regulator Gascomp GRP-2D ini dirancang untuk tabung gas tekanan rendah seperti tabung 3kg dan 12kg, tidak cocok untuk tabung gas besar 25kg. Untuk masalah bocor, pastikan pemasangan benar: 1) Posisi tuas OFF, 2) Tekan tuas dan pasang ke mulut tabung sampai masuk sempurna, 3) Putar tuas ke LOCK. Pastikan regulator terpasang lurus dan rapat, serta kunci benar-benar terkunci. Produk ini dilengkapi sistem auto cut-off yang otomatis menghentikan aliran gas saat terjadi kebocoran untuk keamanan.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-5bnxu5",
+      "triggers": [
+        "Apakah regulator Gascomp GRP-2D ini cocok untuk tabung gas besar 25kg, dan mengapa sering bocor saat dipasang?",
+        "GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRP-2D"
+      ],
+      "product": {
+        "id": "product-1789637003789-noqb3",
+        "slug": "new-product-5bnxu5",
+        "sku": "GRP-2D",
+        "name": "GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789637161296-g6ae7",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-5bnxu5",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-faq-faq-1789637162331-ezgsz",
+      "kind": "faq",
+      "approval": "approved",
+      "title": "New question",
+      "question": "New question",
+      "answer": "Write an answer for the customer.\n\nProduct guide: https://support.gascompsuperlock.com/produk/new-product-5bnxu5",
+      "triggers": [
+        "New question",
+        "GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRP-2D"
+      ],
+      "product": {
+        "id": "product-1789637003789-noqb3",
+        "slug": "new-product-5bnxu5",
+        "sku": "GRP-2D",
+        "name": "GASCOMP Regulator Meter Premium (GRP-2D) Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "faq:faq-1789637162331-ezgsz",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/new-product-5bnxu5",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-issue-issue-1789371840577-tj5z4",
+      "kind": "issue",
+      "approval": "approved",
+      "title": "Cara Pemasangan Standar ",
+      "question": "Cara Pemasangan Standar ",
+      "answer": "1. Pasang Regulator : Letakkan regulator di atas tabung gas dalam posisi OFF (tuas belum  diputar/mengunci). \n2. Paskan Posisi Seal : Tekan regulator ke arah bawah sambil diputar-putar perlahan,  agar karet seal internal terpasang dengan pas dan presisi pada mulut tabung. 3. Kunci Regulator : Coba putar tuas pengunci ke posisi LOCK. (Panduan visual dapat  dilihat pada Video No. 1). \n\nWarning: PENTING: Jika pengunci terasa keras/sulit diputar, JANGAN DIPAKSA agar tuas pengunci  tidak patah.\n\nFull guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc#kendala",
+      "triggers": [
+        "Cara Pemasangan Standar ",
+        "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRT-2D",
+        "Pasang Regulator : Letakkan regulator di atas tabung gas dalam posisi OFF (tuas belum  diputar/mengunci). ",
+        "Paskan Posisi Seal : Tekan regulator ke arah bawah sambil diputar-putar perlahan,  agar karet seal internal terpasang dengan pas dan presisi pada mulut tabung. 3. Kunci Regulator : Coba putar tuas pengunci ke posisi LOCK. (Panduan visual dapat  dilihat pada Video No. 1). "
+      ],
+      "product": {
+        "id": "warehouse-88000063",
+        "slug": "grt-2d-6d5b4dc",
+        "sku": "GRT-2D",
+        "name": "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "issue:issue-1789371840577-tj5z4",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc#kendala",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-issue-issue-1789371934437-uao9p",
+      "kind": "issue",
+      "approval": "approved",
+      "title": "Solusi Jika Pengunci Masih Keras/Sulit Diputar",
+      "question": "Solusi Jika Pengunci Masih Keras/Sulit Diputar",
+      "answer": "1. Lepas Karet Seal Regulator : Lepaskan karet seal berwarna hitam/merah yang ada di  dalam regulator. (Cara melepasnya dapat dilihat pada Video No. 4). \n2. Pastikan Karet Tabung Tetap Terpasang : Biarkan karet seal hitam yang ada di dalam  mulut tabung gas tetap terpasang seperti biasa. \n3. Pasang Kembali : Pasang regulator ke tabung gas dan coba putar tuas ke posisi LOCK.  Cara ini umumnya langsung berhasil mengunci dengan mudah. (Lihat contohnya pada  Video No. 2). \n\nWarning: PENTING: Jika pengunci terasa keras/sulit diputar, JANGAN DIPAKSA agar tuas pengunci  tidak patah.\n\nFull guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc#kendala",
+      "triggers": [
+        "Solusi Jika Pengunci Masih Keras/Sulit Diputar",
+        "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRT-2D",
+        "Lepas Karet Seal Regulator : Lepaskan karet seal berwarna hitam/merah yang ada di  dalam regulator. (Cara melepasnya dapat dilihat pada Video No. 4). ",
+        "Pastikan Karet Tabung Tetap Terpasang : Biarkan karet seal hitam yang ada di dalam  mulut tabung gas tetap terpasang seperti biasa. ",
+        "Pasang Kembali : Pasang regulator ke tabung gas dan coba putar tuas ke posisi LOCK.  Cara ini umumnya langsung berhasil mengunci dengan mudah. (Lihat contohnya pada  Video No. 2). "
+      ],
+      "product": {
+        "id": "warehouse-88000063",
+        "slug": "grt-2d-6d5b4dc",
+        "sku": "GRT-2D",
+        "name": "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "issue:issue-1789371934437-uao9p",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc#kendala",
+      "reviewedBy": "gascomp-admin-published-content"
+    },
+    {
+      "id": "admin-issue-issue-1789371969260-pmgll",
+      "kind": "issue",
+      "approval": "approved",
+      "title": "Solusi Jika Gas Belum Mengalir ke Kompor",
+      "question": "Solusi Jika Gas Belum Mengalir ke Kompor",
+      "answer": "1. Tepuk Selang Gas: Tepuk-tepuk bagian selang gas secara perlahan sampai bola  pengaman (safety ball) di dalam regulator terbuka dan aliran gas naik ke kompor.\n\nWarning: PENTING: Jika pengunci terasa keras/sulit diputar, JANGAN DIPAKSA agar tuas pengunci  tidak patah. (Lihat  praktiknya pada Video No. 3).\n\nFull guide: https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc#kendala",
+      "triggers": [
+        "Solusi Jika Gas Belum Mengalir ke Kompor",
+        "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "GRT-2D",
+        "Tepuk Selang Gas: Tepuk-tepuk bagian selang gas secara perlahan sampai bola  pengaman (safety ball) di dalam regulator terbuka dan aliran gas naik ke kompor."
+      ],
+      "product": {
+        "id": "warehouse-88000063",
+        "slug": "grt-2d-6d5b4dc",
+        "sku": "GRT-2D",
+        "name": "GASCOMP Regulator Meter (GRT-2D) SNI Regulator Gas Aman Regulator Gas Anti Bocor Regulator Gas SNI Regulator Gas Terbaik Regulator Anti Bocor Smartlock",
+        "model": "Regulator Gas",
+        "variationSkus": []
+      },
+      "sourceRef": "issue:issue-1789371969260-pmgll",
+      "sourceUrl": "https://support.gascompsuperlock.com/produk/grt-2d-6d5b4dc#kendala",
       "reviewedBy": "gascomp-admin-published-content"
     }
   ],
   "skippedSources": [
     {
-      "sourceRef": "faq:faq-1789027787646-imiwo",
-      "reason": "The question or answer is too short or incomplete."
+      "sourceRef": "tutorial:video-1789361614488-8m50m",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789370915837-g9uhi",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789370948365-rugki",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789370976789-79uqp",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789365905540-19meo",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789381521850-3hghc",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789381590519-yr2x4",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789381624900-64j9q",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789381646889-2qu2b",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789366280959-7n2qy",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789370659173-avza0",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789370763946-1r53g",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789370764104-ghzxv",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789366498193-kuz5z",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789117405100-u801h",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789371228581-hfxx7",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789371268304-g9h31",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789371268449-e2otu",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789354415233-mbnub",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789352301516-2ygxc",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789368062780-9aisv",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789368297291-305gy",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789367653363-wi17g",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789368833196-jn55v",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789368703786-yb7ah",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789369943227-t4x5z",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789370019855-4ydoh",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789370074583-3hhj9",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789544566251-23qwd",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789544652858-3cq32",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789544699503-93rdn",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789544724111-44u5t",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789546599117-mudwd",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789546618740-5z1dp",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789546647509-7t2q7",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789546667752-ab1fs",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789547327196-aqocl",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789547380879-8lt67",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789547416943-xiqqd",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789547447340-x4y03",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789554242977-oowbb",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789554305050-vlmir",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789554327744-98fay",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789554362654-mb8vf",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789609230398-mien7",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789609284618-cuiov",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789609303248-2gvm8",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789609370717-qupug",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789612159611-98sgb",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789612216044-t8pgu",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789612235775-ok78v",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789612252712-91vgy",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789636282917-c46f1",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789636312390-wtvvm",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789636324031-jgmfu",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789636341186-ekjs4",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789636673628-kj7bx",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789636673846-yppr1",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789636674005-g08xg",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789636675611-03kdd",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789637116363-xxg3l",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789637117294-0rzq3",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789637117461-wbcq4",
+      "reason": "The title or YouTube link is invalid."
+    },
+    {
+      "sourceRef": "tutorial:video-1789637119512-uejzv",
+      "reason": "The title or YouTube link is invalid."
     }
   ]
 }

@@ -32,7 +32,7 @@ scripts/
   shared/                         # Paths, environment, script clients
   scratch/                        # Manual experiments; never application entrypoints
 data/{catalog,knowledge,reports}/
-docs/{architecture,product,reference,setup,brand}/
+docs/{architecture,product,reference,setup,brand,work}/
 Skill/<skill-name>/                # Repository skill sources; see Skill/CONTEXT.md
 obsidian/                         # Knowledge vault; stable location
 public/                           # Public URL assets; stable location
@@ -85,6 +85,74 @@ npm run build
 Node model tests live beside their modules as `*.test.mjs`. Python tests use the project virtual environment. Browser checks cover the catalog, product detail, login/logout, editor, QR, warranty submission, ticket status, and private evidence access.
 
 Product requirements are grouped in the [topic index](../product/spec.md). Database setup is documented in [Supabase setup](../setup/supabase.md).
+
+## Folder context contracts
+
+The root [CONTEXT.md](../../CONTEXT.md) maps responsibilities to folder contexts.
+Before working in a selected area, load its context explicitly through that map.
+A context owns the area's purpose, input references, supported task/process/output
+table, boundaries, and verification. Root AGENTS.md remains the global rule owner;
+product specifications remain the behavior owner. Contexts link those sources and
+must be updated alongside responsibility or placement changes.
+
+Application routes, shared infrastructure, each feature, scripts, scraping,
+Supabase, and docs have local `CONTEXT.md` files. Their technical descendants
+inherit that context; scripts, scraping, and docs include dispatch rows for child
+folders. Add a more specific context only when that child needs distinct guidance,
+and link it from its parent or the workspace map. No automatic editor discovery
+of `CONTEXT.md` is assumed.
+
+Data, Obsidian, and public asset contexts live in `docs/architecture/folder-contexts/`
+to avoid inserting agent instructions into generated data, knowledge ingestion,
+or publicly served assets. Dependency folders, caches, private runtime state, and
+third-party reference repositories do not receive project context scaffolding.
+
+Keep context filenames stable. The status/version handoff naming convention does
+not apply to persistent folder contracts. A context's Tasks table describes work
+that can be requested; only actual requested work belongs in dated handoffs.
+
+## Work continuity documents
+
+`docs/work/workflow.md` owns the procedure for pickup and handoff.
+`docs/work/README.md` indexes focused notes in `docs/work/handoffs/`.
+Create one note per actual workstream when continuity is needed; do not scaffold
+empty notes for every feature. Handoffs record dated observations and next steps,
+not product requirements or customer knowledge. Use the [workflow](../work/workflow.md)
+for ownership, maintenance, and verification rules. Handoff artifacts use
+`handoff-<topic>-<status>-v<version>.md`; the workflow owns the status mapping and
+rename procedure. Stable instruction files and topic specifications keep their
+existing names.
+
+## Reusable work procedures
+
+`docs/work/learning.md` owns extraction of goals, corrections, sources, reasons,
+assumptions, and acceptance evidence from dialogue. Focused methods live in
+`docs/work/procedures/` with stable descriptive filenames and are linked from the
+owning context. Product decisions stay in the topic specification; actual run
+results stay in handoffs. Procedures describe the steps, not a duplicate backlog.
+
+### Decision: derive procedures from observed work
+
+Recorded: 2026-09-18
+
+Source: the owner supplied Jake's dialogue/context explanation and requested that
+missing parts of this project's workflow be completed and clarified.
+
+Decision: retain the existing folder contexts and supplement recurring tasks with
+source-attributed decisions, concrete procedures, acceptance cases, and dated
+verification. Start with status/solution work in warranty.
+
+Reason: the preceding discussion identified a gap between folder responsibilities
+and a method supported by actual work. Selecting warranty as the initial example
+was the agent's proposal in that discussion; it is not a newly recovered warranty
+product requirement.
+
+Supersedes: None. This extends folder contracts and continuity documentation.
+
+Acceptance: a status/solution request can reach the procedure through the warranty
+context, then find its requirement, entrypoints, expected results, and evidence.
+See the [procedure](../work/procedures/warranty-status.md) and
+[dated warranty evidence](../work/handoffs/handoff-warranty-review-v1.md).
 
 ## Methodology references
 

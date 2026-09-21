@@ -7,8 +7,8 @@ import { TicketSolution } from "./ticket-solution";
 import { TicketExport } from "./ticket-export";
 import { TicketDetails } from "./ticket-details";
 import styles from "./ticket-workspace.module.css";
-import { deleteWarrantyTicketsAction, updateWarrantyTicketStatusAction } from "@/features/warranty/server/admin-actions";
-import { ticketStatusLabel, type WarrantyTicket, type WarrantySolution } from "@/features/warranty/model/types";
+import { deleteWarrantyTicketsAction, setWarrantyTicketStatusAction, updateWarrantyTicketStatusAction } from "@/features/warranty/server/admin-actions";
+import { WARRANTY_TICKET_STATUSES, ticketStatusLabel, type WarrantyTicketStatus, type WarrantyTicket, type WarrantySolution } from "@/features/warranty/model/types";
 
 const dateFormat = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "Asia/Jakarta" });
 const timestampFormat = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" });
@@ -88,6 +88,25 @@ export function TicketInbox({ tickets, setTickets, onTicketUpdated, initialQuery
       setDeleteResult({ deletedCount: 0, requestedCount: ids.length, error: message });
     } finally {
       setDeleting(false);
+    }
+  }
+
+  async function changeStatus(ticket: WarrantyTicket, status: WarrantyTicketStatus) {
+    if (busy || status === ticket.status) return;
+    setBusyTicket(ticket.ticketId);
+    setError("");
+    setNotice("");
+    try {
+      const result = await setWarrantyTicketStatusAction(ticket.ticketId, status);
+      if (!result.success) { setError(result.error); return; }
+      const updatedTicket = { ...ticket, status, updatedAt: result.updatedAt };
+      setTickets((current) => current.map((item) => item.ticketId === ticket.ticketId ? { ...item, status, updatedAt: result.updatedAt } : item));
+      onTicketUpdated?.(updatedTicket);
+      setNotice(`Status updated to ${ticketStatusLabel(status)}.`);
+    } catch {
+      setError("The status update could not be confirmed. Refresh the inbox before retrying.");
+    } finally {
+      setBusyTicket("");
     }
   }
 
@@ -175,6 +194,14 @@ export function TicketInbox({ tickets, setTickets, onTicketUpdated, initialQuery
               <h3 ref={detailHeading} tabIndex={-1} className="mt-4 scroll-mt-40 text-xl font-extrabold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0035b9]">{activeTicket.product.name}</h3>
               <p className="mt-2 text-sm font-semibold text-[#536273]">SKU: {activeTicket.product.sku}</p>
               <p className="mt-3 text-xs leading-5 text-[#626d79]">Submitted {timestampFormat.format(new Date(activeTicket.submittedAt))} (Jakarta)</p>
+            </div>
+            <div className="border-b border-[#e6e9ef] px-4 py-4 sm:px-6">
+              <label className="flex flex-col gap-2 text-xs font-bold text-[#536273]">Ticket status
+                <select aria-label="Ticket status" value={activeTicket.status} disabled={busy} onChange={(event) => void changeStatus(activeTicket, event.target.value as WarrantyTicketStatus)} className="min-h-11 w-full rounded-xl border border-[#cfd7e4] bg-white px-3 text-sm font-semibold text-[#2c3038] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0035b9] disabled:opacity-50 sm:max-w-xs">
+                  {WARRANTY_TICKET_STATUSES.map((status) => <option key={status} value={status}>{ticketStatusLabel(status)}</option>)}
+                </select>
+              </label>
+              <p className="mt-2 text-xs leading-5 text-[#626d79]">Status changes save immediately. The saved solution remains unchanged.</p>
             </div>
             <TicketDetails key={`details-${activeTicket.ticketId}`} ticket={activeTicket} />
             <TicketSolution key={`solution-${activeTicket.ticketId}`} ticket={activeTicket} busy={busy} error={showDetail ? error : undefined} notice={showDetail ? notice : undefined} draft={solutionDrafts[activeTicket.ticketId]} onDraftChange={(value) => setSolutionDrafts((current) => { const next = { ...current }; if (value === undefined) delete next[activeTicket.ticketId]; else next[activeTicket.ticketId] = value; return next; })} onSave={(solution, done) => changeSolution(activeTicket, solution, done)} />
