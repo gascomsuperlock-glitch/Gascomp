@@ -8,7 +8,7 @@ verifikasi file saat ini sebelum mempercayainya. Indeks ini bukan daftar tugas p
 
 | Alur kerja | Serah terima |
 | --- | --- |
-| Rilis seluruh perubahan ke GitHub dan Hostinger | [Rilis seluruh perubahan](handoffs/handoff-full-release-blocked-v1.md) |
+| Rilis seluruh perubahan ke GitHub dan Hostinger | [Rilis seluruh perubahan](handoffs/handoff-full-release-complete-v1.md) |
 | QR produk biasa dan QR halaman depan bermerk | [QR Bermerk](handoffs/handoff-branded-qr-complete-v2.md) |
 | Simpan diagnosis produk baru online | [Katalog Simpan](handoffs/handoff-catalog-save-review-v1.md) |
 | Kontrol status tiket garansi | [Garansi](handoffs/handoff-warranty-review-v1.md) |
