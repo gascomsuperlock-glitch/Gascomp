@@ -2,7 +2,7 @@
 # Penyerahan pengetahuan penuh Gascomp Assistant
 
 Diperbarui: 2026-09-23
-Status: Terverifikasi secara lokal; pekerja produksi masih menunggu otorisasi pemilik
+Status: Pekerja produksi dijalankan ulang atas izin pemilik; pemeriksaan browser belum dilakukan
 
 <a id="objective"></a>
 ## Tujuan
@@ -31,14 +31,21 @@ Dari 618 pasangan FAQ, 282 menjadi entri jawaban. Sisanya ditolak karena tidak m
 <a id="remaining-work-and-decisions"></a>
 ## Pekerjaan dan keputusan yang tersisa
 
-Pekerja produksi yang dikelola launchd (`com.gascomp.ai-assistance.production.worker`, PID 526 pada 23 September 2026) membaca konfigurasi pribadi terpisah di `scraping/.private/ai-assistance/production/worker-environment.json`, bukan salinan `services/` yang diperbarui tugas ini. `GASCOMP_AI_VAULT` di sana masih menunjuk `douke-web/obsidian/customer-support` yang sudah dihapus, dan lognya mencatat `Worker connection unavailable` berulang sampai 12:29. Artinya sinkronisasi pengetahuan situs publik gagal sejak vault dihapus, bukan hanya kekurangan sumber baru. Memperbaiki berkas itu dan menjalankan `launchctl kickstart -k gui/$UID/com.gascomp.ai-assistance.production.worker` adalah tindakan produksi; keduanya belum dilakukan dan memerlukan otorisasi pemilik yang eksplisit.
+Penjaga muatan terserialisasi sisi pekerja sudah aktif karena layanan menjalankan pohon kerja repositori ini. Penjaga sisi server di `generated-response.ts` belum aktif di situs publik; itu memerlukan deployment build Next.js yang baru ke Hostinger dan belum dilakukan.
 
-Pekerja belum dijalankan ulang, jadi snapshot baru belum diterbitkan ke situs. Perilaku model nyata terhadap 282 entri FAQ belum diperiksa di browser; balasan riwayat yang pendek dapat tetap terasa kontekstual meskipun sudah melewati gerbang kelayakan. Deployment publik dan evaluasi ketahanan 24 jam tetap tertunda. Ambang kelayakan FAQ (`_FAQ_MINIMUM_ANSWER_WORDS`, `_FAQ_MINIMUM_QUESTION_WORDS`) adalah keputusan implementasi yang dapat disetel setelah tinjauan pemilik.
+Penerbitan snapshot belum dikonfirmasi langsung. Diamnya log konsisten dengan keberhasilan, tetapi `sync_knowledge` juga diam ketika `load_bundle` gagal, sehingga bukti ini tidak menentukan. Keadaan `ready` pada server hanya dapat dibaca dengan token pekerja dan tidak diperiksa. Konfirmasi yang menentukan adalah membuka panel asisten di situs dan mengajukan pertanyaan. Perilaku model nyata terhadap 282 entri FAQ belum diperiksa di browser; balasan riwayat yang pendek dapat tetap terasa kontekstual meskipun sudah melewati gerbang kelayakan. Deployment publik dan evaluasi ketahanan 24 jam tetap tertunda. Ambang kelayakan FAQ (`_FAQ_MINIMUM_ANSWER_WORDS`, `_FAQ_MINIMUM_QUESTION_WORDS`) adalah keputusan implementasi yang dapat disetel setelah tinjauan pemilik.
+
+<a id="production-restart-on-september-23-2026"></a>
+## Menjalankan ulang produksi pada 23 September 2026
+
+Pemilik mengizinkan perubahan konfigurasi produksi dan menjalankan ulang layanan. `GASCOMP_AI_VAULT` pada `scraping/.private/ai-assistance/production/worker-environment.json` diarahkan dari `douke-web/obsidian/customer-support` yang sudah dihapus ke `douke-chat/knowledge/approved/Douke Knowledge Base/customer-support`, dengan salinan bertanggal disimpan di samping berkas aslinya. Layanan dijalankan ulang melalui `launchctl kickstart -k gui/$UID/com.gascomp.ai-assistance.production.worker` pada 13:12:20; pekerja Python baru mulai 13:12:21.
+
+Sebelum dijalankan ulang, log mencatat `Worker connection unavailable` kira-kira sekali per detik. Setelah dijalankan ulang, log hanya bertambah satu baris yang sama saat mulai lalu diam selama pengamatan berikutnya. `load_bundle` dijalankan memakai kedua jalur persis dari berkas konfigurasi produksi dan berhasil dengan 819 entri pada versi `c5cca762883c6af3`. Situs publik menjawab HTTP 200.
 
 <a id="next-action"></a>
 ## Tindakan selanjutnya
 
-Jalankan database pratinjau dan pekerja lokal sesuai [penyiapan bantuan AI](../../setup/ai-assistance.md), konfirmasi pekerja melaporkan siap dengan versi snapshot baru, lalu periksa alur desktop dan ponsel untuk jawaban FAQ, klarifikasi, dan serah terima sebelum mempertimbangkan aktivasi publik.
+Buka panel asisten di `https://support.gascompsuperlock.com` dan ajukan pertanyaan untuk mengonfirmasi bahwa snapshot 819 entri benar-benar terbit dan jawabannya masuk akal. Bila diperlukan penjaga muatan terserialisasi sisi server, terapkan build Next.js yang baru ke Hostinger. Untuk pekerjaan lokal, gunakan database pratinjau dan pekerja lokal sesuai [penyiapan bantuan AI](../../setup/ai-assistance.md).
 
 <a id="references"></a>
 ## Referensi
