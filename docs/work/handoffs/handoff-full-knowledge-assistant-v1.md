@@ -68,3 +68,12 @@ Sumber naik menjadi 2.444 berkas dan snapshot gabungan menjadi 874 entri sekitar
 Selama pekerjaan ini folder `customer-support` hilang dari vault sementara Obsidian terbuka pada vault tersebut. Penyebabnya tidak dapat ditetapkan dari bukti yang ada. Folder itu dipulihkan dari `origin/main` dan diverifikasi identik byte per byte; tidak ada isi yang hilang.
 
 Pekerja produksi belum memuat kode ini karena modul Python-nya sudah berada di memori sejak dijalankan ulang pada 13:12. Sampai layanan dijalankan ulang, situs masih menyajikan snapshot 819 entri tanpa 55 jawaban yang disetujui.
+
+<a id="release-verification-on-september-23-2026"></a>
+## Verifikasi rilis pada 23 September 2026
+
+Pemilik mendorong `2e02c83` ke `release`. GitHub Actions [35831713953](https://github.com/gascomsuperlock-glitch/Gascomp/actions/runs/35831713953) selesai sukses: lint, pengecekan tipe, pengujian aplikasi/SQL, pembangunan, konfirmasi kandidat, pratinjau dan penerapan migrasi, lalu promosi. Rilis ini tidak membawa migrasi baru. `main` maju secara fast-forward dari `962074f` ke `2e02c83`.
+
+Berbeda dengan dua rilis sebelumnya, build Git otomatis Hostinger kali ini berhasil tanpa perlu unggah arsip. Situs live menyajikan build baru sekitar sembilan puluh detik setelah promosi: `Gascomp Assistant` tidak lagi muncul pada HTML dan `Ayu` muncul pada label tombol, judul panel, serta `aria-label`. Halaman depan, halaman produk, klaim garansi, dan pusat layanan mengembalikan HTTP 200; `/admin` mengembalikan 307 ke login sebagaimana mestinya.
+
+Pekerja produksi berjalan sejak 14:22:05 tanpa baris galat baru, dan vault menghasilkan 855 entri pada versi `365b72b8f093f164`. Perilaku model nyata terhadap Ayu di browser dan evaluasi ketahanan 24 jam tetap tertunda; pemeriksaan ini adalah uji asap rute dan penanda build, bukan pengujian percakapan pelanggan.
