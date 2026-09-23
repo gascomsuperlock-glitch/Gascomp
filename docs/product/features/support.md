@@ -20,7 +20,7 @@ Tautan WhatsApp menggunakan nomor dukungan yang dikonfigurasi dan mencakup konte
 Tombol WhatsApp hanya logo tetap berada di sudut kanan bawah pada rute aplikasi publik. Tersembunyi di `/admin` dan semua subrute `/admin/`, termasuk masuk admin. Membuka percakapan dengan nomor admin Gascomp yang dikonfigurasi di tab baru. Tombol menghormati area aman mobile dan tersembunyi ketika tidak ada nomor dukungan yang dikonfigurasi.
 
 Ketika flag server-side opsional `GASCOMP_AI_ASSISTANCE_ENABLED` aktif,
-panel [Gascomp Assistant](ai-assistance.md) menggantikan tombol melayang ini.
+panel [Ayu](ai-assistance.md) menggantikan tombol melayang ini.
 Panel menyediakan tindakan admin WhatsApp di dalam respons handoff atau pemberitahuan kegagalan layanan, daripada secara permanen di bawah komposer obrolan. Flag default off; tautan WhatsApp lain dan redirect garansi tidak berubah.
 
 <a id="service-center-directory"></a>

@@ -22,7 +22,7 @@ _LINK_OR_MARKUP = re.compile(
 _FALSE_ACTION = re.compile(
     r"\b(?:sudah|telah|have|has)\s+(?:saya\s+)?(?:hubungi|menghubungi|laporkan|"
     r"melaporkan|beri\s+tahu|notified?|contacted?|reported?)\b|"
-    r"\badmin\s+(?:sudah|telah|has\s+been)\s+(?:dihubungi|notified|contacted)\b",
+    r"\b(?:admin|aya)\s+(?:sudah|telah|has\s+been)\s+(?:dihubungi|notified|contacted)\b",
     re.I,
 )
 _STRUCTURED_PAYLOAD = re.compile(
@@ -51,9 +51,16 @@ def _looks_structured(text: str) -> bool:
 _PROMPT_LEAK = re.compile(r"\b(?:system prompt|developer message|api[_ -]?key|worker token|lease token)\b", re.I)
 _ADMIN_REQUEST = re.compile(
     r"\b(?:hubungi|kontak|bicara|ngobrol|sambung(?:kan)?|connect|contact|talk|speak)\b.{0,30}"
-    r"\b(?:admin|cs|customer service|manusia|human|whatsapp|wa)\b|"
-    r"\b(?:admin|cs|customer service|manusia|human|whatsapp|wa)\b.{0,30}"
+    r"\b(?:admin|aya|cs|customer service|manusia|human|whatsapp|wa)\b|"
+    r"\b(?:admin|aya|cs|customer service|manusia|human|whatsapp|wa)\b.{0,30}"
     r"\b(?:hubungi|kontak|bicara|ngobrol|sambung(?:kan)?|connect|contact|talk|speak)\b",
+    re.I,
+)
+_GREETING_ONLY = re.compile(
+    r"^(?:(?:hai|hi+|halo+|hallo+|helo+|hello+|hey|hei|pagi|siang|sore|malam|"
+    r"selamat\s+(?:pagi|siang|sore|malam|datang)|assalamualaikum|permisi|"
+    r"kak(?:ak)?|ka|min|admin|bang|sis|gan|bro|pak|bu|ya)"
+    r"[\s,.!?~\-]*)+$",
     re.I,
 )
 _HAZARD = re.compile(
@@ -127,9 +134,9 @@ def _template(snapshot: dict, language: str, kind: str) -> tuple[str, str] | Non
 
 def safe_fallback(language: str, sku: str | None = None, *, handoff: bool = False) -> dict:
     if handoff:
-        text = ("Saya belum dapat memproses permintaan ini dengan aman. Silakan lanjutkan ke admin melalui pilihan WhatsApp."
+        text = ("Saya belum dapat memproses permintaan ini dengan aman. Silakan lanjutkan ke Aya melalui pilihan WhatsApp."
                 if language == "id" else
-                "I cannot process this request safely right now. Please continue with an admin using the WhatsApp option.")
+                "I cannot process this request safely right now. Please continue with Aya using the WhatsApp option.")
         return {"text": text, "kind": "handoff", "basis": "general", "sourceIds": []}
     if language == "id":
         text = ((f"Saya belum cukup yakin informasi mana yang tepat untuk {sku}. "
@@ -146,11 +153,11 @@ def _hazard_response(language: str) -> dict:
     if language == "id":
         text = ("Ini bisa menjadi kondisi kebocoran gas. Jika aman dijangkau, matikan aliran gas. "
                 "Jangan menyalakan api atau sakelar listrik, buka ventilasi, dan menjauh dari area tersebut. "
-                "Gunakan pilihan WhatsApp untuk menghubungi admin dan cari bantuan teknisi atau layanan darurat setempat.")
+                "Gunakan pilihan WhatsApp untuk menghubungi Aya dan cari bantuan teknisi atau layanan darurat setempat.")
     else:
         text = ("This may be a gas leak. If it is safe to reach, shut off the gas supply. Do not use flames or "
                 "electrical switches, ventilate the area, and move away. Use the WhatsApp option to contact an "
-                "admin and seek qualified or local emergency help.")
+                "Aya and seek qualified or local emergency help.")
     return {"text": text, "kind": "handoff", "basis": "general", "sourceIds": []}
 
 
@@ -277,10 +284,19 @@ class GroundedResponder:
         text = job.get("text") if isinstance(job.get("text"), str) else ""
         if _positive_hazard(text):
             return GroundedResult(_hazard_response(language))
+        # A bare greeting is answered with the published greeting. Sending it to
+        # evidence retrieval lets a historical message that merely opens with
+        # "halo kak" answer an unrelated question.
+        if _GREETING_ONLY.fullmatch(text.strip()):
+            greeting = _template(snapshot, language, "greeting")
+            if greeting:
+                answer, identifier = greeting
+                return GroundedResult({"text": answer, "kind": "answer",
+                                       "basis": "knowledge", "sourceIds": [identifier]})
         if _ADMIN_REQUEST.search(text):
-            answer = ("Bisa, Kak. Silakan gunakan tautan WhatsApp di bawah untuk berbicara dengan admin."
+            answer = ("Bisa, Kak. Silakan gunakan tautan WhatsApp di bawah untuk berbicara dengan Aya."
                       if language == "id" else
-                      "Of course. Please use the WhatsApp link below to speak with an admin.")
+                      "Of course. Please use the WhatsApp link below to speak with Aya.")
             return GroundedResult({"text": answer, "kind": "handoff", "basis": "general", "sourceIds": []})
 
         history = sanitize_history(job.get("history"))

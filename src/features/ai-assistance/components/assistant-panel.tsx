@@ -181,12 +181,12 @@ function PublicAssistant() {
 
   return <>
     <button ref={launcher} type="button" onClick={() => setOpen(true)} aria-label={t.open} aria-haspopup="dialog" aria-expanded={open} aria-controls="gascomp-assistant" className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-[calc(1rem+env(safe-area-inset-right))] z-[60] flex min-h-14 items-center gap-2 rounded-full border border-white/70 bg-[#0035b9] px-4 text-sm font-bold text-white shadow-xl hover:bg-[#002c98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0035b9] sm:bottom-6 sm:right-6">
-      <MessageCircle aria-hidden="true" className="size-6" /><span>Gascomp Assistant</span>
+      <MessageCircle aria-hidden="true" className="size-6" /><span>Ayu</span>
     </button>
     <dialog ref={dialog} id="gascomp-assistant" aria-labelledby="gascomp-assistant-title" onCancel={close} onClose={close} className="fixed inset-auto right-[max(0.5rem,env(safe-area-inset-right))] bottom-[max(0.5rem,env(safe-area-inset-bottom))] m-0 h-[min(680px,calc(100dvh-1rem))] max-h-[calc(100dvh-1rem)] w-[min(420px,calc(100vw-1rem))] max-w-none overflow-hidden rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-950/25 sm:right-6 sm:bottom-6">
       <div className="flex h-full min-h-0 flex-col">
         <header className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200 p-3">
-          <div className="min-w-0"><h2 id="gascomp-assistant-title" className="text-base font-extrabold">Gascomp Assistant</h2><p className="text-xs text-slate-600">{state?.availability === "ready" && !initializing ? t.ready : "Gascomp"}</p></div>
+          <div className="min-w-0"><h2 id="gascomp-assistant-title" className="text-base font-extrabold">Ayu</h2><p className="text-xs text-slate-600">{state?.availability === "ready" && !initializing ? t.ready : "Gascomp"}</p></div>
           <button autoFocus type="button" onClick={close} aria-label={t.close} className="grid size-11 shrink-0 place-items-center rounded-full hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-[#0035b9]"><X aria-hidden="true" className="size-5" /></button>
         </header>
         <div className="flex shrink-0 items-center justify-between gap-2 px-3 pt-2">
@@ -199,7 +199,7 @@ function PublicAssistant() {
         <div ref={history} role="log" aria-label={t.history} aria-live="polite" aria-relevant="additions text" className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3">
           {initializing && !error && <p role="status" className="text-sm text-slate-600">{t.loading}</p>}
           {!initializing && state?.greeting && <p className="whitespace-pre-wrap break-words rounded-xl bg-slate-100 p-3 text-sm leading-6">{state.greeting}</p>}
-          {state?.messages.map((message) => <div key={message.id} className={`max-w-[95%] rounded-xl p-3 ${message.role === "user" ? "ml-auto bg-[#0035b9] text-white" : "bg-slate-100"}`}><p className="mb-1 text-[10px] font-bold opacity-75">{message.role === "user" ? t.you : "Gascomp Assistant"}</p><p className="whitespace-pre-wrap break-words text-sm leading-6 [overflow-wrap:anywhere]">{message.text}</p>{message.role === "assistant" && message.status === "handoff" && <HandoffContact number={content.whatsappNumber} language={language} />}</div>)}
+          {state?.messages.map((message) => <div key={message.id} className={`max-w-[95%] rounded-xl p-3 ${message.role === "user" ? "ml-auto bg-[#0035b9] text-white" : "bg-slate-100"}`}><p className="mb-1 text-[10px] font-bold opacity-75">{message.role === "user" ? t.you : "Ayu"}</p><p className="whitespace-pre-wrap break-words text-sm leading-6 [overflow-wrap:anywhere]">{message.text}</p>{message.role === "assistant" && message.status === "handoff" && <HandoffContact number={content.whatsappNumber} language={language} />}</div>)}
           {!initializing && !state?.greeting && !state?.messages.length && state?.availability === "ready" && <p className="text-sm text-slate-600">{t.empty}</p>}
           {!initializing && state && state.availability !== "ready" && <div className="rounded-xl bg-amber-50 p-3 text-sm leading-6 text-amber-950"><p>{t[state.availability]}</p>{state.handoff && <p className="mt-2 whitespace-pre-wrap break-words">{state.handoff}</p>}{!latestAssistantHasHandoff && !error && <HandoffContact number={content.whatsappNumber} language={language} />}</div>}
           {error && <div role="alert" className="rounded-xl bg-red-50 p-3 text-xs leading-5 text-red-800">

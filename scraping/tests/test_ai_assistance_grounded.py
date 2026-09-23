@@ -8,9 +8,10 @@ from pathlib import Path
 
 from scraping.ai_assistance.grounding import build_evidence, sanitize_history
 from scraping.ai_assistance.responder import validate_grounded_response, GroundedResponder, parse_grounded_response
+from scraping.ai_assistance.knowledge import build_snapshot
 from scraping.ai_assistance.sources import SourceIndex
 from scraping.ai_assistance.worker import Worker
-from scraping.tests.test_ai_assistance import FakeTransport, entry, seed
+from scraping.tests.test_ai_assistance import FakeTransport, entry, seed, write_entry
 
 
 def snapshot(*items: dict) -> dict:
@@ -129,6 +130,28 @@ class GroundedResponseTests(unittest.TestCase):
         for value in invalid:
             with self.subTest(value=value):
                 self.assertIsNone(parse_grounded_response(json.dumps(value), evidence))
+
+    def test_a_bare_greeting_uses_the_published_greeting_without_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            vault = Path(directory)
+            seed(vault)
+            write_entry(vault, entry("greeting-id", "id", kind="greeting", questions=["Halo"],
+                                     answer="Halo, Kak! Saya Ayu.\n"))
+            # A historical message that merely opens with a greeting.
+            write_entry(vault, entry("archive-sample", "id",
+                                     questions=["Hallo ka aku mengajukan sampel gratis di toko kakak"],
+                                     answer="Untuk pengajuan sample bisa langsung ke toko resmi ya kak.\n"))
+            snapshot = build_snapshot(vault)
+
+            def generator(payload, timeout):
+                raise AssertionError("a bare greeting must not reach the model")
+
+            responder = GroundedResponder(generator)
+            for text in ("hallo ka", "halo kak", "hai", "pagi kak", "Permisi"):
+                with self.subTest(text=text):
+                    result = responder({"text": text, "language": "id"}, snapshot, None, 30)
+                    self.assertEqual(result.response["sourceIds"], ["greeting-id"])
+                    self.assertNotIn("sample", result.response["text"].casefold())
 
     def test_serialized_payloads_never_reach_the_customer(self):
         evidence = [{"id": "known"}]

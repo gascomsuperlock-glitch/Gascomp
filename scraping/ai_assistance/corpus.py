@@ -332,7 +332,8 @@ def _approved_answer(path: Path, source: Path) -> tuple[dict[str, Any], dict[str
         "entryIds": [],
         "retrievalEvidence": {"triggerCount": len(triggers)},
     }
-    questions = [value for value in dict.fromkeys([question, *triggers, title]) if value]
+    questions = [value for value in dict.fromkeys(
+        _strip_greeting(item) for item in (question, *triggers, title)) if value]
     if not questions or not answer or flags:
         document["flags"] = sorted(flags | {"no_public_compatible_answer_text"})
         return document, None
@@ -388,6 +389,26 @@ _FAQ_BLOCKING = (
 
 
 _FAQ_SEPARATOR = re.compile(r"^[-–—\s]{5,}$")
+# A historical message usually opens with a greeting. Left in the alias it lets a
+# bare "halo kak" match an unrelated answer, so only the substance is retrievable.
+_GREETING_PREFIX = re.compile(
+    r"^(?:(?:hai|hi+|halo+|hallo+|helo+|hello+|hey|hei|pagi|siang|sore|malam|"
+    r"selamat\s+(?:pagi|siang|sore|malam|datang)|assalamualaikum|permisi|"
+    r"kak(?:ak)?|ka|min|admin|bang|sis|gan|bro)\b[\s,.!?~-]*)+",
+    re.I,
+)
+# Every marker the redaction pipelines emit. A named list keeps ordinary
+# bracketed labels such as a listing's `[TAMBAHAN]` out of the rejection.
+_REDACTION_PLACEHOLDER = re.compile(
+    r"\[(?:IDENTIFIER|LINK|REDACTED|ORDER_NUMBER|ORDER_ID|ORDER_CONTEXT|ACCOUNT_ID|"
+    r"CUSTOMER|ADDRESS|PHONE|EMAIL|NAME|USERNAME|NATIONAL_ID|BANK_ACCOUNT|"
+    r"CREDENTIAL_REMOVED)\]"
+)
+
+
+def _strip_greeting(value: str) -> str:
+    return _GREETING_PREFIX.sub("", value, count=1).strip()
+
 _FAQ_FILLERS = frozenset({
     "kak", "kakak", "min", "admin", "ya", "yah", "yaa", "iya", "nya", "kok", "sih",
     "deh", "dong", "nih", "aja", "gitu", "oke", "ok", "okay", "baik", "siap", "halo", "hai",
@@ -437,7 +458,7 @@ def _faq_safe_lines(lines: list[str]) -> tuple[list[str], set[str]]:
     for line in lines:
         value = line.strip()
         redacted, changed = _redact(value)
-        if changed or PLACEHOLDER.search(value):
+        if changed or PLACEHOLDER.search(value) or _REDACTION_PLACEHOLDER.search(value):
             flags.add("privacy_redacted")
             return [], flags
         if URL_RE.search(value):
@@ -528,9 +549,10 @@ def _faq_entry(relative: str, reference: str, sku: str, questions: list[str],
     if len(_faq_meaningful(answer)) < _FAQ_MINIMUM_ANSWER_WORDS:
         flags.add("reply_without_reusable_content")
         return None
-    # A greeting line beside a real question must not become a retrieval alias.
-    questions = [question for question in questions
-                 if len(_faq_meaningful(question)) >= _FAQ_MINIMUM_QUESTION_WORDS]
+    # A greeting line beside a real question must not become a retrieval alias,
+    # and a leading greeting must not make an answer match a bare greeting.
+    questions = [stripped for stripped in (_strip_greeting(question) for question in questions)
+                 if len(_faq_meaningful(stripped)) >= _FAQ_MINIMUM_QUESTION_WORDS]
     if not questions:
         flags.add("question_without_retrievable_terms")
         return None
@@ -660,7 +682,7 @@ def _candidate_entry(candidate: dict[str, Any]) -> tuple[dict[str, Any] | None, 
         return None, sorted(flags | {"not_public_answer_compatible"})
     question = "\n".join(turn["text"] for turn in candidate["questionTurns"]).strip()
     answer = "\n".join(turn["text"] for turn in candidate["historicalSellerTurns"]).strip()
-    if "[IDENTIFIER]" in question or "[IDENTIFIER]" in answer:
+    if _REDACTION_PLACEHOLDER.search(question) or _REDACTION_PLACEHOLDER.search(answer):
         return None, sorted(flags | {"redacted_identifier_context"})
     if (_ORDER_OR_ACCOUNT.search(question + "\n" + answer)
             or _VOLATILE_PRODUCT.search(question + "\n" + answer)

@@ -735,6 +735,29 @@ Type: item
         self.assertIn("answer_not_approved", document["flags"])
         self.assertEqual(document["entryIds"], [])
 
+    def test_redaction_markers_and_greeting_aliases_stay_out_of_entries(self) -> None:
+        self.write_conversation("conversation.md", conversation("main", pair(
+            "Bagaimana cara membersihkannya?", "Lap dengan kain lembut.",
+        )))
+        self.write_product("Product one.md", product("one", "GC-1", "- Bahan: Baja"))
+        self.write_faq("Pertanyaan-umum.md", "\n".join((
+            faq_block("ddd4440000000000000000dd", "SKU belum pasti",
+                      ("Hallo ka perkenalkan saya [ACCOUNT_ID] saya berminat mempromosikan produk",),
+                      "Untuk pengajuan sample bisa langsung ke toko resmi ya kak."),
+            faq_block("eee5550000000000000000ee", "SKU belum pasti",
+                      ("Halo kak, bagaimana cara memasang selang ke regulator?",),
+                      "Tekan tuas regulator sampai berbunyi klik lalu pastikan selang terkunci rapat."),
+        )))
+
+        corpus = build_corpus(self.source)
+
+        faq = [entry for entry in corpus["entries"] if entry["id"].startswith("faq-")]
+        self.assertEqual(len(faq), 1)
+        # The redacted pitch is rejected and the surviving alias drops its greeting.
+        self.assertEqual(faq[0]["questions"], ["bagaimana cara memasang selang ke regulator?"])
+        self.assertFalse(any("[ACCOUNT_ID]" in question
+                             for entry in corpus["entries"] for question in entry["questions"]))
+
     def test_missing_required_source_folder_fails_explicitly(self) -> None:
         (self.source / "Produk").rename(self.root / "moved-products")
         with self.assertRaisesRegex(CorpusError, "missing Produk"):
