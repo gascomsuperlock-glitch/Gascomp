@@ -121,6 +121,7 @@ function VideoEditor({ video, index, productId, uploadsEnabled, update, remove }
   const [phase, setPhase] = useState<"preparing" | "thumbnail" | "video" | null>(null);
   const [error, setError] = useState("");
   const [selection, setSelection] = useState<ThumbnailSelection | null>(null);
+  const [videoWithoutThumbnail, setVideoWithoutThumbnail] = useState<File | null>(null);
   const upload = useRef<AbortController | null>(null);
   const selectionRef = useRef<ThumbnailSelection | null>(null);
   useEffect(() => () => {
@@ -143,12 +144,17 @@ function VideoEditor({ video, index, productId, uploadsEnabled, update, remove }
     upload.current = controller;
     setError("");
     setProgress(null);
+    setVideoWithoutThumbnail(null);
     setPhase("preparing");
     try {
       const result = await extractVideoThumbnails(sourceFile, controller.signal);
       if (!controller.signal.aborted) replaceSelection({ candidates: result.candidates, selectedIndex: 0, videoFile });
     } catch (failure) {
-      if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : "Thumbnail choices could not be created from this video.");
+      if (controller.signal.aborted) return;
+      const reason = failure instanceof Error && failure.message ? failure.message : "Thumbnail choices could not be created from this video.";
+      // A browser that cannot give us a frame must not block the video itself.
+      setError(videoFile ? `${reason} You can still upload the video without a thumbnail.` : reason);
+      if (videoFile) setVideoWithoutThumbnail(videoFile);
     } finally {
       if (upload.current === controller) { setPhase(null); upload.current = null; }
     }
@@ -159,6 +165,25 @@ function VideoEditor({ video, index, productId, uploadsEnabled, update, remove }
     const invalid = videoFileError(file);
     if (invalid) { setError(invalid); return; }
     await prepareThumbnailChoices(file, file);
+  }
+
+  async function uploadVideoOnly(file: File) {
+    upload.current?.abort();
+    const controller = new AbortController();
+    upload.current = controller;
+    setError("");
+    setProgress(0);
+    setPhase("video");
+    try {
+      const uploaded = await uploadVideo(file, productId, controller.signal, setProgress);
+      if (controller.signal.aborted) return;
+      update({ ...uploaded, youtubeUrl: "", thumbnailUrl: undefined, thumbnailStoragePath: undefined });
+      setVideoWithoutThumbnail(null);
+    } catch (failure) {
+      if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : "The video could not be uploaded. Please retry.");
+    } finally {
+      if (upload.current === controller) { setProgress(null); setPhase(null); upload.current = null; }
+    }
   }
 
   async function confirmThumbnail() {
@@ -182,7 +207,7 @@ function VideoEditor({ video, index, productId, uploadsEnabled, update, remove }
       } else {
         update(thumbnail);
       }
-      if (!controller.signal.aborted) replaceSelection(null);
+      if (!controller.signal.aborted) { replaceSelection(null); setVideoWithoutThumbnail(null); }
     } catch (failure) {
       if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : "The video and thumbnail could not be uploaded. Please retry.");
     } finally {
@@ -197,7 +222,7 @@ function VideoEditor({ video, index, productId, uploadsEnabled, update, remove }
         <Field label="Video title"><input value={video.title} onChange={(event) => update({ title: event.target.value })} className={fieldClass} /></Field>
         <Field label="Duration"><input value={video.duration} onChange={(event) => update({ duration: event.target.value })} placeholder="Example: 03:20" className={fieldClass} /></Field>
         <div className="sm:col-span-2"><Field label="Video source"><select aria-label="Video source" value={mode} className={fieldClass} onChange={(event) => {
-          upload.current?.abort(); replaceSelection(null); setMode(event.target.value); setError(""); setPhase(null); setProgress(null); update({ videoUrl: "", youtubeUrl: "", storagePath: undefined, thumbnailUrl: undefined, thumbnailStoragePath: undefined });
+          upload.current?.abort(); replaceSelection(null); setVideoWithoutThumbnail(null); setMode(event.target.value); setError(""); setPhase(null); setProgress(null); update({ videoUrl: "", youtubeUrl: "", storagePath: undefined, thumbnailUrl: undefined, thumbnailStoragePath: undefined });
         }}><option value="link">Video link</option><option value="upload">Upload video</option></select></Field></div>
         <div className="sm:col-span-2">
           {mode === "link" ? <Field label="Video link">
@@ -211,6 +236,7 @@ function VideoEditor({ video, index, productId, uploadsEnabled, update, remove }
             {phase === "preparing" && <p role="status" className="mt-3 flex items-center gap-2 text-xs text-[#0035b9]"><ImageIcon className="size-3.5" /> Creating thumbnail choices from the video...</p>}
             {progress !== null && phase !== "preparing" && <div role="status" className="mt-3 space-y-2 text-xs"><p className="flex items-center gap-2"><Upload className="size-3" />{progress === 100 ? `Finishing ${phase} upload...` : `Uploading ${phase} ${progress}%`}</p><progress max="100" value={progress} className="h-2 w-full" /><button type="button" onClick={() => upload.current?.abort()} className="font-bold underline">Cancel upload</button></div>}
             {video.storagePath && !busy && <p className="mt-2 text-xs text-[#3e7652]">Uploaded video is ready. Select Save after changing its video or thumbnail.</p>}
+            {videoWithoutThumbnail && !selection && !busy && <button type="button" onClick={() => { void uploadVideoOnly(videoWithoutThumbnail); }} className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-full bg-[#0035b9] px-4 text-xs font-extrabold text-white"><Upload className="size-3.5" /> Upload the video without a thumbnail</button>}
             {video.storagePath && url && !selection && !busy && <button type="button" onClick={() => { void prepareThumbnailChoices(url); }} className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-full border border-[#0035b9]/20 bg-white px-4 text-xs font-extrabold text-[#0035b9] hover:bg-[#edf4ff]"><ImageIcon className="size-3.5" /> {video.thumbnailUrl ? "Choose another thumbnail" : "Choose a thumbnail"}</button>}
 
             {selection && <fieldset className="mt-4 rounded-2xl border border-[#0035b9]/15 bg-white p-3">

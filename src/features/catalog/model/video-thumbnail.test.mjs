@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
+  encodeThumbnailBlob,
   getVideoThumbnailTimes,
   MAX_VIDEO_THUMBNAIL_BYTES,
   videoThumbnailFileError,
@@ -23,4 +24,37 @@ test("tutorial thumbnails accept browser canvas image formats up to 1 MB", () =>
     assert.ok(videoThumbnailFileError({ type, size: MAX_VIDEO_THUMBNAIL_BYTES + 1 }));
   }
   assert.ok(videoThumbnailFileError({ type: "image/gif", size: 100 }));
+});
+
+test("thumbnail encoding retries until the frame fits the upload limit", async () => {
+  const attempts = [];
+  const blob = await encodeThumbnailBlob((attempt) => {
+    attempts.push(attempt);
+    const size = attempt.scale < 1 ? 500 : MAX_VIDEO_THUMBNAIL_BYTES + 1;
+    return Promise.resolve({ size, type: attempt.mimeType });
+  });
+  assert.equal(blob.type, "image/webp");
+  assert.ok(blob.size <= MAX_VIDEO_THUMBNAIL_BYTES);
+  assert.deepEqual(attempts.map((attempt) => attempt.scale), [1, 1, 0.75]);
+  assert.ok(attempts.every((attempt) => attempt.mimeType === "image/webp"));
+});
+
+test("thumbnail encoding falls back to JPEG when the browser cannot encode WebP", async () => {
+  const attempts = [];
+  const blob = await encodeThumbnailBlob((attempt) => {
+    attempts.push(attempt);
+    if (attempt.mimeType === "image/webp") {
+      return Promise.resolve({ size: MAX_VIDEO_THUMBNAIL_BYTES + 1, type: "image/png" });
+    }
+    return Promise.resolve({ size: 900, type: "image/jpeg" });
+  });
+  assert.equal(blob.type, "image/jpeg");
+  assert.deepEqual(attempts.map((attempt) => attempt.mimeType), ["image/webp", "image/jpeg"]);
+});
+
+test("thumbnail encoding reports the size limit when every attempt stays too large", async () => {
+  await assert.rejects(
+    () => encodeThumbnailBlob((attempt) => Promise.resolve({ size: MAX_VIDEO_THUMBNAIL_BYTES + 1, type: attempt.mimeType })),
+    /1 MB or smaller/,
+  );
 });
