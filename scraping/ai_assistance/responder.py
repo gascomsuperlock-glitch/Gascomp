@@ -70,17 +70,40 @@ _HAZARD = re.compile(
     r"kebakaran\s+terjadi|api\s+menyambar|terbakar)\b",
     re.I,
 )
+# Customers deny a symptom in many ways. Matching only one phrasing made the
+# assistant treat the answer as missing and ask the same question again.
+_NEGATION = r"(?:tidak|tak|nggak|ngga|enggak|gak|ga|tanpa|bukan|belum|gaada|ngga\s*ada)"
+_HISS = r"(?:desis|desisan|mendesis|berdesis|desisnya)"
 _NEGATED_HAZARD = re.compile(
-    r"\b(?:tidak|tak|nggak|gak|ga|tanpa|bukan)\s+(?:ada\s+)?(?:tercium\s+)?(?:bau\s+)?gas\b|"
-    r"\b(?:tidak|tak|nggak|gak|ga)\s+(?:ada\s+)?(?:suara\s+)?mendesis\b"
-    r"|\b(?:no|not|do\s+not|don't|cannot|can't)\s+(?:smell\s+)?(?:a\s+)?gas\b|"
-    r"\bno\s+gas\s+smell\b|\b(?:not|isn't|isnt)\s+hissing\b",
+    rf"\b{_NEGATION}\s+(?:ada\s+)?(?:yang\s+)?(?:tercium\s+)?(?:bau\s+)?gas\b|"
+    rf"\b{_NEGATION}\s+(?:ada\s+)?(?:tercium\s+)?bau\b|"
+    rf"\b{_NEGATION}\s+(?:ada\s+)?(?:suara\s+|bunyi\s+)?{_HISS}\b|"
+    rf"\b{_NEGATION}\s+(?:ada\s+)?(?:yang\s+)?bocor\b|"
+    rf"\b(?:suara|bunyi)\s+{_HISS}\s+{_NEGATION}\s+ada\b|"
+    r"\b(?:no|not|do\s+not|don't|cannot|can't)\s+(?:smell\s+)?(?:a\s+)?gas\b|"
+    r"\bno\s+(?:gas\s+smell|hiss|hissing|leak|leaking)\b|"
+    r"\b(?:not|isn't|isnt|is\s+not)\s+(?:hissing|leaking)\b",
     re.I,
 )
 _ENGLISH_HAZARD = re.compile(
     r"\b(?:smell(?:ing)?\s+(?:a\s+)?gas|gas\s+smell|gas\s+(?:leak|leaking)|"
     r"(?:gas|cylinder|regulator)\b.{0,30}\bhissing|hissing\b.{0,30}\b(?:gas|cylinder|regulator)|"
     r"(?:there\s+is|there's|see|seeing)\s+(?:a\s+)?(?:fire|flames?)|caught\s+fire|is\s+burning)\b",
+    re.I,
+)
+# Acknowledge the symptom the customer actually denied. Reporting a smell denial
+# when they denied a hissing sound asserts a finding they never gave.
+_NEGATED_SMELL = re.compile(
+    rf"\b{_NEGATION}\s+(?:ada\s+)?(?:yang\s+)?(?:tercium\s+)?(?:bau\s+)?gas\b|"
+    rf"\b{_NEGATION}\s+(?:ada\s+)?(?:tercium\s+)?bau\b|"
+    r"\b(?:no|not|do\s+not|don't|cannot|can't)\s+(?:smell\s+)?(?:a\s+)?gas\b|"
+    r"\bno\s+gas\s+smell\b",
+    re.I,
+)
+_NEGATED_HISS = re.compile(
+    rf"\b{_NEGATION}\s+(?:ada\s+)?(?:suara\s+|bunyi\s+)?{_HISS}\b|"
+    rf"\b(?:suara|bunyi)\s+{_HISS}\s+{_NEGATION}\s+ada\b|"
+    r"\bno\s+(?:hiss|hissing)\b|\b(?:not|isn't|isnt|is\s+not)\s+hissing\b",
     re.I,
 )
 _MODEL_CODE = re.compile(r"(?<![\w-])[a-z]{2,}[a-z0-9]*-[a-z0-9]+(?:-[a-z0-9]+)*(?![\w-])", re.I)
@@ -186,6 +209,16 @@ def _conversation_fallback(language: str, text: str, history: list[dict[str, str
                            sku: str | None, symptom_context: bool) -> dict:
     combined = "\n".join([*(item["text"] for item in history if item["role"] == "user"), text])
     no_gas = bool(_NEGATED_HAZARD.search(combined))
+    smell_denied = bool(_NEGATED_SMELL.search(combined))
+    hiss_denied = bool(_NEGATED_HISS.search(combined))
+    if smell_denied and hiss_denied:
+        denied = "tidak tercium bau gas dan tidak terdengar desisan"
+    elif hiss_denied:
+        denied = "tidak terdengar desisan"
+    elif smell_denied:
+        denied = "tidak tercium bau gas"
+    else:
+        denied = "terima kasih informasinya"
     new_install = bool(re.search(r"\b(?:baru\b.{0,40}\b(?:pasang|dipasang)|pertama\s+kali\b.{0,40}\b(?:pasang|dipasang)|pemasangan\s+baru|new(?:ly)?\s+installed?)\b",
                                  combined, re.I))
     gas_context = bool((sku and sku.upper().startswith("GRS")) or
@@ -200,10 +233,10 @@ def _conversation_fallback(language: str, text: str, history: list[dict[str, str
             if not sku:
                 answer = "Saya paham produknya sedang tidak berfungsi. Apa nama atau kode model produknya?"
             elif no_gas and new_install:
-                answer = (f"Baik, berarti {sku} tidak menunjukkan bau gas dan kendalanya muncul pada pemasangan baru. "
+                answer = (f"Baik, {denied} dan kendalanya muncul pada pemasangan baru. "
                           "Saat dicoba, apa yang terlihat atau terdengar—ada respons sesaat atau sama sekali tidak bereaksi?")
             elif no_gas:
-                answer = (f"Baik, berarti tidak ada bau gas yang tercium saat {sku} dicoba. "
+                answer = (f"Baik, {denied} saat {sku} dicoba. "
                           "Apakah kendala ini muncul sejak pemasangan pertama atau baru terjadi setelah sebelumnya berfungsi?")
             else:
                 answer = (f"Saya paham {sku} Anda tidak menyala. "

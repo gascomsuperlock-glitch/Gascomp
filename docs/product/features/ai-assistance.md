@@ -255,3 +255,16 @@ Pemilik melaporkan bahwa asisten langsung menyebut sebuah produk padahal pelangg
 Kata gejala, kondisi, negasi, dan kata sifat pemasaran sekarang dikecualikan dari nama produk, sejalan dengan pengecualian yang sudah ada untuk kata maksud seperti `capacity` dan `material`. Produk diidentifikasi oleh nama, model, dan kategorinya, bukan oleh keluhan pelanggan. Kode produk eksplisit, nama produk yang sebenarnya, dan konteks halaman produk tetap menyelesaikan konteks seperti sebelumnya.
 
 Sepuluh keluhan tanpa penyebutan produk kini tidak menghasilkan SKU sama sekali dan dijawab dengan klarifikasi yang menanyakan nama atau kode produk, sementara penyebutan eksplisit seperti `GRS-01`, `GRT-2D`, `GRS-915`, `8JET`, dan `BCS-02` tetap dikenali. Seluruh 207 uji Python dan 262 uji Node lulus bersama lint dan pengecekan tipe, termasuk regresi baru yang memakai judul listing bergaya marketplace.
+
+<a id="repeated-symptom-question-correction"></a>
+## Koreksi pertanyaan gejala yang berulang
+
+Pemilik melaporkan bahwa asisten selalu menanyakan suara desisan atau aliran gas meskipun pelanggan sudah menjawabnya. Pengenal penyangkalan hanya mencocokkan satu bentuk kalimat, yaitu negasi yang langsung diikuti kata `mendesis` dengan sisipan `suara` opsional. Bentuk wajar seperti "tidak ada suara desis", "tidak ada desisan kok", "gak ada bunyi mendesis", dan "sudah saya cek tidak ada desisan" tidak dikenali, sehingga jawaban pelanggan dianggap belum ada dan pertanyaan yang sama diulang.
+
+Pengenal penyangkalan sekarang mencakup `desis`, `desisan`, `mendesis`, dan `berdesis` dengan sisipan `suara` atau `bunyi`, penyangkalan bau dan kebocoran, bentuk negasi sehari-hari, serta padanan bahasa Inggrisnya. Pemeriksaan bahaya tidak melemah: bau gas, desisan yang dilaporkan, dan kebocoran tetap menghasilkan serah terima, dan pernyataan ketidaktahuan tetap diperlakukan sebagai kemungkinan bahaya.
+
+Pengakuan juga diperbaiki. Sebelumnya penyangkalan apa pun dijawab dengan kalimat tentang bau gas, sehingga pelanggan yang menyangkal desisan dilaporkan menyangkal bau. Ini melanggar aturan bahwa asisten hanya boleh mengakui apa yang benar-benar dikonfirmasi pelanggan. Kalimat pengakuan sekarang mengikuti gejala yang benar-benar disangkal, baik bau saja, desisan saja, maupun keduanya.
+
+Prompt sistem mewajibkan model membaca riwayat lebih dahulu dan tidak menanyakan ulang apa pun yang sudah dijawab meskipun kata-katanya berbeda. Pertanyaan bau atau desisan hanya boleh diajukan sekali per percakapan dan hanya untuk peralatan gas yang belum menjawabnya; bila semua pertanyaan berguna sudah terjawab, model memberi langkah lanjutan yang berdasar, bukan bertanya lagi.
+
+Seluruh 209 uji Python dan 262 uji Node lulus bersama lint dan pengecekan tipe, termasuk regresi baru untuk lima bentuk penyangkalan dan untuk bahaya nyata yang tetap harus diserahkan.

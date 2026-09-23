@@ -24,6 +24,16 @@ def snapshot(*items: dict) -> dict:
 
 
 class GroundedResponseTests(unittest.TestCase):
+    def snapshot(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        vault = Path(directory.name)
+        seed(vault)
+        write_entry(vault, entry("catalog-grs01", "id", sku="GRS-01",
+                                 questions=["GASCOMP Regulator Superlock GRS-01"],
+                                 answer="Regulator Superlock bersertifikat SNI.\n"))
+        return build_snapshot(vault)
+
     def test_uncertain_product_fact_does_not_ask_about_fault_symptoms(self):
         product = entry("source-fan", "id", sku="EBAF-01", questions=["EBAF-01"], answer="EBAF-01 fan.")
         result = GroundedResponder(lambda payload, timeout: "invalid")(
@@ -130,6 +140,33 @@ class GroundedResponseTests(unittest.TestCase):
         for value in invalid:
             with self.subTest(value=value):
                 self.assertIsNone(parse_grounded_response(json.dumps(value), evidence))
+
+    def test_an_answered_symptom_question_is_not_asked_again(self):
+        snapshot = self.snapshot()
+        history = [{"role": "user", "text": "GRS-01 saya tidak menyala"},
+                   {"role": "assistant", "text": "Apakah tercium bau gas atau terdengar desisan?"}]
+
+        def generator(payload, timeout):
+            raise OSError("model unavailable")
+
+        responder = GroundedResponder(generator)
+        for text in ("tidak ada suara desis", "tidak ada desisan kok", "gak ada bunyi mendesis",
+                     "sudah saya cek tidak ada desisan", "tidak mendesis"):
+            with self.subTest(text=text):
+                reply = responder({"text": text, "language": "id", "history": history},
+                                  snapshot, None, 30).response["text"]
+                self.assertNotIn("desisan?", reply)
+                self.assertIn("pemasangan", reply)
+                # Denying a hissing sound is not a report about smell.
+                self.assertNotIn("bau gas", reply)
+
+    def test_a_real_hazard_still_reaches_handoff(self):
+        snapshot = self.snapshot()
+        responder = GroundedResponder(lambda payload, timeout: "")
+        for text in ("tercium bau gas kak", "regulator saya mendesis", "ada kebocoran gas"):
+            with self.subTest(text=text):
+                self.assertEqual(responder({"text": text, "language": "id"},
+                                           snapshot, None, 30).response["kind"], "handoff")
 
     def test_a_symptom_alone_never_names_a_product_from_a_listing_title(self):
         with tempfile.TemporaryDirectory() as directory:
