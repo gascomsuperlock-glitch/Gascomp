@@ -72,6 +72,47 @@ aliases: {json.dumps(list(source_aliases), ensure_ascii=False)}
 '''
 
 
+def recaptured(capture_id: str, transcript: str) -> str:
+    return f"""---
+status: unreviewed_archive
+reviewed: false
+source: duoke_api_recapture
+capture_id: {capture_id}
+store: "Gascomp Official Shop"
+history_complete: true
+redaction_review: pending_human_review
+---
+
+# Riwayat {capture_id}
+
+## Transcript
+
+{transcript}
+"""
+
+
+def faq_block(reference: str, label: str, questions: tuple[str, ...], answer: str) -> str:
+    quoted_questions = "\n".join(f"> {line}" for line in questions)
+    quoted_answer = "\n".join(f"> {line}" for line in answer.splitlines())
+    return f"""## {label} — {reference}
+
+- Toko: Gascomp Official Shop
+- Status: direview dan disetujui pemilik untuk pemilihan otomatis
+
+### Pertanyaan pelanggan
+
+{quoted_questions}
+
+### Balasan seller dalam riwayat
+
+{quoted_answer}
+
+### Sumber
+
+- [Percakapan](<Duoke/Impor/2026-09-22/Percakapan/{reference}.md>), pesan 1, 2
+"""
+
+
 class FullCorpusTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory()
@@ -91,6 +132,24 @@ class FullCorpusTests(unittest.TestCase):
     def write_product(self, name: str, value: str) -> Path:
         path = self.products / name
         path.write_text(value, encoding="utf-8")
+        return path
+
+    def write_import(self, name: str, value: str) -> Path:
+        directory = self.source / "Impor" / "2026-09-22" / "Percakapan"
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / name
+        path.write_text(value, encoding="utf-8")
+        return path
+
+    def write_faq(self, name: str, blocks: str) -> Path:
+        directory = self.source / "FAQ" / "2026-09-22"
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / name
+        path.write_text(
+            "---\nstatus: reviewed_reference\nreviewed: true\n---\n\n"
+            "# Pertanyaan umum\n\n" + blocks,
+            encoding="utf-8",
+        )
         return path
 
     def test_conversation_archive_is_retained_and_watched_before_or_after_flattening(self) -> None:
@@ -516,6 +575,79 @@ Type: item
         self.assertEqual(os.stat(output / "corpus.json").st_mode & 0o777, 0o600)
         with self.assertRaises(CorpusError):
             write_corpus(corpus, self.root / "outside", private)
+
+    def test_recaptured_imports_and_faq_join_the_indexed_sources(self) -> None:
+        self.write_conversation("conversation.md", conversation("main", pair(
+            "Bagaimana cara membersihkannya?", "Lap dengan kain lembut.",
+        )))
+        self.write_product("Product one.md", product("one", "GC-1", "- Bahan: Baja"))
+        self.write_import("capture.md", recaptured("abc1230000000000000000cc", pair(
+            "Apakah regulator ini butuh karet seal tabung?",
+            "Halo kak, karet seal pada tabung gas bersifat wajib sesuai standar keamanan SNI.",
+        )))
+        (self.source / "Impor" / "2026-09-22" / "README.md").write_text(
+            "# Pengambilan ulang\n\n- Percakapan: 1 dari 1.\n", encoding="utf-8")
+        self.write_faq("Pertanyaan-umum.md", faq_block(
+            "abc1230000000000000000cc",
+            "GC-1",
+            ("Apakah bisa dipakai di kompor tanam?", "Kak"),
+            "Halo kak, untuk kompor tanam dan kompor meja rumahan bisa dipakai ya kak.",
+        ))
+
+        corpus = build_corpus(self.source)
+        report = corpus["report"]
+
+        self.assertEqual(report["sourceFiles"], 5)
+        self.assertEqual(report["sourceKindCounts"], {
+            "conversation": 1, "faq": 1, "import-conversation": 1, "product": 1, "reference": 1,
+        })
+        self.assertEqual(report["faqDocumentCount"], 1)
+        self.assertEqual(report["referenceDocumentCount"], 1)
+        self.assertEqual(report["faqEntryCount"], 1)
+        answers = [entry["answer"] for entry in corpus["entries"]]
+        self.assertIn(
+            "Halo kak, karet seal pada tabung gas bersifat wajib sesuai standar keamanan SNI.",
+            answers,
+        )
+        faq = next(entry for entry in corpus["entries"] if entry["id"].startswith("faq-"))
+        self.assertEqual(faq["sku"], "GC-1")
+        # The bare greeting line beside the real question is not a retrieval alias.
+        self.assertEqual(faq["questions"], ["Apakah bisa dipakai di kompor tanam? GC-1"])
+        reference = next(item for item in corpus["documents"] if item["sourceKind"] == "reference")
+        self.assertEqual(reference["entryIds"], [])
+
+    def test_faq_pleasantries_and_volatile_replies_stay_out_of_the_entries(self) -> None:
+        self.write_conversation("conversation.md", conversation("main", pair(
+            "Bagaimana cara membersihkannya?", "Lap dengan kain lembut.",
+        )))
+        self.write_product("Product one.md", product("one", "GC-1", "- Bahan: Baja"))
+        self.write_faq("Pertanyaan-umum.md", "\n".join((
+            faq_block("aaa1110000000000000000aa", "SKU belum pasti",
+                      ("Terima kasih banyak untuk bantuannya kak",),
+                      "baik kak, sehat selalu ya kak"),
+            faq_block("bbb2220000000000000000bb", "SKU belum pasti",
+                      ("Berapa harga regulator ini kak?",),
+                      "Halo kak, harganya Rp137.000 dan sedang ada promo diskon ya kak"),
+            faq_block("ccc3330000000000000000cc", "SKU belum pasti",
+                      ("Bagaimana cara memasang selang ke regulator?",),
+                      "「Bagaimana cara memasang selang ke regulator?」\n"
+                      "- - - - - - - - -\n"
+                      "Tekan tuas regulator sampai berbunyi klik lalu pastikan selang terkunci rapat."),
+        )))
+
+        corpus = build_corpus(self.source)
+
+        faq = [entry for entry in corpus["entries"] if entry["id"].startswith("faq-")]
+        self.assertEqual(len(faq), 1)
+        self.assertEqual(
+            faq[0]["answer"],
+            "Tekan tuas regulator sampai berbunyi klik lalu pastikan selang terkunci rapat.",
+        )
+        rejected = [item["flags"] for item in corpus["candidateEvidence"]
+                    if item["sourceKind"] == "faq" and item["entryId"] is None]
+        self.assertEqual(len(rejected), 2)
+        self.assertIn("reply_without_reusable_content", rejected[0])
+        self.assertIn("not_public_answer_compatible", rejected[1])
 
     def test_missing_required_source_folder_fails_explicitly(self) -> None:
         (self.source / "Produk").rename(self.root / "moved-products")

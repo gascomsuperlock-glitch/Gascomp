@@ -26,6 +26,7 @@ REVIEW_DIR = AI_ASSISTANCE_PRIVATE_DIR / "duoke-review"
 ROLE_LINE = re.compile(r"^- \*\*(Customer|Seller)\*\* · ([^—\n]+?) —(.*)$")
 ARCHIVE_ROLE_LINE = re.compile(r"^###\s+(.+?)\s+—\s+(Customer|Seller|Pelanggan|Penjual)\s*$")
 ARCHIVE_SKU = re.compile(r'"skuValue"\s*:\s*"([^"\n]+)"')
+ARCHIVE_CARD_SKU = re.compile(r"(?m)^SKU kartu produk:\s*(.+?)\s*$")
 PLACEHOLDER = re.compile(
     r"\[(?:EMAIL|PHONE|ORDER_NUMBER|NAME|ADDRESS|LINK|NATIONAL_ID|BANK_ACCOUNT|USERNAME)\]"
 )
@@ -316,15 +317,20 @@ def parse_note(path: Path, source: Path) -> ParsedNote:
     except UnicodeDecodeError as error:
         raise DuokeImportError("Source note is not valid UTF-8") from error
     metadata, body = _frontmatter(text)
-    archive_format = _scalar(metadata, "source") == "duoke" and bool(_scalar(metadata, "conversation_ref"))
+    origin = _scalar(metadata, "source")
+    # Both the original archive export and the later API recapture use the same
+    # explicit-role transcript layout; only their identifier fields differ.
+    archive_format = ((origin == "duoke" and bool(_scalar(metadata, "conversation_ref")))
+                      or (origin == "duoke_api_recapture" and bool(_scalar(metadata, "capture_id"))))
     records, missing_media = _archive_transcript(body) if archive_format else (_transcript(body), False)
     if archive_format:
         skus = tuple(dict.fromkeys(
-            value.strip() for value in ARCHIVE_SKU.findall(text)
+            value.strip() for value in (*ARCHIVE_SKU.findall(text), *ARCHIVE_CARD_SKU.findall(text))
             if value.strip() and not value.startswith("[")
         ))
         history_complete = _bool(metadata, "history_complete")
-        anonymous = _scalar(metadata, "privacy") == "automated_redaction"
+        anonymous = (_scalar(metadata, "privacy") == "automated_redaction"
+                     or bool(_scalar(metadata, "redaction_review")))
     else:
         skus = _list(metadata, "sku")
         history_complete = _bool(metadata, "history_lengkap")

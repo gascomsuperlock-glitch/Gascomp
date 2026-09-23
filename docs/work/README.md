@@ -13,6 +13,7 @@ verifikasi file saat ini sebelum mempercayainya. Indeks ini bukan daftar tugas p
 | Simpan diagnosis produk baru online | [Katalog Simpan](handoffs/handoff-catalog-save-review-v1.md) |
 | Kontrol status tiket garansi | [Garansi](handoffs/handoff-warranty-review-v1.md) |
 | Perubahan pengetahuan yang ada dan catatan produk | [Pengetahuan](handoffs/handoff-knowledge-review-v1.md) |
+| Seluruh vault pengetahuan untuk Gascomp Assistant | [Pengetahuan penuh asisten](handoffs/handoff-full-knowledge-assistant-v1.md) |
 | Balasan Duoke 24/7 dari Obsidian admin Q&A, diorkestasi oleh Hermes melalui Chrome tanpa antarmuka | [Hermes Duoke](handoffs/handoff-duoke-hermes-active-v2.md) |
 
 <a id="reusable-methods"></a>

@@ -25,6 +25,29 @@ _FALSE_ACTION = re.compile(
     r"\badmin\s+(?:sudah|telah|has\s+been)\s+(?:dihubungi|notified|contacted)\b",
     re.I,
 )
+_STRUCTURED_PAYLOAD = re.compile(
+    r"```|[\[{]\s*[\"']|\"[A-Za-z_][A-Za-z0-9_]*\"\s*:|\\[\"nrt]|"
+    r"\b(?:sourceids|basis|kind)\s*:\s*[\"'\[{]",
+    re.I,
+)
+
+
+def _looks_structured(text: str) -> bool:
+    """Detect a serialized payload without rejecting marketplace titles.
+
+    A listing name such as `{COD} PAKET ...` or `[TAMBAHAN] ...` opens with a
+    bracket but is ordinary prose, so a whole-text match must actually parse.
+    """
+    if _STRUCTURED_PAYLOAD.search(text):
+        return True
+    stripped = text.strip()
+    if stripped[:1] not in "[{" or stripped[-1:] not in "]}":
+        return False
+    try:
+        json.loads(stripped)
+    except ValueError:
+        return False
+    return True
 _PROMPT_LEAK = re.compile(r"\b(?:system prompt|developer message|api[_ -]?key|worker token|lease token)\b", re.I)
 _ADMIN_REQUEST = re.compile(
     r"\b(?:hubungi|kontak|bicara|ngobrol|sambung(?:kan)?|connect|contact|talk|speak)\b.{0,30}"
@@ -221,6 +244,10 @@ def validate_grounded_response(raw: str, evidence: list[dict]) -> tuple[dict | N
     clean = text.strip()
     if _LINK_OR_MARKUP.search(clean):
         return None, "unsafe_markup"
+    # The customer reads this text directly. A model that nests its JSON, fences a
+    # code block, or echoes the response schema must fall back to safe wording.
+    if _looks_structured(clean):
+        return None, "structured_payload"
     if _FALSE_ACTION.search(clean):
         return None, "false_action"
     if _PROMPT_LEAK.search(clean):
