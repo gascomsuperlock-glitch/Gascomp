@@ -81,7 +81,7 @@ npm run duoke:knowledge:export
 npm run duoke:knowledge:query -- "customer question and SKU"
 ```
 
-Indeks runtime disimpan di `data/knowledge/duoke-knowledge.json`; catatan terkait ditulis ke `obsidian/`. Hanya entri dengan `approval: approved` yang dapat menjadi jawaban aktif.
+Indeks runtime disimpan di `data/knowledge/duoke-knowledge.json`; catatan terkait ditulis ke vault `douke-chat/knowledge/approved/Douke Knowledge Base` di luar repositori ini, yang dapat ditimpa dengan `DOUKE_VAULT_DIR`. Hanya entri dengan `approval: approved` yang dapat menjadi jawaban aktif.
 
 Sesi browser Duoke disimpan di `scraping/.private/browser-profile/` dan diabaikan oleh Git. Segarkan dan periksa sesi dengan:
 

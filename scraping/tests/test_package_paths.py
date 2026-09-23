@@ -21,7 +21,9 @@ class PackagePathsTests(unittest.TestCase):
         self.assertEqual(paths.PRIVATE_DIR, root / "scraping" / ".private")
         self.assertEqual(paths.PROFILE_DIR, paths.PRIVATE_DIR / "browser-profile")
         self.assertEqual(paths.STOP_FILE, paths.PRIVATE_DIR / "STOP_AUTOREPLY")
-        self.assertEqual(paths.VAULT_DIR, root / "obsidian")
+        self.assertEqual(paths.VAULT_DIR, root.parent / "douke-chat" / "knowledge" / "approved" / "Douke Knowledge Base")
+        self.assertEqual(paths.APPROVED_DIR, paths.VAULT_DIR / "knowledge" / "approved")
+        self.assertEqual(paths.AI_ASSISTANCE_VAULT, paths.VAULT_DIR / "customer-support")
         self.assertTrue(paths.CATALOG_PATH.is_file())
         self.assertTrue(paths.BOT_MESSAGES_PATH.is_file())
         self.assertEqual(paths.REPORT_PATH.parent, root / "data" / "reports")
@@ -54,7 +56,7 @@ class PackagePathsTests(unittest.TestCase):
             }))
             catalog = root / "data" / "catalog" / "duoke-products.json"
             report = root / "data" / "reports" / "duoke-sync-report.json"
-            vault = root / "obsidian"
+            vault = root / "vault"
             with patch.multiple(
                 normalize_duoke, CAPTURE_DIR=captures, CATALOG_PATH=catalog,
                 REPORT_PATH=report, VAULT_DIR=vault, PRODUCT_NOTES=vault / "products",

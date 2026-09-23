@@ -48,12 +48,6 @@ next-env.d.ts
 __pycache__/
 *.py[cod]
 
-# Obsidian local UI state
-/obsidian/.obsidian/workspace*.json
-
-# Anonymized chat candidates still require internal review before publication
-/obsidian/knowledge/pending/
-
 # Generated read-only preview; the actual warehouse import report remains tracked
 /data/reports/warehouse-import-preview.json
 

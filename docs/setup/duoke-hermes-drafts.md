@@ -13,7 +13,7 @@ Panduan ini mencakup pekerja Python yang hanya menangani rancangan yang ada. Tuj
 - Sesi arsip yang diotorisasi di `scraping/.private/chat-archive/session.json`.
   Skema dan titik akhirnya yang diverifikasi dimiliki oleh [spesifikasi arsip](../product/integrations/duoke-support.md#full-conversation-archive). Token yang kadaluarsa harus diperbarui dari sesi browser yang diotorisasi; pekerja tidak pernah mencetak konten sesi.
 - Catatan Markdown yang dikurasi mengikuti
-  [skema gudang jawaban](../../obsidian/customer-support/README.md#authoring-format).
+  skema gudang jawaban di `douke-chat/knowledge/approved/Douke Knowledge Base/customer-support``/README.md`, bagian `authoring-format`.
 
 [Hermes Python library](https://hermes-agent.nousresearch.com/docs/guides/python-library)
 menyediakan antarmuka Agent. Adapter terisolasi yang ada menonaktifkan alat agent, konteks pribadi, memori, persistensi, dan fallback model eksternal. Hermes Desktop itu sendiri tidak perlu dikendalikan atau dikonfigurasi ulang.
@@ -32,7 +32,7 @@ Atur penyetuan opsional di `.env.local` atau lingkungan pekerja:
 | `DUOKE_HERMES_SOURCE_VAULT` | `GASCOMP_AI_SOURCE_VAULT`, kemudian jalur sumber pekerja AI lokal yang disimpan |
 
 Gunakan `--vault /absolute/path/to/curated/answers` untuk mengatasinya
-`obsidian/customer-support/`. Ini adalah lapisan yang dikurasi, bukan seluruh database.
+`douke-chat/knowledge/approved/Douke Knowledge Base/customer-support`. Ini adalah lapisan yang dikurasi, bukan seluruh database.
 Sumber lengkap terhubung secara terpisah melalui `--source-vault` atau konfigurasi sumber di atas. Harus menunjuk ke direktori `Duoke` yang berisi `Percakapan` dan `Produk`; tidak perlu menyalin atau mengubah format catatan tersebut. Jalur yang disimpan dibaca dari
 `scraping/.private/ai-assistance/services/worker-environment.json`; hanya jalur sumber yang digunakan kembali, bukan kredensial situs web atau pengaturan pekerja lainnya.
 

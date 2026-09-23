@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { getSupabaseConfig, createScriptSupabaseClient } from "../shared/supabase.mjs";
-import { root } from "../shared/paths.mjs";
+import { root, vaultDir } from "../shared/paths.mjs";
 
 const { url: supabaseUrl, secret: supabaseSecret } = getSupabaseConfig();
 if (!supabaseUrl || !supabaseSecret) {
@@ -154,7 +154,7 @@ const knowledge = {
 };
 writeFileSync(resolve(root, "data/knowledge/duoke-knowledge.json"), `${JSON.stringify(knowledge, null, 2)}\n`);
 
-const vault = resolve(root, "obsidian");
+const vault = vaultDir;
 const productDir = resolve(vault, "products");
 const approvedDir = resolve(vault, "knowledge/approved");
 mkdirSync(productDir, { recursive: true });

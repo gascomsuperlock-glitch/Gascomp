@@ -42,7 +42,7 @@ Database pratinjau kosong dapat dibuka dan mempertahankan percakapan, tetapi mel
 <a id="knowledge-authoring"></a>
 ## Penulisan Pengetahuan
 
-Baca [panduan penulisan vault](../../obsidian/customer-support/README.md).
+Baca panduan penulisan vault di `douke-chat/knowledge/approved/Douke Knowledge Base/customer-support``/README.md`.
 Tulis versi bahasa Inggris dan Indonesia untuk template sapaan, klarifikasi, dan handoff, lalu tambahkan jawaban produk yang diverifikasi. Jangan gunakan obrolan pelanggan asli sebagai fixture atau salin data akun pribadi ke catatan.
 
 Dalam mode `grounded` default, isi tubuh catatan adalah materi referensi faktual. Hermes dapat menjelaskan, memparafrasekan, dan menerjemahkan bagian yang relevan sambil mempertahankan fakta produk. Ia dapat memberikan penjelasan umum dan mengajukan pertanyaan klarifikasi yang berguna ketika jawaban sumber yang tepat tidak ada. Pertahankan data akun pribadi, klaim yang belum diverifikasi, dan instruksi perbaikan yang tidak aman di luar pengetahuan yang dapat digunakan kembali. Gunakan nama produk yang jelas, SKU, pertanyaan sumber, dan fakta yang diverifikasi daripada mencoba menulis setiap kemungkinan formulasi pelanggan.
@@ -74,7 +74,7 @@ scraping/.venv/bin/python -m scraping.ai_assistance.corpus \
 
 Perintah ini menulis hanya ke `scraping/.private/ai-assistance/full-corpus` yang diabaikan: `corpus.json`, `report.json`, dan entri staged yang dihasilkan. Ia tidak mengaktifkan pengetahuan atau mengubah salah satu sumber vault. Live worker membaca direktori sumber asli secara langsung; staging bukan langkah aktivasi tambahan. Publikasi gabungan harus muat 2.000 entri dan 4 MiB; korpus privat lengkap memiliki ukuran terpisah dan tidak diunggah.
 
-Perintah opsional `import_duoke --write-review` dan `import_products --write-review` masih menyiapkan materi review yang bisa diedit secara manual. Aturan kepatutan pilot sempit mereka lagi tidak membatasi runtime sumber penuh. Jangan edit artefak korpus yang dihasilkan untuk membuat jawaban permanen: masukkan jawaban akhir yang dikurasi ke `obsidian/customer-support/`. Mode Grounded dapat menerjemahkan fakta sumber terverifikasi ke bahasa obrolan yang dipilih. Mode Exact masih memerlukan teks sumber dalam bahasa tersebut.
+Perintah opsional `import_duoke --write-review` dan `import_products --write-review` masih menyiapkan materi review yang bisa diedit secara manual. Aturan kepatutan pilot sempit mereka lagi tidak membatasi runtime sumber penuh. Jangan edit artefak korpus yang dihasilkan untuk membuat jawaban permanen: masukkan jawaban akhir yang dikurasi ke `douke-chat/knowledge/approved/Douke Knowledge Base/customer-support`. Mode Grounded dapat menerjemahkan fakta sumber terverifikasi ke bahasa obrolan yang dipilih. Mode Exact masih memerlukan teks sumber dalam bahasa tersebut.
 
 Saat memperbarui preview lokal yang ada, hentikan prosesnya dan jalankan ulang `npm run ai:preview-db` untuk menerapkan migrasi `202609170003` sambil mempertahankan percakapan yang ada. Ini menambahkan riwayat sesi yang sama yang terbatas dan respons yang dihasilkan terverifikasi sambil mempertahankan respons exact legacy, sewa (leases), dan pengecekan versi. Jalankan ulang worker setelah menambahkan jalur sumber ke `worker-environment.json`; mengubah `.env.local` saja tidak memperbarui konfigurasi privat yang ada.
 
@@ -92,7 +92,8 @@ Atur variabel lingkungan dalam proses worker, terpisah dari lingkungan website. 
 | `GASCOMP_AI_RESPONSE_MODE` | `grounded` (default) untuk respons alami; `exact` untuk selector legacy |
 | `GASCOMP_AI_HERMES_ROOT` | Jalur instalasi sumber Hermes opsional |
 | `GASCOMP_AI_HERMES_PYTHON` | Interpreter Python yang berisi dependensi Hermes |
-| `GASCOMP_AI_VAULT` | Direktori jawaban dikurasi opsional; default `obsidian/customer-support` |
+| `GASCOMP_AI_VAULT` | Direktori jawaban dikurasi opsional; default `douke-chat/knowledge/approved/Douke Knowledge Base/customer-support` |
+| `DOUKE_VAULT_DIR` | Akar vault pengetahuan opsional; default `douke-chat/knowledge/approved/Douke Knowledge Base` di samping repositori |
 | `GASCOMP_AI_SOURCE_VAULT` | Jalur akar `Duoke` full scraped opsional yang berisi `Percakapan` dan `Produk` |
 | `GASCOMP_AI_CHROME_CDP_URL` | Titik akhir debugging Chrome lokal |
 | `GASCOMP_AI_BROWSER_HOSTS` | Allowlist eksplisit untuk probe link opsional |
