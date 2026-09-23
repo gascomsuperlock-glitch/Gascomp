@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from scraping.ai_assistance.grounding import build_evidence, sanitize_history
-from scraping.ai_assistance.responder import GroundedResponder, parse_grounded_response
+from scraping.ai_assistance.responder import validate_grounded_response, GroundedResponder, parse_grounded_response
 from scraping.ai_assistance.sources import SourceIndex
 from scraping.ai_assistance.worker import Worker
 from scraping.tests.test_ai_assistance import FakeTransport, entry, seed
@@ -129,6 +129,33 @@ class GroundedResponseTests(unittest.TestCase):
         for value in invalid:
             with self.subTest(value=value):
                 self.assertIsNone(parse_grounded_response(json.dumps(value), evidence))
+
+    def test_serialized_payloads_never_reach_the_customer(self):
+        evidence = [{"id": "known"}]
+        rejected = [
+            '{"text": "Halo kak", "kind": "answer"}',
+            "{'text': 'Halo kak'}",
+            '[{"id": "grs-01"}]',
+            "Halo kak. ```json\n{\"a\": 1}\n```",
+            'sourceIds: ["grs-01"]',
+            "Halo kak,\\n regulator aman.",
+        ]
+        for text in rejected:
+            with self.subTest(text=text):
+                value = {"text": text, "kind": "answer", "basis": "general", "sourceIds": []}
+                response, reason = validate_grounded_response(json.dumps(value), evidence)
+                self.assertIsNone(response)
+                self.assertEqual(reason, "structured_payload")
+
+    def test_marketplace_listing_titles_are_not_mistaken_for_payloads(self):
+        evidence = [{"id": "known"}]
+        for text in ("{COD} PAKET Kompor Tanam GASCOMP Kaca 8 JET Kompor Gas 2 Tungku",
+                     "[TAMBAHAN] Bubble Wrap Ekstra untuk keamanan paket Anda"):
+            with self.subTest(text=text):
+                value = {"text": text, "kind": "answer", "basis": "general", "sourceIds": []}
+                response, reason = validate_grounded_response(json.dumps(value), evidence)
+                self.assertIsNone(reason)
+                self.assertEqual(response["text"], text)
 
     def test_unsafe_historical_procedure_never_enters_evidence(self):
         unsafe = entry("unsafe", "id", questions=["GRS-01 tidak menyala"], sku="GRS-01",

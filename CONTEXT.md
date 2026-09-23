@@ -29,7 +29,6 @@ Baca spesifikasi produk yang sesuai, lalu hanya baca konteks untuk area yang aka
 | `supabase/` | [Baca konteks](supabase/CONTEXT.md) | Skema dan garis dasar rilis |
 | `docs/` | [Baca konteks](docs/CONTEXT.md) | Dokumentasi |
 | `data/` | [Baca konteks](docs/architecture/folder-contexts/data.md) | Konteks eksternal untuk data |
-| `obsidian/` | [Baca konteks](docs/architecture/folder-contexts/obsidian.md) | Konteks eksternal untuk obsidian |
 | `public/` | [Baca konteks](docs/architecture/folder-contexts/public.md) | Konteks eksternal untuk publik |
 
 <a id="dispatch-and-inheritance"></a>
@@ -37,7 +36,7 @@ Baca spesifikasi produk yang sesuai, lalu hanya baca konteks untuk area yang aka
 
 - `src/` merute ke kepemilikan aplikasi, bersama, atau fitur di atas. `src/features/` merute berdasarkan fitur; ia tidak memiliki logika bisnis lintas fitur.
 - Turunan teknis seperti `components/`, `model/`, `server/`, segmen rute, dan subpaket operasional mewarisi konteks terdekat yang terdaftar. Konteks skrip, scraping, dan dokumen berisi baris tugas untuk folder anak mereka.
-- Konteks untuk data, Obsidian, dan aset publik berada di bawah dokumentasi untuk menjaga instruksi agen di luar konten yang dihasilkan, dimakan, atau disajikan secara publik.
+- Konteks untuk data dan aset publik berada di bawah dokumentasi untuk menjaga instruksi agen di luar konten yang dihasilkan, dimakan, atau disajikan secara publik. Vault pengetahuan berada di luar repositori ini, di `douke-chat/knowledge/approved/Douke Knowledge Base`, dan dapat ditimpa dengan `DOUKE_VAULT_DIR`.
 - Pekerjaan konfigurasi akar dimulai dengan [struktur proyek](docs/architecture/project-structure.md), [perintah paket](package.json), dan spesifikasi topik yang berlaku. Periksa konsumen sebelum mengubah konfigurasi build, lint, ketergantungan, atau deployment.
 - Folder ketergantungan, cache, state runtime privat, internal Git, dan checkout referensi pihak ketiga bukan tujuan tugas untuk membuat kerangka. Periksa mereka hanya ketika diperlukan untuk pekerjaan yang diminta. `awesome-codex-subagents/` yang ada adalah bahan referensi yang kepemilikannya dicatat dalam indeks handoff.
 - Jika tidak ada folder yang cocok, kembali ke peta tugas produk, identifikasi area pemilik terkecil, dan tambahkan konteks hanya jika ada tanggung jawab baru. Jangan cari setiap folder secara default.

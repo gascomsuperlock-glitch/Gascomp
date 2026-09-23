@@ -34,7 +34,6 @@ scripts/
   scratch/                        # Percobaan manual; bukan titik masuk aplikasi
 data/{catalog,knowledge,reports}/
 docs/{architecture,product,reference,setup,brand,work}/
-obsidian/                         # Vault pengetahuan; lokasi tetap
 public/                           # Aset URL publik; lokasi tetap
 supabase/migrations/              # Migrasi database berurutan; lokasi tetap
 ```
@@ -60,7 +59,7 @@ supabase/migrations/              # Migrasi database berurutan; lokasi tetap
 | `data/reports` | Sinkronisasi, impor, dan laporan pratinjau |
 | `.data/warranty-tickets` | Tiket lokal dan bukti; diabaikan oleh Git |
 | `scraping/.private` | Sesi browser, tangkapan, audit, keadaan, penanda berhenti |
-| `obsidian` | Catatan produk dan pengetahuan |
+| `douke-chat/knowledge/approved/Douke Knowledge Base` | Vault catatan produk dan pengetahuan di luar repositori; ditimpa oleh `DOUKE_VAULT_DIR` |
 
 Jalan Python terpusat di `scraping/shared/paths.py`; skrip Node menggunakan `scripts/shared/paths.mjs`. Jalan terurai dari lokasi modul daripada direktori kerja proses.
 

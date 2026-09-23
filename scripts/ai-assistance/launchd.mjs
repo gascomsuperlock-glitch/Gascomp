@@ -2,7 +2,7 @@ import { chmodSync, existsSync, lstatSync, mkdirSync, writeFileSync } from "node
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { root } from "../shared/paths.mjs";
+import { root, vaultPath } from "../shared/paths.mjs";
 
 const chromeDefault = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 export const serviceLabels = { worker: "com.gascomp.ai-assistance.worker", chrome: "com.gascomp.ai-assistance.chrome" };
@@ -18,7 +18,7 @@ function url(value, name) {
 const isLoopback = (parsed) => ["localhost", "127.0.0.1", "[::1]"].includes(parsed.hostname);
 const expandPath = (value) => resolve(value.startsWith("~/") ? join(homedir(), value.slice(2)) : value);
 
-export function workerEnvironment(environment = process.env, repository = root) {
+export function workerEnvironment(environment = process.env) {
   const site = url(environment.GASCOMP_AI_SITE_URL, "GASCOMP_AI_SITE_URL");
   if (site.pathname !== "/" || !(site.protocol === "https:" || (site.protocol === "http:" && isLoopback(site)))) throw new Error("GASCOMP_AI_SITE_URL must be an HTTPS origin; loopback HTTP is allowed");
   const token = environment.GASCOMP_AI_WORKER_TOKEN ?? "";
@@ -43,7 +43,7 @@ export function workerEnvironment(environment = process.env, repository = root) 
     GASCOMP_AI_RESPONSE_MODE: responseMode,
     GASCOMP_AI_HERMES_ROOT: hermesRoot,
     GASCOMP_AI_HERMES_PYTHON: expandPath(environment.GASCOMP_AI_HERMES_PYTHON || join(hermesRoot, "venv/bin/python")),
-    GASCOMP_AI_VAULT: expandPath(environment.GASCOMP_AI_VAULT || join(repository, "obsidian/customer-support")),
+    GASCOMP_AI_VAULT: expandPath(environment.GASCOMP_AI_VAULT || vaultPath("customer-support")),
     ...(environment.GASCOMP_AI_SOURCE_VAULT ? { GASCOMP_AI_SOURCE_VAULT: expandPath(environment.GASCOMP_AI_SOURCE_VAULT) } : {}),
     GASCOMP_AI_CHROME_CDP_URL: cdp.origin,
     GASCOMP_AI_BROWSER_HOSTS: hosts,

@@ -311,7 +311,7 @@ Type: text
         self.write_note(note("""- **Customer** · 09/09 10:00 — Hubungi saya di 0812 3456 7890, NIK 3273010101010001, rekening BCA1234567890, alamat Jalan Melati 7, dan akun @buyer_private.
 - **Seller** · 09/09 10:01 — Baca https://localhost:3000/private lalu email help@example.com dan transfer ke 9876543210.""",
                                   history=False, skus=("GC-1", "GC-2")))
-        active = self.root / "obsidian" / "customer-support"
+        active = self.root / "vault" / "customer-support"
         active.mkdir(parents=True)
         marker = active / "owner.md"
         marker.write_text("owner content", encoding="utf-8")

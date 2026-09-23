@@ -42,7 +42,7 @@ Database pratinjau kosong dapat dibuka dan mempertahankan percakapan, tetapi mel
 <a id="knowledge-authoring"></a>
 ## Penulisan Pengetahuan
 
-Baca [panduan penulisan vault](../../obsidian/customer-support/README.md).
+Baca panduan penulisan vault di `douke-chat/knowledge/approved/Douke Knowledge Base/customer-support/README.md`.
 Tulis versi bahasa Inggris dan Indonesia untuk template sapaan, klarifikasi, dan handoff, lalu tambahkan jawaban produk yang diverifikasi. Jangan gunakan obrolan pelanggan asli sebagai fixture atau salin data akun pribadi ke catatan.
 
 Dalam mode `grounded` default, isi tubuh catatan adalah materi referensi faktual. Hermes dapat menjelaskan, memparafrasekan, dan menerjemahkan bagian yang relevan sambil mempertahankan fakta produk. Ia dapat memberikan penjelasan umum dan mengajukan pertanyaan klarifikasi yang berguna ketika jawaban sumber yang tepat tidak ada. Pertahankan data akun pribadi, klaim yang belum diverifikasi, dan instruksi perbaikan yang tidak aman di luar pengetahuan yang dapat digunakan kembali. Gunakan nama produk yang jelas, SKU, pertanyaan sumber, dan fakta yang diverifikasi daripada mencoba menulis setiap kemungkinan formulasi pelanggan.
@@ -55,13 +55,13 @@ hanya isi tubuh catatan yang dipilih yang dikirim, tanpa terjemahan atau parafra
 <a id="connect-the-complete-scraped-obsidian-archive"></a>
 ### Menghubungkan arsip Obsidian yang lengkap yang discraper
 
-Atur `GASCOMP_AI_SOURCE_VAULT` di lingkungan pribadi worker ke `Duoke` induk yang berisi `Percakapan` dan `Produk`, misalnya:
+Atur `GASCOMP_AI_SOURCE_VAULT` di lingkungan pribadi worker ke `Duoke` induk yang berisi `Percakapan`, `Produk`, `Impor`, `FAQ`, `knowledge/approved`, dan `products`, misalnya:
 
 ```text
 /Users/surya/Documents/douke-chat/knowledge/approved/Douke Knowledge Base/Duoke
 ```
 
-Pekerja mengindeks file Markdown yang dapat dibaca di kedua pohon, membangun paragraf jawaban yang dapat digunakan kembali secara tepat, dan menggabungkannya dengan gudang jawaban khusus. Ia memantau semua sumber untuk perubahan yang disimpan, termasuk penambahan, pemindahan, dan penghapusan. Percakapan dan tangkapan produk langsung tersimpan di `Percakapan` dan `Produk`; catatan indeks mereka adalah `Conversation archive index.md` dan `Product catalog index.md`. Organisasi folder tidak mengecualikan pengetahuan unik. Salinan produk hanya dideduplikasi ketika identitas pasar/toko/daftar dan konten setuju. Kesamaan SKU saja tidak dapat menghapus toko yang berbeda, daftar, varian, atau sumber yang tidak teridentifikasi.
+Pekerja mengindeks file Markdown yang dapat dibaca di keempat pohon, membangun paragraf jawaban yang dapat digunakan kembali secara tepat, dan menggabungkannya dengan gudang jawaban khusus. `Percakapan` dan `Produk` wajib ada. `Impor` dan `FAQ` diindeks bila tersedia: transkrip tangkap ulang di `Impor/**/Percakapan` dibaca sebagai percakapan, catatan `Impor` lainnya menjadi dokumen referensi yang hanya dapat dicari, dan setiap pasangan tanya-jawab `FAQ` yang direview pemilik menjadi dokumen serta, bila lolos pemeriksaan kelayakan, entri jawaban. Batas berkas sumber adalah 6.000. Ekspor pengetahuan menulis catatan yang dihasilkannya ke `Duoke/products` dan `Duoke/knowledge/approved` agar berada di dalam akar yang diindeks; konfigurasi Obsidian tetap di akar vault. Ia memantau semua sumber untuk perubahan yang disimpan, termasuk penambahan, pemindahan, dan penghapusan. Percakapan dan tangkapan produk langsung tersimpan di `Percakapan` dan `Produk`; catatan indeks mereka adalah `Conversation archive index.md` dan `Product catalog index.md`. Organisasi folder tidak mengecualikan pengetahuan unik. Salinan produk hanya dideduplikasi ketika identitas pasar/toko/daftar dan konten setuju. Kesamaan SKU saja tidak dapat menghapus toko yang berbeda, daftar, varian, atau sumber yang tidak teridentifikasi.
 Jangan menyalin transkrip asli ke dalam folder jawaban publik. Detail pelanggan/perusahaan pribadi, janji operasional, harga/tersedia yang berubah-ubah, dan fakta yang belum diselesaikan tidak menjadi jawaban pelanggan. Dokumen tanpa jawaban yang layak tetap dapat dicari secara lokal dan dapat mengarahkan pada klarifikasi atau serah terima. Indeks transkrip privat lengkap tidak pernah disertakan dalam prompt model atau respons browser.
 
 Ekstraksi pratinjau dan secara opsional menulis artefak audit pribadi:
@@ -72,9 +72,9 @@ scraping/.venv/bin/python -m scraping.ai_assistance.corpus \
   --write
 ```
 
-Perintah ini menulis hanya ke `scraping/.private/ai-assistance/full-corpus` yang diabaikan: `corpus.json`, `report.json`, dan entri staged yang dihasilkan. Ia tidak mengaktifkan pengetahuan atau mengubah salah satu sumber vault. Live worker membaca direktori sumber asli secara langsung; staging bukan langkah aktivasi tambahan. Publikasi gabungan harus muat 2.000 entri dan 4 MiB; korpus privat lengkap memiliki ukuran terpisah dan tidak diunggah.
+Perintah ini menulis hanya ke `scraping/.private/ai-assistance/full-corpus` yang diabaikan: `corpus.json`, `report.json`, dan entri staged yang dihasilkan. Ia tidak mengaktifkan pengetahuan atau mengubah salah satu sumber vault. Live worker membaca direktori sumber asli secara langsung; staging bukan langkah aktivasi tambahan. Publikasi gabungan harus muat 2.000 entri dan 4 MiB; korpus privat lengkap memiliki ukuran terpisah dan tidak diunggah. Terhadap vault saat ini, pembangunan menghasilkan 2.983 dokumen privat dan 819 entri gabungan sekitar 679 KiB.
 
-Perintah opsional `import_duoke --write-review` dan `import_products --write-review` masih menyiapkan materi review yang bisa diedit secara manual. Aturan kepatutan pilot sempit mereka lagi tidak membatasi runtime sumber penuh. Jangan edit artefak korpus yang dihasilkan untuk membuat jawaban permanen: masukkan jawaban akhir yang dikurasi ke `obsidian/customer-support/`. Mode Grounded dapat menerjemahkan fakta sumber terverifikasi ke bahasa obrolan yang dipilih. Mode Exact masih memerlukan teks sumber dalam bahasa tersebut.
+Perintah opsional `import_duoke --write-review` dan `import_products --write-review` masih menyiapkan materi review yang bisa diedit secara manual. Aturan kepatutan pilot sempit mereka lagi tidak membatasi runtime sumber penuh. Jangan edit artefak korpus yang dihasilkan untuk membuat jawaban permanen: masukkan jawaban akhir yang dikurasi ke `douke-chat/knowledge/approved/Douke Knowledge Base/customer-support`. Mode Grounded dapat menerjemahkan fakta sumber terverifikasi ke bahasa obrolan yang dipilih. Mode Exact masih memerlukan teks sumber dalam bahasa tersebut.
 
 Saat memperbarui preview lokal yang ada, hentikan prosesnya dan jalankan ulang `npm run ai:preview-db` untuk menerapkan migrasi `202609170003` sambil mempertahankan percakapan yang ada. Ini menambahkan riwayat sesi yang sama yang terbatas dan respons yang dihasilkan terverifikasi sambil mempertahankan respons exact legacy, sewa (leases), dan pengecekan versi. Jalankan ulang worker setelah menambahkan jalur sumber ke `worker-environment.json`; mengubah `.env.local` saja tidak memperbarui konfigurasi privat yang ada.
 
@@ -92,10 +92,13 @@ Atur variabel lingkungan dalam proses worker, terpisah dari lingkungan website. 
 | `GASCOMP_AI_RESPONSE_MODE` | `grounded` (default) untuk respons alami; `exact` untuk selector legacy |
 | `GASCOMP_AI_HERMES_ROOT` | Jalur instalasi sumber Hermes opsional |
 | `GASCOMP_AI_HERMES_PYTHON` | Interpreter Python yang berisi dependensi Hermes |
-| `GASCOMP_AI_VAULT` | Direktori jawaban dikurasi opsional; default `obsidian/customer-support` |
-| `GASCOMP_AI_SOURCE_VAULT` | Jalur akar `Duoke` full scraped opsional yang berisi `Percakapan` dan `Produk` |
+| `GASCOMP_AI_VAULT` | Direktori jawaban dikurasi opsional; default `douke-chat/knowledge/approved/Douke Knowledge Base/customer-support` |
+| `DOUKE_VAULT_DIR` | Akar vault pengetahuan opsional; default `douke-chat/knowledge/approved/Douke Knowledge Base` di samping repositori |
+| `GASCOMP_AI_SOURCE_VAULT` | Jalur akar `Duoke` opsional; seluruh pohon pengetahuan berada di bawahnya |
 | `GASCOMP_AI_CHROME_CDP_URL` | Titik akhir debugging Chrome lokal |
 | `GASCOMP_AI_BROWSER_HOSTS` | Allowlist eksplisit untuk probe link opsional |
+
+Teks respons yang dihasilkan ditolak bila berupa muatan terserialisasi: JSON bersarang, objek berkutip tunggal, larik, blok kode berpagar, urutan escape literal, atau gema nama field skema. Pemeriksaan berjalan pada validasi pekerja dan pada validasi respons sisi server, dan penolakan memakai kalimat cadangan yang aman.
 
 Harness Hermes menggunakan rumah privat terpisah dan menonaktifkan konteks pribadi, memori pribadi, alat yang tidak terkait, dan fallback cloud. Respons Grounded membawa teks biasa, jenis respons, dasar umum/pengetahuan, dan ID sumber terverifikasi. Riwayat obrolan website terbaru dibatasi ke sesi saat ini; ia tidak mengaktifkan memori Hermes pribadi. Generasi yang tidak valid menggunakan fallback yang diterbitkan.
 

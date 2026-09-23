@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { getSupabaseConfig, createScriptSupabaseClient } from "../shared/supabase.mjs";
-import { root } from "../shared/paths.mjs";
+import { root, vaultDir, duokeDir } from "../shared/paths.mjs";
 
 const { url: supabaseUrl, secret: supabaseSecret } = getSupabaseConfig();
 if (!supabaseUrl || !supabaseSecret) {
@@ -154,12 +154,14 @@ const knowledge = {
 };
 writeFileSync(resolve(root, "data/knowledge/duoke-knowledge.json"), `${JSON.stringify(knowledge, null, 2)}\n`);
 
-const vault = resolve(root, "obsidian");
+// Notes go under the Duoke root so the assistant indexes them; the Obsidian
+// configuration stays at the vault root where Obsidian expects it.
+const vault = duokeDir;
 const productDir = resolve(vault, "products");
 const approvedDir = resolve(vault, "knowledge/approved");
 mkdirSync(productDir, { recursive: true });
 mkdirSync(approvedDir, { recursive: true });
-mkdirSync(resolve(vault, ".obsidian"), { recursive: true });
+mkdirSync(resolve(vaultDir, ".obsidian"), { recursive: true });
 for (const name of readdirSync(approvedDir)) {
   if (name.startsWith("admin-") && name.endsWith(".md")) unlinkSync(resolve(approvedDir, name));
 }

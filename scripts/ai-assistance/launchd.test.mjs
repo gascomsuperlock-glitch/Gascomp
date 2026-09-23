@@ -15,7 +15,7 @@ const values = {
 
 test("launchd rendering keeps hostile path characters literal and token out of process arguments", () => {
   const repository = "/Users/Test Name/a<&\"'$(echo injected)>";
-  const environment = workerEnvironment(values, repository);
+  const environment = workerEnvironment(values);
   const files = serviceFiles({ environment, repository, node: "/Applications/Node & Tools/node" });
   assert.ok(files.worker.includes("/Applications/Node &amp; Tools/node"));
   assert.ok(files.worker.includes("a&lt;&amp;&quot;&apos;$(echo injected)&gt;"));
@@ -33,7 +33,7 @@ test("launchd rendering keeps hostile path characters literal and token out of p
 test("generation creates private valid plists and refuses overwrite for recovery safety", (context) => {
   const repository = mkdtempSync(join(realpathSync(tmpdir()), "gascomp launchd & "));
   context.after(() => rmSync(repository, { recursive: true, force: true }));
-  const environment = workerEnvironment(values, repository);
+  const environment = workerEnvironment(values);
   assert.equal(existsSync(join(repository, "scraping")), false);
   serviceFiles({ environment, repository });
   assert.equal(existsSync(join(repository, "scraping")), false);

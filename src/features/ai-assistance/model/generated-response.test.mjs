@@ -41,3 +41,20 @@ test("generated responses reject malformed provenance and unsafe presentation te
     { ...valid, basis: "general", sourceIds: ["source.one"] },
   ]) assert.throws(() => validateGeneratedResponse(response));
 });
+
+test("a serialized payload never reaches the customer", () => {
+  const valid = { kind: "answer", basis: "general", sourceIds: [] };
+  for (const text of [
+    '{"text": "Halo kak", "kind": "answer"}',
+    "{'text': 'Halo kak'}",
+    '[{"id": "grs-01"}]',
+    "Halo kak. ```json\n{\"a\": 1}\n```",
+    'sourceIds: ["grs-01"]',
+    "Halo kak,\\n regulator aman.",
+  ]) assert.throws(() => validateGeneratedResponse({ ...valid, text }), undefined, text);
+
+  for (const text of [
+    "{COD} PAKET Kompor Tanam GASCOMP Kaca 8 JET Kompor Gas 2 Tungku",
+    "[TAMBAHAN] Bubble Wrap Ekstra untuk keamanan paket Anda",
+  ]) assert.equal(validateGeneratedResponse({ ...valid, text }).text, text);
+});

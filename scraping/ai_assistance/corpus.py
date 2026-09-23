@@ -23,11 +23,16 @@ from scraping.ai_assistance.import_duoke import (
     BANK_ACCOUNT,
     INLINE_ADDRESS,
     LABELED_USERNAME,
+    BOILERPLATE_REPLY,
     LONG_NUMERIC_IDENTIFIER,
+    MONETARY_OR_PROMOTION,
     NATIONAL_ID,
     OPERATIONAL_PROMISE,
     PLACEHOLDER,
+    ROLE_MISATTRIBUTION,
+    STOCK_OR_AVAILABILITY,
     SYSTEM_EVENT,
+    TRIVIAL_REPLY,
     AT_USERNAME,
     DuokeImportError,
     ParsedNote,
@@ -46,7 +51,7 @@ from scraping.shared.paths import AI_ASSISTANCE_PRIVATE_DIR
 
 
 CORPUS_DIR = AI_ASSISTANCE_PRIVATE_DIR / "full-corpus"
-MAX_SOURCE_FILES = 2_000
+MAX_SOURCE_FILES = 6_000
 MAX_NOTE_BYTES = 1_000_000
 MAX_ENTRIES = 2_000
 MAX_PUBLICATION_BYTES = 4 * 1024 * 1024
@@ -90,25 +95,56 @@ class CorpusError(ValueError):
     """The full source corpus or its private output cannot be processed safely."""
 
 
+CONVERSATION_DIR = "Percakapan"
+PRODUCT_DIR = "Produk"
+IMPORT_DIR = "Impor"
+FAQ_DIR = "FAQ"
+APPROVED_DIR = "knowledge"
+CATALOG_DIR = "products"
+
+
+def _collect(source: Path, directory: Path, classify) -> list[tuple[str, Path]]:
+    root = source.resolve()
+    found: list[tuple[str, Path]] = []
+    for path in directory.rglob("*.md"):
+        relative = path.relative_to(source)
+        if any(part.startswith(".") for part in relative.parts):
+            continue
+        if path.is_symlink() or not path.resolve().is_relative_to(root):
+            raise CorpusError("Source symlinks are forbidden")
+        kind = classify(relative)
+        if kind:
+            found.append((kind, path))
+    return found
+
+
 def _source_paths(source: Path) -> list[tuple[str, Path]]:
     if not source.is_dir() or source.is_symlink():
         raise CorpusError("The source must be a real Duoke directory")
-    root = source.resolve()
     paths: list[tuple[str, Path]] = []
-    for kind, directory_name in (("conversation", "Percakapan"), ("product", "Produk")):
+    for kind, directory_name in (("conversation", CONVERSATION_DIR), ("product", PRODUCT_DIR)):
         directory = source / directory_name
         if not directory.is_dir() or directory.is_symlink():
             raise CorpusError(f"The source is missing {directory_name}")
-        for path in directory.rglob("*.md"):
-            relative = path.relative_to(source)
-            if any(part.startswith(".") for part in relative.parts):
-                continue
-            if path.is_symlink() or not path.resolve().is_relative_to(root):
-                raise CorpusError("Source symlinks are forbidden")
-            paths.append((kind, path))
+        paths.extend(_collect(source, directory, lambda relative, kind=kind: kind))
+    # Recaptured imports and the owner-reviewed FAQ are optional so a source that
+    # only holds Percakapan and Produk keeps building unchanged.
+    imports = source / IMPORT_DIR
+    if imports.is_dir() and not imports.is_symlink():
+        paths.extend(_collect(source, imports, lambda relative: (
+            "import-conversation" if CONVERSATION_DIR in relative.parts else "reference")))
+    faq = source / FAQ_DIR
+    if faq.is_dir() and not faq.is_symlink():
+        paths.extend(_collect(source, faq, lambda relative: "faq"))
+    approved = source / APPROVED_DIR / "approved"
+    if approved.is_dir() and not approved.is_symlink():
+        paths.extend(_collect(source, approved, lambda relative: "approved-answer"))
+    catalog = source / CATALOG_DIR
+    if catalog.is_dir() and not catalog.is_symlink():
+        paths.extend(_collect(source, catalog, lambda relative: "catalog"))
     paths.sort(key=lambda item: item[1].relative_to(source).as_posix())
     if len(paths) > MAX_SOURCE_FILES:
-        raise CorpusError("The source exceeds the 2000-note limit")
+        raise CorpusError(f"The source exceeds the {MAX_SOURCE_FILES}-note limit")
     return paths
 
 
@@ -163,7 +199,8 @@ def _source_id(metadata: dict[str, str], relative: str, kind: str) -> str:
     return metadata.get(key) or stable_hash(relative, length=20)
 
 
-def _conversation_document(path: Path, source: Path) -> tuple[dict[str, Any], ParsedNote | None]:
+def _conversation_document(path: Path, source: Path,
+                           parse_root: Path | None = None) -> tuple[dict[str, Any], ParsedNote | None]:
     relative = path.relative_to(source).as_posix()
     raw = path.read_bytes()
     text = raw.decode("utf-8")
@@ -173,7 +210,7 @@ def _conversation_document(path: Path, source: Path) -> tuple[dict[str, Any], Pa
     turns: list[dict[str, Any]] = []
     skus: list[str] = []
     try:
-        parsed = parse_conversation_note(path, source / "Percakapan")
+        parsed = parse_conversation_note(path, parse_root or source / CONVERSATION_DIR)
         skus = list(parsed.skus)
         if not parsed.history_complete:
             flags.add("incomplete_history")
@@ -216,6 +253,304 @@ def _conversation_document(path: Path, source: Path) -> tuple[dict[str, Any], Pa
         "entryIds": [],
         "retrievalEvidence": {"plainTurnCount": len(turns)},
     }, parsed
+
+
+def _reference_document(path: Path, source: Path) -> dict[str, Any]:
+    """Index supporting import notes as searchable context without deriving answers."""
+    relative = path.relative_to(source).as_posix()
+    raw = path.read_bytes()
+    metadata, body = _frontmatter(raw.decode("utf-8"))
+    flags: set[str] = set()
+    document_text, changed = _redact(_plain_markdown(body))
+    if changed:
+        flags.add("privacy_redacted")
+    heading = _HEADING.search(body)
+    return {
+        "id": f"source-reference-{stable_hash(relative, length=20)}",
+        "sourceKind": "reference",
+        "sourceId": _source_id(metadata, relative, "reference"),
+        "path": relative,
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "names": [heading.group(1).strip()] if heading else [],
+        "skus": [],
+        "text": document_text,
+        "flags": sorted(flags),
+        "entryIds": [],
+        "retrievalEvidence": {"referenceOnly": True},
+    }
+
+
+_SECTION_HEADING = re.compile(r"(?m)^##\s+(?P<name>.+?)\s*$")
+_APPROVED_QUESTION = frozenset({"pertanyaan", "question"})
+_APPROVED_ANSWER = frozenset({"jawaban disetujui", "approved answer"})
+_APPROVED_TRIGGERS = frozenset({"pemicu pencarian", "search triggers"})
+
+
+def _sections(body: str) -> dict[str, str]:
+    sections: dict[str, str] = {}
+    matches = list(_SECTION_HEADING.finditer(body))
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(body)
+        sections[match.group("name").casefold()] = body[match.end():end]
+    return sections
+
+
+def _approved_answer(path: Path, source: Path) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    """Publish an owner-approved answer note exactly as the catalog generated it."""
+    relative = path.relative_to(source).as_posix()
+    raw = path.read_bytes()
+    metadata, body = _frontmatter(raw.decode("utf-8"))
+    sections = _sections(body)
+    question = ""
+    answer = ""
+    triggers: list[str] = []
+    for name, section in sections.items():
+        if name in _APPROVED_QUESTION:
+            question = _plain_markdown(section)
+        elif name in _APPROVED_ANSWER:
+            answer = _plain_markdown(section)
+        elif name in _APPROVED_TRIGGERS:
+            triggers = [line.lstrip("-* ").strip() for line in section.splitlines()
+                        if line.lstrip().startswith(("-", "*")) and line.lstrip("-* ").strip()]
+    heading = _HEADING.search(body)
+    title = heading.group(1).strip() if heading else ""
+    sku = metadata.get("sku", "").strip()
+    flags: set[str] = set()
+    if metadata.get("approval", "").strip().casefold() != "approved":
+        flags.add("answer_not_approved")
+    names = [value for value in (title, sku) if value]
+    document = {
+        "id": f"source-approved-{stable_hash(relative, length=20)}",
+        "sourceKind": "approved-answer",
+        "sourceId": metadata.get("knowledge_id") or stable_hash(relative, length=20),
+        "path": relative,
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "names": names,
+        "skus": [sku] if sku else [],
+        "text": _plain_markdown(body),
+        "flags": sorted(flags),
+        "entryIds": [],
+        "retrievalEvidence": {"triggerCount": len(triggers)},
+    }
+    questions = [value for value in dict.fromkeys([question, *triggers, title]) if value]
+    if not questions or not answer or flags:
+        document["flags"] = sorted(flags | {"no_public_compatible_answer_text"})
+        return document, None
+    proposed: dict[str, Any] = {
+        "id": f"approved-{stable_hash(relative, length=24)}",
+        "kind": "answer",
+        "language": "id",
+        "questions": questions[:50],
+        "answer": answer,
+    }
+    if sku and len(sku) <= 100:
+        proposed["sku"] = sku
+    try:
+        entry = validate_entry(proposed)
+    except KnowledgeError:
+        document["flags"] = sorted(flags | {"knowledge_schema_rejected"})
+        return document, None
+    document["entryIds"].append(entry["id"])
+    return document, entry
+
+
+def _catalog_document(path: Path, source: Path) -> dict[str, Any]:
+    """Index a generated catalog note so its name and SKU help identify products."""
+    relative = path.relative_to(source).as_posix()
+    raw = path.read_bytes()
+    metadata, body = _frontmatter(raw.decode("utf-8"))
+    heading = _HEADING.search(body)
+    sku = metadata.get("sku", "").strip()
+    return {
+        "id": f"source-catalog-{stable_hash(relative, length=20)}",
+        "sourceKind": "catalog",
+        "sourceId": metadata.get("product_id") or stable_hash(relative, length=20),
+        "path": relative,
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "names": [value for value in ([heading.group(1).strip()] if heading else []) if value],
+        "skus": [sku] if sku else [],
+        "text": _plain_markdown(body),
+        "flags": [],
+        "entryIds": [],
+        "retrievalEvidence": {"generatedCatalogNote": True},
+    }
+
+
+_FAQ_HEADING = re.compile(r"(?m)^##\s+(?P<label>.+?)\s+—\s+(?P<ref>[0-9a-f]{8,64})\s*$")
+_FAQ_SECTION = re.compile(r"(?m)^###\s+(?P<name>.+?)\s*$")
+_FAQ_QUESTION_SECTIONS = frozenset({"pertanyaan pelanggan", "customer question"})
+_FAQ_ANSWER_SECTIONS = frozenset({"balasan seller dalam riwayat", "historical seller reply"})
+_FAQ_UNRESOLVED_SKU = frozenset({"sku belum pasti", "unknown sku"})
+_FAQ_BLOCKING = (
+    _ORDER_OR_ACCOUNT, _VOLATILE_PRODUCT, _SYSTEM_OR_AUTOMATION, _PASSIVE_OPERATIONAL_PROMISE,
+    OPERATIONAL_PROMISE, MONETARY_OR_PROMOTION, STOCK_OR_AVAILABILITY, ROLE_MISATTRIBUTION,
+)
+
+
+_FAQ_SEPARATOR = re.compile(r"^[-–—\s]{5,}$")
+_FAQ_FILLERS = frozenset({
+    "kak", "kakak", "min", "admin", "ya", "yah", "yaa", "iya", "nya", "kok", "sih",
+    "deh", "dong", "nih", "aja", "gitu", "oke", "ok", "okay", "baik", "siap", "halo", "hai",
+})
+_FAQ_MINIMUM_ANSWER_WORDS = 6
+_FAQ_MINIMUM_QUESTION_WORDS = 3
+
+
+def _faq_meaningful(text: str) -> list[str]:
+    return [word for word in re.findall(r"[\w-]+", text.casefold(), re.UNICODE)
+            if word not in _FAQ_FILLERS]
+
+
+def _faq_quoted(section: str) -> list[str]:
+    """Keep the quoted message lines, dropping the echoed reply target and rules."""
+    lines: list[str] = []
+    in_echo = False
+    for line in section.splitlines():
+        if not line.startswith(">"):
+            continue
+        value = line[1:].strip()
+        if in_echo:
+            in_echo = not value.endswith("」")
+            continue
+        if value.startswith("「"):
+            in_echo = not value.endswith("」")
+            continue
+        if not value or _FAQ_SEPARATOR.match(value):
+            continue
+        lines.append(value)
+    return lines
+
+
+def _faq_sections(block: str) -> dict[str, str]:
+    sections: dict[str, str] = {}
+    matches = list(_FAQ_SECTION.finditer(block))
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(block)
+        sections[match.group("name").casefold()] = block[match.end():end]
+    return sections
+
+
+def _faq_safe_lines(lines: list[str]) -> tuple[list[str], set[str]]:
+    """Keep only lines that survive redaction unchanged and carry no link."""
+    flags: set[str] = set()
+    result: list[str] = []
+    for line in lines:
+        value = line.strip()
+        redacted, changed = _redact(value)
+        if changed or PLACEHOLDER.search(value):
+            flags.add("privacy_redacted")
+            return [], flags
+        if URL_RE.search(value):
+            flags.add("source_contains_link")
+            return [], flags
+        result.append(redacted)
+    return result, flags
+
+
+def _faq_blocks(path: Path, source: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    """Turn each owner-reviewed FAQ pair into a document plus, when safe, an entry."""
+    relative = path.relative_to(source).as_posix()
+    raw = path.read_bytes()
+    _, body = _frontmatter(raw.decode("utf-8"))
+    documents: list[dict[str, Any]] = []
+    entries: list[dict[str, Any]] = []
+    evidence: list[dict[str, Any]] = []
+    headings = list(_FAQ_HEADING.finditer(body))
+    for index, heading in enumerate(headings):
+        end = headings[index + 1].start() if index + 1 < len(headings) else len(body)
+        block = body[heading.end():end]
+        reference = heading.group("ref")
+        label = heading.group("label").strip()
+        sku = "" if label.casefold() in _FAQ_UNRESOLVED_SKU else label
+        sections = _faq_sections(block)
+        questions_raw: list[str] = []
+        answer_raw: list[str] = []
+        for name, section in sections.items():
+            if name in _FAQ_QUESTION_SECTIONS:
+                questions_raw.extend(_faq_quoted(section))
+            elif name in _FAQ_ANSWER_SECTIONS:
+                answer_raw.extend(_faq_quoted(section))
+        flags: set[str] = set()
+        if not sku:
+            flags.add("product_not_identified")
+        questions, question_flags = _faq_safe_lines(questions_raw)
+        answer_lines, answer_flags = _faq_safe_lines(answer_raw)
+        flags.update(question_flags | answer_flags)
+        answer = "\n".join(answer_lines).strip()
+        document_text, changed = _redact(_plain_markdown(block))
+        if changed:
+            flags.add("document_privacy_redacted")
+        document = {
+            "id": f"source-faq-{stable_hash(relative, reference, length=20)}",
+            "sourceKind": "faq",
+            "sourceId": reference,
+            "path": f"{relative}#{reference}",
+            "sha256": hashlib.sha256(block.encode("utf-8")).hexdigest(),
+            "names": [sku] if sku else [],
+            "skus": [sku] if sku else [],
+            "text": document_text,
+            "flags": sorted(flags),
+            "entryIds": [],
+            "retrievalEvidence": {"questionLineCount": len(questions_raw)},
+        }
+        documents.append(document)
+        entry = _faq_entry(relative, reference, sku, questions, answer, flags)
+        if entry:
+            entries.append(entry)
+            document["entryIds"].append(entry["id"])
+        # _faq_entry records why a pair was rejected, so the document carries it too.
+        document["flags"] = sorted(flags)
+        evidence.append({
+            "entryId": entry["id"] if entry else None,
+            "sourceDocumentIds": [document["id"]],
+            "sourceKind": "faq",
+            "flags": sorted(flags),
+        })
+    return documents, entries, evidence
+
+
+def _faq_entry(relative: str, reference: str, sku: str, questions: list[str],
+               answer: str, flags: set[str]) -> dict[str, Any] | None:
+    if not questions or not answer:
+        flags.add("no_public_compatible_faq_text")
+        return None
+    combined = "\n".join((*questions, answer))
+    if any(pattern.search(combined) for pattern in _FAQ_BLOCKING):
+        flags.add("not_public_answer_compatible")
+        return None
+    normalized = " ".join(re.findall(r"[\w-]+", answer.casefold(), re.UNICODE))
+    if BOILERPLATE_REPLY.search(answer) or TRIVIAL_REPLY.fullmatch(normalized):
+        flags.add("trivial_or_boilerplate_reply")
+        return None
+    # Historical chat pairs include closing pleasantries and one-word
+    # acknowledgements. They carry no reusable fact and would otherwise answer
+    # unrelated questions, so only replies with substance become entries.
+    if len(_faq_meaningful(answer)) < _FAQ_MINIMUM_ANSWER_WORDS:
+        flags.add("reply_without_reusable_content")
+        return None
+    # A greeting line beside a real question must not become a retrieval alias.
+    questions = [question for question in questions
+                 if len(_faq_meaningful(question)) >= _FAQ_MINIMUM_QUESTION_WORDS]
+    if not questions:
+        flags.add("question_without_retrievable_terms")
+        return None
+    proposed: dict[str, Any] = {
+        "id": f"faq-{stable_hash(relative, reference, length=24)}",
+        "kind": "answer",
+        "language": "id",
+        "questions": list(dict.fromkeys(questions))[:50],
+        "answer": answer,
+    }
+    if sku and len(sku) <= 100:
+        proposed["sku"] = sku
+        if sku.casefold() not in combined.casefold():
+            # Keep the scoped answer retrievable without relying on page context.
+            proposed["questions"] = [f"{question} {sku}" for question in proposed["questions"]]
+    try:
+        return validate_entry(proposed)
+    except KnowledgeError:
+        flags.add("knowledge_schema_rejected")
+        return None
 
 
 def _description_lines(body: str) -> list[str]:
@@ -681,16 +1016,37 @@ def build_corpus(source: Path) -> dict[str, Any]:
     kind_counts: Counter[str] = Counter()
     product_copies: dict[tuple[str, ...], str] = {}
     duplicate_products: list[dict[str, str]] = []
+    faq_entries: list[dict[str, Any]] = []
+    faq_evidence: list[dict[str, Any]] = []
+    approved_entries: list[dict[str, Any]] = []
 
     for kind, path in paths:
         relative = path.relative_to(source).as_posix()
         try:
             if path.stat().st_size > MAX_NOTE_BYTES:
                 raise CorpusError("note exceeds size limit")
-            if kind == "conversation":
-                document, parsed = _conversation_document(path, source)
+            if kind in ("conversation", "import-conversation"):
+                # Recaptured notes live several levels deep, so their stable
+                # identity is the path from the vault root rather than Percakapan.
+                document, parsed = _conversation_document(
+                    path, source, source if kind == "import-conversation" else None)
                 if parsed is not None:
                     parsed_conversations.append((document, parsed))
+            elif kind == "reference":
+                document = _reference_document(path, source)
+            elif kind == "approved-answer":
+                document, approved_entry = _approved_answer(path, source)
+                if approved_entry:
+                    approved_entries.append(approved_entry)
+            elif kind == "catalog":
+                document = _catalog_document(path, source)
+            elif kind == "faq":
+                faq_documents, block_entries, block_evidence = _faq_blocks(path, source)
+                documents.extend(faq_documents)
+                faq_entries.extend(block_entries)
+                faq_evidence.extend(block_evidence)
+                kind_counts[kind] += len(faq_documents)
+                continue
             else:
                 duplicate_key = _product_duplicate_key(path)
                 if duplicate_key is not None and duplicate_key in product_copies:
@@ -718,9 +1074,17 @@ def build_corpus(source: Path) -> dict[str, Any]:
             candidate_documents[candidate["id"]] = document["id"]
     _annotate_conflicts_and_eligibility(conversation_candidates)
 
-    entries: list[dict[str, Any]] = []
-    evidence: list[dict[str, Any]] = []
+    entries: list[dict[str, Any]] = [*approved_entries, *faq_entries]
+    evidence: list[dict[str, Any]] = list(faq_evidence)
     seen_pairs: dict[tuple[str, str, tuple[str, ...]], str] = {}
+    # The FAQ is the owner-reviewed distillation of the same transcripts, so an
+    # identical transcript pair reuses its entry instead of publishing a copy.
+    for entry in faq_entries:
+        answer_key = " ".join(entry["answer"].casefold().split())
+        sku_key = (entry["sku"],) if "sku" in entry else ()
+        for question in entry["questions"]:
+            seen_pairs.setdefault(
+                (" ".join(question.casefold().split()), answer_key, sku_key), entry["id"])
     duplicate_pairs = 0
     document_by_id = {document["id"]: document for document in documents}
     for candidate in conversation_candidates:
@@ -786,6 +1150,11 @@ def build_corpus(source: Path) -> dict[str, Any]:
         "entryCount": len(entries),
         "conversationEntryCount": sum(entry["id"].startswith("archive-") for entry in entries),
         "productEntryCount": sum(entry["id"].startswith("source-") for entry in entries),
+        "faqEntryCount": sum(entry["id"].startswith("faq-") for entry in entries),
+        "approvedAnswerEntryCount": sum(entry["id"].startswith("approved-") for entry in entries),
+        "catalogDocumentCount": sum(item["sourceKind"] == "catalog" for item in documents),
+        "faqDocumentCount": sum(item["sourceKind"] == "faq" for item in documents),
+        "referenceDocumentCount": sum(item["sourceKind"] == "reference" for item in documents),
         "deduplicatedConversationPairs": duplicate_pairs,
         "deduplicatedProductDocuments": len(duplicate_products),
         "duplicateProductDocuments": duplicate_products,

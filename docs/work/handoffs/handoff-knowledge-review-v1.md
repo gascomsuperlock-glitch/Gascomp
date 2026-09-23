@@ -36,6 +36,6 @@ Ketika diminta melanjutkan pekerjaan pengetahuan, tinjau selisih saat ini dan al
 - [Spesifikasi sinkronisasi katalog](../../product/integrations/duoke-catalog.md)
 - [Ekspor pengetahuan](../../../scripts/duoke/export-duoke-knowledge.mjs)
 - [Direktori pengetahuan runtime](../../../data/knowledge/)
-- [Vault pengetahuan](../../../obsidian/)
+- Vault pengetahuan: `douke-chat/knowledge/approved/Douke Knowledge Base` (di luar repositori; ditimpa oleh `DOUKE_VAULT_DIR`)
 - [Rute Node terpusat](../../../scripts/shared/paths.mjs)
 - [Rute Python terpusat](../../../scraping/shared/paths.py)
