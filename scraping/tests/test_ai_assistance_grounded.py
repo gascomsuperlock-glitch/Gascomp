@@ -8,7 +8,7 @@ from pathlib import Path
 
 from scraping.ai_assistance.grounding import build_evidence, sanitize_history
 from scraping.ai_assistance.responder import validate_grounded_response, GroundedResponder, parse_grounded_response
-from scraping.ai_assistance.knowledge import build_snapshot
+from scraping.ai_assistance.knowledge import build_snapshot, resolve_product_context
 from scraping.ai_assistance.sources import SourceIndex
 from scraping.ai_assistance.worker import Worker
 from scraping.tests.test_ai_assistance import FakeTransport, entry, seed, write_entry
@@ -130,6 +130,24 @@ class GroundedResponseTests(unittest.TestCase):
         for value in invalid:
             with self.subTest(value=value):
                 self.assertIsNone(parse_grounded_response(json.dumps(value), evidence))
+
+    def test_a_symptom_alone_never_names_a_product_from_a_listing_title(self):
+        with tempfile.TemporaryDirectory() as directory:
+            vault = Path(directory)
+            seed(vault)
+            # A keyword-stuffed marketplace title, as the catalog import produces.
+            write_entry(vault, entry(
+                "catalog-one", "id", sku="GC-1",
+                questions=["GASCOMP Regulator Superlock GC-1 Anti Bocor Tidak Mudah Rusak"],
+                answer="Regulator Superlock dengan sertifikasi SNI.\n"))
+            snapshot = build_snapshot(vault)
+
+            for text in ("produk saya rusak", "tidak bisa nyala", "punya saya bocor",
+                         "barangnya bermasalah kak"):
+                with self.subTest(text=text):
+                    self.assertIsNone(resolve_product_context(snapshot, text))
+            # An explicit code still identifies the product.
+            self.assertEqual(resolve_product_context(snapshot, "GC-1 saya tidak nyala"), "GC-1")
 
     def test_a_bare_greeting_uses_the_published_greeting_without_evidence(self):
         with tempfile.TemporaryDirectory() as directory:

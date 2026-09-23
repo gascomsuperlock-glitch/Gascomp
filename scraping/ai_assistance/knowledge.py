@@ -146,7 +146,27 @@ _SEARCH_STOPWORDS = frozenset({
     "mau", "me", "mengenai", "my", "of", "on", "please", "produk", "product", "saya",
     "sebuah", "soal", "the", "this", "to", "untuk", "what", "with", "yang",
 })
-_PRODUCT_NAME_EXCLUSIONS = _SEARCH_STOPWORDS | frozenset({
+# Marketplace titles are keyword stuffed ("Anti Bocor", "Tidak Mudah Rusak"), so a
+# symptom or condition word can appear in exactly one listing and would then name a
+# product the customer never mentioned. These describe intent, never identity.
+_SYMPTOM_OR_CONDITION = frozenset({
+    "aman", "anti", "bahaya", "berbahaya", "berisik", "bermasalah", "bocor", "bunyi",
+    "desis", "dingin", "error", "gagal", "goyang", "kencang", "kendala", "kerusakan",
+    "longgar", "macet", "masalah", "mati", "mendesis", "menyala", "normal", "nyala",
+    "panas", "patah", "pecah", "punya", "rembes", "retak", "rusak", "sulit", "sumbat",
+    "susah", "tersumbat", "broken", "faulty", "hissing", "leak", "leaking", "loose",
+    "noise", "noisy", "problem", "stuck", "unsafe",
+})
+# Negations and marketing qualifiers fill listing titles and describe nothing that
+# distinguishes one product from another.
+_GENERIC_QUALIFIER = frozenset({
+    "tidak", "tak", "nggak", "gak", "bukan", "belum", "jangan", "tanpa", "mudah",
+    "gampang", "awet", "tahan", "kuat", "cepat", "lama", "baru", "asli", "resmi",
+    "original", "premium", "terbaik", "terbaru", "berkualitas", "kualitas", "gratis",
+    "murah", "hemat", "bagus", "not", "without", "easy", "durable", "strong", "best",
+    "new", "genuine", "official", "quality", "free", "cheap",
+})
+_PRODUCT_NAME_EXCLUSIONS = _SEARCH_STOPWORDS | _SYMPTOM_OR_CONDITION | _GENERIC_QUALIFIER | frozenset({
     "berat", "capacity", "color", "colour", "daya", "deskripsi", "dimension", "fitur",
     "fungsi", "harga", "informasi", "kapasitas", "material", "model", "panduan", "power",
     "return", "refund", "retur", "size", "specification", "spesifikasi", "ukuran", "voltage",
