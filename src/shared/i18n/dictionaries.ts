@@ -10,6 +10,8 @@ const english = {
   },
   header: {
     navigation: "Main navigation",
+    menu: "Menu",
+    closeMenu: "Close",
     productGuides: "Product Guides",
     howItWorks: "How It Works",
     adminLogin: "Admin Login",
@@ -197,7 +199,7 @@ type WidenStrings<T> = T extends string ? string : { [K in keyof T]: WidenString
 
 const indonesian = {
   common: { language: "Bahasa", indonesian: "Bahasa Indonesia", english: "English", home: "Beranda", tutorial: "Tutorial" },
-  header: { navigation: "Navigasi utama", productGuides: "Panduan Produk", howItWorks: "Cara Kerja", adminLogin: "Login Admin", contactSupport: "Hubungi bantuan" },
+  header: { navigation: "Navigasi utama", menu: "Menu", closeMenu: "Tutup", productGuides: "Panduan Produk", howItWorks: "Cara Kerja", adminLogin: "Login Admin", contactSupport: "Hubungi bantuan" },
   home: {
     skipToContent: "Lewati ke Konten", productGuides: "Panduan Produk", warrantySupport: "Bantuan Garansi", helpingHand: "Kami Siap Membantu",
     catalogEyebrow: "TEMUKAN PRODUK ANDA", catalogTitleStart: "Produk Anda.", catalogTitleEnd: "Panduan Andalan Anda.", catalogDescription: "Pertanyaan besar maupun detail kecil. Pilih produk Anda dan dapatkan bantuan yang dibutuhkan.",
