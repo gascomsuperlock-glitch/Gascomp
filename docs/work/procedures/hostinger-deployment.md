@@ -76,4 +76,4 @@ State build `completed` saja tidak membuktikan perilaku fitur. Nyatakan pemeriks
 <a id="evidence-level"></a>
 ## Tingkat bukti
 
-Terverifikasi sebagian. Langkah pemulihan build tunggal dan himpunan verifikasi dijalankan pada 23 September 2026 dan berhasil. Pada 30 September 2026 satu push ke `main` menghasilkan tepat satu build, pada `support`, tanpa build `bantuan`; ini terbukti untuk satu push. Bukti pelaksanaan terbaru berada di [spesifikasi deployment](../../product/operations/deployment.md#thumbnail-and-symptom-release-on-september-23-2026).
+Terverifikasi sebagian. Langkah pemulihan build tunggal dan himpunan verifikasi dijalankan pada 23 September 2026 dan berhasil. Pada 30 September 2026 dua push berturut-turut ke `main` masing-masing menghasilkan tepat satu build, pada `support`, tanpa build `bantuan`. Bukti pelaksanaan terbaru berada di [spesifikasi deployment](../../product/operations/deployment.md#thumbnail-and-symptom-release-on-september-23-2026).
