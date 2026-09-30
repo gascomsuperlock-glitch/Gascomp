@@ -63,3 +63,9 @@ __pycache__/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+
+# Hostinger
+.claude.json
+
+/.codex/config.toml

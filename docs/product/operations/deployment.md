@@ -212,3 +212,101 @@ Pemilik mengizinkan push fitur penghapusan Pusat Layanan yang diverifikasi ke `m
 Fitur ini menambahkan aksi hapus permanen satu lokasi dengan konfirmasi, autentikasi admin, validasi asal dan ID, revalidasi direktori publik, dan umpan balik kesalahan yang mempertahankan draf saat ini.
 
 Lint, typecheck, build produksi, 164 uji Node, dan pemeriksaan browser desktop/mobile lokal lulus; empat uji SQL opsional dilewati. Verifikasi database lokal menghapus hanya dua lokasi tidak aktif sementara dan mempertahankan lokasi yang ada. Verifikasi produksi memeriksa tombol yang dirender dan membatalkan konfirmasi sehingga lokasi yang ada tetap tidak tersentuh. Bukti deployment disimpan secara lokal di bawah `.data/service-center-delete-release/`.
+
+<a id="thumbnail-and-symptom-release-on-september-23-2026"></a>
+### Rilis thumbnail dan gejala pada 23 September 2026
+
+Pemilik mengizinkan deployment Hostinger. `main` sudah berada pada
+`c71727074e295d71367c53640c5ac8c44b58c627` melalui jalur rilis otomatis, tetapi
+situs live masih menyajikan `2e02c83`. Tiga build Git otomatis terakhir pada
+`support.gascompsuperlock.com` (`2e02c83`, `728152f`, `c717270`) gagal dalam
+kurang dari sepuluh detik dan mengembalikan log kosong, sedangkan build `bantuan`
+untuk `2e02c83` selesai. Ini mengulang target deployment ganda yang sudah
+didokumentasikan: kedua record website berbagi docroot `public_html/bantuan`, dan
+satu push memicu dua build bersamaan yang saling berebut.
+
+Satu build Git tunggal dijalankan hanya pada `support` melalui API hosting
+dengan pengaturan tersimpan (Node 22, `next`, keluaran `.next`, skrip `build`,
+npm). Build `01a0cdb5-2065-7218-9963-723b37813132` mencapai state `running`,
+memasang 650 paket, dan lulus kompilasi, TypeScript, serta 25 halaman statis.
+Build selesai pada 10:01:35 UTC dan runtime melaporkan `last_deployed_at` yang
+sama dengan path versi build tersebut. Menjalankan satu build tanpa pesaing
+memulihkan pengiriman; ia tidak memperbaiki pemetaan auto-deployment GitHub yang
+masih memicu dua website.
+
+Pemeriksaan rute produksi mengembalikan HTTP 200 untuk halaman depan,
+`/klaim-garansi`, `/service-center`, `/gascomp-care/login`, dan `/produk/[slug]`;
+`/admin` mengembalikan 307 ke login sebagaimana mestinya. Satu baris ERROR
+`failed to get redirect response` tercatat sekali saat cold start dan tidak
+terulang pada pemeriksaan rute kedua.
+
+Koreksi 30 September 2026: galat itu bukan efek cold start. Galat muncul pada
+setiap login dan logout admin karena Server Action yang memanggil `redirect()`
+membuat server mengambil halaman tujuan dari dirinya sendiri; lihat
+[Server Action tanpa `redirect()`](#server-actions-without-redirect).
+
+`bantuan.gascompsuperlock.com` tidak memiliki catatan DNS yang dipublikasikan dan
+gagal resolusi. Ini adalah keadaan yang sudah ada sebelumnya, bukan akibat rilis
+ini, sehingga pengalihan nama host warisan di `next.config.ts` belum dapat
+diverifikasi.
+
+Pemeriksaan ini adalah uji asap rute dan penanda deployment. Perilaku thumbnail
+tutorial di panel administrator dan perilaku gejala asisten di browser belum
+diperiksa.
+
+<a id="resolving-the-duplicate-deployment-target"></a>
+### Penyelesaian target deployment ganda
+
+Pemilik menyatakan `bantuan.gascompsuperlock.com` tidak lagi digunakan dan
+meminta penghapusannya, dengan syarat koneksi ke `support` diperiksa lebih dulu.
+Pemeriksaan menemukan keduanya terikat dan penghapusan dibatalkan.
+
+`bantuan` dan `support` keduanya subdomain `gascompsuperlock.com` dengan root
+directory yang sama persis, `public_html/bantuan`. Daftar berkas keduanya
+mengembalikan satu `.htaccess` 508 byte yang identik. Berkas itu mengarahkan
+Passenger ke `domains/gascompsuperlock.com/bantuan/hbuilds/current/nodejs`
+dengan `server.js` pada Node 22. Nama `bantuan` bukan sisa hostname lama
+melainkan lokasi fisik aplikasi `support` yang berjalan. Menghapus subdomain
+`bantuan` berpotensi menghapus docroot bersama itu dan mematikan situs live;
+apakah Hostinger benar-benar menghapus berkas saat menghapus subdomain tidak
+dapat dipastikan dari API, dan tidak ada undo.
+
+Sebagai hostname publik `bantuan` sudah tidak aktif: tidak ada catatan DNS-nya.
+Zona DNS dikelola Cloudflare di luar akun ini, sehingga API DNS Hostinger menolak
+domain tersebut dengan HTTP 403.
+
+Penyebab build ganda diperbaiki tanpa menghapus apa pun. Record `bantuan`
+memiliki setelan auto-deployment Git sendiri yang terpisah, dan setelan itulah
+yang memicu build kedua. Setelan disimpan ulang dengan `is_enabled` false;
+tautan repositori dipertahankan agar dapat dikembalikan. Pembacaan berikutnya
+mengonfirmasi `bantuan` false dan `support` tetap true. Untuk website Node.js,
+menyimpan setelan tidak melakukan clone, sehingga tidak ada berkas yang berubah.
+Halaman depan, `/klaim-garansi`, dan `/service-center` tetap mengembalikan HTTP
+200 dan `/admin` tetap 307 setelah perubahan.
+
+Ini menggantikan catatan sebelumnya bahwa koneksi GitHub tingkat website hanya
+dapat ditinjau di hPanel. Push berikutnya harus menghasilkan tepat satu build,
+pada `support`; verifikasi ini pada rilis berikutnya. Docroot bersama itu sendiri
+belum dipisahkan, jadi `bantuan` tetap tidak boleh dihapus selama masih berbagi
+folder dengan `support`.
+
+### Hanya support yang menerima rilis
+
+Recorded: 2026-09-23
+Source: Pemilik meminta `bantuan.gascompsuperlock.com` dihapus karena tidak lagi digunakan, dengan syarat koneksinya ke `support` diperiksa lebih dulu; setelah temuan disampaikan, pemilik memilih mematikan auto-deploy alih-alih menghapus.
+Decision: `support.gascompsuperlock.com` adalah satu-satunya record yang menerima auto-deployment Git. Record `bantuan` dipertahankan dengan `is_enabled` false dan tidak boleh dihapus selama berbagi docroot.
+Reason: Kedua record menunjuk docroot yang sama dan aplikasi live berjalan dari path bernama `bantuan`, sehingga penghapusan berisiko mematikan produksi tanpa undo. Dinyatakan pemilik: `bantuan` sudah tidak dipakai sebagai hostname.
+Supersedes: Catatan bahwa koneksi GitHub tingkat website hanya dapat ditinjau di hPanel.
+Acceptance: Push berikutnya ke `main` menghasilkan tepat satu build, pada `support`. Lihat [prosedur deployment Hostinger](../../work/procedures/hostinger-deployment.md).
+Evidence: Pembacaan setelah perubahan menunjukkan `bantuan` false dan `support` true; rute produksi tetap 200/307. Pada 30 September 2026 push `a849ce1` ke `main` menghasilkan tepat satu build (`01a0f104-c670-7394-89d8-e8d15cf5fbe0`) pada `support`, dan daftar build `bantuan` tidak bertambah. Terverifikasi untuk satu push.
+
+<a id="server-actions-without-redirect"></a>
+### Server Action tanpa `redirect()`
+
+Recorded: 2026-09-30
+Source: Pemilik meminta semua sisa masalah diperbaiki setelah laporan bahwa log produksi mencatat `failed to get redirect response` pada setiap login dan logout admin.
+Decision: Server Action tidak memanggil `redirect()`. Aksi mengembalikan tujuan sebagai `redirectTo`, lalu komponen klien berpindah halaman dengan `router.replace`. Formulir login dan ganti kata sandi tetap memberikan Server Action langsung ke `useActionState` agar tetap terkirim sebelum hidrasi. `redirect()` saat render Server Component dan di Route Handler tetap boleh.
+Reason: Disimpulkan dari kode Next.js 16.3.4 dan log produksi, bukan dinyatakan pemilik. Setelah `redirect()` di Server Action, Next mengambil halaman tujuan dari origin internal yang ditetapkan `start-server` (`http://localhost:3000`). Aplikasi berjalan lewat `server.js` Passenger dan tidak menerima koneksi pada origin itu, sehingga fetch selalu gagal, galat tercatat, dan klien memerlukan satu perjalanan tambahan.
+Acceptance: Login dan logout admin, serta login, ganti kata sandi, dan logout GascompCare di produksi, tidak lagi mencatat `failed to get redirect response`.
+Evidence: Diverifikasi sebagian. Tes aksi admin dan GascompCare memakai `redirect()` tiruan yang melempar galat, dan tujuh tes gagal pada versi lama. Chromium lokal (390 x 844) menjalankan login admin dengan `?ticket=`, logout, login anggota ke ganti kata sandi wajib, ganti kata sandi ke halaman anggota, dan logout, terhadap server tiruan loopback tanpa galat halaman. Log dev versi lama menunjukkan server mengambil `GET /admin?ticket=…` sebelum `POST /admin/login` selesai; versi baru menunjukkan `POST` selesai lebih dulu dan halaman tujuan diminta oleh browser. Login admin tanpa JavaScript tetap mendarat di `/admin?ticket=…`. Kondisi Passenger tidak dapat ditiru secara lokal; penerimaan produksi dicatat setelah rilis.
+

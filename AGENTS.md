@@ -1,10 +1,10 @@
 <!-- BEGIN:nextjs-agent-rules -->
 
-# Ini bukan Next.js seperti yang Anda kenal
+# This is NOT the Next.js you know
 
-Versi ini memiliki perubahan yang dapat memutus kompatibilitas. API, konvensi, dan struktur file mungkin berbeda dari data pelatihan Anda. Baca panduan terkait di `node_modules/next/dist/docs/` (dihitung dari direktori file ini; pada monorepo, paket `next` mungkin tidak terlihat dari akar repo) sebelum menulis kode. Ikuti pemberitahuan deprekasi.
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 
-Blok ini ditulis dan ditambahkan kembali oleh `next dev`; verifikasi di `node_modules/next/dist/server/lib/generate-agent-files.js`. Menghapusnya dari diff hanya akan membuat perubahan yang belum di-commit muncul kembali; menyertakannya dalam commit membuat pohon kerja tetap bersih.
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
 
@@ -65,3 +65,14 @@ Bertindak sebagai agen pengodean untuk `douke-web`. Implementasikan fitur, perba
 - Untuk perubahan UI yang terlihat, periksa alur terkait di browser bila tersedia, termasuk tata letak ponsel serta keadaan memuat, kosong, dan galat yang relevan.
 - Tambahkan pengujian regresi yang bermakna untuk perilaku yang berubah bila sesuai. Perubahan dokumentasi saja memerlukan pemeriksaan tautan dan diff, bukan pengujian aplikasi.
 - Jika pemeriksaan terhalang oleh dependensi, kredensial, atau layanan yang hilang, jelaskan penghalang dan perilaku yang belum terverifikasi.
+
+### Deployment Hostinger
+
+Ikuti [prosedur deployment Hostinger](docs/work/procedures/hostinger-deployment.md) untuk setiap permintaan deploy, rilis, atau perbaikan deployment. Aturan yang tidak boleh dilanggar:
+
+- Push yang berhasil dan GitHub Actions yang hijau tidak membuktikan situs sudah diperbarui. Selalu periksa state build Hostinger dan penanda pada situs live sebelum melaporkan rilis aktif.
+- `support.gascompsuperlock.com` dan `bantuan.gascompsuperlock.com` berbagi satu docroot dan satu aplikasi yang berjalan. Jangan hapus salah satunya, dan jangan perlakukan `bantuan` sebagai situs terpisah yang dapat dibuang.
+- Jalankan build hanya pada `support`, satu build pada satu waktu. Build ganda pada docroot bersama saling menggagalkan dan mengembalikan log kosong.
+- Sebelum tindakan hosting yang merusak atau sulit dibalik, periksa `root_directory` kedua record dan isi `.htaccess` terlebih dahulu, lalu konfirmasi ke pemilik dengan temuan tersebut.
+
+

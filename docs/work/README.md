@@ -8,6 +8,7 @@ verifikasi file saat ini sebelum mempercayainya. Indeks ini bukan daftar tugas p
 
 | Alur kerja | Serah terima |
 | --- | --- |
+| Perbaikan parser konfigurasi proyek Codex | [Konfigurasi Codex](handoffs/handoff-codex-config-complete-v1.md) |
 | Rilis seluruh perubahan ke GitHub dan Hostinger | [Rilis seluruh perubahan](handoffs/handoff-full-release-complete-v1.md) |
 | QR produk biasa dan QR halaman depan bermerk | [QR Bermerk](handoffs/handoff-branded-qr-complete-v2.md) |
 | Simpan diagnosis produk baru online | [Katalog Simpan](handoffs/handoff-catalog-save-review-v1.md) |
@@ -21,5 +22,6 @@ verifikasi file saat ini sebelum mempercayainya. Indeks ini bukan daftar tugas p
 
 - [Menangkap koreksi dan keputusan](learning.md): ubah dialog aktual dan verifikasi menjadi instruksi yang dapat digunakan kembali.
 - [Prosedur status garansi](procedures/warranty-status.md): periksa, ubah, dan verifikasi perilaku status/penyelesaian; bukti saat ini tetap berada di serah terima.
+- [Prosedur deployment Hostinger](procedures/hostinger-deployment.md): rilis, periksa, dan pulihkan deployment `support.gascompsuperlock.com`, termasuk batasan docroot bersama.
 
 Direktori `awesome-codex-subagents/` yang tidak dilacak hadir selama inventaris awal pada 2026-09-18. Tujuannya dan inklusi repositori yang diinginkan belum ditetapkan. Simpan sebagai materi referensi yang ada; kehadirannya tidak mengaktifkan instruksi agen atau mengotorisasi delegasi. Selesaikan kepemilikannya jika tugas masa depan memerlukan penggunaan, perpindahan, komitmen, atau penghapusan terhadapnya.
