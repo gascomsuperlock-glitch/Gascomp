@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { getSessionCookieSecurity } from "@/shared/lib/session-cookie";
 import type { CareActionState } from "../model/types";
 import { careDatabase } from "./database";
@@ -35,7 +34,9 @@ export async function loginCareAction(_previous: CareActionState, form: FormData
     (await cookies()).set(CARE_SESSION_COOKIE, token, { ...careSessionOptions, secure: await getSessionCookieSecurity() });
     mustChangePassword = row.must_change_password;
   } catch { return { error: "unavailable" }; }
-  redirect(mustChangePassword ? "/gascomp-care/change-password" : "/gascomp-care");
+  // Forms navigate on the client: a Server Action redirect() fetches the target from this server,
+  // which fails behind the Hostinger proxy and logs "failed to get redirect response".
+  return { redirectTo: mustChangePassword ? "/gascomp-care/change-password" : "/gascomp-care" };
 }
 
 export async function changeCarePasswordAction(_previous: CareActionState, form: FormData): Promise<CareActionState> {
@@ -64,7 +65,7 @@ export async function changeCarePasswordAction(_previous: CareActionState, form:
     if (!changed.data) return { error: "unauthorized" };
     (await cookies()).set(CARE_SESSION_COOKIE, newToken, { ...careSessionOptions, secure: await getSessionCookieSecurity() });
   } catch { return { error: "unavailable" }; }
-  redirect("/gascomp-care");
+  return { redirectTo: "/gascomp-care" };
 }
 
 export async function logoutCareAction(): Promise<void> {
@@ -75,5 +76,4 @@ export async function logoutCareAction(): Promise<void> {
     if (error) throw new Error("unavailable");
   }
   (await cookies()).set(CARE_SESSION_COOKIE, "", { ...careSessionOptions, secure: await getSessionCookieSecurity(), maxAge: 0 });
-  redirect("/gascomp-care/login");
 }

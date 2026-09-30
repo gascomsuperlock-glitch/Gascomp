@@ -1,13 +1,20 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AlertCircle, Eye, EyeOff, LoaderCircle, LockKeyhole, UserRound } from "lucide-react";
 import { loginAction, type LoginState } from "@/features/auth/server/actions";
 
 const initialState: LoginState = {};
 
 export function AdminLoginForm({ configured, ticketId }: { configured: boolean; ticketId?: string }) {
-  const [state, action, pending] = useActionState(loginAction, initialState);
+  const router = useRouter();
+  // The action stays a direct Server Action so the form still submits before hydration.
+  const [state, action, submitting] = useActionState(loginAction, initialState);
+  const pending = submitting || Boolean(state.redirectTo);
+  useEffect(() => {
+    if (state.redirectTo) router.replace(state.redirectTo);
+  }, [router, state.redirectTo]);
   const [showPassword, setShowPassword] = useState(false);
 
   return (

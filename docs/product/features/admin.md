@@ -10,7 +10,7 @@ Workspace terpisah **GascompCare** mengelola akun anggota pelanggan dan pratinja
 
 Tim Gascomp dapat membuat, melihat, memperbarui, mengarsipkan, dan menghapus konten produk. Alur kerjanya adalah draf → tinjauan → publikasi. Draf bersifat pribadi; produk yang dipublikasikan muncul dalam katalog publik. Produk yang pernah dipublikasikan harus diarsipkan agar URL QR cetak tetap valid. Penghapusan permanen ditujukan untuk draf atau entri yang salah.
 
-Satu peran administrator sudah cukup untuk rilis awal. `/admin` dilindungi di server dan mengarahkan pengunjung tanpa sesi yang valid ke `/admin/login`. Kredensial berasal dari variabel lingkungan; cookie HTTP yang ditandatangani kadaluarsa setelah delapan jam.
+Satu peran administrator sudah cukup untuk rilis awal. `/admin` dilindungi di server dan mengarahkan pengunjung tanpa sesi yang valid ke `/admin/login`. Kredensial berasal dari variabel lingkungan; cookie HTTP yang ditandatangani kadaluarsa setelah delapan jam. Login dan logout menyelesaikan sesi di Server Action, lalu browser berpindah ke tujuan yang dikembalikan; login mempertahankan `?ticket=` yang valid. Server Action tidak memanggil `redirect()` (lihat [aturan runtime](../operations/deployment.md#server-actions-without-redirect)).
 
 Header halaman depan publik mencakup tautan **Admin login** pada desktop dan mobile. Tautan tersebut membuka `/admin/login`; administrator dengan sesi yang valid diarahkan ke `/admin` oleh rute login yang ada.
 

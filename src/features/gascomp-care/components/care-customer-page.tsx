@@ -44,17 +44,28 @@ export function CareUnavailable() {
   return <CareShell><h1 className="text-3xl font-extrabold">GascompCare</h1><p role="status" className="mt-5 max-w-lg text-base leading-7 text-[#566779]">{careCopy[language].unavailable}</p></CareShell>;
 }
 
+// Actions return their destination instead of calling redirect(), which fetches the target from the server itself.
+// They stay direct Server Actions so the forms still submit before hydration.
+function useNavigatingAction(serverAction: (previous: CareActionState, form: FormData) => Promise<CareActionState>) {
+  const router = useRouter();
+  const [state, action, submitting] = useActionState<CareActionState, FormData>(serverAction, {});
+  useEffect(() => {
+    if (state.redirectTo) router.replace(state.redirectTo);
+  }, [router, state.redirectTo]);
+  return [state, action, submitting || Boolean(state.redirectTo)] as const;
+}
+
 export function CareLoginForm() {
   const { language } = useLanguage();
   const copy = careCopy[language];
-  const [state, action, pending] = useActionState<CareActionState, FormData>(loginCareAction, {});
+  const [state, action, pending] = useNavigatingAction(loginCareAction);
   return <CareShell><div className="grid items-start gap-10 md:grid-cols-2"><div><span className="inline-flex rounded-full bg-[#dceeff] p-3 text-[#0035b9]"><ShieldCheck aria-hidden="true" className="size-6" /></span><h1 className="mt-5 text-4xl font-extrabold tracking-tight">{copy.loginTitle}</h1><p className="mt-4 max-w-md text-base leading-7 text-[#566779]">{copy.loginIntro}</p></div><form action={action} aria-busy={pending} className="space-y-5 rounded-3xl border border-[#021b40]/10 bg-white p-6 shadow-sm sm:p-8"><Field label={copy.username} name="username" autoComplete="username" minLength={3} maxLength={32} /><Field label={copy.password} name="password" type="password" autoComplete="current-password" maxLength={128} /><ActionError state={state} /><button disabled={pending} className={`${buttonClass} w-full`}>{pending ? copy.pending : copy.login}<ArrowRight aria-hidden="true" className="size-4" /></button></form></div></CareShell>;
 }
 
 export function CarePasswordForm({ mustChangePassword }: { mustChangePassword: boolean }) {
   const { language } = useLanguage();
   const copy = careCopy[language];
-  const [state, action, pending] = useActionState<CareActionState, FormData>(changeCarePasswordAction, {});
+  const [state, action, pending] = useNavigatingAction(changeCarePasswordAction);
   return <CareShell><div className="mx-auto max-w-lg"><h1 className="text-3xl font-extrabold tracking-tight">{copy.passwordTitle}</h1><p className="mt-4 text-sm leading-7 text-[#566779]">{mustChangePassword ? copy.firstPassword : copy.passwordIntro}</p><form action={action} aria-busy={pending} className="mt-6 space-y-5 rounded-3xl border border-[#021b40]/10 bg-white p-6 sm:p-8"><Field label={copy.currentPassword} name="currentPassword" type="password" autoComplete="current-password" maxLength={128} /><Field label={copy.newPassword} name="password" type="password" autoComplete="new-password" minLength={8} maxLength={128} description={copy.passwordHelp} /><Field label={copy.confirmPassword} name="confirmPassword" type="password" autoComplete="new-password" minLength={8} maxLength={128} /><ActionError state={state} /><button disabled={pending} className={`${buttonClass} w-full`}>{pending ? copy.pending : copy.save}</button></form><div className="mt-6 flex flex-wrap items-center justify-between gap-4">{!mustChangePassword && <Link href="/gascomp-care" className="text-sm font-bold text-[#0035b9]">{copy.back}</Link>}<LogoutForm /></div></div></CareShell>;
 }
 
@@ -76,7 +87,10 @@ function LogoutButton() {
   const { language } = useLanguage();
   return <button disabled={pending} className="min-h-11 rounded-full border border-[#021b40]/20 px-5 text-sm font-bold disabled:opacity-60">{pending ? careCopy[language].pending : careCopy[language].logout}</button>;
 }
-function LogoutForm() { return <form action={logoutCareAction}><LogoutButton /></form>; }
+function LogoutForm() {
+  const router = useRouter();
+  return <form action={async () => { await logoutCareAction(); router.replace("/gascomp-care/login"); }}><LogoutButton /></form>;
+}
 
 export function CareMemberPage({ member, coverage }: { member: CareMember; coverage: CareCustomerCoverageResult }) {
   const { language } = useLanguage();

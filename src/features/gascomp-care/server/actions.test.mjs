@@ -108,7 +108,7 @@ test('login generic failure and database rate limit never issue a cookie', async
 });
 test('login issues a protected cookie only after atomically opening the matching credential version', async () => {
   state.results.push({ data: row, error: null });
-  await assert.rejects(login({}, form({ username: row.username, password })), /REDIRECT:\/gascomp-care\/change-password/);
+  assert.deepEqual(await login({}, form({ username: row.username, password })), { redirectTo: '/gascomp-care/change-password' });
   const opened = state.rpcCalls.find(call => call[0] === 'care_open_session')[1];
   assert.equal(opened.p_version, 7);
   assert.equal(opened.p_member_id, id);
@@ -140,7 +140,7 @@ test('password change verifies current password and passes session ownership to 
   state.rpcResults.push({ data: [row], error: null }, { data: true, error: null }, { data: true, error: null });
   state.results.push({ data: row, error: null });
   const nextPassword = 'NewPass8';
-  await assert.rejects(change({}, form({ currentPassword: password, password: nextPassword, confirmPassword: nextPassword })), /REDIRECT:\/gascomp-care$/);
+  assert.deepEqual(await change({}, form({ currentPassword: password, password: nextPassword, confirmPassword: nextPassword })), { redirectTo: '/gascomp-care' });
   const changeCall = state.rpcCalls.find(call => call[0] === 'care_change_password')[1];
   assert.equal(changeCall.p_member_id, id);
   assert.equal(changeCall.p_version, 7);
@@ -187,7 +187,7 @@ test('logout deletes only the presented session hash then clears its cookie', as
   state.cookie = createCareToken();
   const token = state.cookie;
   state.results.push({ error: null });
-  await assert.rejects(logout(), /REDIRECT:\/gascomp-care\/login/);
+  assert.equal(await logout(), undefined);
   assert.deepEqual(state.queries[0].operations, [['delete'], ['eq', 'token_hash', hashCareToken(token)]]);
   assert.equal(state.writes[0][1], '');
   assert.equal(state.writes[0][2].maxAge, 0);
@@ -223,11 +223,11 @@ test('local development login and password replacement skip counters while still
       assert.equal((await login({}, form({ username: row.username, password: 'wrong password' }))).error, 'invalidCredentials');
     }
     state.results.push({ data: row, error: null });
-    await assert.rejects(login({}, form({ username: row.username, password })), /REDIRECT:/);
+    assert.match((await login({}, form({ username: row.username, password }))).redirectTo, /^\/gascomp-care/);
     state.rpcResults.push({ data: [row], error: null });
     state.results.push({ data: row, error: null });
     const replacement = 'A replacement member password';
-    await assert.rejects(change({}, form({ currentPassword: password, password: replacement, confirmPassword: replacement })), /REDIRECT:/);
+    assert.equal((await change({}, form({ currentPassword: password, password: replacement, confirmPassword: replacement }))).redirectTo, '/gascomp-care');
     assert.equal(state.rpcCalls.some(([name]) => name === 'care_consume_login_attempt'), false);
     assert.equal(state.writes.length, 2);
   });

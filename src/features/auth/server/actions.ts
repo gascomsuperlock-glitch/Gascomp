@@ -3,11 +3,11 @@
 import { adminTicketPath } from "@/shared/lib/ticket-links";
 import { getSessionCookieSecurity } from "@/shared/lib/session-cookie";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { ADMIN_SESSION_COOKIE, adminSessionOptions, createSessionToken, getAdminSession, isAuthConfigured, verifyCredentials } from "@/features/auth/server/session";
 
 export type LoginState = {
   error?: string;
+  redirectTo?: string;
 };
 
 export async function loginAction(
@@ -36,12 +36,14 @@ export async function loginAction(
     createSessionToken(username),
     { ...adminSessionOptions, secure: await getSessionCookieSecurity() },
   );
-  redirect(adminTicketPath(formData.get("ticket")));
+  // The form navigates on the client. A Server Action redirect() makes the server fetch the target page
+  // from itself, which fails behind the Hostinger proxy and logs "failed to get redirect response".
+  return { redirectTo: adminTicketPath(formData.get("ticket")) };
 }
 
 export async function logoutAction() {
   const session = await getAdminSession();
-  if (!session) redirect("/admin/login");
+  if (!session) return;
 
   const cookieStore = await cookies();
   cookieStore.set(ADMIN_SESSION_COOKIE, "", {
@@ -49,5 +51,4 @@ export async function logoutAction() {
     secure: await getSessionCookieSecurity(),
     maxAge: 0,
   });
-  redirect("/admin/login");
 }

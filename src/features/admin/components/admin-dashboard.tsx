@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { ArrowLeft, Check, ExternalLink, LoaderCircle, LogOut, Menu, MonitorPlay, Package, Save } from "lucide-react";
 import { logoutAction } from "@/features/auth/server/actions";
@@ -32,6 +33,7 @@ import { ContentEditorNavigation } from "@/features/admin/components/content-edi
 
 export function AdminDashboard({ initialTicketId, initialTickets = [], backendError, ticketError, publicBaseUrl }: { initialTicketId?: string; initialTickets?: WarrantyTicket[]; backendError?: string; ticketError?: string; publicBaseUrl?: string }) {
   const { content, updateContent, saveContent, cancelContent, resetContent, storageMode, saveState, hasUnsavedChanges, saveError } = useContent();
+  const router = useRouter();
   const [tickets, setTickets] = useState(initialTickets);
   const [view, setViewState] = useState<MainView>(initialTicketId ? "tickets" : "overview");
   const [serviceCentersVisited, setServiceCentersVisited] = useState(false);
@@ -168,7 +170,7 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
               <span>{saveState === "saving" ? "Saving..." : saveState === "error" ? "Retry save" : !hasUnsavedChanges && saveState === "saved" ? "Saved" : "Save"}</span>
             </button>
             <Link href="/" target="_blank" aria-label="View website" className="inline-flex h-9 items-center gap-2 rounded-full bg-[#2c3038] px-3 text-xs font-extrabold text-white sm:px-4"><ExternalLink aria-hidden="true" className="size-3.5" /> <span className="hidden sm:inline">View website</span></Link>
-            <form action={logoutAction}>
+            <form action={async () => { await logoutAction(); router.replace("/admin/login"); }}>
               <button type="submit" className="grid size-9 place-items-center rounded-full border border-[#2c3038]/10 bg-white text-[#69747b] transition hover:border-[#b63c35]/20 hover:bg-[#fff3f1] hover:text-[#b63c35]" aria-label="Sign out of dashboard">
                 <LogOut className="size-3.5" />
               </button>

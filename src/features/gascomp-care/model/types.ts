@@ -15,4 +15,5 @@ export type CareActionState = {
   success?: boolean;
   credentials?: { username: string; password: string };
   member?: CareMember;
+  redirectTo?: string;
 };
