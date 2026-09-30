@@ -17,7 +17,7 @@ import type { MainView } from "@/features/admin/model/types";
 import type { EditorTab } from "@/features/catalog/model/editor-types";
 import { AdminSidebar } from "@/features/admin/components/admin-sidebar";
 import { Overview } from "@/features/admin/components/overview";
-import { TicketInbox } from "@/features/warranty/components/ticket-inbox";
+import { TicketInbox, type TicketInboxFocus } from "@/features/warranty/components/ticket-inbox";
 import { ServiceCenterAdmin } from "@/features/service-center/components/service-center-admin";
 import { AssistantAdmin } from "@/features/ai-assistance/components/assistant-admin";
 import { CareAdmin } from "@/features/gascomp-care/components/care-admin";
@@ -35,8 +35,12 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
   const [tickets, setTickets] = useState(initialTickets);
   const [view, setViewState] = useState<MainView>(initialTicketId ? "tickets" : "overview");
   const [serviceCentersVisited, setServiceCentersVisited] = useState(false);
+  const [inboxFocus, setInboxFocus] = useState<TicketInboxFocus | undefined>(initialTicketId ? { ticketId: initialTicketId, request: 0 } : undefined);
+  const inboxFocusRequests = useRef(0);
   function setView(nextView: MainView) {
     if (nextView === "service-centers") setServiceCentersVisited(true);
+    // A ticket link or notification opens its ticket once; returning to the inbox later lists every claim.
+    if (nextView !== "tickets") setInboxFocus(undefined);
     setViewState(nextView);
   }
   const compactTicketHeader = view === "tickets" && !hasUnsavedChanges && saveState !== "saving" && saveState !== "error";
@@ -152,7 +156,8 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
               tickets={tickets}
               setTickets={setTickets}
               acknowledgedTickets={acknowledgedTickets}
-              openInbox={() => {
+              openInbox={(ticketId) => {
+                if (ticketId) setInboxFocus({ ticketId, request: ++inboxFocusRequests.current });
                 setView("tickets");
                 setSidebarOpen(false);
               }}
@@ -244,7 +249,7 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
             )}
 
             {ticketError && <p role="alert" className="mb-6 rounded-2xl border border-[#d65d50]/30 bg-[#fff0ef] p-4 text-xs leading-5 text-[#a23f36]">{ticketError}</p>}
-            {view === "tickets" && !ticketError && <TicketInbox initialQuery={initialTicketId} tickets={tickets} setTickets={setTickets} onTicketUpdated={(ticket) => setAcknowledgedTickets((current) => ({ ...current, [ticket.ticketId]: ticket }))} />}
+            {view === "tickets" && !ticketError && <TicketInbox focus={inboxFocus} tickets={tickets} setTickets={setTickets} onTicketUpdated={(ticket) => setAcknowledgedTickets((current) => ({ ...current, [ticket.ticketId]: ticket }))} />}
 
             {view === "care" && <CareAdmin />}
             {view === "ai-assistance" && <AssistantAdmin />}

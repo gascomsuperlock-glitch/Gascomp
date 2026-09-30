@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, CheckCheck, ChevronRight, Clock3, Inbox, ListChecks, Search, ShieldCheck, Trash2, X } from "lucide-react";
 import { TicketDeleteResultDialog, type TicketDeleteResult } from "./ticket-delete-result";
 import { TicketSolution } from "./ticket-solution";
@@ -13,8 +13,11 @@ import { WARRANTY_TICKET_STATUSES, ticketStatusLabel, type WarrantyTicketStatus,
 const dateFormat = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "Asia/Jakarta" });
 const timestampFormat = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta" });
 
-export function TicketInbox({ tickets, setTickets, onTicketUpdated, initialQuery = "" }: { initialQuery?: string; tickets: WarrantyTicket[]; setTickets: React.Dispatch<React.SetStateAction<WarrantyTicket[]>>; onTicketUpdated?: (ticket: WarrantyTicket) => void }) {
-  const [query, setQuery] = useState(initialQuery);
+// A ticket link or notification asking the inbox to show one ticket; each new request id applies once.
+export type TicketInboxFocus = { ticketId: string; request: number };
+
+export function TicketInbox({ tickets, setTickets, onTicketUpdated, focus }: { focus?: TicketInboxFocus; tickets: WarrantyTicket[]; setTickets: React.Dispatch<React.SetStateAction<WarrantyTicket[]>>; onTicketUpdated?: (ticket: WarrantyTicket) => void }) {
+  const [query, setQuery] = useState(focus?.ticketId ?? "");
   const [busyTicket, setBusyTicket] = useState("");
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -22,14 +25,35 @@ export function TicketInbox({ tickets, setTickets, onTicketUpdated, initialQuery
   const [notice, setNotice] = useState("");
   const [deleteResult, setDeleteResult] = useState<TicketDeleteResult | null>(null);
   const [filter, setFilter] = useState<"all" | "pending" | "done">("all");
-  const [activeId, setActiveId] = useState(initialQuery || tickets[0]?.ticketId || "");
-  const [showDetail, setShowDetail] = useState(Boolean(initialQuery));
+  const [activeId, setActiveId] = useState(focus?.ticketId || tickets[0]?.ticketId || "");
+  const [showDetail, setShowDetail] = useState(Boolean(focus));
+  const [appliedFocus, setAppliedFocus] = useState(focus?.request);
   const [bulkMode, setBulkMode] = useState(false);
   const [limit, setLimit] = useState(20);
   const [solutionDrafts, setSolutionDrafts] = useState<Record<string, WarrantySolution | "">>({});
   const searchInput = useRef<HTMLInputElement>(null);
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const list = useRef<HTMLDivElement>(null);
+  if (focus && focus.request !== appliedFocus) {
+    // Show the requested ticket the way its link does, even if the current search or filter hides it.
+    setAppliedFocus(focus.request);
+    setQuery(focus.ticketId);
+    setFilter("all");
+    setSelected(new Set());
+    setLimit(20);
+    setActiveId(focus.ticketId);
+    setShowDetail(true);
+    setNotice("");
+    setError("");
+  }
+  useEffect(() => {
+    if (appliedFocus === undefined) return;
+    const frame = requestAnimationFrame(() => {
+      detailHeading.current?.focus({ preventScroll: true });
+      detailHeading.current?.closest("article")?.scrollIntoView({ block: "start", behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [appliedFocus]);
   const visibleTickets = tickets.filter((ticket) =>
     (filter === "all" || (ticket.status === "closed" ? filter === "done" : filter === "pending")) &&
     `${ticket.ticketId} ${ticket.customer.name} ${ticket.customer.email} ${ticket.customer.whatsapp} ${ticket.product.name} ${ticket.product.sku} ${ticket.purchase.orderNumber}`.toLowerCase().includes(query.trim().toLowerCase()));

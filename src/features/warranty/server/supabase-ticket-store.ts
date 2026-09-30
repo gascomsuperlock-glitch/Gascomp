@@ -33,6 +33,17 @@ export async function saveSupabaseTicket(input: WarrantyTicketInput, ticketId: s
   const attemptedPaths: string[] = [];
   let inserted = false;
   try {
+    // Upload before inserting the ticket: the admin inbox and notifications list every ticket row,
+    // so a row created first appears while its evidence uploads and vanishes if the upload fails.
+    const items = evidenceInputs(input).map((item, index) => ({ ...item, metadata: evidence[index] }))
+      .sort((a, b) => b.file.size - a.file.size);
+    await uploadClaimEvidence(items, async (item) => {
+      const storagePath = item.metadata.storagePath!;
+      // Include uncertain uploads in cleanup if their response is lost.
+      attemptedPaths.push(storagePath);
+      const upload = await client.storage.from(WARRANTY_BUCKET).upload(storagePath, item.file, { contentType: item.file.type, upsert: false });
+      if (upload.error) throw upload.error;
+    });
     const insertTicket = await client.from("warranty_tickets").insert({
       ticket_id: ticketId, status: "new", submitted_at: submittedAt,
       customer_name: input.name, customer_email: input.email, customer_whatsapp: input.whatsapp,
@@ -46,15 +57,6 @@ export async function saveSupabaseTicket(input: WarrantyTicketInput, ticketId: s
       throw insertTicket.error;
     }
     inserted = true;
-    const items = evidenceInputs(input).map((item, index) => ({ ...item, metadata: evidence[index] }))
-      .sort((a, b) => b.file.size - a.file.size);
-    await uploadClaimEvidence(items, async (item) => {
-      const storagePath = item.metadata.storagePath!;
-      // Include uncertain uploads in cleanup if their response is lost.
-      attemptedPaths.push(storagePath);
-      const upload = await client.storage.from(WARRANTY_BUCKET).upload(storagePath, item.file, { contentType: item.file.type, upsert: false });
-      if (upload.error) throw upload.error;
-    });
     const metadata = await client.from("warranty_evidence").insert(evidence.map((item) => ({
       id: item.id, ticket_id: ticketId, kind: item.kind, original_name: item.originalName,
       storage_path: item.storagePath, mime_type: item.mimeType, size_bytes: item.size,
@@ -68,12 +70,12 @@ export async function saveSupabaseTicket(input: WarrantyTicketInput, ticketId: s
       problem: input.problem, evidence,
     };
   } catch (error) {
-    if (inserted) {
+    if (inserted || attemptedPaths.length) {
       const cleanup = createAdminSupabaseClient(claimStorageFetch(8_000));
       if (cleanup) {
         const results = await Promise.allSettled([
           ...(attemptedPaths.length ? [cleanup.storage.from(WARRANTY_BUCKET).remove(attemptedPaths)] : []),
-          cleanup.from("warranty_tickets").delete().eq("ticket_id", ticketId),
+          ...(inserted ? [cleanup.from("warranty_tickets").delete().eq("ticket_id", ticketId)] : []),
         ]);
         if (results.some((result) => result.status === "rejected" || result.value.error)) console.error("Warranty claim cleanup failed; reconcile incomplete evidence.");
       }

@@ -2,13 +2,13 @@ import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
 import { existsSync } from 'node:fs';
 import { test } from 'node:test';
-const state = {active:0,peak:0,uploads:[],metadata:[],removed:[],deleted:[],fail:false};
+const state = {active:0,peak:0,uploads:[],metadata:[],removed:[],deleted:[],tickets:[],fail:false,rejectTicket:null};
 const delay = () => new Promise(resolve => setTimeout(resolve,10));
 const client = {
   from(table) {return {
     select(){return this;},order(){return this;},eq(){return this;},limit(){return this;},
     async range(){return {data:[]};},async maybeSingle(){return {data:null};},
-    async insert(rows){if(table==='warranty_evidence') state.metadata.push(rows);return {};},
+    async insert(rows){if(table==='warranty_evidence') state.metadata.push(rows);if(table==='warranty_tickets'){assert.equal(state.active,0);state.tickets.push({id:rows.ticket_id,uploadsBefore:state.uploads.length});if(state.rejectTicket)return {error:{message:state.rejectTicket}};}return {};},
     delete(){return {eq:async(_key,id)=>{assert.equal(state.active,0);state.deleted.push(id);return {};}};}
   };},
   storage:{from(){return {
@@ -36,11 +36,22 @@ test('save starts the largest evidence first, caps concurrency and batches metad
  assert.equal(state.metadata[0].length,6);
  assert.equal(result.evidence.length,6);
  assert.equal(state.removed.length,0);
+ assert.deepEqual(state.tickets,[{id:'GWC-20260916-ABC123',uploadsBefore:6}]);
 });
-test('failed evidence upload waits for active work then removes attempted files and its own ticket',async()=>{
- state.fail=true;state.uploads=[];state.metadata=[];
+test('failed evidence upload waits for active work, removes attempted files and never creates a visible ticket',async()=>{
+ state.fail=true;state.uploads=[];state.metadata=[];state.tickets=[];
  await assert.rejects(saveSupabaseTicket(input,'GWC-20260916-DEF456',new Date().toISOString()),/Upload failed/);
  assert.equal(state.metadata.length,0);
  assert.deepEqual(state.removed.sort(),state.uploads.sort());
- assert.deepEqual(state.deleted,['GWC-20260916-DEF456']);
+ assert.deepEqual(state.tickets,[]);
+ assert.deepEqual(state.deleted,[]);
+});
+test('a ticket rejected after uploading removes its files without deleting another claim',async()=>{
+ state.fail=false;state.rejectTicket='duplicate_warranty_claim';state.uploads=[];state.metadata=[];state.removed=[];state.tickets=[];
+ await assert.rejects(saveSupabaseTicket(input,'GWC-20260916-FED789',new Date().toISOString()),/already exists for this order number/);
+ assert.equal(state.metadata.length,0);
+ assert.equal(state.uploads.length,6);
+ assert.deepEqual(state.removed.sort(),state.uploads.sort());
+ assert.deepEqual(state.deleted,[]);
+ state.rejectTicket=null;
 });

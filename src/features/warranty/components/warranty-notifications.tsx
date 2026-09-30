@@ -33,7 +33,7 @@ export function WarrantyNotifications({
   tickets: WarrantyTicket[];
   setTickets: React.Dispatch<React.SetStateAction<WarrantyTicket[]>>;
   acknowledgedTickets: Record<string, WarrantyTicket>;
-  openInbox: () => void;
+  openInbox: (ticketId?: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [unreadIds, setUnreadIds] = useState<Set<string>>(new Set());
@@ -197,7 +197,7 @@ export function WarrantyNotifications({
     if (ticket) markTicketRead(ticket);
     setOpen(false);
     setToast(null);
-    openInbox();
+    openInbox(ticket?.ticketId);
   }
 
   return (

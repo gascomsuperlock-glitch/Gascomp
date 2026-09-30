@@ -114,6 +114,9 @@ export async function createWarrantyClaim(
     return { success: true, ticketId: result.ticketId };
   } catch (error) {
     if (error instanceof Error && [DUPLICATE_CLAIM_ERROR, EXPIRED_CLAIM_ERROR].includes(error.message)) return { error: error.message };
+    // Failed saves leave no ticket behind, so the log is the only trace. Provider details can echo customer values.
+    const cause = error && typeof error === "object" ? error as { code?: unknown; message?: unknown } : {};
+    console.error("Warranty claim save failed", { code: typeof cause.code === "string" ? cause.code : undefined, message: typeof cause.message === "string" ? cause.message.slice(0, 200) : undefined });
     return { error: "The ticket could not be saved. Please try again." };
   }
 }
