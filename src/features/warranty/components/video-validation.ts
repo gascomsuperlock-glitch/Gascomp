@@ -1,9 +1,13 @@
 import { UNREADABLE_VIDEO_ERROR, UNSUPPORTED_VIDEO_ERROR, detectVideoContainer } from "../model/video-evidence";
+import { shouldDeferVideoProcessing } from "./video-preparation-policy";
 
 export async function validateVideoPlayback(file: File): Promise<string | null> {
   try {
     const container = await detectVideoContainer(file);
     if (!container) return UNSUPPORTED_VIDEO_ERROR;
+    // Inspect only the signature on constrained devices. Full decoding still
+    // runs on the server before any ticket or evidence is saved.
+    if (shouldDeferVideoProcessing()) return null;
     return await new Promise<string | null>((resolve) => {
       const video = document.createElement("video");
       // Browser codec support varies (especially HEVC/MOV and MKV). The server

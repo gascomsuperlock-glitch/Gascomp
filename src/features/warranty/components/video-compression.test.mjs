@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { prepareVideo, VIDEO_COMPRESSION_TIMEOUT_MS } from './video-compression.ts';
+import { registerHooks } from 'node:module';
+const hooks = registerHooks({ resolve(specifier, context, next) {
+  if (specifier === './video-preparation-policy') return next('./video-preparation-policy.ts', context);
+  return next(specifier, context);
+} });
+const { prepareVideo, VIDEO_COMPRESSION_TIMEOUT_MS } = await import('./video-compression.ts');
+hooks.deregister();
 
 class FakeWorker {
   static current;
@@ -10,10 +16,27 @@ class FakeWorker {
 }
 const source = new File([new Uint8Array(3 * 1024 * 1024)], 'original.mov', { type: 'video/quicktime' });
 function setup(t) {
+  const originalNavigator = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+  Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { userAgent: 'Desktop', hardwareConcurrency: 8, deviceMemory: 8 } });
   globalThis.Worker = FakeWorker;
   globalThis.VideoEncoder = class {};
-  t.after(() => { delete globalThis.Worker; delete globalThis.VideoEncoder; });
+  t.after(() => { delete globalThis.Worker; delete globalThis.VideoEncoder; Object.defineProperty(globalThis, 'navigator', originalNavigator); });
 }
+test('mobile and constrained devices upload the original without starting an encoder', async t => {
+  setup(t);
+  for (const device of [
+    { userAgent: 'Mozilla/5.0 (Linux; Android 13) Chrome/130 Mobile', hardwareConcurrency: 8, deviceMemory: 8 },
+    { userAgent: 'Mozilla/5.0 (iPhone)', hardwareConcurrency: 8 },
+    { userAgent: 'Desktop Safari', platform: 'MacIntel', maxTouchPoints: 5, hardwareConcurrency: 8 },
+    { userAgent: 'Desktop Chrome', hardwareConcurrency: 8, deviceMemory: 4 },
+    { userAgent: 'Desktop Chrome', hardwareConcurrency: 4, deviceMemory: 8 },
+  ]) {
+    Object.defineProperty(globalThis, 'navigator', { configurable: true, value: device });
+    FakeWorker.current = null;
+    assert.deepEqual(await prepareVideo(source, new AbortController().signal, () => assert.fail('Unexpected compression progress')), { file: source, outcome: 'original' });
+    assert.equal(FakeWorker.current, null);
+  }
+});
 test('compressed evidence replaces only the upload copy and releases the worker', async t => {
   setup(t);
   const updates = [];

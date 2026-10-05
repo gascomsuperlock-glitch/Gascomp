@@ -1,3 +1,5 @@
+import { shouldDeferVideoProcessing } from "./video-preparation-policy";
+
 export const VIDEO_COMPRESSION_TIMEOUT_MS = 60_000;
 export const VIDEO_COMPRESSION_MIN_BYTES = 2 * 1024 * 1024;
 
@@ -7,7 +9,7 @@ export type CompressionMessage = { percent: number } | { file: File | null };
 // Keep the original File in the picker. Only the multipart payload uses the copy.
 export function prepareVideo(file: File, signal: AbortSignal, onProgress: (percent: number) => void): Promise<PreparedVideo> {
   if (file.size <= VIDEO_COMPRESSION_MIN_BYTES) return Promise.resolve({ file, outcome: "small" });
-  if (signal.aborted || typeof Worker === "undefined" || typeof VideoEncoder === "undefined") {
+  if (signal.aborted || shouldDeferVideoProcessing() || typeof Worker === "undefined" || typeof VideoEncoder === "undefined") {
     return Promise.resolve({ file, outcome: "original" });
   }
   return new Promise((resolve) => {
