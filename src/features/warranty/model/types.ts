@@ -53,7 +53,7 @@ export const WARRANTY_SOLUTIONS = {
   spare_part: "Kirim sparepart",
   partial_refund: "Refund dana sebagian",
   usage_guidance: "Edukasi cara pemakaian/kendala",
-  trade_in: "Tukar Tambah",
+  trade_in: "klaim garansi tukar tambah",
 } as const;
 export type WarrantySolution = keyof typeof WARRANTY_SOLUTIONS;
 export function isWarrantySolution(value: unknown): value is WarrantySolution {
