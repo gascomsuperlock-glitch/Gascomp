@@ -29,4 +29,8 @@ test('solution actions require authentication and validate before writes', async
   assert.deepEqual(state.updates.pop(), [id, 'closed', 'usage_guidance']);
   assert.equal((await update(id, 'usage_guidance', false)).success, true);
   assert.deepEqual(state.updates.pop(), [id, undefined, 'usage_guidance']);
+  assert.equal((await update(id, 'trade_in', true)).success, true);
+  assert.deepEqual(state.updates.pop(), [id, 'closed', 'trade_in']);
+  assert.equal((await update(id, 'trade_in', false)).success, true);
+  assert.deepEqual(state.updates.pop(), [id, undefined, 'trade_in']);
 });

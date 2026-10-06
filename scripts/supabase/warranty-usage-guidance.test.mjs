@@ -5,7 +5,7 @@ import { test } from 'node:test';
 
 const modulePath = process.env.WARRANTY_PGLITE_MODULE || process.env.CARE_PGLITE_MODULE;
 
-test('usage guidance migration preserves historical tickets and expands only the solution constraint', { skip: !modulePath }, async () => {
+test('solution migrations preserve historical tickets and expand only the solution constraint', { skip: !modulePath }, async () => {
   const { PGlite } = await import(pathToFileURL(modulePath).href);
   const db = new PGlite();
   const apply = async name => db.exec(await readFile(new URL(`../../supabase/migrations/${name}.sql`, import.meta.url), 'utf8'));
@@ -38,6 +38,20 @@ test('usage guidance migration preserves historical tickets and expands only the
     assert.equal((await db.query("select solution from warranty_tickets where ticket_id = 'new-guidance'")).rows[0].solution, 'usage_guidance');
 
     for (const invalid of ['unknown', '', 'Edukasi cara pemakaian/kendala']) {
+      await assert.rejects(db.query("update warranty_tickets set solution = $1 where ticket_id = 'new-guidance'", [invalid]), /warranty_tickets_solution_check/);
+    }
+    assert.deepEqual((await snapshot()).filter(row => row.ticket_id.startsWith('historical-')), before);
+    const beforeTradeIn = await snapshot();
+    await assert.rejects(db.query("update warranty_tickets set solution = 'trade_in' where ticket_id = 'new-guidance'"), /warranty_tickets_solution_check/);
+    await apply('202610060001_warranty_trade_in_solution');
+    assert.deepEqual(await snapshot(), beforeTradeIn);
+    await apply('202610060001_warranty_trade_in_solution');
+    assert.deepEqual(await snapshot(), beforeTradeIn);
+    for (const solution of [...previousValues, 'usage_guidance', 'trade_in']) {
+      await db.query("update warranty_tickets set solution = $1 where ticket_id = 'new-guidance'", [solution]);
+      assert.equal((await db.query("select solution from warranty_tickets where ticket_id = 'new-guidance'")).rows[0].solution, solution);
+    }
+    for (const invalid of ['unknown', '', 'Tukar Tambah']) {
       await assert.rejects(db.query("update warranty_tickets set solution = $1 where ticket_id = 'new-guidance'", [invalid]), /warranty_tickets_solution_check/);
     }
     assert.deepEqual((await snapshot()).filter(row => row.ticket_id.startsWith('historical-')), before);

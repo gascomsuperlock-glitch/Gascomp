@@ -44,3 +44,11 @@ test('usage guidance survives ticket normalization and exports the owner-request
   assert.ok(ticketCsv([ticket]).includes('"Closed","Edukasi cara pemakaian/kendala"'));
   assert.equal(normalizeLocalTicket({ ...ticket, solution: undefined }).solution, null);
 });
+test('trade-in survives ticket normalization and exports its exact display label', () => {
+  assert.equal(isWarrantySolution('trade_in'), true);
+  assert.equal(isWarrantySolution('Tukar Tambah'), false);
+  const ticket = normalizeLocalTicket({ ticketId: 'GWC-20261006-AAAAAA',
+    status: 'closed', solution: 'trade_in', submittedAt: '2026-10-06T00:00:00Z' });
+  assert.equal(ticket.solution, 'trade_in');
+  assert.ok(ticketCsv([ticket]).includes('"Closed","Tukar Tambah"'));
+});

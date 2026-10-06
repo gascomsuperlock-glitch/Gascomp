@@ -19,7 +19,7 @@ Gunakan bahasa Indonesia untuk pembaruan, pertanyaan, dan laporan akhir kepada p
 
 ## Label antarmuka yang diminta pemilik
 
-- Pilihan solusi garansi tetap `Klaim Garansi`, `Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`, `Refund dana sebagian`, dan `Edukasi cara pemakaian/kendala`, termasuk nilai pada spreadsheet.
+- Pilihan solusi garansi tetap `Klaim Garansi`, `Kirim Barang Kurang`, `Kirim Barang Salah`, `Retur/Refund`, `Kirim sparepart`, `Refund dana sebagian`, `Edukasi cara pemakaian/kendala`, dan `Tukar Tambah`, termasuk nilai pada spreadsheet.
 - Kolom nomor pesanan tetap `order number/No.Resi/No Pesanan` dalam kedua bahasa antarmuka.
 
 ## Nilai kompatibilitas
