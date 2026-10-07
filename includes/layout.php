@@ -88,12 +88,11 @@ function gst_enqueue_assets() {
 add_action( 'wp_enqueue_scripts', 'gst_enqueue_assets' );
 
 function gst_render_header() {
-	static $done = false;
-	if ( $done || ! gst_should_render() ) {
+	if ( ! empty( $GLOBALS['gst_header_done'] ) || ! gst_should_render() ) {
 		return;
 	}
-	$done  = true;
-	$items = gst_menu_items();
+	$GLOBALS['gst_header_done'] = true;
+	$items                      = gst_menu_items();
 	?>
 	<header class="gst-header" id="gst-header">
 		<div class="gst-header__inner">
@@ -118,6 +117,21 @@ function gst_render_header() {
 	<?php
 }
 add_action( 'wp_body_open', 'gst_render_header', 5 );
+// Elementor's "Header & Footer" page template never fires wp_body_open on a block theme.
+add_action( 'elementor/page_templates/header-footer/before_content', 'gst_render_header', 5 );
+
+/**
+ * Last resort for templates that fire neither hook: print the header late and
+ * move it to the top of <body>.
+ */
+function gst_render_header_fallback() {
+	if ( ! empty( $GLOBALS['gst_header_done'] ) || ! gst_should_render() ) {
+		return;
+	}
+	gst_render_header();
+	echo '<script>(function(){var h=document.getElementById("gst-header");if(h&&document.body.firstElementChild!==h){document.body.insertBefore(h,document.body.firstChild);}})();</script>';
+}
+add_action( 'wp_footer', 'gst_render_header_fallback', 4 );
 
 function gst_social_icon( $name ) {
 	$paths = array(
