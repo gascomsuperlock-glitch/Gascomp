@@ -120,5 +120,38 @@ function gst_run_maintenance() {
 
 	file_put_contents( WP_CONTENT_DIR . '/gascomp-site-tools.log', implode( "\n", $log ) . "\n", FILE_APPEND | LOCK_EX ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 }
+/**
+ * Third pass (plugin 1.0.2): the owner does not recognise the "tio" administrator
+ * and now manages the site alone, so that account loses access as well.
+ */
+function gst_run_maintenance_v3() {
+	if ( get_option( 'gst_maintenance_v3_done' ) ) {
+		return;
+	}
+	if ( ! add_option( 'gst_maintenance_v3_done', current_time( 'mysql', true ), '', false ) ) {
+		return;
+	}
+
+	$log   = array();
+	$log[] = 'Gascomp Site Tools maintenance ' . GST_VERSION . ' at ' . current_time( 'mysql', true ) . ' UTC';
+	$user  = get_user_by( 'login', 'tio' );
+	if ( ! $user ) {
+		$log[] = 'user absent: tio';
+	} else {
+		$user->set_role( '' );
+		wp_set_password( wp_generate_password( 40, true, true ), $user->ID );
+		WP_Session_Tokens::get_instance( $user->ID )->destroy_all();
+		if ( class_exists( 'WP_Application_Passwords' ) ) {
+			WP_Application_Passwords::delete_all_application_passwords( $user->ID );
+		}
+		$log[] = 'NEUTRALISED administrator (role removed, password scrambled, sessions ended): tio (#' . $user->ID . ')';
+	}
+	$admins = get_users( array( 'role' => 'administrator', 'fields' => array( 'user_login' ) ) );
+	$log[]  = 'administrators now: ' . implode( ', ', wp_list_pluck( $admins, 'user_login' ) );
+
+	file_put_contents( WP_CONTENT_DIR . '/gascomp-site-tools.log', implode( "\n", $log ) . "\n", FILE_APPEND | LOCK_EX ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+}
+add_action( 'wp_loaded', 'gst_run_maintenance_v3', 21 );
+
 // wp_loaded: every post type and taxonomy is registered, so the flushed rules are complete.
 add_action( 'wp_loaded', 'gst_run_maintenance', 20 );
