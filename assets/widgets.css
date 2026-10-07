@@ -95,6 +95,17 @@
 	}
 }
 
+/* ---------- Site-specific fixes ----------
+   Hero "Join Reseller Free" is an outlined button on a white card; Elementor's
+   default white button text made it invisible. */
+.elementor-6917 .elementor-element-348c243 .elementor-button {
+	color: #8a38f5;
+}
+.elementor-6917 .elementor-element-348c243 .elementor-button:hover {
+	color: #ffffff;
+	background-color: #8a38f5;
+}
+
 /* ---------- Testimonial carousel ---------- */
 .gst-carousel {
 	position: relative;
