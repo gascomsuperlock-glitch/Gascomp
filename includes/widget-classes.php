@@ -27,6 +27,18 @@ abstract class GST_Shim_Widget extends \Elementor\Widget_Base {
 		return is_array( $settings ) ? $settings : array();
 	}
 
+	/** Elementor hides widgets whose render throws; log the reason instead of losing it. */
+	public function render_content() {
+		try {
+			parent::render_content();
+		} catch ( \Throwable $e ) {
+			while ( ob_get_level() > 1 ) {
+				ob_end_clean();
+			}
+			gst_debug_log( 'render failed for ' . $this->get_name() . ': ' . get_class( $e ) . ' ' . $e->getMessage() . ' @ ' . basename( $e->getFile() ) . ':' . $e->getLine() );
+		}
+	}
+
 	protected function grid_classes( array $s, $default_desktop = 4, $default_tablet = 3, $default_mobile = 2 ) {
 		return array(
 			'elementor-grid-' . (int) gst_setting( $s, 'columns', $default_desktop ),

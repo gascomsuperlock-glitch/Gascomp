@@ -90,9 +90,9 @@ function gst_run_spam_cleanup() {
 			$why = 'author #' . $post->post_author;
 		} elseif ( gst_is_spam_slug( $post->post_name ) ) {
 			$why = 'slug';
-		} elseif ( false !== stripos( $post->post_content, 'so-news-block' ) ) {
-			$why = 'content';
 		}
+		// No content rule: Elementor mirrors page HTML into post_content, so a
+		// legitimate page carrying the injected block would be trashed too.
 		if ( $why && wp_trash_post( $pid ) ) {
 			$trashed[] = $post->post_name . ' [' . $why . ']';
 		}
