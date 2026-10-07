@@ -39,6 +39,40 @@ abstract class GST_Shim_Widget extends \Elementor\Widget_Base {
 		}
 	}
 
+	/** Build a CSS declaration list from Pro typography/colour settings with a given prefix. */
+	protected function typo_css( array $s, $prefix, $color_key = '' ) {
+		$css = '';
+		if ( $color_key && gst_setting( $s, $color_key, '' ) ) {
+			$css .= 'color:' . sanitize_text_field( $s[ $color_key ] ) . ';';
+		}
+		if ( 'custom' === gst_setting( $s, $prefix . '_typography', '' ) ) {
+			if ( gst_setting( $s, $prefix . '_font_family', '' ) ) {
+				$css .= 'font-family:"' . sanitize_text_field( $s[ $prefix . '_font_family' ] ) . '",sans-serif;';
+			}
+			$size = gst_setting( $s, $prefix . '_font_size', array() );
+			if ( is_array( $size ) && ! empty( $size['size'] ) ) {
+				$css .= 'font-size:' . (float) $size['size'] . sanitize_text_field( $size['unit'] ?? 'px' ) . ';';
+			}
+			if ( gst_setting( $s, $prefix . '_font_weight', '' ) ) {
+				$css .= 'font-weight:' . (int) $s[ $prefix . '_font_weight' ] . ';';
+			}
+		}
+		return $css;
+	}
+
+	/** Print a <style> block scoped to this element: selector => declarations. */
+	protected function scoped_css( array $rules ) {
+		$out = '';
+		foreach ( $rules as $selector => $css ) {
+			if ( $css ) {
+				$out .= '.elementor-element-' . $this->get_id() . ' ' . $selector . '{' . $css . '}';
+			}
+		}
+		if ( $out ) {
+			echo '<style>' . $out . '</style>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+	}
+
 	protected function grid_classes( array $s, $default_desktop = 4, $default_tablet = 3, $default_mobile = 2 ) {
 		return array(
 			'elementor-grid-' . (int) gst_setting( $s, 'columns', $default_desktop ),
@@ -77,12 +111,15 @@ class GST_Widget_WC_Categories extends GST_Shim_Widget {
 			'number'     => (int) gst_setting( $s, 'number', $columns * max( 1, $rows ) ),
 			'hide_empty' => 'yes' === gst_setting( $s, 'hide_empty', 'yes' ) ? 1 : 0,
 			'orderby'    => gst_setting( $s, 'orderby', 'name' ),
-			'order'      => gst_setting( $s, 'order', 'asc' ),
+			'order'      => gst_setting( $s, 'order', 'desc' ), // Pro's default order is descending.
 		);
 		// Elementor Pro keys: source (by_id|by_parent|current_subcategories), categories, parent.
 		$source = gst_setting( $s, 'source', gst_setting( $s, 'query_source', '' ) );
 		$ids    = gst_setting( $s, 'categories', gst_setting( $s, 'query_include_ids', array() ) );
-		gst_debug_log( 'wc-categories #' . $this->get_id() . ' settings: ' . substr( wp_json_encode( $s ), 0, 600 ) );
+		$this->scoped_css( array(
+			'.woocommerce-loop-category__title'        => $this->typo_css( $s, 'title_typography', 'title_color' ),
+			'.woocommerce-loop-category__title .count' => $this->typo_css( $s, 'count_typography', 'count_color' ),
+		) );
 		if ( 'by_id' === $source && is_array( $ids ) && $ids ) {
 			$atts['ids']    = implode( ',', array_map( 'intval', $ids ) );
 			$atts['number'] = max( $atts['number'], count( $ids ) );
@@ -352,8 +389,21 @@ class GST_Widget_Countdown extends GST_Shim_Widget {
 		return 'Countdown';
 	}
 	protected function render() {
-		$s = $this->raw();
-		gst_debug_log( 'countdown #' . $this->get_id() . ' settings: ' . substr( wp_json_encode( $s ), 0, 600 ) );
+		$s         = $this->raw();
+		$box       = '';
+		if ( gst_setting( $s, 'box_background_color', '' ) ) {
+			$box .= 'background:' . sanitize_text_field( $s['box_background_color'] ) . ';';
+		}
+		$pad = gst_setting( $s, 'box_padding', array() );
+		if ( is_array( $pad ) && isset( $pad['top'] ) ) {
+			$unit = sanitize_text_field( $pad['unit'] ?? 'px' );
+			$box .= sprintf( 'padding:%s%s %s%s %s%s %s%s;', (float) $pad['top'], $unit, (float) $pad['right'], $unit, (float) $pad['bottom'], $unit, (float) $pad['left'], $unit );
+		}
+		$this->scoped_css( array(
+			'.elementor-countdown-item'   => $box,
+			'.elementor-countdown-digits' => $this->typo_css( $s, 'digits_typography', 'digits_color' ),
+			'.elementor-countdown-label'  => $this->typo_css( $s, 'label_typography', 'label_color' ),
+		) );
 		$timestamp = 0;
 		$evergreen = 0;
 		if ( 'evergreen' === gst_setting( $s, 'countdown_type', 'due_date' ) ) {
