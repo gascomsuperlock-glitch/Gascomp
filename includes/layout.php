@@ -221,6 +221,54 @@ function gst_render_footer() {
 add_action( 'wp_footer', 'gst_render_footer', 5 );
 
 /**
+ * Elementor's "Header & Footer" page template calls get_header()/get_footer().
+ * Twenty Twenty-Four has no header.php/footer.php, so WordPress falls back to
+ * wp-includes/theme-compat, which prints a legacy site-title banner and a
+ * "proudly powered by WordPress" footer. Elementor Pro used to swallow those;
+ * buffer them and strip just the fallback markup.
+ */
+function gst_start_header_buffer() {
+	if ( ! gst_should_render() || ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
+		return;
+	}
+	$GLOBALS['gst_header_buffering'] = true;
+	ob_start();
+}
+add_action( 'get_header', 'gst_start_header_buffer', 0 );
+
+function gst_end_header_buffer() {
+	if ( empty( $GLOBALS['gst_header_buffering'] ) ) {
+		return;
+	}
+	$GLOBALS['gst_header_buffering'] = false;
+	$html = ob_get_clean();
+	$html = preg_replace( '~<div id="page">\s*<div id="header" role="banner">.*?</div>\s*</div>\s*<hr\s*/?>~s', '', $html, 1 );
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput -- WordPress' own header output.
+}
+add_action( 'elementor/page_templates/header-footer/before_content', 'gst_end_header_buffer', 1 );
+add_action( 'wp_footer', 'gst_end_header_buffer', -2 ); // Safety net if the template never fired before_content.
+
+function gst_start_footer_buffer() {
+	if ( ! gst_should_render() || ! function_exists( 'wp_is_block_theme' ) || ! wp_is_block_theme() ) {
+		return;
+	}
+	$GLOBALS['gst_footer_buffering'] = true;
+	ob_start();
+}
+add_action( 'get_footer', 'gst_start_footer_buffer', 0 );
+
+function gst_end_footer_buffer() {
+	if ( empty( $GLOBALS['gst_footer_buffering'] ) ) {
+		return;
+	}
+	$GLOBALS['gst_footer_buffering'] = false;
+	$html = ob_get_clean();
+	$html = preg_replace( '~<hr\s*/?>\s*<div id="footer" role="contentinfo">.*?</div>\s*</div>~s', '', $html, 1 );
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput -- WordPress' own footer output.
+}
+add_action( 'wp_footer', 'gst_end_footer_buffer', -1 ); // Runs before gst_render_footer (priority 5).
+
+/**
  * Twenty Twenty-Four is a block theme and prints its own header/footer template
  * parts on shop and archive pages. Suppress them so the site has one header.
  */
