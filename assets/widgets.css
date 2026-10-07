@@ -1,36 +1,51 @@
 /* Gascomp Site Tools: styles for the replacement widgets (Elementor Pro's
    widget CSS is no longer loaded, so the structural rules live here). */
 
-/* ---------- Product grids (categories and products) ---------- */
+/* ---------- Product grids (categories and products) ----------
+   WooCommerce's own stylesheet loads after this one and floats every item at
+   22% width, so these rules carry !important to win regardless of order. */
 .elementor-wc-products ul.products.elementor-grid,
-.elementor-wc-products ul.products {
-	display: grid;
-	grid-template-columns: repeat(var(--gst-cols, 4), minmax(0, 1fr));
+.elementor-wc-products ul.products,
+.elementor-wc-products .woocommerce ul.products[class*="columns-"] {
+	display: grid !important;
+	grid-template-columns: repeat(var(--gst-cols, 4), minmax(0, 1fr)) !important;
 	gap: 30px 20px;
-	margin: 0;
+	margin: 0 !important;
 	padding: 0;
 	list-style: none;
+	clear: none;
 }
 .elementor-wc-products ul.products::before,
-.elementor-wc-products ul.products::after {
-	display: none;
+.elementor-wc-products ul.products::after,
+.elementor-wc-products .woocommerce ul.products[class*="columns-"]::before,
+.elementor-wc-products .woocommerce ul.products[class*="columns-"]::after {
+	display: none !important;
+	content: none !important;
 }
 .elementor-wc-products ul.products li.product,
-.elementor-wc-products ul.products li.product-category {
-	float: none;
-	width: auto;
-	margin: 0;
+.elementor-wc-products ul.products li.product-category,
+.elementor-wc-products .woocommerce ul.products[class*="columns-"] li.product,
+.elementor-wc-products .woocommerce ul.products[class*="columns-"] li.product:nth-child(2n) {
+	float: none !important;
+	clear: none !important;
+	width: auto !important;
+	max-width: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
 	text-align: center;
 }
 .elementor-wc-products ul.products li.product a {
 	text-decoration: none;
 }
-.elementor-wc-products ul.products li.product img {
+.elementor-wc-products ul.products li.product img,
+.elementor-wc-products .woocommerce ul.products li.product a img {
 	display: block;
-	width: 100%;
-	height: auto;
-	margin: 0 auto 12px;
+	width: 100% !important;
+	max-width: 100%;
+	height: auto !important;
+	margin: 0 auto 12px !important;
 	border-radius: 12px;
+	box-shadow: none;
 }
 .elementor-wc-products .woocommerce-loop-category__title,
 .elementor-wc-products .woocommerce-loop-product__title {
