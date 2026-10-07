@@ -74,21 +74,21 @@ class GST_Widget_WC_Categories extends GST_Shim_Widget {
 		$rows    = (int) gst_setting( $s, 'rows', 1 );
 		$atts    = array(
 			'columns'    => $columns,
-			'number'     => $columns * max( 1, $rows ),
+			'number'     => (int) gst_setting( $s, 'number', $columns * max( 1, $rows ) ),
 			'hide_empty' => 'yes' === gst_setting( $s, 'hide_empty', 'yes' ) ? 1 : 0,
 			'orderby'    => gst_setting( $s, 'orderby', 'name' ),
 			'order'      => gst_setting( $s, 'order', 'asc' ),
 		);
-		$ids = gst_setting( $s, 'query_include_ids', gst_setting( $s, 'query_product_cat_ids', array() ) );
-		if ( is_array( $ids ) && $ids ) {
+		// Elementor Pro keys: source (by_id|by_parent|current_subcategories), categories, parent.
+		$source = gst_setting( $s, 'source', gst_setting( $s, 'query_source', '' ) );
+		$ids    = gst_setting( $s, 'categories', gst_setting( $s, 'query_include_ids', array() ) );
+		gst_debug_log( 'wc-categories #' . $this->get_id() . ' settings: ' . substr( wp_json_encode( $s ), 0, 600 ) );
+		if ( 'by_id' === $source && is_array( $ids ) && $ids ) {
 			$atts['ids']    = implode( ',', array_map( 'intval', $ids ) );
 			$atts['number'] = max( $atts['number'], count( $ids ) );
-			if ( 'name' === $atts['orderby'] && empty( $s['orderby'] ) ) {
-				$atts['orderby'] = 'include';
-			}
-		} elseif ( 'by_parent' === gst_setting( $s, 'query_source', '' ) ) {
-			$atts['parent'] = (int) gst_setting( $s, 'query_parent_id', 0 );
-		} elseif ( 'current_subcategories' === gst_setting( $s, 'query_source', '' ) && is_product_category() ) {
+		} elseif ( 'by_parent' === $source ) {
+			$atts['parent'] = (int) gst_setting( $s, 'parent', 0 );
+		} elseif ( 'current_subcategories' === $source && is_product_category() ) {
 			$atts['parent'] = get_queried_object_id();
 		}
 		echo WC_Shortcodes::product_categories( $atts ); // phpcs:ignore WordPress.Security.EscapeOutput
@@ -352,14 +352,24 @@ class GST_Widget_Countdown extends GST_Shim_Widget {
 		return 'Countdown';
 	}
 	protected function render() {
-		$s   = $this->raw();
-		$due = gst_setting( $s, 'due_date', '' );
-		if ( ! $due ) {
-			return;
+		$s = $this->raw();
+		gst_debug_log( 'countdown #' . $this->get_id() . ' settings: ' . substr( wp_json_encode( $s ), 0, 600 ) );
+		$timestamp = 0;
+		$evergreen = 0;
+		if ( 'evergreen' === gst_setting( $s, 'countdown_type', 'due_date' ) ) {
+			// Per-visitor timer: the browser stores its own deadline.
+			$evergreen = (int) gst_setting( $s, 'evergreen_counter_hours', 0 ) * 3600 + (int) gst_setting( $s, 'evergreen_counter_minutes', 0 ) * 60;
+		} else {
+			$due = gst_setting( $s, 'due_date', '' );
+			if ( $due ) {
+				$timestamp = strtotime( $due . ' ' . wp_timezone_string() );
+				if ( ! $timestamp ) {
+					$timestamp = strtotime( $due );
+				}
+			}
 		}
-		$timestamp = strtotime( $due . ' ' . wp_timezone_string() );
-		if ( ! $timestamp ) {
-			$timestamp = strtotime( $due );
+		if ( ! $timestamp && ! $evergreen ) {
+			return;
 		}
 		$parts = array(
 			'days'    => array( 'show_days', 'label_days', 'Days' ),
@@ -367,7 +377,7 @@ class GST_Widget_Countdown extends GST_Shim_Widget {
 			'minutes' => array( 'show_minutes', 'label_minutes', 'Minutes' ),
 			'seconds' => array( 'show_seconds', 'label_seconds', 'Seconds' ),
 		);
-		echo '<div class="elementor-countdown-wrapper gst-countdown" data-due="' . (int) $timestamp . '">';
+		echo '<div class="elementor-countdown-wrapper gst-countdown" data-due="' . (int) $timestamp . '" data-evergreen="' . (int) $evergreen . '" data-key="gst-cd-' . esc_attr( $this->get_id() ) . '">';
 		foreach ( $parts as $key => $meta ) {
 			if ( 'yes' !== gst_setting( $s, $meta[0], 'yes' ) ) {
 				continue;

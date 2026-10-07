@@ -71,6 +71,17 @@
 	/* ---------- Countdown ---------- */
 	function initCountdown(el) {
 		var due = parseInt(el.dataset.due || 0, 10) * 1000;
+		var evergreen = parseInt(el.dataset.evergreen || 0, 10) * 1000;
+		if (!due && evergreen) {
+			var key = el.dataset.key || 'gst-cd';
+			var stored = 0;
+			try { stored = parseInt(localStorage.getItem(key) || 0, 10); } catch (e) { stored = 0; }
+			if (!stored || stored < Date.now()) {
+				stored = Date.now() + evergreen;
+				try { localStorage.setItem(key, String(stored)); } catch (e) { /* private mode */ }
+			}
+			due = stored;
+		}
 		var fields = {
 			days: el.querySelector('.elementor-countdown-days'),
 			hours: el.querySelector('.elementor-countdown-hours'),
