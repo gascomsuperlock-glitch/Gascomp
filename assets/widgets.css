@@ -1,0 +1,332 @@
+/* Gascomp Site Tools: styles for the replacement widgets (Elementor Pro's
+   widget CSS is no longer loaded, so the structural rules live here). */
+
+/* ---------- Product grids (categories and products) ---------- */
+.elementor-wc-products ul.products.elementor-grid,
+.elementor-wc-products ul.products {
+	display: grid;
+	grid-template-columns: repeat(var(--gst-cols, 4), minmax(0, 1fr));
+	gap: 30px 20px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.elementor-wc-products ul.products::before,
+.elementor-wc-products ul.products::after {
+	display: none;
+}
+.elementor-wc-products ul.products li.product,
+.elementor-wc-products ul.products li.product-category {
+	float: none;
+	width: auto;
+	margin: 0;
+	text-align: center;
+}
+.elementor-wc-products ul.products li.product a {
+	text-decoration: none;
+}
+.elementor-wc-products ul.products li.product img {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin: 0 auto 12px;
+	border-radius: 12px;
+}
+.elementor-wc-products .woocommerce-loop-category__title,
+.elementor-wc-products .woocommerce-loop-product__title {
+	margin: 0 0 6px;
+	font-family: "Manrope", sans-serif;
+	font-size: 15px;
+	font-weight: 700;
+	color: #2c3038;
+	line-height: 1.4;
+}
+.elementor-wc-products .woocommerce-loop-category__title .count {
+	background: none;
+	color: #888e95;
+	font-weight: 400;
+}
+.elementor-wc-products ul.products li.product .price {
+	display: block;
+	color: #0035b9;
+	font-weight: 700;
+}
+.elementor-wc-products ul.products li.product .button {
+	margin-top: 10px;
+}
+.elementor-grid-8 { --gst-cols: 8; }
+.elementor-grid-7 { --gst-cols: 7; }
+.elementor-grid-6 { --gst-cols: 6; }
+.elementor-grid-5 { --gst-cols: 5; }
+.elementor-grid-4 { --gst-cols: 4; }
+.elementor-grid-3 { --gst-cols: 3; }
+.elementor-grid-2 { --gst-cols: 2; }
+.elementor-grid-1 { --gst-cols: 1; }
+@media (max-width: 1024px) {
+	.elementor-grid-tablet-6 { --gst-cols: 6; }
+	.elementor-grid-tablet-5 { --gst-cols: 5; }
+	.elementor-grid-tablet-4 { --gst-cols: 4; }
+	.elementor-grid-tablet-3 { --gst-cols: 3; }
+	.elementor-grid-tablet-2 { --gst-cols: 2; }
+	.elementor-grid-tablet-1 { --gst-cols: 1; }
+}
+@media (max-width: 767px) {
+	.elementor-grid-mobile-4 { --gst-cols: 4; }
+	.elementor-grid-mobile-3 { --gst-cols: 3; }
+	.elementor-grid-mobile-2 { --gst-cols: 2; }
+	.elementor-grid-mobile-1 { --gst-cols: 1; }
+	.elementor-wc-products ul.products.elementor-grid {
+		gap: 20px 12px;
+	}
+}
+
+/* ---------- Testimonial carousel ---------- */
+.gst-carousel {
+	position: relative;
+	padding: 0 44px 36px;
+}
+.gst-carousel__viewport {
+	overflow: hidden;
+}
+.gst-carousel__track {
+	display: flex;
+	transition: transform 0.5s ease;
+	will-change: transform;
+}
+.gst-carousel__slide {
+	flex: 0 0 calc(100% / var(--gst-per-view, 3));
+	padding: 0 10px;
+	box-sizing: border-box;
+}
+.elementor-testimonial {
+	height: 100%;
+	padding: 28px 24px;
+	background: #ffffff;
+	border-radius: 16px;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	font-family: "Manrope", sans-serif;
+}
+.elementor-testimonial--align-left .elementor-testimonial {
+	align-items: flex-start;
+	text-align: left;
+}
+.elementor-testimonial__image img {
+	width: 80px;
+	height: 80px;
+	object-fit: cover;
+	border-radius: 50%;
+	margin-bottom: 16px;
+}
+.elementor-testimonial--layout-image_inline .elementor-testimonial,
+.elementor-testimonial--layout-image_left .elementor-testimonial {
+	flex-direction: row;
+	text-align: left;
+	align-items: flex-start;
+	gap: 16px;
+}
+.elementor-testimonial__text {
+	font-size: 15px;
+	line-height: 1.7;
+	color: #2c3038;
+	margin-bottom: 16px;
+}
+.elementor-testimonial__cite {
+	display: block;
+	font-style: normal;
+}
+.elementor-testimonial__name {
+	display: block;
+	font-weight: 800;
+	color: #2c3038;
+}
+.elementor-testimonial__title {
+	display: block;
+	font-size: 13px;
+	color: #888e95;
+}
+.gst-carousel__arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-70%);
+	width: 36px;
+	height: 36px;
+	border: 0;
+	border-radius: 50%;
+	background: #ffffff;
+	color: #2c3038;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+	cursor: pointer;
+	font-size: 14px;
+	line-height: 36px;
+	padding: 0;
+}
+.gst-carousel__arrow--prev { left: 0; }
+.gst-carousel__arrow--next { right: 0; }
+.gst-carousel__arrow:hover { background: #0035b9; color: #ffffff; }
+.gst-carousel__dots {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+}
+.gst-carousel__dots button {
+	width: 9px;
+	height: 9px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: #c9ced4;
+	cursor: pointer;
+}
+.gst-carousel__dots button[aria-selected="true"] {
+	background: #0035b9;
+}
+@media (max-width: 1024px) {
+	.gst-carousel__slide { flex-basis: calc(100% / var(--gst-per-view-tablet, 2)); }
+}
+@media (max-width: 767px) {
+	.gst-carousel { padding: 0 0 36px; }
+	.gst-carousel__arrow { display: none; }
+	.gst-carousel__slide { flex-basis: calc(100% / var(--gst-per-view-mobile, 1)); }
+}
+
+/* ---------- Form ---------- */
+.gst-form {
+	font-family: "Manrope", sans-serif;
+}
+.gst-form .elementor-form-fields-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 -8px;
+}
+.gst-form .elementor-field-group {
+	box-sizing: border-box;
+	padding: 0 8px;
+	margin-bottom: 16px;
+	width: 100%;
+}
+.gst-form .elementor-col-50 { width: 50%; }
+.gst-form .elementor-col-33 { width: 33.333%; }
+.gst-form .elementor-col-25 { width: 25%; }
+.gst-form .elementor-col-66 { width: 66.666%; }
+.gst-form .elementor-col-75 { width: 75%; }
+.gst-form .elementor-field-label {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 14px;
+	font-weight: 600;
+	color: #2c3038;
+}
+.gst-form .gst-required { color: #d0021b; }
+.gst-form .elementor-field-textual {
+	width: 100%;
+	padding: 12px 14px;
+	border: 1px solid #d9dde2;
+	border-radius: 8px;
+	background: #ffffff;
+	color: #2c3038;
+	font: inherit;
+	font-size: 15px;
+	box-sizing: border-box;
+}
+.gst-form .elementor-field-textual:focus {
+	outline: none;
+	border-color: #0035b9;
+	box-shadow: 0 0 0 3px rgba(0, 53, 185, 0.12);
+}
+.gst-form .elementor-field-subgroup {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 18px;
+}
+.gst-form .elementor-field-option label {
+	font-size: 14px;
+	color: #2c3038;
+}
+.gst-form input[type="file"] {
+	font-size: 14px;
+}
+.gst-form .elementor-button {
+	display: inline-block;
+	padding: 14px 32px;
+	border: 0;
+	border-radius: 100px;
+	background: #0035b9;
+	color: #ffffff;
+	font: 600 15px "Manrope", sans-serif;
+	cursor: pointer;
+}
+.gst-form .elementor-button:hover { background: #2c3038; }
+.gst-form .elementor-message {
+	margin-top: 12px;
+	padding: 12px 16px;
+	border-radius: 8px;
+	font-size: 14px;
+}
+.gst-form .elementor-message-success { background: #e6f6ea; color: #1b7a34; }
+.gst-form .elementor-message-danger { background: #fdecec; color: #b3261e; }
+@media (max-width: 767px) {
+	.gst-form .elementor-field-group { width: 100% !important; }
+}
+
+/* ---------- Countdown ---------- */
+.gst-countdown {
+	display: flex;
+	justify-content: center;
+	gap: 16px;
+	font-family: "Manrope", sans-serif;
+}
+.gst-countdown .elementor-countdown-item {
+	min-width: 80px;
+	padding: 14px 10px;
+	background: #0035b9;
+	color: #ffffff;
+	border-radius: 12px;
+	text-align: center;
+}
+.gst-countdown .elementor-countdown-digits {
+	display: block;
+	font-size: 32px;
+	font-weight: 800;
+	line-height: 1.1;
+}
+.gst-countdown .elementor-countdown-label {
+	display: block;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	opacity: 0.85;
+}
+
+/* ---------- Loop grid ---------- */
+.gst-loop-grid {
+	display: grid;
+	grid-template-columns: repeat(var(--gst-cols, 3), minmax(0, 1fr));
+	gap: 30px;
+}
+.gst-loop-item {
+	background: #ffffff;
+	border-radius: 14px;
+	overflow: hidden;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+	font-family: "Manrope", sans-serif;
+}
+.gst-loop-item__thumb img {
+	display: block;
+	width: 100%;
+	height: 200px;
+	object-fit: cover;
+}
+.gst-loop-item__body { padding: 18px 20px 22px; }
+.gst-loop-item__title { margin: 0 0 6px; font-size: 18px; font-weight: 800; line-height: 1.35; }
+.gst-loop-item__title a { color: #2c3038; text-decoration: none; }
+.gst-loop-item__title a:hover { color: #0035b9; }
+.gst-loop-item__date { display: block; margin-bottom: 8px; font-size: 13px; color: #888e95; }
+.gst-loop-item__excerpt { margin: 0; font-size: 14px; line-height: 1.6; color: #555b63; }
