@@ -18,14 +18,19 @@ function gst_register_widgets( $widgets_manager ) {
 		if ( ! class_exists( 'GST_Shim_Widget' ) ) {
 			require_once GST_PATH . 'includes/widget-classes.php';
 		}
-		// Never shadow a widget another plugin already provides.
+		// Elementor Free registers Pro_Widget_Promotion placeholders under the Pro
+		// widget names; replace those, but never shadow a real widget.
 		foreach ( gst_shim_widget_classes() as $name => $class ) {
-			if ( null === $widgets_manager->get_widget_types( $name ) ) {
-				$widgets_manager->register( new $class() );
-				$report[] = $name . ':registered';
-			} else {
-				$report[] = $name . ':exists';
+			$existing = $widgets_manager->get_widget_types( $name );
+			if ( $existing && ! gst_is_placeholder_widget( $existing ) ) {
+				$report[] = $name . ':exists(' . get_class( $existing ) . ')';
+				continue;
 			}
+			if ( $existing ) {
+				$widgets_manager->unregister( $name );
+			}
+			$widgets_manager->register( new $class() );
+			$report[] = $name . ':registered';
 		}
 	} catch ( \Throwable $e ) {
 		$report[] = 'EXCEPTION ' . get_class( $e ) . ': ' . $e->getMessage() . ' @ ' . basename( $e->getFile() ) . ':' . $e->getLine();
@@ -33,6 +38,11 @@ function gst_register_widgets( $widgets_manager ) {
 	gst_debug_log( 'widgets/register: ' . implode( ', ', $report ) );
 }
 add_action( 'elementor/widgets/register', 'gst_register_widgets', 100 );
+
+/** True for Elementor's empty promotion placeholders standing in for Pro widgets. */
+function gst_is_placeholder_widget( $widget ) {
+	return false !== stripos( get_class( $widget ), 'Promotion' );
+}
 
 /** Append one diagnostic line, at most once per hour per message, to the plugin log. */
 function gst_debug_log( $message ) {
@@ -90,7 +100,8 @@ function gst_rewrite_unknown_widgets( $data, $post_id ) {
 	$walk    = function ( array $elements ) use ( &$walk, $manager, $classes, $post_id ) {
 		foreach ( $elements as &$el ) {
 			$type = isset( $el['widgetType'] ) ? $el['widgetType'] : '';
-			if ( $type && isset( $classes[ $type ] ) && null === $manager->get_widget_types( $type ) ) {
+			$registered = $type ? $manager->get_widget_types( $type ) : null;
+			if ( $type && isset( $classes[ $type ] ) && ( null === $registered || gst_is_placeholder_widget( $registered ) ) ) {
 				$el['widgetType'] = 'shortcode';
 				$el['settings']   = array( 'shortcode' => sprintf( '[gst_widget t="%s" p="%d" i="%s"]', $type, $post_id, $el['id'] ) );
 				gst_debug_log( 'fallback: rewrote ' . $type . ' #' . $el['id'] . ' on post #' . $post_id . ' to shortcode' );

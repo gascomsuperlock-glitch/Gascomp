@@ -81,3 +81,39 @@ function gst_run_repair_v5() {
 	file_put_contents( WP_CONTENT_DIR . '/gascomp-site-tools.log', implode( "\n", $log ) . "\n", FILE_APPEND | LOCK_EX ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 }
 add_action( 'wp_loaded', 'gst_run_repair_v5', 23 );
+
+/**
+ * Sixth pass (1.0.5): trashing the front page made WordPress reset
+ * "show_on_front" to the blog index. Point the site back at the Home page.
+ */
+function gst_run_repair_v6() {
+	if ( get_option( 'gst_repair_v6_done' ) ) {
+		return;
+	}
+	if ( ! add_option( 'gst_repair_v6_done', current_time( 'mysql', true ), '', false ) ) {
+		return;
+	}
+	$log   = array();
+	$log[] = 'Gascomp Site Tools repair ' . GST_VERSION . ' at ' . current_time( 'mysql', true ) . ' UTC';
+	$log[] = 'before: show_on_front=' . get_option( 'show_on_front' ) . ' page_on_front=' . get_option( 'page_on_front' ) . ' page_for_posts=' . get_option( 'page_for_posts' );
+
+	$home = get_post( 6917 );
+	if ( ! $home || 'page' !== $home->post_type || 'publish' !== $home->post_status ) {
+		$home = get_page_by_path( 'home' );
+	}
+	if ( $home && 'publish' === $home->post_status ) {
+		update_option( 'show_on_front', 'page' );
+		update_option( 'page_on_front', $home->ID );
+		$blog = get_page_by_path( 'blog' );
+		if ( $blog && 'publish' === $blog->post_status && ! get_option( 'page_for_posts' ) ) {
+			update_option( 'page_for_posts', $blog->ID );
+		}
+		$log[] = 'front page set to #' . $home->ID . ' (' . $home->post_name . ')';
+	} else {
+		$log[] = 'FAILED: no published Home page found';
+	}
+	$log[] = 'after: show_on_front=' . get_option( 'show_on_front' ) . ' page_on_front=' . get_option( 'page_on_front' ) . ' page_for_posts=' . get_option( 'page_for_posts' );
+	do_action( 'litespeed_purge_all' );
+	file_put_contents( WP_CONTENT_DIR . '/gascomp-site-tools.log', implode( "\n", $log ) . "\n", FILE_APPEND | LOCK_EX ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+}
+add_action( 'wp_loaded', 'gst_run_repair_v6', 24 );
