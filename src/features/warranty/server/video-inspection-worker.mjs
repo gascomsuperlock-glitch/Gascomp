@@ -21,11 +21,19 @@ async function inspect() {
   let hasDecodeError = false;
   core.setLogger(({ type, message }) => {
     if (type === "stdout" && /^frame=\d+$/.test(message)) {
-      hasFrames ||= Number(message.slice(6)) > 0;
+      const frames = Number(message.slice(6));
+      hasFrames ||= frames > 0;
+      // exec() blocks this thread, so report progress while it runs. The parent
+      // uses it to tell a long clean decode from a stalled one at its deadline.
+      if (frames > 0 && !hasDecodeError) parentPort?.postMessage({ frames });
     }
     // Emscripten uses this exact abort message to exit even after success.
     // Other stderr and the FFmpeg exit code still cause rejection.
-    if (type === "stderr" && message.trim() && message !== "Aborted()") hasDecodeError = true;
+    if (type === "stderr" && message.trim() && message !== "Aborted()") {
+      // FFmpeg diagnostics name the codec fault and the fixed "/evidence" path only.
+      if (!hasDecodeError) parentPort?.postMessage({ detail: message.trim().slice(0, 200) });
+      hasDecodeError = true;
+    }
   });
   try {
     core.FS.writeFile("/evidence", new Uint8Array(workerData.bytes));

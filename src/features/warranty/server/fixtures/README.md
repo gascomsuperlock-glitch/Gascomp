@@ -19,3 +19,11 @@ ffmpeg -f lavfi -i testsrc2=size=320x180:rate=30 -t 2 \
   -fps_mode passthrough -enc_time_base 1:600 -video_track_timescale 600 \
   -c:v libx264 -preset ultrafast variable-frame-rate.mov
 ```
+
+`long-still.mp4` berisi 120 detik bingkai abu-abu polos H.264 berukuran 1920x1080 pada 60 fps (7.200 frame, sekitar 295 KB). Dekodenya memakan beberapa detik sehingga menguji verifikasi yang melewati batas waktu tanpa galat dekoder.
+Buatlah dengan:
+
+```sh
+ffmpeg -f lavfi -i color=c=gray:size=1920x1080:rate=60 -t 120 \
+  -c:v libx264 -preset ultrafast -tune stillimage -pix_fmt yuv420p long-still.mp4
+```

@@ -5,9 +5,14 @@ import path from "node:path";
 
 export type VideoInspectionResult = "valid" | "invalid" | "unavailable" | "timeout";
 
-export async function inspectVideo(file: File): Promise<VideoInspectionResult> {
+// Single-threaded WebAssembly decoding of a long or high-resolution phone
+// recording can exceed any fixed budget on shared hosting.
+export const VIDEO_INSPECTION_BUDGET_MS = 30_000;
+
+export async function inspectVideo(file: File, budgetMs = VIDEO_INSPECTION_BUDGET_MS): Promise<VideoInspectionResult> {
   const container = await detectVideoContainer(file).catch(() => null);
   if (!container) return "invalid";
+  const started = Date.now();
   let bytes: ArrayBuffer;
   try {
     bytes = await file.arrayBuffer();
@@ -30,17 +35,31 @@ export async function inspectVideo(file: File): Promise<VideoInspectionResult> {
       resolve("unavailable");
       return;
     }
-    const timer = setTimeout(() => finish("timeout"), 30_000);
+    let frames = 0;
+    let detail: string | undefined;
+    // Decode errors end the worker at once, so frames decoded up to the deadline
+    // were clean. Accept that verified part instead of rejecting a slow decode.
+    const timer = setTimeout(() => finish(frames > 0 && !detail ? "valid" : "timeout", true), budgetMs);
     let settled = false;
-    function finish(result: VideoInspectionResult) {
+    function finish(result: VideoInspectionResult, partial = false) {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
       void worker.terminate();
+      // A rejected claim leaves no ticket, so this is its only trace. No customer values.
+      if (result !== "valid" || partial) {
+        console.warn("Warranty video inspection", { result, partial, demuxer: container!.demuxer, megabytes: Math.round(file.size / 1024 / 1024), frames, seconds: Math.round((Date.now() - started) / 1000), detail });
+      }
       resolve(result);
     }
-    worker.once("message", (result: unknown) => {
-      finish(result === "valid" || result === "invalid" || result === "timeout" ? result : "unavailable");
+    worker.on("message", (message: unknown) => {
+      if (message && typeof message === "object") {
+        const progress = message as { frames?: unknown; detail?: unknown };
+        if (typeof progress.frames === "number") frames = progress.frames;
+        if (typeof progress.detail === "string") detail = progress.detail;
+        return;
+      }
+      finish(message === "valid" || message === "invalid" ? message : "unavailable");
     });
     worker.once("error", () => finish("unavailable"));
     worker.once("exit", () => finish("unavailable"));

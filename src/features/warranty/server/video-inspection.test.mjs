@@ -45,3 +45,16 @@ test("video containers are detected from content when browsers omit or mislabel 
   const mov = await readFile(new URL("./fixtures/valid.mov", import.meta.url));
   assert.equal(await inspectVideo(new File([mov], "mislabeled.webm", { type: "video/webm" })), "valid");
 });
+
+test("a clean decode that outlasts the budget is accepted, while one that never starts times out", async () => {
+  const bytes = await readFile(new URL("./fixtures/long-still.mp4", import.meta.url));
+  const video = () => new File([bytes], "long.mp4", { type: "video/mp4" });
+  const warn = console.warn;
+  console.warn = () => {};
+  try {
+    assert.equal(await inspectVideo(video(), 1), "timeout", "no decoded frame before the deadline");
+    assert.equal(await inspectVideo(video(), 2500), "valid", "frames decoded cleanly up to the deadline");
+  } finally {
+    console.warn = warn;
+  }
+});
