@@ -22,7 +22,9 @@ export function WarrantyClaimPage({ defaultProduct, defaultSku }: { defaultProdu
   ] as const;
 
   return (
-    <div className="min-h-screen bg-[#f6f8fb] text-[#2c3038]">
+    // The page ships its own Indonesian and English copy. Browser translation
+    // rewrites text nodes under React and can break the form mid-submission.
+    <div translate="no" className="min-h-screen bg-[#f6f8fb] text-[#2c3038]">
       <header className="border-b border-[#2c3038]/8 bg-white">
         <div className="mx-auto flex min-h-[68px] max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-3 sm:px-8">
           <Brand />

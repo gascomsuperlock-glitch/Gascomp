@@ -208,7 +208,9 @@ export function WarrantyClaimForm({
       </div>}
       <button type="submit" disabled={pending || !hydrated} className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0035b9] text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(0,53,185,0.22)] transition hover:bg-[#002b96] disabled:cursor-not-allowed disabled:opacity-60">
         {pending ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}
-        {pending ? copy.submitting : copy.submit}
+        {/* Browser page translation replaces bare text nodes; React then cannot
+            place the swapped icon next to one and the whole page fails. */}
+        <span>{pending ? copy.submitting : copy.submit}</span>
       </button>
       <p className="mt-3 text-center text-[10px] leading-4 text-[#92999d]"><Upload className="mr-1 inline size-3" /> {copy.privateEvidence}</p>
     </form>
