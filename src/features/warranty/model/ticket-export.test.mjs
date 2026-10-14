@@ -52,3 +52,11 @@ test('trade-in survives ticket normalization and exports its exact display label
   assert.equal(ticket.solution, 'trade_in');
   assert.ok(ticketCsv([ticket]).includes('"Closed","klaim garansi tukar tambah"'));
 });
+
+test('pending survives ticket normalization and exports without changing its solution', () => {
+  const ticket = normalizeLocalTicket({ ticketId: 'GWC-20261014-AAAAAA',
+    status: 'pending', solution: 'trade_in', submittedAt: '2026-10-14T00:00:00Z' });
+  assert.equal(ticket.status, 'pending');
+  assert.equal(ticket.solution, 'trade_in');
+  assert.ok(ticketCsv([ticket]).includes('"Pending","klaim garansi tukar tambah"'));
+});

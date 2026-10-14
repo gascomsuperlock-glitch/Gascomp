@@ -153,3 +153,7 @@ Pemeriksaan browser berbasis database hanya menggunakan aplikasi lokal. Dua cata
 `202609170003_ai_assistance_grounded_responses.sql` menambahkan kontrak respons berbasis fakta bersama penyelesaian jawaban-ID warisan. ID sumber dan dasar respons dipertahankan dengan pesan asisten yang dihasilkan. Klaim membawa sejarah terbatas hanya dari sesi yang sama; permintaan pelanggan tidak dapat menyediakan sesi berbeda atau sejarah terpercaya sembarang. Konteks produk yang ambigu tetap eksplisit dan memungkinkan klarifikasi umum tanpa mempublikasikan fakta produk yang ditebak.
 
 Penyelesaian yang dihasilkan memvalidasi bentuk respons, teks biasa, asal usul aktif, konteks produk, kesiapan, versi snapshot, sewa tugas, dan tenggat waktu. Hanya respons jenis handoff yang memungkinkan tautan WhatsApp kontekstual. Akses cookie tidak transparan, RLS, kredensial pekerja pribadi, retensi, dan perlindungan ulang tetap berlaku. Pratinjau lokal menerapkan migrasi ini setelah dua migrasi AI sebelumnya tanpa menghapus percakapan yang disimpan. Produksi tetap tunduk pada alur rilis yang diotorisasi.
+
+## Status tiket garansi Pending
+
+`202610140001_warranty_pending_status.sql` menambahkan `pending` pada constraint `warranty_tickets_status_check`. Kelima nilai lama dan default `new` dipertahankan. Migrasi tidak mengubah baris tiket, solusi, bukti, trigger, atau kebijakan akses. Jalur rilis otomatis menerapkannya sebelum promosi aplikasi. Lihat [kontrol status garansi](../features/warranty.md#restored-status-controls).

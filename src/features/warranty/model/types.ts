@@ -1,5 +1,6 @@
 export const WARRANTY_TICKET_STATUSES = [
   "new",
+  "pending",
   "reviewing",
   "approved",
   "rejected",
@@ -61,7 +62,7 @@ export function isWarrantySolution(value: unknown): value is WarrantySolution {
 }
 export function ticketStatusLabel(status: WarrantyTicketStatus) {
   const labels: Record<WarrantyTicketStatus, string> = {
-    new: "New", reviewing: "Under review", approved: "Approved", rejected: "Rejected", closed: "Closed",
+    new: "New", pending: "Pending", reviewing: "Under review", approved: "Approved", rejected: "Rejected", closed: "Closed",
   };
   return labels[status];
 }

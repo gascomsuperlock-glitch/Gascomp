@@ -27,13 +27,13 @@ test('status changes require authentication, validate inputs, and preserve solut
   assert.equal((await update(id, 'reviewing')).success, false);
   assert.deepEqual(state.updates, []);
   state.authorized = true;
-  for (const args of [[id, 'pending'], [id, 'done'], [id, 'toString'], [id, null], [id, undefined], [id, {}], ['../private', 'new'], [null, 'new'], [[id], 'new']]) {
+  for (const args of [[id, 'Pending'], [id, 'done'], [id, 'toString'], [id, null], [id, undefined], [id, {}], ['../private', 'new'], [null, 'new'], [[id], 'new']]) {
     assert.equal((await update(...args)).success, false);
   }
   assert.deepEqual(state.updates, []);
   assert.deepEqual(state.revalidated, []);
 
-  for (const status of ['new', 'reviewing', 'approved', 'rejected', 'closed']) {
+  for (const status of ['new', 'pending', 'reviewing', 'approved', 'rejected', 'closed']) {
     assert.deepEqual(await update(id, status), { success: true, updatedAt: '2026-09-17T00:00:00Z' });
     assert.deepEqual(state.updates.pop(), [id, status, undefined]);
     assert.equal(state.revalidated.pop(), '/admin');

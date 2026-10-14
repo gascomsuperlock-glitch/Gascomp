@@ -10,7 +10,7 @@ Panel admin dan website pelanggan menggunakan data Supabase yang sama. Perubahan
 
 Klaim yang berhasil menerima nomor tiket `GWC-YYYYMMDD-XXXXXX` yang unik. Nomor yang sama muncul dalam tampilan Tiket Garansi Admin. Nama produk dan SKU disimpan sebagai tangkapan layar, sementara `product_id` terhubung ke produk saat ini jika ada cocoknya.
 
-Alur kerja admin menampilkan Pending (Menunggu) dan Done (Selesai). Status tersimpan tetap kompatibel: `closed` berarti Done; `new`, `reviewing`, `approved`, dan `rejected` berarti Pending. Hanya administrator dengan sesi aktif yang dapat melihat data pribadi, mengunduh bukti pribadi, atau mengubah status. Sinkronisasi tiket WhatsApp dan Duoke berada di luar cakupan saat ini.
+Alur kerja admin menampilkan Pending (Menunggu) dan Done (Selesai). Status tersimpan tetap kompatibel: `closed` berarti Done; `new`, `pending`, `reviewing`, `approved`, dan `rejected` berarti Pending. Hanya administrator dengan sesi aktif yang dapat melihat data pribadi, mengunduh bukti pribadi, atau mengubah status. Sinkronisasi tiket WhatsApp dan Duoke berada di luar cakupan saat ini.
 
 <a id="claim-submission"></a>
 ## Pengajuan klaim
@@ -195,9 +195,9 @@ Migrasi `202610060001_warranty_trade_in_solution.sql` memperluas hanya `warranty
 <a id="restored-status-controls"></a>
 ## Kontrol status dipulihkan
 
-Detail tiket mengekspos dropdown **Ticket status** simpan-segera dengan New, Under review, Approved, Rejected, dan Closed. Label yang sama muncul pada badge tiket, notifikasi, dan ekspor CSV. Filter All/Pending/Done yang ada tetap menjadi kelompok penyelesaian: Pending berisi setiap status selain tertutup, dan Done berisi Closed.
+Detail tiket mengekspos dropdown **Ticket status** simpan-segera dengan New, Pending, Under review, Approved, Rejected, dan Closed. Label yang sama muncul pada badge tiket, notifikasi, dan ekspor CSV. Filter All/Pending/Done yang ada tetap menjadi kelompok penyelesaian: Pending berisi setiap status selain tertutup, dan Done berisi Closed.
 
-Mengubah status mempertahankan solusi yang disimpan dan pilihan solusi yang belum disimpan, termasuk saat membuka kembali tiket tertutup. Aksi Done dari Penyelesaian masih menyimpan solusi yang dipilih dan menutup klaim. Kontrol status dinonaktifkan selama mutasi tiket, menampilkan umpan balik sukses atau kesalahan, dan mempertahankan nilai sebelumnya yang disimpan jika permintaan gagal. Pembaruan status memerlukan administrator yang terautentikasi dan validasi sisi server; tidak diperlukan migrasi database.
+Mengubah status mempertahankan solusi yang disimpan dan pilihan solusi yang belum disimpan, termasuk saat membuka kembali tiket tertutup. Aksi Done dari Penyelesaian masih menyimpan solusi yang dipilih dan menutup klaim. Kontrol status dinonaktifkan selama mutasi tiket, menampilkan umpan balik sukses atau kesalahan, dan mempertahankan nilai sebelumnya yang disimpan jika permintaan gagal. Pembaruan status memerlukan administrator yang terautentikasi dan validasi sisi server. Kelima status lama tidak memerlukan migrasi tambahan; status `pending` memerlukan migrasi yang dijelaskan di bawah.
 
 <a id="notification-without-ticket-fix-on-september-30-2026"></a>
 ## Perbaikan notifikasi tanpa tiket pada 30 September 2026
@@ -212,3 +212,9 @@ Dua penyebab di kode menghasilkan gejala tersebut dan keduanya diperbaiki:
 Lint, typecheck, build produksi, dan 272 tes Node lulus (266 lulus, 6 tes opsional dilewati). Tes simpan klaim yang diperbarui gagal pada urutan lama dan lulus setelah perbaikan. Chromium memeriksa tautan tiket, peringatan klaim baru, item lonceng dari kotak masuk dan dari Overview, kembali lewat sidebar, serta pelestarian draf solusi pada 1440 x 900 dan 390 x 844 terhadap tiket sintetis dalam mode penyimpanan lokal, tanpa galat konsol atau luapan horizontal.
 
 Pemilik mengizinkan rilis pada hari yang sama. Commit `a849ce1e14844979f711c5b1dc05615a533b1ba3` didorong ke `release`; GitHub Actions memajukan `main` pada 06:33 UTC. Push ini memicu tepat satu build Git, pada `support` (`01a0f104-c670-7394-89d8-e8d15cf5fbe0`), yang selesai `completed` pada 06:35:21 UTC; `bantuan` tidak membuat build. `last_deployed_at` runtime sama dengan waktu tersebut dan path versi memuat UUID build itu. Halaman depan, `/klaim-garansi`, `/service-center`, `/gascomp-care/login`, dan satu halaman `/produk/[slug]` mengembalikan 200; `/admin` mengembalikan 307 ke login dan `/admin/warranty-tickets` 401 tanpa sesi. Pemeriksaan browser baca-saja di admin produksi mengonfirmasi penanda rilis: item lonceng membuka tiketnya dengan nomor tiket di pencarian, dan kembali lewat sidebar mengosongkan pencarian, tanpa galat halaman dan tanpa perubahan data. Log runtime hanya memuat `failed to get redirect response` pada login dan logout pemeriksaan tersebut, galat yang sudah ada sebelum rilis ini. Urutan simpan klaim baru belum diuji dengan klaim nyata di produksi.
+
+### Penambahan status Pending pada 14 Oktober 2026
+
+Sumber: pemilik meminta opsi Pending pada dropdown **Ticket status** di Warranty tickets, lalu push dan deploy. Opsi baru menggunakan nilai tersimpan `pending` dan label `Pending` pada dropdown, badge, notifikasi, dan CSV. Status ini masuk kelompok Pending yang ada. Nilai status lama, status awal `new`, solusi tersimpan, dan draf solusi tetap mengikuti aturan di atas. Alasan tambahan tidak disebutkan pemilik.
+
+Migrasi `202610140001_warranty_pending_status.sql` memperluas hanya constraint `warranty_tickets_status_check`; migrasi harus diterapkan melalui jalur rilis sebelum aplikasi baru dipromosikan. Tidak ada konversi status tiket historis. Ketentuan sebelumnya bahwa perubahan kontrol status tidak memerlukan migrasi hanya berlaku bagi lima status lama.
