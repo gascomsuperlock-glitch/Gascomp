@@ -27,8 +27,8 @@ function client() {
   return result;
 }
 function publicReport(record: StoredReport): CareDirectReport {
-  const { id, name, problem, whatsapp, orderNumber, status, createdAt, updatedAt, video } = record;
-  return { id, name, problem, whatsapp, orderNumber, status, createdAt, updatedAt, video };
+  const { id, name, problem, whatsapp, orderNumber, status, createdAt, updatedAt, video, consent } = record;
+  return { id, name, problem, whatsapp, orderNumber, status, createdAt, updatedAt, video, ...(consent ? { consent } : {}) };
 }
 async function readStored(id: string): Promise<StoredReport | null> {
   if (!validId(id)) return null;
@@ -41,7 +41,7 @@ async function readStored(id: string): Promise<StoredReport | null> {
   try { return JSON.parse(await readFile(path.join(directory(), `${id}.json`), "utf8")); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return null; throw error; }
 }
-export async function saveCareDirectReport(input: { name: string; problem: string; whatsapp: string; orderNumber: string; submissionId: string }, video: File, mimeType: string) {
+export async function saveCareDirectReport(input: { name: string; problem: string; whatsapp: string; orderNumber: string; submissionId: string; agreeNoReturn?: boolean; agreeNoReview?: boolean }, video: File, mimeType: string) {
   const bytes = Buffer.from(await video.arrayBuffer());
   const fingerprint = createHash("sha256").update(JSON.stringify(input)).update(bytes).digest("hex");
   const id = `CD-${input.submissionId}`;
@@ -53,7 +53,9 @@ export async function saveCareDirectReport(input: { name: string; problem: strin
   if (existing) return accept(existing);
   const storagePath = `${id}/${randomUUID()}`;
   const now = new Date().toISOString();
-  const record: StoredReport = { ...input, id, status: "new", createdAt: now, updatedAt: now, video: { name: path.basename(video.name).slice(0, 200), mimeType, size: video.size }, fingerprint, storagePath };
+  const { agreeNoReturn, agreeNoReview, ...details } = input;
+  const consent = agreeNoReturn === true && agreeNoReview === true ? { agreeNoReturn: true as const, agreeNoReview: true as const, version: "2026-10-22-v1", acceptedAt: now } : undefined;
+  const record: StoredReport = { ...details, ...(consent ? { consent } : {}), id, status: "new", createdAt: now, updatedAt: now, video: { name: path.basename(video.name).slice(0, 200), mimeType, size: video.size }, fingerprint, storagePath };
   const db = client();
   if (db) {
     try {

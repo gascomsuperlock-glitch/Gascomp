@@ -9,7 +9,11 @@ export function parseCareDirectInput(form: FormData) {
   if (!problem || problem.length > 5000) fieldErrors.problem = "Describe the problem in up to 5,000 characters.";
   if (!/^\d{8,15}$/.test(whatsapp)) fieldErrors.whatsapp = "Enter a valid WhatsApp number including its country code.";
   if (!orderNumber || orderNumber.length > 120) fieldErrors.orderNumber = "Enter an order number of up to 120 characters.";
+  const agreeNoReturn = form.getAll("agreeNoReturn").length === 1 && value("agreeNoReturn") === "true";
+  const agreeNoReview = form.getAll("agreeNoReview").length === 1 && value("agreeNoReview") === "true";
+  if (!agreeNoReturn) fieldErrors.agreeNoReturn = "Please accept the return/refund agreement.";
+  if (!agreeNoReview) fieldErrors.agreeNoReview = "Please accept the review agreement.";
   const video = form.get("video");
   if (!(video instanceof File) || !video.size || video.size > MAX_CARE_DIRECT_VIDEO_BYTES || form.getAll("video").length !== 1) fieldErrors.video = "Choose one video up to 50 MB.";
-  return { input: { name, problem, whatsapp, orderNumber, submissionId: value("submissionId").toLowerCase() }, video, fieldErrors };
+  return { input: { name, problem, whatsapp, orderNumber, agreeNoReturn, agreeNoReview, submissionId: value("submissionId").toLowerCase() }, video, fieldErrors };
 }

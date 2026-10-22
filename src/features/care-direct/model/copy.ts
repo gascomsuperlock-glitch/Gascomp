@@ -1,5 +1,12 @@
 export const careDirectCopy = {
   id: {
+    formTitle: "Formulir", back: "Kembali", continue: "Klik di sini untuk untuk isi formulir",
+    hoursTitle: "Jam Operasional", hours: "Senin–Jumat pukul 09.00–17.00 WIB. Akhir pekan dan tanggal merah libur. Pesan di luar jam pelayanan dibalas pada hari kerja berikutnya.",
+    waiting: "Mohon ditunggu ya Kak, tim Gascomp CareDirect akan segera menghubungi Kakak untuk memberikan solusi terbaik.",
+    agreeNoReturn: "Saya bersedia untuk tidak mengajukan pengembalian barang/dana sebelum mendapat arahan tim CareDirect.",
+    agreeNoReview: "Saya bersedia untuk tidak memberikan ulasan terlebih dahulu agar proses penanganan berjalan lancar dan tuntas.",
+    copyTicket: "Salin isi tiket", copied: "Isi tiket disalin.", copyFailed: "Belum dapat menyalin. Pilih dan salin teks tiket di bawah.",
+    ticket: "Tiket CareDirect", videoLink: "Video privat (login admin diperlukan)", sendReminder: "Pesan sudah terisi. Tekan Kirim di WhatsApp untuk mengirimkannya kepada admin.",
     title: "Lapor Kendala", intro: "Ceritakan kendala produk Kakak kepada Gascomp CareDirect. Tim kami akan menindaklanjuti laporan ini secara langsung. Layanan ini terpisah dari klaim garansi.",
     name: "Nama", problem: "Keluhan", whatsapp: "Nomor WhatsApp", orderNumber: "Nomor pesanan", video: "Video kendala", submit: "Kirim laporan", required: "Semua isian wajib diisi.",
     videoHint: "Unggah satu video kendala, maksimal 50 MB. Pastikan video menunjukkan kendala dengan jelas.", preparing: "Menyiapkan video…", uploading: "Mengunggah video", processing: "Unggahan selesai. Sedang memeriksa video dan menyimpan laporan…", original: "Gunakan video asli", success: "Laporan berhasil diterima", report: "Nomor laporan", openWhatsapp: "Lanjut ke WhatsApp", redirect: "WhatsApp akan terbuka untuk menghubungi tim kami. Jika belum terbuka, gunakan tombol di bawah.", noWhatsapp: "Simpan nomor laporan ini. Tim kami akan menghubungi nomor WhatsApp yang Kakak berikan.", error: "Laporan belum dapat dikonfirmasi. Isian dan video tetap tersimpan di formulir. Silakan periksa koneksi dan coba lagi.", fieldError: "Periksa kembali isian dan video sebelum mengirim.",
@@ -11,6 +18,13 @@ export const careDirectCopy = {
     ],
   },
   en: {
+    formTitle: "Form", back: "Back", continue: "Click here to fill in the form",
+    hoursTitle: "Operating hours", hours: "Monday–Friday, 09:00–17:00 WIB. Closed on weekends and public holidays. Messages outside these hours will be answered on the next working day.",
+    waiting: "Please bear with us. The Gascomp CareDirect team will contact you shortly to provide the best solution.",
+    agreeNoReturn: "I agree not to request a return/refund before receiving guidance from the CareDirect team.",
+    agreeNoReview: "I agree not to leave a review yet so the issue can be handled smoothly and thoroughly.",
+    copyTicket: "Copy ticket details", copied: "Ticket details copied.", copyFailed: "Could not copy. Select and copy the ticket text below.",
+    ticket: "CareDirect ticket", videoLink: "Private video (admin login required)", sendReminder: "Your message is ready. Press Send in WhatsApp to send it to the admin.",
     title: "Report an issue", intro: "Tell Gascomp CareDirect about your product issue. Our team will follow up with you directly. This service is separate from warranty claims.",
     name: "Name", problem: "Issue description", whatsapp: "WhatsApp number", orderNumber: "Order number", video: "Issue video", submit: "Submit report", required: "All fields are required.",
     videoHint: "Upload one video showing the issue, up to 50 MB. Please make sure the issue is clearly visible.", preparing: "Preparing video…", uploading: "Uploading video", processing: "Upload complete. Checking the video and saving your report…", original: "Use original video", success: "Report received", report: "Report number", openWhatsapp: "Continue to WhatsApp", redirect: "WhatsApp will open to contact our team. If it does not open, use the button below.", noWhatsapp: "Keep this report number. Our team will contact the WhatsApp number you provided.", error: "Your report could not be confirmed. Your details and video are still in the form. Check your connection and try again.", fieldError: "Please check your details and video before submitting.",
@@ -24,6 +38,8 @@ export const careDirectCopy = {
 };
 
 export const careDirectValidationMessages: Record<string, string> = {
+  "Please accept the return/refund agreement.": "Centang persetujuan pengembalian barang/dana terlebih dahulu.",
+  "Please accept the review agreement.": "Centang persetujuan ulasan terlebih dahulu.",
   "Enter a name of up to 120 characters.": "Masukkan nama, maksimal 120 karakter.",
   "Describe the problem in up to 5,000 characters.": "Ceritakan keluhan, maksimal 5.000 karakter.",
   "Enter a valid WhatsApp number including its country code.": "Masukkan nomor WhatsApp yang valid beserta kode negara, misalnya 6281234567890.",

@@ -1,11 +1,12 @@
 export type CareDirectStatus = "new" | "in_progress" | "resolved";
-export type CareDirectFieldErrors = Partial<Record<"name" | "problem" | "whatsapp" | "orderNumber" | "video", string>>;
+export type CareDirectFieldErrors = Partial<Record<"name" | "problem" | "whatsapp" | "orderNumber" | "video" | "agreeNoReturn" | "agreeNoReview", string>>;
 export type CareDirectReport = {
   id: string;
   name: string;
   problem: string;
   whatsapp: string;
   orderNumber: string;
+  consent?: { agreeNoReturn: true; agreeNoReview: true; version: string; acceptedAt: string };
   status: CareDirectStatus;
   createdAt: string;
   updatedAt: string;

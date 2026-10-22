@@ -321,3 +321,7 @@ Hostinger membangun commit yang sama pada `support`: build `01a161a0-e5fd-7179-b
 Rute baru `/lapor-kendala` serta rute publik lama mengembalikan 200. Browser ponsel mengirim satu laporan sintetis dengan video, menerima konfirmasi, dan membuka WhatsApp tanpa pesan terkirim. Retry tidak menduplikasi laporan. Admin berhasil membaca laporan, menyimpan status, dan mengakses video privat Range/HEAD; akses anonim ditolak. Data dan objek uji dibersihkan berdasarkan ID persis lalu ketidakhadirannya diverifikasi. QR live identik dengan artefak yang telah didekode; tautan bantuan produk berfungsi di browser ponsel. Tidak ditemukan galat halaman atau ERROR/WARN runtime setelah pemeriksaan.
 
 Bukti lengkap berada di [serah terima CareDirect](../../work/handoffs/handoff-care-direct-complete-v1.md) dan artefak lokal `.data/care-direct-release/`.
+
+## Rilis opsi hapus CareDirect — 22 Oktober 2026
+
+Commit `4ba3d5e` dirilis melalui `release` dan Actions `39722309878` yang berhasil. Build `support` `01a161dd-6272-7066-a485-98e7d669121d` selesai pukul 11.29.06 WIB dengan commit serta waktu runtime yang cocok. Tidak ada migrasi baru atau perubahan hosting. Penghapusan laporan sintetis dan video privat diverifikasi lewat browser live serta pembacaan database/Storage; [bukti lengkap](../../work/handoffs/handoff-care-direct-complete-v1.md#tambahan-opsi-hapus--22-oktober-2026).

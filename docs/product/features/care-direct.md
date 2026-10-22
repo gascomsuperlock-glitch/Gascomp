@@ -14,7 +14,17 @@ Sumber: percakapan 22 Oktober 2026. Pemilik meminta opsi pelaporan keluhan produ
 - Satu klik Kirim menunggu persiapan video, mengunggah, lalu menunggu penyimpanan. Progres unggah 100% bukan konfirmasi laporan tersimpan. Galat mempertahankan nilai dan pilihan video; kunci pengiriman menjaga pengulangan payload yang sama tidak membuat laporan ganda. Setelah hasil jaringan tidak pasti, isian dikunci dan tombol Kirim mengulang payload yang sama; galat validasi yang definitif membuka isian kembali.
 - Formulir dapat dikirim di luar jam pelayanan. Jam operasional adalah informasi tindak lanjut, bukan pembatasan pengiriman.
 - Konfirmasi hanya diberikan setelah video dan metadata berhasil disimpan. Halaman sukses menampilkan nomor laporan dan seluruh catatan, kemudian membuka WhatsApp admin yang dikonfigurasi. Tombol cadangan tersedia jika pembukaan otomatis gagal. Pelanggan sendiri menekan Kirim di WhatsApp; tidak ada API pengiriman pesan otomatis.
-- Pesan Indonesia: `Halo Kak, saya sudah mengirim laporan kendala ke Gascomp CareDirect. Nomor laporan: {id}.` Versi Inggris tersedia. Kegagalan WhatsApp tidak menghapus laporan; video tetap privat di admin dan tidak dikirim sebagai URL publik.
+- Pesan WhatsApp berisi tiket lengkap dalam bahasa yang dipilih: nomor laporan, nama, nomor WhatsApp, nomor pesanan, keluhan utuh, nama video, tautan video admin privat, dan kedua persetujuan. Tersedia ringkasan tiket serta tombol salin; teks tidak dipotong oleh aplikasi. Kegagalan WhatsApp tidak menghapus laporan; tautan video tetap membutuhkan sesi admin, tanpa URL Storage publik atau bertanda tangan.
+
+## Alur publik dua langkah — keputusan 22 Oktober 2026
+
+Sumber: pemilik mengoreksi sasaran perubahan menjadi halaman publik ketika tombol Lapor Kendala diklik, lalu menyetujui rencana implementasi. Formulir admin tidak diubah. Dalam klarifikasi, pemilik mempertahankan semua catatan lama, memilih tautan video privat admin, dan memilih WhatsApp terbuka dengan pesan lengkap untuk dikirim sendiri oleh pelanggan.
+
+- URL dan QR `/lapor-kendala` tetap. Dua langkah memakai state tampilan pada URL yang sama. Langkah pertama menampilkan judul dan pengantar, **Jam Operasional** tebal, jadwal Senin–Jumat 09.00–17.00 WIB beserta pengecualian libur, pesan singkat “Mohon ditunggu ya Kak, tim Gascomp CareDirect akan segera menghubungi Kakak untuk memberikan solusi terbaik.”, lalu tombol “Klik di sini untuk untuk isi formulir” sesuai teks pemilik.
+- Langkah kedua mempertahankan pengantar dan lima isian wajib. Judul **Formulir** di kiri dan **Kirim laporan** di kanan sejajar, termasuk pada ponsel. Tidak ada tombol kirim kedua di bawah. Tombol Kembali mempertahankan isian/video selama halaman belum dimuat ulang; data tidak disimpan di localStorage.
+- Checkbox wajib dan tidak dicentang secara bawaan: “Saya bersedia untuk tidak mengajukan pengembalian barang/dana sebelum mendapat arahan tim CareDirect.” dan “Saya bersedia untuk tidak memberikan ulasan terlebih dahulu agar proses penanganan berjalan lancar dan tuntas.”
+- POST multipart memerlukan tepat satu nilai `true` untuk masing-masing `agreeNoReturn` dan `agreeNoReview`; server menolak nilai hilang, salah, atau ganda sebelum penyimpanan. Metadata JSON laporan mencatat `consent` dengan dua nilai benar, `version: 2026-10-22-v1`, dan `acceptedAt` dari waktu server. Pengulangan kirim mempertahankan waktu pertama. Laporan lama tidak diberi persetujuan secara retroaktif. Tidak memerlukan migrasi SQL.
+- Kedua langkah dan tiket mendukung Indonesia/Inggris. Catatan lama tetap utuh di formulir dan sukses. Setelah tersimpan, halaman menyatakan pelanggan perlu menekan Kirim di WhatsApp; tidak mengklaim pesan telah dikirim. Tombol salin menyediakan teks yang dapat dipilih secara manual bila clipboard ditolak.
 
 ## Catatan pelanggan Indonesia
 
@@ -43,3 +53,5 @@ Tautan cetak adalah `https://support.gascompsuperlock.com/lapor-kendala`. Aset [
 ## Bukti implementasi
 
 Commit `0f58985` aktif di produksi sejak 22 Oktober 2026 pukul 10.24.31 WIB. Pengiriman sintetis, ulang kirim, status admin dan akses video privat diverifikasi live; laporan uji telah dibersihkan. Hasil pemeriksaan dan bukti rilis dicatat pada [serah terima CareDirect](../../work/handoffs/handoff-care-direct-complete-v1.md). Keberadaan kode dan migrasi lokal tidak membuktikan fitur sudah aktif di produksi.
+
+Opsi hapus laporan dan video aktif pada commit `4ba3d5e` sejak 22 Oktober 2026 pukul 11.29.06 WIB. Konfirmasi/batal, penghapusan baris dan objek privat, serta pengulangan DELETE telah diperiksa di produksi menggunakan satu laporan sintetis yang sudah dibersihkan.

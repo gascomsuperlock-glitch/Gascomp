@@ -66,11 +66,34 @@ Verifikasi tambahan:
 - Bukti browser: `.data/care-direct-validation/delete-browser.mjs`, `delete-report.json`, `delete-{1440,390,320}.png`. Data sintetis lokal dibersihkan. Tidak ada penghapusan data pelanggan atau mutasi produksi.
 - `npm run build`: lulus, termasuk route DELETE pada laporan admin. `git diff --check` lulus.
 
-Opsi hapus baru berada di ruang kerja lokal dan belum dideploy. Bukti rilis di bagian sebelumnya berlaku untuk versi sebelum opsi hapus.
+Pemilik mengotorisasi rilis tambahan melalui “pasang ke situs live”. Commit `4ba3d5e912f1713370b0fc20b10e51492170e9cc` dirilis lewat `release`; [Actions 39722309878](https://github.com/gascomsuperlock-glitch/Gascomp/actions/runs/39722309878) berhasil, kemudian `main` maju ke commit yang sama. Tidak ada migrasi baru.
+
+Build Hostinger `01a161dd-6272-7066-a485-98e7d669121d` pada `support` mencapai `completed` pada **22 Oktober 2026 pukul 11.29.06 WIB**. Hash commit dan path versi sesuai; runtime `last_deployed_at` cocok. Build `bantuan` tetap tidak berubah dan auto-deploy tetap nonaktif.
+
+Uji browser live ponsel berhasil: tombol `Delete report` tersedia; batal mempertahankan laporan/video; konfirmasi menghapus satu laporan sintetis beserta objek Storage; pembacaan database mengonfirmasi baris sudah tidak ada; akses video menjadi 404; ulang DELETE 204. DELETE anonim 401 dan asal asing 403. Halaman depan, garansi, pusat layanan, login Care, CareDirect, dan satu produk merespons 200; admin anonim 307. Tidak ada galat halaman atau ERROR/WARN pada log runtime setelah uji. Data pelanggan tidak diubah.
+
+Bukti lokal: `.data/care-direct-release/delete-production-verification.json`, `verify-delete.mjs`, dan `live-delete-mobile.png`. Catatan rilis diperbarui sesudah commit produksi; perubahan dokumentasi tidak dipush lagi agar tidak memicu build tambahan.
+
+## Perubahan alur publik dua langkah — 22 Oktober 2026
+
+Pemilik menyetujui rencana perubahan halaman publik: langkah informasi lalu formulir, dua persetujuan wajib, tombol kirim sejajar judul, dan tiket WhatsApp lengkap. Keputusan kanonik tercatat pada [spesifikasi CareDirect](../../product/features/care-direct.md#alur-publik-dua-langkah--keputusan-22-oktober-2026). Admin tidak diubah. URL/QR tetap, dan tidak ada migrasi SQL baru; persetujuan disimpan dalam JSON laporan yang sudah ada.
+
+Implementasi lokal selesai; belum dirilis. Produksi tetap menggunakan commit `4ba3d5e` pada bagian rilis di atas. Permintaan implementasi ini secara eksplisit menempatkan deployment setelah instruksi rilis berikutnya.
+
+Verifikasi aktual:
+
+- `npm run lint`: lulus setelah perbaikan akses ref saat render; dua peringatan lama pada `masalah/gascomp-site-tools/assets/widgets.js` tetap.
+- `npm run typecheck`: lulus; build juga memeriksa tipe setelah perbaikan state tiket.
+- `npm run test`: 315 tes, 308 lulus, tujuh dilewati karena lingkungan opsional, nol gagal. Tes baru mencakup persetujuan hilang/salah/ganda, metadata versi/waktu dan pengulangan yang mempertahankan waktu, kompatibilitas laporan lama tanpa persetujuan, pesan panjang/karakter khusus dan kedua bahasa.
+- Browser Chromium lokal pada Indonesia/Inggris × 320/390/1440 piksel: enam kombinasi lulus. Memeriksa langkah pertama, kembali tanpa kehilangan isian/video, checkbox wajib, posisi tombol sejajar, pemulihan setelah validasi 400, pengiriman nyata ke penyimpanan lokal, metadata persetujuan, pesan WhatsApp lengkap, salin tiket, dan penolakan video anonim 401. Tidak ada galat halaman pada putaran akhir. Tidak mengirim pesan WhatsApp; navigasi dicegat.
+- Skrip browser awal diperbaiki untuk membatasi selector alert/pre pada konten aplikasi dan menunggu hidrasi sebelum screenshot. Kegagalan awal adalah pada harness; putaran akhir seluruh kombinasi berhasil. Enam laporan sintetis putaran akhir dan laporan percobaan sebelumnya dibersihkan.
+- `npm run build`: lulus setelah perubahan final, termasuk pemeriksaan TypeScript. `git diff --check` lulus.
+
+Bukti privat lokal: `.data/care-direct-validation/two-step-browser.mjs`, `two-step-report.json`, `step1-{id,en}-{320,390,1440}.png`, dan `step2-{id,en}-{320,390,1440}.png`. Tidak ada penulisan produksi pada pekerjaan ini.
 
 ## Tindakan selanjutnya
 
-Tautan live dan QR siap digunakan pada card attention. Jika ada perubahan berikutnya, mulai dari keadaan Git dan [prosedur Hostinger](../procedures/hostinger-deployment.md); jangan menjalankan build pada `bantuan`. Catatan rilis di atas merupakan bukti commit `0f58985`, bukan izin rilis baru.
+Tautan live dan QR tetap berlaku. Perubahan alur dua langkah siap dirilis setelah instruksi pemilik. Mulai dari keadaan Git dan [prosedur Hostinger](../procedures/hostinger-deployment.md); jangan menjalankan build pada `bantuan`. Catatan rilis di atas merupakan bukti commit `0f58985`, bukan izin rilis baru.
 
 ## Referensi
 

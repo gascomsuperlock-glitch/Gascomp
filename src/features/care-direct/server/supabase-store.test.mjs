@@ -63,3 +63,10 @@ test('metadata deletion failure can be retried after evidence is already removed
  await assert.rejects(deleteCareDirectReport(report.id));assert.equal(state.rows.size,1);assert.equal(state.objects.size,0);
  state.deleteFailure=false;await deleteCareDirectReport(report.id);assert.equal(state.rows.size,0);
 });
+
+test('consent is versioned, timestamped once and preserved on retry; legacy reports stay unconsented',async()=>{
+ reset();const legacy=await saveCareDirectReport(input,video,'video/mp4');assert.equal(legacy.consent,undefined);
+ reset();const agreed={...input,agreeNoReturn:true,agreeNoReview:true};const report=await saveCareDirectReport(agreed,video,'video/mp4');
+ assert.equal(report.consent.version,'2026-10-22-v1');assert.equal(report.consent.agreeNoReturn,true);assert.equal(report.consent.agreeNoReview,true);assert.ok(Number.isFinite(Date.parse(report.consent.acceptedAt)));
+ const retry=await saveCareDirectReport(agreed,video,'video/mp4');assert.deepEqual(retry.consent,report.consent);assert.equal(state.rows.size,1);
+});
