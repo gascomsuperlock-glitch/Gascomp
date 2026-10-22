@@ -29,7 +29,12 @@
 .resultCount { margin-left: auto; font-size: .75rem; color: #536077; font-variant-numeric: tabular-nums; }
 .products { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin-top: 2rem; }
 .productCard { min-width: 0; overflow: hidden; border: 1px solid #021b4020; border-radius: 1.25rem; background: #fff; transition: transform 180ms; }
-.largeCatalog .productCard { content-visibility: auto; contain-intrinsic-size: auto 490px; }
+.pagination { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .75rem; margin-top: 2rem; }
+.pagination button { min-height: 2.75rem; padding: .65rem 1rem; border: 1px solid #021b4030; border-radius: 99px; background: #fff; font-size: .75rem; font-weight: 800; }
+.pagination button:hover:not(:disabled) { background: #0035b9; color: #fff; }
+.pagination button:disabled { opacity: .45; cursor: not-allowed; }
+.pagination p { font-size: .75rem; color: #536077; font-variant-numeric: tabular-nums; }
+.catalog h2 { scroll-margin-top: 1.5rem; }
 .productCard:hover { transform: translateY(-4px); border-color: #0035b9; box-shadow: 5px 5px 0 #0035b9; }
 .productImage { position: relative; padding: .6rem .6rem 0; }
 .productBadge { position: absolute; top: 1.4rem; left: 1.4rem; border: 1px solid #021b4020; border-radius: 99px; background: #fffdf7; padding: .4rem .65rem; font-size: .5rem; font-weight: 800; letter-spacing: .08em; }

@@ -14,17 +14,33 @@ import { dictionaries } from "@/shared/i18n/dictionaries";
 import { useLanguage } from "@/shared/i18n/language-context";
 import styles from "./home-page.module.css";
 
+const PRODUCTS_PER_PAGE = 6;
+
 export function HomePage() {
   const { content, hydrated } = useContent();
   const { language } = useLanguage();
   const copy = dictionaries[language].home;
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const catalogHeading = useRef<HTMLHeadingElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
   const publishedProducts = useMemo(() => content.products.filter((product) => product.published && !product.archived), [content.products]);
   const filteredProducts = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return publishedProducts.filter((product) => `${product.name} ${product.model} ${product.sku}`.toLowerCase().includes(normalized));
   }, [publishedProducts, query]);
+  const pageCount = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
+  const currentPage = Math.min(page, pageCount);
+  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const visibleProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+  const formatNumber = (value: number) => new Intl.NumberFormat(language).format(value);
+
+  function changePage(nextPage: number) {
+    setPage(nextPage);
+    catalogHeading.current?.focus({ preventScroll: true });
+    catalogHeading.current?.scrollIntoView({ block: "start" });
+  }
+
   const supportUrl = getWhatsappUrl(content.whatsappNumber, undefined, undefined, language);
   const helpSteps = [
     { icon: Play, title: copy.helpStepOneTitle, copy: copy.helpStepOneCopy, color: "#c9edfa" },
@@ -34,6 +50,7 @@ export function HomePage() {
 
   function clearSearch() {
     setQuery("");
+    setPage(1);
     searchInput.current?.focus();
   }
 
@@ -53,20 +70,20 @@ export function HomePage() {
         <section id="produk" className={styles.catalog} aria-labelledby="catalog-title">
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
-              <div><p className={styles.eyebrow}>{copy.catalogEyebrow}</p><h2 id="catalog-title">{copy.catalogTitleStart}<br /><span>{copy.catalogTitleEnd}</span></h2></div>
+              <div><p className={styles.eyebrow}>{copy.catalogEyebrow}</p><h2 ref={catalogHeading} id="catalog-title" tabIndex={-1}>{copy.catalogTitleStart}<br /><span>{copy.catalogTitleEnd}</span></h2></div>
               <p>{copy.catalogDescription}</p>
             </div>
             <div className={styles.searchRow}>
               <label className={styles.search}>
                 <Search aria-hidden="true" size={21} />
                 <span className="sr-only">{copy.searchLabel}</span>
-                <input ref={searchInput} name="product-search" type="search" autoComplete="off" spellCheck={false} value={query} onChange={(event) => setQuery(event.target.value)} placeholder={copy.searchPlaceholder} />
+                <input ref={searchInput} name="product-search" type="search" autoComplete="off" spellCheck={false} value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} placeholder={copy.searchPlaceholder} />
               </label>
               {query && <button type="button" onClick={clearSearch} className={styles.clearSearch}><X aria-hidden="true" size={16} /> {copy.clear}</button>}
-              <p role="status" className={styles.resultCount}>{hydrated ? `${new Intl.NumberFormat(language).format(filteredProducts.length)} ${filteredProducts.length === 1 ? copy.product : copy.products}` : copy.loadingProducts}</p>
+              <p role="status" className={styles.resultCount}>{hydrated ? `${filteredProducts.length ? `${formatNumber(startIndex + 1)}–${formatNumber(startIndex + visibleProducts.length)} ${copy.of} ` : ""}${formatNumber(filteredProducts.length)} ${filteredProducts.length === 1 ? copy.product : copy.products}` : copy.loadingProducts}</p>
             </div>
-            <div className={`${styles.products} ${filteredProducts.length > 50 ? styles.largeCatalog : ""}`} aria-busy={!hydrated}>
-              {hydrated && filteredProducts.map((product) => (
+            <div className={styles.products} aria-busy={!hydrated}>
+              {hydrated && visibleProducts.map((product) => (
                 <Link key={product.id} href={`/produk/${product.slug}`} className={styles.productCard}>
                   <div className={styles.productImage}><ProductVisual tone={product.tone} image={getPrimaryProductImage(product)} alt={product.name} className="h-60 rounded-2xl" /><span className={styles.productBadge}>{copy.productGuide}</span></div>
                   <div className={styles.productCopy}>
@@ -78,6 +95,11 @@ export function HomePage() {
                 </Link>
               ))}
             </div>
+            {hydrated && pageCount > 1 && <nav className={styles.pagination} aria-label={copy.paginationLabel}>
+              <button type="button" disabled={currentPage === 1} onClick={() => changePage(currentPage - 1)}>{copy.previousPage}</button>
+              <p role="status">{copy.page} {formatNumber(currentPage)} {copy.of} {formatNumber(pageCount)}</p>
+              <button type="button" disabled={currentPage === pageCount} onClick={() => changePage(currentPage + 1)}>{copy.nextPage}</button>
+            </nav>}
             {hydrated && filteredProducts.length === 0 && <div className={styles.empty}>
               <CircleHelp aria-hidden="true" size={36} />
               <h3>{publishedProducts.length === 0 ? copy.guidesComing : copy.noMatch}</h3>

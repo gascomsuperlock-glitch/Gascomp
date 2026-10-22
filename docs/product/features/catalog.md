@@ -14,6 +14,12 @@ Pelanggan mengonfirmasi gambar produk, nama, dan SKU, kemudian menonton tutorial
 
 Jika produk atau tutorial tidak tersedia, halaman menyajikan keadaan kosong yang jelas dan jalur dukungan. Produk draf tetap pribadi. Produk yang diarsipkan dihapus dari katalog tetapi tetap dapat diakses melalui URL stabil mereka untuk kode QR yang ada.
 
+## Pembagian halaman katalog
+
+Atas permintaan pemilik pada 22 Oktober 2026 agar daftar 63 produk tidak memerlukan gulir terlalu panjang, halaman utama menampilkan maksimal 6 produk per halaman (jumlah ini merupakan pilihan implementasi). Tombol Sebelumnya/Berikutnya, indikator halaman, dan rentang produk tersedia dalam kedua bahasa. Tombol batas halaman dinonaktifkan dan navigasi disembunyikan bila hasil hanya satu halaman atau kosong. Pergantian halaman memindahkan gulir dan fokus ke judul katalog.
+
+Pencarian tetap mencakup semua produk terbit yang tidak diarsipkan, lalu hasilnya dibagi per halaman. Mengubah atau menghapus pencarian mengembalikan halaman pertama. Pagination berjalan di klien dan tidak mengubah URL produk maupun tujuan QR.
+
 <a id="product-help-page"></a>
 ## Halaman bantuan produk
 

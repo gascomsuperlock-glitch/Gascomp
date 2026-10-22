@@ -11,6 +11,7 @@ verifikasi file saat ini sebelum mempercayainya. Indeks ini bukan daftar tugas p
 | Perbaikan parser konfigurasi proyek Codex | [Konfigurasi Codex](handoffs/handoff-codex-config-complete-v1.md) |
 | Rilis seluruh perubahan ke GitHub dan Hostinger | [Rilis seluruh perubahan](handoffs/handoff-full-release-complete-v1.md) |
 | QR produk biasa dan QR halaman depan bermerk | [QR Bermerk](handoffs/handoff-branded-qr-complete-v2.md) |
+| Pagination produk halaman utama | [Pagination katalog](handoffs/handoff-catalog-pagination-complete-v1.md) |
 | Simpan diagnosis produk baru online | [Katalog Simpan](handoffs/handoff-catalog-save-review-v1.md) |
 | Laporan kendala CareDirect | [CareDirect](handoffs/handoff-care-direct-complete-v1.md) |
 | Kontrol status tiket garansi | [Garansi](handoffs/handoff-warranty-review-v1.md) |
