@@ -128,7 +128,6 @@ export function CareDirectForm() {
     }
   }
 
-  const notes = <div className="mt-8 space-y-5 rounded-2xl bg-[#edf4ff] p-5 text-sm leading-7 sm:p-6">{copy.notes.map((note) => <p key={note}>{note}</p>)}</div>;
   return <div translate="no" className="min-h-screen bg-[#fffdf7] text-[#021b40]">
     <SiteHeader />
     <main className="mx-auto max-w-3xl px-5 py-10 sm:px-8 sm:py-14">
@@ -148,7 +147,6 @@ export function CareDirectForm() {
         <pre className="mt-5 whitespace-pre-wrap break-words rounded-xl bg-slate-50 p-4 font-sans text-sm leading-6">{ticket}</pre>
         <button type="button" onClick={() => void copyTicket()} className="mt-4 min-h-12 rounded-full border border-[#0035b9] px-5 font-bold">{copy.copyTicket}</button>
         <p role="status" className="mt-2 text-sm">{copyStatus}</p>
-        {notes}
       </section> : <form hidden={step !== 2} onSubmit={submit} className="mt-8 rounded-3xl border border-[#021b40]/10 bg-white p-5 shadow-sm sm:p-8" aria-busy={busy}>
         <button type="button" disabled={busy} onClick={() => changeStep(1)} className="mb-3 min-h-11 font-bold text-[#0035b9]">← {copy.back}</button>
         <div className="mb-4 flex items-center justify-between gap-2"><h2 className="text-xl font-bold">{copy.formTitle}</h2><button type="submit" disabled={busy || !hydrated} className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-[#0035b9] px-4 text-sm font-bold text-white disabled:opacity-60">{copy.submit}</button></div>
@@ -167,7 +165,6 @@ export function CareDirectForm() {
         {preparing && <div className="mt-5 text-sm text-[#0035b9]"><p role="status">{copy.preparing}{compressionPercent !== null && ` ${compressionPercent}%`}</p><button type="button" onClick={() => preparation.current?.abort()} className="min-h-11 font-bold underline">{copy.original}</button></div>}
         {busy && !preparing && <div className="mt-5 text-sm text-[#0035b9]"><p role="status">{progress.phase === "processing" ? copy.processing : `${copy.uploading}: ${progress.percent}%`}</p><progress aria-label={copy.uploading} value={progress.percent} max={100} className="mt-3 w-full accent-[#0035b9]" /></div>}
 
-        {notes}
       </form>}
     </main>
   </div>;

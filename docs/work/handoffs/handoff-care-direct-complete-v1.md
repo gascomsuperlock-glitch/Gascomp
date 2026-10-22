@@ -78,7 +78,7 @@ Bukti lokal: `.data/care-direct-release/delete-production-verification.json`, `v
 
 Pemilik menyetujui rencana perubahan halaman publik: langkah informasi lalu formulir, dua persetujuan wajib, tombol kirim sejajar judul, dan tiket WhatsApp lengkap. Keputusan kanonik tercatat pada [spesifikasi CareDirect](../../product/features/care-direct.md#alur-publik-dua-langkah--keputusan-22-oktober-2026). Admin tidak diubah. URL/QR tetap, dan tidak ada migrasi SQL baru; persetujuan disimpan dalam JSON laporan yang sudah ada.
 
-Implementasi lokal selesai; belum dirilis. Produksi tetap menggunakan commit `4ba3d5e` pada bagian rilis di atas. Permintaan implementasi ini secara eksplisit menempatkan deployment setelah instruksi rilis berikutnya.
+Pemilik kemudian mengotorisasi deployment dengan “pasang ke status live”. Commit `7edf5d25faea2fa5d2dab855e0c156bae6148bae` aktif di produksi sejak 22 Oktober 2026 pukul **13.01.46 WIB**. [Actions 39731044155](https://github.com/gascomsuperlock-glitch/Gascomp/actions/runs/39731044155) berhasil; `release` dan `main` sesuai commit ini. Build Hostinger `01a16232-1f1f-73ac-95cd-6f1fa19f03e5` berstatus `completed`, hash dan path versi cocok, serta `last_deployed_at` runtime sama. Tidak ada migrasi baru. Auto-deploy `bantuan` tetap nonaktif dan UUID build terakhirnya tidak berubah.
 
 Verifikasi aktual:
 
@@ -89,11 +89,23 @@ Verifikasi aktual:
 - Skrip browser awal diperbaiki untuk membatasi selector alert/pre pada konten aplikasi dan menunggu hidrasi sebelum screenshot. Kegagalan awal adalah pada harness; putaran akhir seluruh kombinasi berhasil. Enam laporan sintetis putaran akhir dan laporan percobaan sebelumnya dibersihkan.
 - `npm run build`: lulus setelah perubahan final, termasuk pemeriksaan TypeScript. `git diff --check` lulus.
 
-Bukti privat lokal: `.data/care-direct-validation/two-step-browser.mjs`, `two-step-report.json`, `step1-{id,en}-{320,390,1440}.png`, dan `step2-{id,en}-{320,390,1440}.png`. Tidak ada penulisan produksi pada pekerjaan ini.
+Bukti privat lokal: `.data/care-direct-validation/two-step-browser.mjs`, `two-step-report.json`, `step1-{id,en}-{320,390,1440}.png`, dan `step2-{id,en}-{320,390,1440}.png`. Verifikasi rilis menggunakan laporan sintetis produksi yang kemudian dibersihkan; data pelanggan tidak diubah.
+
+Browser live memverifikasi halaman informasi/formulir Indonesia pada 390 piksel dan Inggris pada 1440 piksel, tombol kanan atas, checkbox wajib, isian/video tetap ada saat kembali, penyimpanan persetujuan, isi tiket lengkap, salin tiket, dan navigasi WhatsApp yang dicegat tanpa mengirim pesan. Pengulangan dengan payload identik menghasilkan ID yang sama. Video anonim 401, admin 200, lalu laporan uji dihapus melalui DELETE admin dan ketidakhadiran baris/objek dikonfirmasi. Uji asap halaman depan, garansi, pusat layanan, login Care, dan satu produk 200; admin anonim 307. Tidak ada galat halaman.
+
+Harness live diperbaiki untuk membatasi selector pada `main` karena widget AI juga memiliki formulir. Replay multipart awal tidak identik (file/normalisasi baris); setelah memakai bytes dan nilai tersimpan yang persis sama, retry lulus. Semua laporan percobaan dibersihkan melalui guard ID dan nomor pesanan sintetis. Bukti akhir: `.data/care-direct-release/two-step-production-verification.json`, `verify-two-step.mjs`, dan `two-step-live-{id,en}-intro.png`.
+
+Log mencatat dua `Server is not running` saat pergantian proses sekitar deployment; pemeriksaan lanjutan setelah uji tidak menambah log atau galat. Catatan bukti rilis ini diperbarui lokal sesudah commit produksi, tanpa push tambahan.
+
+## Penghapusan blok catatan — 22 Oktober 2026
+
+Selesai lokal: blok empat paragraf beserta wadah birunya dihapus dari formulir dan konfirmasi sukses, dalam kedua bahasa. Sumber dan kriteria penerimaan ada pada [koreksi spesifikasi](../../product/features/care-direct.md#penghapusan-blok-catatan--koreksi-22-oktober-2026). Perubahan dokumentasi dan pekerjaan lain yang sudah ada dipertahankan.
+
+Verifikasi working tree setelah penghapusan: `npm run lint` lulus dengan dua peringatan lama pada `masalah/gascomp-site-tools/assets/widgets.js`; `npm run typecheck` dan `npm run build` lulus; `npm run test` mencatat 315 tes, 308 lulus, tujuh dilewati, nol gagal. Chromium lokal memeriksa formulir kosong, galat validasi, dan konfirmasi sukses pada Indonesia/Inggris × 320/390/1440 piksel: blok tidak tampil, tidak ada luapan horizontal atau galat halaman. Respons pengiriman ditirukan untuk memeriksa tampilan; tidak menulis laporan nyata atau mengirim WhatsApp. Bukti lokal: `.data/care-direct-validation/remove-notes-browser.mjs`, `remove-notes-report.json`, dan `remove-notes-*.png`. Tidak ada deployment pada tugas ini.
 
 ## Tindakan selanjutnya
 
-Tautan live dan QR tetap berlaku. Perubahan alur dua langkah siap dirilis setelah instruksi pemilik. Mulai dari keadaan Git dan [prosedur Hostinger](../procedures/hostinger-deployment.md); jangan menjalankan build pada `bantuan`. Catatan rilis di atas merupakan bukti commit `0f58985`, bukan izin rilis baru.
+Penghapusan blok catatan selesai dan terverifikasi lokal, belum dirilis. Jika pemilik meminta deployment, rilis perubahan ini sesuai prosedur. Tautan live dan QR tetap berlaku. Perubahan alur dua langkah sebelumnya sudah aktif di produksi. Mulai dari keadaan Git dan [prosedur Hostinger](../procedures/hostinger-deployment.md); jangan menjalankan build pada `bantuan`. Catatan rilis di atas merupakan bukti commit `0f58985`, bukan izin rilis baru.
 
 ## Referensi
 
