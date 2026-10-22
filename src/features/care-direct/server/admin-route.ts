@@ -1,6 +1,6 @@
 import "server-only";
 import { getAdminSession } from "@/features/auth/server/session";
-import { listCareDirectReports, streamCareDirectVideo, updateCareDirectStatus } from "./report-store";
+import { deleteCareDirectReport, listCareDirectReports, streamCareDirectVideo, updateCareDirectStatus } from "./report-store";
 const headers = { "Cache-Control": "private, no-store" };
 const error = (message: string, status: number) => Response.json({ error: message }, { status, headers });
 export async function getCareDirectReports() {
@@ -10,11 +10,7 @@ export async function getCareDirectReports() {
 }
 export async function patchCareDirectReport(request: Request, id: string) {
   if (!(await getAdminSession())) return error("Your admin session has expired. Sign in again.", 401);
-  try {
-    const origin = request.headers.get("origin") ?? "";
-    const parsed = new URL(origin);
-    if (!["http:", "https:"].includes(parsed.protocol) || parsed.origin !== origin || parsed.host !== (request.headers.get("host") ?? new URL(request.url).host)) return error("This request could not be verified.", 403);
-  } catch { return error("This request could not be verified.", 403); }
+  if (!verifiedOrigin(request)) return error("This request could not be verified.", 403);
   if (!request.body) return error("Choose a valid status.", 400);
   const reader = request.body.getReader();
   let timer: ReturnType<typeof setTimeout> | undefined;
@@ -44,4 +40,21 @@ export async function getCareDirectVideo(request: Request, id: string) {
     const response = await streamCareDirectVideo(request, id);
     return response ?? error("Video not found.", 404);
   } catch { return error("The video could not be loaded.", 503); }
+}
+
+function verifiedOrigin(request: Request): boolean {
+  try {
+    const origin = request.headers.get("origin") ?? "";
+    const parsed = new URL(origin);
+    return ["http:", "https:"].includes(parsed.protocol) && parsed.origin === origin && parsed.host === (request.headers.get("host") ?? new URL(request.url).host);
+  } catch { return false; }
+}
+export async function deleteCareDirectReportRoute(request: Request, id: string) {
+  if (!(await getAdminSession())) return error("Your admin session has expired. Sign in again.", 401);
+  if (!verifiedOrigin(request)) return error("This request could not be verified.", 403);
+  if (!/^CD-[0-9a-f-]{36}$/.test(id)) return error("Report not found.", 404);
+  try {
+    await deleteCareDirectReport(id);
+    return new Response(null, { status: 204, headers });
+  } catch { return error("Deletion could not be completed. Retry to finish removing the report and video.", 503); }
 }

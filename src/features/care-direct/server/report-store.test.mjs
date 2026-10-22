@@ -5,7 +5,7 @@ import { mkdtemp, rm, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 const hooks=registerHooks({resolve(s,c,n){if(s==='./video-response')return n('./video-response.ts',c);if(s==='server-only')return {url:'data:text/javascript,export {};',shortCircuit:true};if(s==='@/shared/integrations/supabase/server')return {url:'data:text/javascript,export function createAdminSupabaseClient(){return null}',shortCircuit:true};return n(s,c);}});
-const {saveCareDirectReport,listCareDirectReports,updateCareDirectStatus,streamCareDirectVideo,SubmissionConflict}=await import('./report-store.ts');hooks.deregister();
+const {deleteCareDirectReport,saveCareDirectReport,listCareDirectReports,updateCareDirectStatus,streamCareDirectVideo,SubmissionConflict}=await import('./report-store.ts');hooks.deregister();
 test('concurrent identical submissions commit once, retry preserves status, conflicts cannot overwrite evidence',async()=>{
  const dir=await mkdtemp(path.join(tmpdir(),'care-store-')); const cwd=process.cwd();process.chdir(dir);
  try {
@@ -22,6 +22,12 @@ test('concurrent identical submissions commit once, retry preserves status, conf
  assert.equal(ranged.status,206);assert.equal(await ranged.text(),'deo ');
  const head=await streamCareDirectVideo(new Request('http://localhost/video',{method:'HEAD'}),reports[0].id);assert.equal(head.body,null);assert.equal(head.headers.get('content-length'),'11');
  assert.ok(!('storagePath' in reports[0]));assert.ok(!('fingerprint' in reports[0]));
+ await Promise.all([updateCareDirectStatus(reports[0].id,'new'),deleteCareDirectReport(reports[0].id),updateCareDirectStatus(reports[0].id,'resolved')]);
+ assert.equal((await listCareDirectReports()).length,0);
+ assert.equal(await streamCareDirectVideo(new Request('http://localhost/video'),reports[0].id),null);
+ await assert.rejects(readdir(path.join(dir,'.data/care-direct',reports[0].id)),{code:'ENOENT'});
+ await deleteCareDirectReport(reports[0].id);
+ assert.equal(await updateCareDirectStatus(reports[0].id,'new'),null);
  }finally{process.chdir(cwd);await rm(dir,{recursive:true,force:true});}
 });
 test('production does not silently fall back to local persistence',async()=>{const previous=process.env.NODE_ENV;process.env.NODE_ENV='production';try{await assert.rejects(listCareDirectReports(),/not configured/);}finally{if(previous===undefined)delete process.env.NODE_ENV;else process.env.NODE_ENV=previous;}});

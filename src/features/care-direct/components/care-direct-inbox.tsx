@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Download, ExternalLink, LoaderCircle, MessageCircle, RefreshCw, Search } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, LoaderCircle, MessageCircle, RefreshCw, Search, Trash2 } from "lucide-react";
 import type { CareDirectReport } from "../model/types";
 import { normalizeWhatsapp } from "@/shared/lib/whatsapp";
 
@@ -94,6 +94,24 @@ export function CareDirectInbox({ active }: { active: boolean }) {
     } finally { window.clearTimeout(timeout); savingRef.current = false; setSaving(false); }
   }
 
+  async function deleteReport() {
+    if (!selected || savingRef.current || loading || expired) return;
+    if (!window.confirm(`Permanently delete report ${selected.id} and its private video? This cannot be undone.`)) return;
+    savingRef.current = true; setSaving(true); setFeedback(""); setError("");
+    video.current?.pause();
+    try {
+      const response = await fetch(`/admin/care-direct/reports/${encodeURIComponent(selected.id)}`, { method: "DELETE", signal: AbortSignal.timeout(70_000) });
+      if (response.status === 401) { setExpired(true); setReports([]); setSelectedId(""); throw new Error("Your admin session has expired. Sign in again before deleting reports."); }
+      if (response.status !== 204) throw new Error("Deletion could not be confirmed. Retry to finish removing the report and video.");
+      setReports((current) => current.filter((report) => report.id !== selected.id));
+      setSelectedId(""); setVideoError(false);
+      setFeedback(`Report ${selected.id} and its video have been deleted.`);
+      requestAnimationFrame(() => search.current?.focus());
+    } catch (cause) {
+      setError(cause instanceof Error && cause.name === "TimeoutError" ? "Deletion timed out. Refresh to check the report or retry deletion." : cause instanceof Error ? cause.message : "Deletion could not be confirmed. Please retry.");
+    } finally { savingRef.current = false; setSaving(false); }
+  }
+
   return (
     <section className="space-y-5" aria-label="CareDirect reports">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -125,8 +143,9 @@ export function CareDirectInbox({ active }: { active: boolean }) {
           <p className="mt-1 text-xs text-slate-500">Submitted {date(selected.createdAt)} WIB</p>
           <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2"><div><dt className="font-bold text-slate-500">WhatsApp</dt><dd className="mt-1 break-all">{selected.whatsapp}</dd></div><div><dt className="font-bold text-slate-500">Order number</dt><dd className="mt-1 break-all">{selected.orderNumber}</dd></div><div className="sm:col-span-2"><dt className="font-bold text-slate-500">Customer concern</dt><dd className="mt-2 whitespace-pre-wrap break-words leading-6">{selected.problem}</dd></div></dl>
           <a href={`https://wa.me/${normalizeWhatsapp(selected.whatsapp)}`} target="_blank" rel="noopener noreferrer" className={`${button} mt-5 text-emerald-800`}><MessageCircle className="size-4" />Contact customer</a>
-          <div className="mt-6 border-t border-slate-100 pt-5"><label htmlFor="care-direct-status" className="block text-sm font-bold">Report status</label><select id="care-direct-status" value={selected.status} disabled={saving || loading || expired} onChange={(event) => void updateStatus(event.target.value as CareDirectReport["status"])} className={`${input} mt-2`}>{Object.entries(labels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><p className="mt-2 text-xs text-slate-500" role="status">{saving ? "Saving status…" : `Last updated ${date(selected.updatedAt)} WIB`}</p></div>
+          <div className="mt-6 border-t border-slate-100 pt-5"><label htmlFor="care-direct-status" className="block text-sm font-bold">Report status</label><select id="care-direct-status" value={selected.status} disabled={saving || loading || expired} onChange={(event) => void updateStatus(event.target.value as CareDirectReport["status"])} className={`${input} mt-2`}>{Object.entries(labels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><p className="mt-2 text-xs text-slate-500" role="status">{saving ? "Saving changes…" : `Last updated ${date(selected.updatedAt)} WIB`}</p></div>
           <div className="mt-6 border-t border-slate-100 pt-5"><h4 className="text-sm font-bold">Issue video</h4><video ref={video} key={selected.id} controls playsInline preload="none" onError={() => setVideoError(true)} className="mt-3 aspect-video w-full rounded-xl bg-slate-950" src={`/admin/care-direct/reports/${encodeURIComponent(selected.id)}/video`} aria-label="Customer issue video" /><p className="mt-2 break-all text-xs text-slate-500">{selected.video.name} · {(selected.video.size / 1024 / 1024).toFixed(1)} MB</p>{videoError && <p role="alert" className="mt-2 text-sm text-red-700">Video could not be played. Refresh the reports and check your admin session, or <a href={`/admin/care-direct/reports/${encodeURIComponent(selected.id)}/video`} target="_blank" rel="noopener noreferrer" className="underline">open the video</a> in a new tab.</p>}</div>
+          <div className="mt-6 border-t border-slate-100 pt-5"><button type="button" disabled={saving || loading || expired} onClick={() => void deleteReport()} className={`${button} text-red-700`}><Trash2 aria-hidden="true" className="size-4" />Delete report</button><p className="mt-2 text-xs text-slate-500">Permanently removes this report and its private video. Confirmation is required.</p></div>
         </article> : <div className="hidden rounded-2xl border border-dashed border-slate-300 p-12 text-center text-sm text-slate-500 xl:block">Select a report to review its concern and video.</div>}
       </div>}
     </section>

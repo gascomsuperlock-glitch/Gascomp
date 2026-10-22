@@ -1,6 +1,6 @@
 import "server-only";
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, writeFile, link, unlink, readdir, rename } from "node:fs/promises";
+import { mkdir, readFile, writeFile, link, unlink, readdir, rename, rmdir } from "node:fs/promises";
 import path from "node:path";
 import { createReadStream } from "node:fs";
 import { Readable } from "node:stream";
@@ -111,20 +111,53 @@ export async function listCareDirectReports(): Promise<CareDirectReport[]> {
   }
   return records.map(publicReport).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
+// Serialize local status/deletion mutations so a delayed status write cannot restore a deleted report.
+const mutations = new Map<string, Promise<unknown>>();
+async function mutateReport<T>(id: string, action: () => Promise<T>): Promise<T> {
+  const previous = mutations.get(id) ?? Promise.resolve();
+  const current = previous.catch(() => {}).then(action);
+  mutations.set(id, current);
+  try { return await current; }
+  finally { if (mutations.get(id) === current) mutations.delete(id); }
+}
+export async function deleteCareDirectReport(id: string): Promise<void> {
+  return mutateReport(id, async () => {
+    const record = await readStored(id);
+    if (!record) return;
+    const db = client();
+    // Keep the record as a retry handle until evidence cleanup has succeeded.
+    if (db) {
+      const { error: storageError } = await db.storage.from(bucket).remove([record.storagePath]);
+      if (storageError) throw storageError;
+      const { error } = await db.from("care_direct_reports").delete().eq("id", id);
+      if (error) throw error;
+    } else {
+      const removeIfPresent = async (file: string) => {
+        try { await unlink(file); }
+        catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+      };
+      await removeIfPresent(path.join(directory(), record.storagePath));
+      await removeIfPresent(path.join(directory(), `${id}.json`));
+      await rmdir(path.join(directory(), id)).catch(() => {});
+    }
+  });
+}
 export async function updateCareDirectStatus(id: string, status: CareDirectStatus) {
-  const record = await readStored(id);
-  if (!record) return null;
-  const next = { ...record, status, updatedAt: new Date().toISOString() };
-  const db = client();
-  if (db) {
-    const { error } = await db.from("care_direct_reports").update({ record: next }).eq("id", id);
-    if (error) throw error;
-  } else {
-    const temporary = path.join(directory(), `${id}.${randomUUID()}.tmp`);
-    try { await writeFile(temporary, JSON.stringify(next), { mode: 0o600 }); await rename(temporary, path.join(directory(), `${id}.json`)); }
-    finally { await unlink(temporary).catch(() => {}); }
-  }
-  return publicReport(next);
+  return mutateReport(id, async () => {
+    const record = await readStored(id);
+    if (!record) return null;
+    const next = { ...record, status, updatedAt: new Date().toISOString() };
+    const db = client();
+    if (db) {
+      const { error } = await db.from("care_direct_reports").update({ record: next }).eq("id", id);
+      if (error) throw error;
+    } else {
+      const temporary = path.join(directory(), `${id}.${randomUUID()}.tmp`);
+      try { await writeFile(temporary, JSON.stringify(next), { mode: 0o600 }); await rename(temporary, path.join(directory(), `${id}.json`)); }
+      finally { await unlink(temporary).catch(() => {}); }
+    }
+    return publicReport(next);
+  });
 }
 export async function streamCareDirectVideo(request: Request, id: string) {
   const record = await readStored(id);

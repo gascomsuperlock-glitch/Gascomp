@@ -30,9 +30,11 @@ Kenyamanan dan keamanan dapur Kakak adalah prioritas utama kami. Terima kasih ba
 
 - Ruang kerja **CareDirect** terpisah menampilkan laporan terbaru, pencarian nomor laporan/nama/WhatsApp/pesanan, filter status, detail keluhan, video privat, dan tombol menghubungi WhatsApp pelanggan.
 - Status tersimpan `new`, `in_progress`, dan `resolved` menggunakan label admin `New`, `In progress`, dan `Resolved`. Perubahan disimpan segera, tidak bergantung pada Simpan katalog. Kegagalan mempertahankan status terakhir yang dikonfirmasi.
+- Tambahan permintaan pemilik 22 Oktober 2026: tombol `Delete report` pada detail admin menghapus satu laporan beserta video privat secara permanen, setelah konfirmasi yang menyebut ID laporan. Penghapusan memerlukan sesi admin dan asal permintaan yang valid; DELETE yang diulang untuk ID yang sudah tidak ada tetap berhasil. Pilihan hapus massal tidak ditambahkan.
+- Bukti dihapus sebelum metadata. Jika pembersihan bukti gagal, laporan tetap tersedia untuk dicoba ulang. Jika penghapusan metadata gagal sesudah bukti dibersihkan, laporan sementara dapat terlihat tanpa video; ulangi hapus untuk menyelesaikannya. UI hanya menampilkan sukses setelah server mengonfirmasi keduanya selesai.
 - Endpoint pengiriman multipart adalah `/care-direct/reports`. Endpoint admin adalah `/admin/care-direct/reports`, `/admin/care-direct/reports/[reportId]`, dan `/admin/care-direct/reports/[reportId]/video`.
 - Penyimpanan Supabase dan bucket bukti terpisah dari garansi. Tabel dan objek privat hanya diakses server; pembacaan laporan/video memerlukan sesi admin. Mutasi memeriksa asal permintaan; video mendukung HEAD dan Range untuk pemutaran.
-- Penyimpanan lokal hanya untuk pengembangan tanpa Supabase. Kegagalan Supabase terkonfigurasi tidak boleh dialihkan diam-diam ke penyimpanan lokal. Tidak ada formulir penelusuran publik, ekspor, penghapusan, atau akun pelanggan pada versi awal.
+- Penyimpanan lokal hanya untuk pengembangan tanpa Supabase. Kegagalan Supabase terkonfigurasi tidak boleh dialihkan diam-diam ke penyimpanan lokal. Tidak ada formulir penelusuran publik, ekspor atau akun pelanggan pada versi awal.
 
 ## Tautan card attention
 
@@ -40,4 +42,4 @@ Tautan cetak adalah `https://support.gascompsuperlock.com/lapor-kendala`. Aset [
 
 ## Bukti implementasi
 
-Hasil pemeriksaan dan kesiapan rilis dicatat pada [serah terima CareDirect](../../work/handoffs/handoff-care-direct-complete-v1.md). Keberadaan kode dan migrasi lokal tidak membuktikan fitur sudah aktif di produksi.
+Commit `0f58985` aktif di produksi sejak 22 Oktober 2026 pukul 10.24.31 WIB. Pengiriman sintetis, ulang kirim, status admin dan akses video privat diverifikasi live; laporan uji telah dibersihkan. Hasil pemeriksaan dan bukti rilis dicatat pada [serah terima CareDirect](../../work/handoffs/handoff-care-direct-complete-v1.md). Keberadaan kode dan migrasi lokal tidak membuktikan fitur sudah aktif di produksi.
