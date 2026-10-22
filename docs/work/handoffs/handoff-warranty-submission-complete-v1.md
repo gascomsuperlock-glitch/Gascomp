@@ -51,7 +51,7 @@ Tidak ada tindakan rilis yang tersisa. Bila kejadian pelanggan berulang, gunakan
 ## Referensi
 
 - [Spesifikasi garansi](../../product/features/warranty.md)
-- [Kebijakan pemrosesan video](../../../src/features/warranty/components/video-preparation-policy.ts)
-- [Persiapan video](../../../src/features/warranty/components/video-compression.ts)
-- [Validasi video browser](../../../src/features/warranty/components/video-validation.ts)
+- [Kebijakan pemrosesan video](../../../src/shared/media/video-preparation-policy.ts)
+- [Persiapan video](../../../src/shared/media/video-compression.ts)
+- [Validasi video browser](../../../src/shared/media/video-validation.ts)
 - [Regresi pengiriman browser](../../../tests/warranty-submission.spec.ts)

@@ -1,4 +1,4 @@
-import { UNREADABLE_VIDEO_ERROR, UNSUPPORTED_VIDEO_ERROR, detectVideoContainer } from "../model/video-evidence";
+import { UNREADABLE_VIDEO_ERROR, UNSUPPORTED_VIDEO_ERROR, detectVideoContainer } from "./video-evidence";
 import { shouldDeferVideoProcessing } from "./video-preparation-policy";
 
 export async function validateVideoPlayback(file: File): Promise<string | null> {

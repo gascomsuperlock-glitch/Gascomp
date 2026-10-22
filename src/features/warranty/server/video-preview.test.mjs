@@ -5,11 +5,11 @@ import { test } from "node:test";
 
 const hooks = registerHooks({ resolve(specifier, context, nextResolve) {
   if (specifier === "server-only") return { url: "data:text/javascript,export {};", shortCircuit: true };
-  if (specifier === "../model/video-evidence") return nextResolve(`${specifier}.ts`, context);
+  if (specifier === "../../../shared/media/video-evidence" || specifier === "../video-evidence") return nextResolve(`${specifier}.ts`, context);
   return nextResolve(specifier, context);
 } });
 const { createVideoPreview } = await import("./video-preview.ts");
-const { inspectVideo } = await import("./video-inspection.ts");
+const { inspectVideo } = await import("../../../shared/media/server/video-inspection.ts");
 hooks.deregister();
 
 test("MOV, HEVC with audio, and legacy video containers produce decodable MP4 previews", async () => {

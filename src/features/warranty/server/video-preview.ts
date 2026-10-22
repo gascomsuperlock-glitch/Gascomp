@@ -1,6 +1,6 @@
 import "server-only";
 import path from "node:path";
-import { detectVideoContainer } from "../model/video-evidence";
+import { detectVideoContainer } from "../../../shared/media/video-evidence";
 
 let activePreview = false;
 

@@ -8,13 +8,18 @@ const nextConfig: NextConfig = {
       "./node_modules/@ffmpeg/core/dist/umd/*",
       "./node_modules/@ffmpeg/core/package.json",
     ],
+    "/care-direct/reports": [
+      "./src/shared/media/server/video-inspection-worker.mjs",
+      "./node_modules/@ffmpeg/core/dist/umd/*",
+      "./node_modules/@ffmpeg/core/package.json",
+    ],
     "/warranty/claims": [
-      "./src/features/warranty/server/video-inspection-worker.mjs",
+      "./src/shared/media/server/video-inspection-worker.mjs",
       "./node_modules/@ffmpeg/core/dist/umd/*",
       "./node_modules/@ffmpeg/core/package.json",
     ],
     "/klaim-garansi": [
-      "./src/features/warranty/server/video-inspection-worker.mjs",
+      "./src/shared/media/server/video-inspection-worker.mjs",
       "./node_modules/@ffmpeg/core/dist/umd/*",
       "./node_modules/@ffmpeg/core/package.json",
     ],

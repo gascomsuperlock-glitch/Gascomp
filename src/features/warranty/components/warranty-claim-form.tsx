@@ -7,8 +7,8 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { formatJakartaDate } from "@/features/warranty/model/claim-eligibility";
 import { MAX_VIDEO_MB, VIDEO_ACCEPT, validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyEvidenceKind } from "@/features/warranty/model/types";
-import { prepareVideo, type PreparedVideo } from "./video-compression";
-import { validateVideoPlayback } from "./video-validation";
+import { prepareVideo, type PreparedVideo } from "../../../shared/media/video-compression";
+import { validateVideoPlayback } from "../../../shared/media/video-validation";
 import {
   ArrowLeft,
   CheckCircle2,

@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { validateEvidenceFile, validateEvidenceSelection, allowedExtension, evidenceInputs, MAX_INVOICE_SIZE, MAX_PHOTO_SIZE, MAX_PHOTO_COUNT, MAX_VIDEO_SIZE } from "./evidence.ts";
 import { registerHooks } from "node:module";
 const hooks = registerHooks({ resolve(specifier, context, next) {
+  if (specifier === "../../../shared/media/video-files") return next(`${specifier}.ts`, context);
   if (specifier === "./types") return next("./types.ts", context);
   return next(specifier, context);
 } });
+const { validateEvidenceFile, validateEvidenceSelection, allowedExtension, evidenceInputs, MAX_INVOICE_SIZE, MAX_PHOTO_SIZE, MAX_PHOTO_COUNT, MAX_VIDEO_SIZE } = await import("./evidence.ts");
 const { normalizeLocalTicket } = await import("./ticket-mappers.ts");
 hooks.deregister();
 

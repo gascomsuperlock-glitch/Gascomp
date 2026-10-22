@@ -21,6 +21,7 @@ import { Overview } from "@/features/admin/components/overview";
 import { TicketInbox, type TicketInboxFocus } from "@/features/warranty/components/ticket-inbox";
 import { ServiceCenterAdmin } from "@/features/service-center/components/service-center-admin";
 import { AssistantAdmin } from "@/features/ai-assistance/components/assistant-admin";
+import { CareDirectInbox } from "@/features/care-direct/components/care-direct-inbox";
 import { CareAdmin } from "@/features/gascomp-care/components/care-admin";
 import { WarrantyNotifications } from "@/features/warranty/components/warranty-notifications";
 import { DetailsEditor } from "@/features/catalog/components/details-editor";
@@ -36,17 +37,19 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
   const router = useRouter();
   const [tickets, setTickets] = useState(initialTickets);
   const [view, setViewState] = useState<MainView>(initialTicketId ? "tickets" : "overview");
+  const [careDirectVisited, setCareDirectVisited] = useState(false);
   const [serviceCentersVisited, setServiceCentersVisited] = useState(false);
   const [inboxFocus, setInboxFocus] = useState<TicketInboxFocus | undefined>(initialTicketId ? { ticketId: initialTicketId, request: 0 } : undefined);
   const inboxFocusRequests = useRef(0);
   function setView(nextView: MainView) {
+    if (nextView === "care-direct") setCareDirectVisited(true);
     if (nextView === "service-centers") setServiceCentersVisited(true);
     // A ticket link or notification opens its ticket once; returning to the inbox later lists every claim.
     if (nextView !== "tickets") setInboxFocus(undefined);
     setViewState(nextView);
   }
   const compactTicketHeader = view === "tickets" && !hasUnsavedChanges && saveState !== "saving" && saveState !== "error";
-  const hideCatalogControls = (view === "care" || view === "service-centers" || view === "ai-assistance") && !hasUnsavedChanges && saveState !== "saving" && saveState !== "error" && !saveError;
+  const hideCatalogControls = (view === "care-direct" || view === "care" || view === "service-centers" || view === "ai-assistance") && !hasUnsavedChanges && saveState !== "saving" && saveState !== "error" && !saveError;
   const [editorTab, setEditorTab] = useState<EditorTab>("details");
   const [selectedId, setSelectedId] = useState(content.products[0]?.id ?? "");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -149,7 +152,7 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
             <button type="button" onClick={() => setSidebarOpen(true)} className="grid size-9 place-items-center rounded-xl border border-[#2c3038]/10 lg:hidden" aria-label="Open menu"><Menu className="size-4" /></button>
             <div>
               <p className="text-[10px] font-bold text-[#8c9498]">DASHBOARD GASCOMP</p>
-              <h1 className={`${compactTicketHeader ? "text-xs min-[360px]:text-sm" : "text-sm"} font-extrabold`}>{view === "overview" ? "Overview" : view === "content" ? "Help Content" : view === "tickets" ? "Warranty tickets" : view === "care" ? "GascompCare" : view === "service-centers" ? "Service Centers" : view === "ai-assistance" ? "AI Assistance" : "Settings"}</h1>
+              <h1 className={`${compactTicketHeader ? "text-xs min-[360px]:text-sm" : "text-sm"} font-extrabold`}>{view === "overview" ? "Overview" : view === "content" ? "Help Content" : view === "tickets" ? "Warranty tickets" : view === "care-direct" ? "CareDirect" : view === "care" ? "GascompCare" : view === "service-centers" ? "Service Centers" : view === "ai-assistance" ? "AI Assistance" : "Settings"}</h1>
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
@@ -253,6 +256,7 @@ export function AdminDashboard({ initialTicketId, initialTickets = [], backendEr
             {ticketError && <p role="alert" className="mb-6 rounded-2xl border border-[#d65d50]/30 bg-[#fff0ef] p-4 text-xs leading-5 text-[#a23f36]">{ticketError}</p>}
             {view === "tickets" && !ticketError && <TicketInbox focus={inboxFocus} tickets={tickets} setTickets={setTickets} onTicketUpdated={(ticket) => setAcknowledgedTickets((current) => ({ ...current, [ticket.ticketId]: ticket }))} />}
 
+            {careDirectVisited && <div hidden={view !== "care-direct"}><CareDirectInbox active={view === "care-direct"} /></div>}
             {view === "care" && <CareAdmin />}
             {view === "ai-assistance" && <AssistantAdmin />}
             {serviceCentersVisited && <div hidden={view !== "service-centers"}><ServiceCenterAdmin /></div>}

@@ -1,3 +1,4 @@
+import { ALLOWED_VIDEO_TYPES, validateVideoFile } from "../../../shared/media/video-files";
 import type { WarrantyEvidenceKind } from "./types";
 import type { WarrantyTicketInput } from "./input";
 
@@ -7,41 +8,17 @@ const ALLOWED_IMAGE_TYPES: Record<string, string> = {
   "image/webp": ".webp",
 };
 const ALLOWED_INVOICE_TYPES: Record<string, string> = { ...ALLOWED_IMAGE_TYPES, "application/pdf": ".pdf" };
-const ALLOWED_VIDEO_TYPES: Record<string, string> = {
-  "video/mp4": ".mp4",
-  "video/webm": ".webm",
-  "video/quicktime": ".mov",
-  "video/x-matroska": ".mkv",
-  "video/x-msvideo": ".avi",
-  "video/avi": ".avi",
-  "video/msvideo": ".avi",
-  "video/3gpp": ".3gp",
-  "video/3gpp2": ".3g2",
-  "video/mpeg": ".mpeg",
-  "video/mp2t": ".mts",
-  "video/x-ms-wmv": ".wmv",
-  "video/x-flv": ".flv",
-  "video/ogg": ".ogv",
-  "video/x-m4v": ".m4v",
-};
-
-export const VIDEO_ACCEPT = "video/*,.mp4,.mov,.webm,.mkv,.avi,.3gp,.3g2,.mpeg,.mpg,.mts,.m2ts,.ts,.wmv,.asf,.flv,.ogv,.m4v";
-const VIDEO_EXTENSIONS = new Set(VIDEO_ACCEPT.split(",").slice(1));
-
 export const MAX_INVOICE_SIZE = 4 * 1024 * 1024;
 export const MAX_PHOTO_SIZE = 4 * 1024 * 1024;
 export const MAX_PHOTO_COUNT = 4;
-export const MAX_VIDEO_MB = 50;
-export const MAX_VIDEO_SIZE = MAX_VIDEO_MB * 1024 * 1024;
+export { VIDEO_ACCEPT, MAX_VIDEO_MB, MAX_VIDEO_SIZE } from "../../../shared/media/video-files";
 
 export function validateEvidenceFile(file: File, kind: WarrantyEvidenceKind): string | null {
-  const allowedTypes = kind === "invoice" ? ALLOWED_INVOICE_TYPES : kind === "photo" ? ALLOWED_IMAGE_TYPES : ALLOWED_VIDEO_TYPES;
-  const maxSize = kind === "invoice" ? MAX_INVOICE_SIZE : kind === "photo" ? MAX_PHOTO_SIZE : MAX_VIDEO_SIZE;
+  if (kind === "video") return validateVideoFile(file);
+  const allowedTypes = kind === "invoice" ? ALLOWED_INVOICE_TYPES : ALLOWED_IMAGE_TYPES;
+  const maxSize = kind === "invoice" ? MAX_INVOICE_SIZE : MAX_PHOTO_SIZE;
   if (file.size === 0) return "The selected file is empty. Upload a non-empty file.";
-  const videoCandidate = kind === "video" && (file.type.startsWith("video/") ||
-    ((!file.type || file.type === "application/octet-stream" || file.type === "application/ogg") &&
-      VIDEO_EXTENSIONS.has(`.${file.name?.split(".").pop()?.toLowerCase()}`)));
-  if (!(file.type in allowedTypes) && !videoCandidate) {
+  if (!(file.type in allowedTypes)) {
     if (kind === "invoice") return "Proof of purchase must be a JPG, PNG, WebP, or PDF file.";
     if (kind === "photo") return "Issue photos must be JPG, PNG, or WebP files.";
     return "Choose a video file such as MP4, MOV, WebM, MKV, AVI, or MPEG.";
@@ -49,7 +26,7 @@ export function validateEvidenceFile(file: File, kind: WarrantyEvidenceKind): st
   if (file.size > maxSize) {
     if (kind === "invoice") return "Proof of purchase must be no larger than 4 MB.";
     if (kind === "photo") return "Each photo must be no larger than 4 MB.";
-    return `The issue video must be no larger than ${MAX_VIDEO_MB} MB.`;
+    return "The selected file is too large.";
   }
   return null;
 }

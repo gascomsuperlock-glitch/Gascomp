@@ -12,6 +12,7 @@ Supabase PostgreSQL adalah database bersama utama; Supabase Storage menyimpan ga
 | Thumbnail video tutorial | Bucket `product-images` publik di bawah `tutorial-thumbnails/`; unggahan admin ditandatangani, WebP/JPEG/PNG yang dihasilkan hingga 1 MB |
 | File gambar produk | Bucket `product-images` publik; unggahan admin ditandatangani di bawah `products/{productId}/`, lalu metadata disimpan dengan **Save** eksplisit |
 | Metadata gambar dan hubungan produk/variasi | PostgreSQL |
+| Laporan kendala CareDirect | Tabel `care_direct_reports` privat dan bucket `care-direct-evidence` privat; video hingga 50 MiB |
 | Tiket garansi dan metadata bukti | Tabel PostgreSQL privat |
 | Akun GascompCare, sesi, dan batas login | Tabel PostgreSQL privat; akses hanya server |
 | Lokasi pusat layanan | PostgreSQL; pembacaan publik terbatas pada lokasi aktif |
@@ -157,3 +158,11 @@ Penyelesaian yang dihasilkan memvalidasi bentuk respons, teks biasa, asal usul a
 ## Status tiket garansi Pending
 
 `202610140001_warranty_pending_status.sql` menambahkan `pending` pada constraint `warranty_tickets_status_check`. Kelima nilai lama dan default `new` dipertahankan. Migrasi tidak mengubah baris tiket, solusi, bukti, trigger, atau kebijakan akses. Jalur rilis otomatis menerapkannya sebelum promosi aplikasi. Lihat [kontrol status garansi](../features/warranty.md#restored-status-controls).
+
+## Penyimpanan CareDirect
+
+Migrasi lokal `202610220001_care_direct_reports.sql` menambahkan tabel laporan terpisah, identitas pengiriman unik, pembatasan status, RLS dan pencabutan akses `anon`/`authenticated`, serta bucket video privat 50 MiB. Metadata JSONB menyimpan laporan dan identitas bukti; hanya server menggunakan peran layanan. [Spesifikasi CareDirect](../features/care-direct.md) memiliki kontrak pelanggan/admin.
+
+Bukti diunggah sebelum metadata laporan diterbitkan. Pengulangan dengan identitas dan isi yang sama mengembalikan laporan tersimpan; isi berbeda ditolak. Kegagalan konfirmasi penyimpanan direkonsiliasi sebelum bukti dihapus. Jika database tidak dapat memastikan apakah penulisan berhasil, bukti dipertahankan agar laporan yang mungkin sudah tersimpan tidak kehilangan videonya. Kondisi tersebut memerlukan pemeriksaan operasional; jangan menghapus objek hanya karena respons klien gagal.
+
+Pengembangan tanpa Supabase menyimpan data privat di `.data/care-direct`; produksi tanpa konfigurasi penyimpanan menolak pengiriman. Migrasi belum diterapkan ke produksi pada pekerjaan implementasi 22 Oktober 2026. Bukti pengujian terisolasi dan status rilis berada di [serah terima CareDirect](../../work/handoffs/handoff-care-direct-complete-v1.md).

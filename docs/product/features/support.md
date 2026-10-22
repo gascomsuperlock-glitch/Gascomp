@@ -7,6 +7,7 @@ Dukungan produk membuka tindakan layanan berikut:
 
 | Tindakan | Tujuan |
 | --- | --- |
+| Lapor Kendala — CareDirect | [Formulir keluhan](care-direct.md) `/lapor-kendala`, terpisah dari garansi |
 | Klaim Garansi | Aliran `/klaim-garansi` internal dengan konteks produk dan SKU |
 | Gascomp Care | Halaman kontak pelanggan resmi Gascomp |
 | Pusat Layanan | Direktori `/service-center` internal, mempertahankan konteks pertanyaan produk dan SKU dari tindakan produk |

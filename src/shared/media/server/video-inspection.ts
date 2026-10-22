@@ -1,5 +1,5 @@
 import "server-only";
-import { detectVideoContainer } from "../model/video-evidence";
+import { detectVideoContainer } from "../video-evidence";
 import type { Worker as NodeWorker } from "node:worker_threads";
 import path from "node:path";
 
@@ -26,7 +26,7 @@ export async function inspectVideo(file: File, budgetMs = VIDEO_INSPECTION_BUDGE
     let worker: NodeWorker;
     try {
       // Keep the traced Node entrypoint outside both Turbopack and Webpack bundling.
-      const workerPath = path.join(process.cwd(), "src/features/warranty/server/video-inspection-worker.mjs");
+      const workerPath = path.join(process.cwd(), "src/shared/media/server/video-inspection-worker.mjs");
       worker = new Worker(workerPath, {
         workerData: { bytes, demuxer: container.demuxer },
         transferList: [bytes],
@@ -48,7 +48,7 @@ export async function inspectVideo(file: File, budgetMs = VIDEO_INSPECTION_BUDGE
       void worker.terminate();
       // A rejected claim leaves no ticket, so this is its only trace. No customer values.
       if (result !== "valid" || partial) {
-        console.warn("Warranty video inspection", { result, partial, demuxer: container!.demuxer, megabytes: Math.round(file.size / 1024 / 1024), frames, seconds: Math.round((Date.now() - started) / 1000), detail });
+        console.warn("Evidence video inspection", { result, partial, demuxer: container!.demuxer, megabytes: Math.round(file.size / 1024 / 1024), frames, seconds: Math.round((Date.now() - started) / 1000), detail });
       }
       resolve(result);
     }

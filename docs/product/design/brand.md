@@ -32,7 +32,7 @@ Redesain tanggal 14 September 2026 mencakup halaman depan dan header publik yang
 
 Sumber: koreksi pemilik pada 25 September 2026 bahwa navbar ponsel berantakan; dropdown diperlukan hanya ketika ruang layar tidak cukup.
 
-- Header mempertahankan logo dan kontrol navigasi dalam satu baris. Di bawah lebar 1100 piksel, tombol `Menu` membuka dropdown; mulai 1100 piksel, seluruh navigasi tampil langsung. Ambang ini merupakan keputusan implementasi untuk menampung label kedua bahasa dan header `compact`.
+- Header mempertahankan logo dan kontrol navigasi dalam satu baris. Di bawah lebar 1280 piksel, tombol `Menu` membuka dropdown; mulai 1280 piksel, seluruh navigasi tampil langsung. Ambang ini diperbarui pada 22 Oktober 2026 untuk menampung tautan CareDirect, label kedua bahasa, dan header `compact`.
 - Dropdown menyediakan seluruh tautan, pemilih bahasa, login admin, dan kontak. Panduan produk serta cara kerja tetap dapat diakses di ponsel.
 - Menu menutup setelah tautan dipilih, klik di luar header, fokus meninggalkan header, tombol Escape, atau perpindahan mode layar. Escape mengembalikan fokus ke tombol menu. Panel dapat digulir pada layar pendek.
 - Penerimaan: header tidak membungkus atau meluber pada ponsel; dropdown dapat digunakan dengan sentuhan dan keyboard; desktop menampilkan navigasi langsung dalam kedua bahasa. Cakupan regresi browser berada di [pengujian navigasi](../../../tests/navigation.spec.ts).

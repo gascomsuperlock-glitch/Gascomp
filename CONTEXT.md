@@ -19,6 +19,7 @@ Baca spesifikasi produk yang sesuai, lalu hanya baca konteks untuk area yang aka
 | `src/shared/` | [Baca konteks](src/shared/CONTEXT.md) | Infrastruktur yang dapat digunakan kembali |
 | `src/features/auth/` | [Baca konteks](src/features/auth/CONTEXT.md) | Otentikasi admin |
 | `src/features/catalog/` | [Baca konteks](src/features/catalog/CONTEXT.md) | Katalog dan bantuan produk |
+| `src/features/care-direct/` | [Baca konteks](src/features/care-direct/CONTEXT.md) | Laporan kendala CareDirect |
 | `src/features/warranty/` | [Baca konteks](src/features/warranty/CONTEXT.md) | Klaim garansi dan tiket |
 | `src/features/gascomp-care/` | [Baca konteks](src/features/gascomp-care/CONTEXT.md) | Keanggotaan GascompCare |
 | `src/features/service-center/` | [Baca konteks](src/features/service-center/CONTEXT.md) | Direktori pusat layanan |

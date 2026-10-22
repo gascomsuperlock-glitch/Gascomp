@@ -6,7 +6,7 @@
 .skipLink { position: fixed; z-index: 100; top: 1rem; left: 1rem; padding: 1rem; border-radius: .5rem; background: #fff; transform: translateY(-200%); font-weight: 700; }
 .skipLink:focus { transform: translateY(0); }
 .container { width: 100%; max-width: 76rem; margin-inline: auto; }
-.quickLinks { display: grid; grid-template-columns: repeat(3, 1fr); max-width: 80rem; margin: auto; padding: 0 2rem; }
+.quickLinks { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 80rem; margin: auto; padding: 0 2rem; }
 .quickLinks a { display: flex; align-items: center; gap: 1rem; padding: 1.6rem 1.5rem; font-size: .8rem; font-weight: 800; border-bottom: 1px solid #021b4020; }
 .quickLinks a + a { border-left: 1px solid #021b4020; }
 .quickLinks a > svg { width: 21px; height: 21px; flex-shrink: 0; }

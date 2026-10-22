@@ -46,6 +46,7 @@ export function HomePage() {
         <div className={styles.quickLinks}>
           <a href="#produk"><BookOpenCheck aria-hidden="true" /> {copy.productGuides} <ArrowRight aria-hidden="true" /></a>
           <Link href="/klaim-garansi"><ShieldCheck aria-hidden="true" /> {copy.warrantySupport} <ArrowRight aria-hidden="true" /></Link>
+          <Link href="/lapor-kendala"><CircleHelp aria-hidden="true" /> {language === "id" ? "Lapor Kendala" : "Report an issue"} <ArrowRight aria-hidden="true" /></Link>
           <a href="#hubungi"><MessageCircle aria-hidden="true" /> {copy.helpingHand} <ArrowRight aria-hidden="true" /></a>
         </div>
 

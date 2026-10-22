@@ -9,6 +9,7 @@ src/
   features/
     auth/                         # Login admin, sesi, dan logout
     catalog/                      # Katalog publik, bantuan produk, editor, QR, konten
+    care-direct/                  # Laporan kendala, video privat dan tindak lanjut admin
     warranty/                     # Klaim, tiket, status, dan bukti
     gascomp-care/                 # Akun anggota, sesi, dan kartu virtual
     service-center/               # Lokasi Indonesia, peta publik, dan administrasi lokasi
@@ -16,6 +17,7 @@ src/
     admin/                        # Dashboard, navigasi, ringkasan lintas fitur
   shared/
     components/                   # Merek, header, dan UI yang dapat digunakan kembali
+    media/                        # Validasi video, persiapan browser dan decoder server bersama
     lib/                          # ID, nama kelas, pembantu YouTube/WhatsApp, tipe ikon
     integrations/supabase/        # Pembuatan klien hanya di server
 scraping/

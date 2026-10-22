@@ -7,9 +7,9 @@ for (const language of ["en", "id"]) {
     const header = page.locator("header").first();
     const nav = header.getByRole("navigation");
     const menu = header.getByRole("button", { name: "Menu", exact: true });
-    for (const width of [320, 375, 640, 768, 1024, 1099, 1100, 1280, 1440]) {
+    for (const width of [320, 375, 640, 768, 1024, 1099, 1100, 1279, 1280, 1440]) {
       await page.setViewportSize({ width, height: 800 });
-      if (width < 1100) {
+      if (width < 1280) {
         await expect(menu).toBeVisible();
         await expect(nav).toBeHidden();
         await menu.click();
@@ -18,7 +18,7 @@ for (const language of ["en", "id"]) {
         await expect(menu).toBeHidden();
         await expect(nav).toBeVisible();
       }
-      await expect(nav.locator("a")).toHaveCount(6);
+      await expect(nav.locator("a")).toHaveCount(7);
       for (const link of await nav.locator("a").all()) await expect(link).toBeVisible();
       const bounds = await header.evaluate((element) => {
         const headerBox = element.getBoundingClientRect();
@@ -31,14 +31,14 @@ for (const language of ["en", "id"]) {
           overlap: (() => {
             const brand = element.querySelector("a")!.getBoundingClientRect();
             const navigation = element.querySelector("nav")!.getBoundingClientRect();
-            return innerWidth >= 1100 && brand.right > navigation.left;
+            return innerWidth >= 1280 && brand.right > navigation.left;
           })(),
         };
       });
       expect(bounds.fits).toBe(true);
       expect(bounds.overlap).toBe(false);
       expect(bounds.height).toBeLessThanOrEqual(74);
-      if (width < 1100) {
+      if (width < 1280) {
         await page.keyboard.press("Escape");
         await expect(nav).toBeHidden();
         await expect(menu).toBeFocused();

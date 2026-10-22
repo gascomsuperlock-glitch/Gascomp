@@ -11,6 +11,7 @@ export function AdminSidebar({ view, setView, open, close }: { view: MainView; s
     ["overview", LayoutDashboard, "Overview"],
     ["content", BookOpen, "Help content"],
     ["tickets", Inbox, "Warranty tickets"],
+    ["care-direct", MessageCircle, "CareDirect"],
     ["care", ShieldCheck, "GascompCare"],
     ["service-centers", MapPin, "Service Centers"],
     ["ai-assistance", MessageCircle, "AI Assistance"],

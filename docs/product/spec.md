@@ -14,6 +14,7 @@ Spesifikasi dikelompokkan berdasarkan topik untuk menjaga setiap konteks kerja t
 | Kode QR produk dan URL | [QR](features/qr.md) | QR per-SKU, URL stabil, retensi panduan arsip | [komponen QR](../../src/features/catalog/components/qr-code-card.tsx), [rute](../../src/app/) |
 | Saluran dukungan pelanggan | [dukungan](features/support.md) | WhatsApp, Gascomp Care, Pusat Layanan | [katalog](../../src/features/catalog/), [service center](../../src/features/service-center/) |
 | Bantuan AI | [bantuan AI](features/ai-assistance.md) | Percakapan berbasis Obsidian, pekerja Hermes, serah terima WhatsApp, kontrol runtime | [fitur](../../src/features/ai-assistance/), [pekerja](../../scraping/ai_assistance/), [operasi](../../scripts/ai-assistance/) |
+| Laporan kendala CareDirect | [CareDirect](features/care-direct.md) | Formulir keluhan, video privat, admin dan WhatsApp | [CareDirect](../../src/features/care-direct/) |
 | Klaim garansi dan tiket | [garansi](features/warranty.md) | Formulir, bukti, nomor tiket, status, akses pribadi, kebijakan | [garansi](../../src/features/warranty/) |
 | Keanggotaan GascompCare | [GascompCare](features/gascomp-care.md) | Akun anggota, login, kartu virtual, perpanjangan garansi berbayar yang direncanakan | [GascompCare](../../src/features/gascomp-care/) |
 | Sinkronisasi katalog Duoke | [katalog Duoke](integrations/duoke-catalog.md) | Pengumpulan data, kolom sumber, impor idempoten, jaringan catatan produk Obsidian | [pengambilan data](../../scraping/duoke/catalog/), [skrip](../../scripts/duoke/) |

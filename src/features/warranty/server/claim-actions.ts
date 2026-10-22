@@ -5,8 +5,8 @@ import { headers } from "next/headers";
 import { saveWarrantyTicket } from "@/features/warranty/server/ticket-service";
 import { validateEvidenceSelection } from "@/features/warranty/model/evidence";
 import type { WarrantyTicketInput } from "@/features/warranty/model/input";
-import { UNREADABLE_VIDEO_ERROR, detectVideoContainer } from "@/features/warranty/model/video-evidence";
-import { inspectVideo } from "./video-inspection";
+import { UNREADABLE_VIDEO_ERROR, detectVideoContainer } from "../../../shared/media/video-evidence";
+import { inspectVideo } from "../../../shared/media/server/video-inspection";
 
 export type WarrantyClaimState = {
   error?: string;
