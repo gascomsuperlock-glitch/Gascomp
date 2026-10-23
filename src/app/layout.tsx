@@ -17,6 +17,10 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
+  if (process.env.GASCOMP_MAIN_SITE_ENABLED === "true") {
+    const language = await requestLanguage();
+    return <html lang={language} className="h-full antialiased"><body><LanguageProvider initialLanguage={language}>{children}</LanguageProvider></body></html>;
+  }
   const [loaded, language] = await Promise.all([loadPublicSiteContent(), requestLanguage()]);
   return (
     <html lang={language} className="h-full antialiased" data-scroll-behavior="smooth">

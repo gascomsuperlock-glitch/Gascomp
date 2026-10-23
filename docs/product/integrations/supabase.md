@@ -12,6 +12,7 @@ Supabase PostgreSQL adalah database bersama utama; Supabase Storage menyimpan ga
 | Thumbnail video tutorial | Bucket `product-images` publik di bawah `tutorial-thumbnails/`; unggahan admin ditandatangani, WebP/JPEG/PNG yang dihasilkan hingga 1 MB |
 | File gambar produk | Bucket `product-images` publik; unggahan admin ditandatangani di bawah `products/{productId}/`, lalu metadata disimpan dengan **Save** eksplisit |
 | Metadata gambar dan hubungan produk/variasi | PostgreSQL |
+| Pesan kontak/reseller situs utama | `main_site_leads` privat, RPC idempotensi/pembatasan, antrean notifikasi; lihat [situs utama](../features/main-site.md) |
 | Laporan kendala CareDirect | Tabel `care_direct_reports` privat dan bucket `care-direct-evidence` privat; video hingga 50 MiB |
 | Tiket garansi dan metadata bukti | Tabel PostgreSQL privat |
 | Akun GascompCare, sesi, dan batas login | Tabel PostgreSQL privat; akses hanya server |

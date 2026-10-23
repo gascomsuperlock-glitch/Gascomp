@@ -1,0 +1,127 @@
+.migration-preview {
+  width: min(1440px, 100%);
+  margin: auto;
+  padding: clamp(16px, 3vw, 40px);
+  color: #192c40;
+}
+.migration-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.migration-header p {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #0035b9;
+}
+.migration-preview h1 {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 800;
+}
+.migration-preview h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 20px 0;
+}
+.migration-preview h3 {
+  font-size: 21px;
+  font-weight: 700;
+  margin: 16px 0;
+}
+.migration-preview a {
+  color: #0035b9;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.migration-notice {
+  border: 1px solid #dbb96b;
+  background: #fff9eb;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.migration-grid {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 32px;
+  margin-top: 20px;
+}
+.migration-grid aside {
+  max-height: 80vh;
+  overflow: auto;
+  border: 1px solid #dce3ec;
+  border-radius: 12px;
+  padding: 16px;
+}
+.migration-grid summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 10px 0;
+}
+.migration-grid aside li {
+  padding: 7px 0;
+  overflow-wrap: anywhere;
+}
+.migration-grid [aria-current="page"] {
+  font-weight: 800;
+}
+.migration-grid article {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  border: 1px solid #dce3ec;
+  padding: clamp(16px, 3vw, 32px);
+  border-radius: 16px;
+}
+.migration-path {
+  font-family: monospace;
+  font-size: 13px;
+}
+.migration-content {
+  line-height: 1.8;
+}
+.migration-content p {
+  margin: 12px 0;
+}
+.migration-content img {
+  display: block;
+  max-width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  margin: 20px auto;
+}
+.migration-content ul,
+.migration-content ol {
+  padding-left: 24px;
+  list-style: revert;
+}
+.migration-content table {
+  display: block;
+  max-width: 100%;
+  overflow: auto;
+}
+.migration-content td,
+.migration-content th {
+  padding: 8px;
+  border: 1px solid #dce3ec;
+}
+.migration-preview a:focus-visible,
+.migration-preview summary:focus-visible {
+  outline: 3px solid #0035b9;
+  outline-offset: 4px;
+}
+@media (max-width: 760px) {
+  .migration-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .migration-grid aside {
+    max-height: 240px;
+  }
+  .migration-header {
+    align-items: start;
+    flex-direction: column;
+  }
+}

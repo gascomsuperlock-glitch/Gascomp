@@ -8,6 +8,7 @@ verifikasi file saat ini sebelum mempercayainya. Indeks ini bukan daftar tugas p
 
 | Alur kerja | Serah terima |
 | --- | --- |
+| Migrasi PHP ke JavaScript | [Migrasi PHP](handoffs/handoff-php-javascript-blocked-v1.md) |
 | Perbaikan parser konfigurasi proyek Codex | [Konfigurasi Codex](handoffs/handoff-codex-config-complete-v1.md) |
 | Rilis seluruh perubahan ke GitHub dan Hostinger | [Rilis seluruh perubahan](handoffs/handoff-full-release-complete-v1.md) |
 | QR produk biasa dan QR halaman depan bermerk | [QR Bermerk](handoffs/handoff-branded-qr-complete-v2.md) |

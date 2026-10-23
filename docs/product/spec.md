@@ -10,6 +10,7 @@ Spesifikasi dikelompokkan berdasarkan topik untuk menjaga setiap konteks kerja t
 | --- | --- | --- | --- |
 | Tinjauan produk dan cakupan | [ikhtisar](overview.md) | Tujuan, pengguna, cakupan awal, indikator keberhasilan, keputusan terbuka | [README](../../README.md) |
 | Katalog produk dan bantuan | [katalog](features/catalog.md) | Pencarian, halaman produk, masalah, FAQ, video tutorial | [katalog](../../src/features/catalog/) |
+| Migrasi situs utama WordPress | [Situs utama](features/main-site.md) | Migrasi PHP ke JavaScript, inventaris konten, pratinjau privat | [fitur](../../src/features/main-site/), [ekspor](../../scripts/main-site/) |
 | Panel admin | [admin](features/admin.md) | Otentikasi, CRUD, draf/penerbitan, gambar, dashboard | [admin](../../src/features/admin/), [auth](../../src/features/auth/), [katalog](../../src/features/catalog/) |
 | Kode QR produk dan URL | [QR](features/qr.md) | QR per-SKU, URL stabil, retensi panduan arsip | [komponen QR](../../src/features/catalog/components/qr-code-card.tsx), [rute](../../src/app/) |
 | Saluran dukungan pelanggan | [dukungan](features/support.md) | WhatsApp, Gascomp Care, Pusat Layanan | [katalog](../../src/features/catalog/), [service center](../../src/features/service-center/) |

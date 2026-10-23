@@ -35,6 +35,7 @@ Ini adalah tanggung jawab yang dipicu oleh permintaan saat ini, bukan daftar tug
 | catalog/ | Cocokkan brosur ke SKU dan kontrak update hanya deskripsi. | Pratinjau berskala terbatas atau update deskripsi yang diotorisasi. |
 | ai-assistance/ | Periksa perilaku peluncuran, pilot, dan pratinjau untuk operasi yang diminta. | Operasi pekerja lokal yang dapat direproduksi dan keadaan runtime eksplisit. |
 | supabase/ | Baca aturan baseline migrasi dan periksa target/sejarah sebelum pekerjaan rilis. | Koneksi atau alat migrasi yang divalidasi; aplikasi produksi hanya bila diotorisasi. |
+| main-site/ | Ikuti [spesifikasi situs utama](../docs/product/features/main-site.md); ekspor publik baca-saja dengan batas origin, ukuran, dan pagination. | Snapshot privat untuk tinjauan, bukan publikasi. |
 | shared/ | Gunakan jalur terpusat, parsing lingkungan, dan klien skrip. | Jalur relatif modul yang konsisten di seluruh skrip. |
 | scratch/ | Periksa eksperimen hanya bila relevan dengan tugas saat ini. | Eksperimen terisolasi tanpa ketergantungan pada titik masuk aplikasi. |
 

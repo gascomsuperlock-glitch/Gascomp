@@ -24,6 +24,7 @@ Baca spesifikasi produk yang sesuai, lalu hanya baca konteks untuk area yang aka
 | `src/features/gascomp-care/` | [Baca konteks](src/features/gascomp-care/CONTEXT.md) | Keanggotaan GascompCare |
 | `src/features/service-center/` | [Baca konteks](src/features/service-center/CONTEXT.md) | Direktori pusat layanan |
 | `src/features/ai-assistance/` | [Baca konteks](src/features/ai-assistance/CONTEXT.md) | Bantuan AI pelanggan |
+| `src/features/main-site/` | [Baca konteks](src/features/main-site/CONTEXT.md) | Migrasi situs WordPress ke JavaScript |
 | `src/features/admin/` | [Baca konteks](src/features/admin/CONTEXT.md) | Komposisi ruang kerja admin |
 | `scripts/` | [Baca konteks](scripts/CONTEXT.md) | Operasi Node |
 | `scraping/` | [Baca konteks](scraping/CONTEXT.md) | Alur kerja Python |
