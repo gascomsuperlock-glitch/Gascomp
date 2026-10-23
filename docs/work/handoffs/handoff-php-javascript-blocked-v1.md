@@ -13,8 +13,9 @@ Migrasikan seluruh situs utama WordPress dan plugin PHP ke JavaScript, dengan pe
 
 - Ruflo MCP digunakan untuk tugas persisten `task-1792723806493-78jwip`. Tidak ada agen Ruflo yang diklaim telah mengerjakan kode. `system_status` MCP melaporkan registry aktif; health komponen lain tidak diukur oleh hasil itu.
 - Skill `ruflo-status` dijalankan: `npx @claude-flow/cli@latest doctor` memakai CLI 3.59.17, 18 pemeriksaan lulus, 14 warning, 1 gagal karena disk 91% terpakai (19 GiB tersisa). CLI lokal belum diinisialisasi; `status` melaporkan hal tersebut. Tidak ada API key agen terdeteksi. MCP memiliki state sendiri dan tetap menerima tugas. Tidak dilakukan `init`, reset, perbaikan instalasi, atau klaim eksekusi paralel.
-- Hostinger `list_sites` diperiksa lagi setelah pengguna melanjutkan; masih mengembalikan sesi hilang/kedaluwarsa. Tidak dapat memulihkan login akun dari tugas Ruflo. Akses lengkap sumber dan server produksi belum tersedia.
-- Perubahan pengguna di AI, CareDirect, dokumentasi, dan folder `masalah` yang sudah ada dipertahankan. Push kode diminta pemilik pada 23 Oktober 2026 dan disiapkan pada branch `feat/main-site-javascript-migration`, terpisah dari pemicu rilis produksi. Tidak ada deployment, perubahan DNS/hosting, penerapan migrasi produksi, penghapusan PHP, atau email nyata.
+- Saat pemilik meminta "Livekan sekarang", API hosting umum berhasil membaca situs dan `.htaccess`; pernyataan sebelumnya bahwa seluruh akses hosting terhalang sudah tidak berlaku. Konektor WordPress `list_sites` tetap mengembalikan sesi hilang/kedaluwarsa, termasuk sesudah pemilik menyatakan "sudah login". Inventaris WordPress terautentikasi belum terbaca. Jalur alternatif `wordpress_installations_list` juga gagal dengan timeout 300 detik.
+- Topologi diverifikasi ulang melalui API: situs utama memakai `public_html`; `support` dan `bantuan` sama-sama memakai `public_html/bantuan`, dengan `.htaccess` Passenger yang identik dan Node 22. `.htaccess` utama masih berisi WordPress/LiteSpeed. Daftar direktori utama benar-benar memuat `bantuan`, `GC-technology`, dan `zengxin-technology`. Operasi `hosting_deploy` menyatakan menimpa konten tanpa undo; cadangan serta pelestarian subfolder belum terbukti. Tidak dijalankan penimpaan.
+- Perubahan pengguna di AI, CareDirect, dokumentasi, dan folder `masalah` yang sudah ada dipertahankan. Commit `043b95e` berhasil dipush dan diverifikasi pada remote branch `feat/main-site-javascript-migration`. Pemilik kemudian mengotorisasi deployment dengan "Livekan sekarang"; deployment belum dijalankan karena inventaris, artefak rilis nyata, konfigurasi provider, dan mekanisme cutover yang menjaga subfolder belum lengkap. Tidak ada deployment, perubahan DNS/hosting, penerapan migrasi produksi, penghapusan PHP, atau email nyata.
 
 ### Konten dan rilis lokal
 
@@ -42,7 +43,7 @@ Migrasikan seluruh situs utama WordPress dan plugin PHP ke JavaScript, dengan pe
 
 ## Pekerjaan dan keputusan yang tersisa
 
-1. Pulihkan koneksi Hostinger melalui sidebar IDE; mulai lagi dengan inventaris baca-saja. Jangan meminta kredensial dalam chat.
+1. Pulihkan konektor WordPress (API hosting umum sudah dapat dipakai). Pemilik sudah mencoba login; jangan menyamakan login hPanel dengan keberhasilan sesi konektor. Jangan meminta kredensial dalam chat.
 2. Cocokkan sumber terautentikasi: halaman/draf, artikel asli versus spam, seluruh media, formulir/penerima, permalink/pengalihan, serta fitur WooCommerce yang benar-benar dipakai. Jangan menerbitkan seluruh snapshot publik secara otomatis.
 3. Selesaikan keputusan per catatan dan terjemahan konten, lalu jalankan dry run dan pemindahan media penuh. Tinjau desain dengan konten nyata; fixture browser bukan desain final yang disetujui.
 4. Konfigurasikan direktori rilis persisten, Supabase, Turnstile, SMTP/penerima, backup/retensi, dan worker setelah sumber/tujuan dikonfirmasi. Tidak ada akun/rahasia layanan yang dibuat oleh implementasi ini.
@@ -73,7 +74,7 @@ Lingkungan lokal: Node 26.8.1, Next.js 16.4.2, 23 Oktober 2026.
 
 ## Tindakan selanjutnya
 
-Sambungkan Hostinger, cocokkan inventaris autentik dengan snapshot, lalu tuntaskan review konten dan konfigurasi rilis. Perbarui tugas Ruflo yang sama; jangan menandai completed sebelum penerimaan penuh/live benar-benar tercapai.
+Pulihkan akses inventaris WordPress terautentikasi, lalu tuntaskan review konten, konfigurasi rilis, dan cadangan/cutover yang mempertahankan seluruh subfolder. Sebelum penimpaan, laporkan temuan docroot dan `.htaccess` serta minta konfirmasi sesuai AGENTS.md; izin deploy umum sudah diberikan. Perbarui tugas Ruflo yang sama; jangan menandai completed sebelum penerimaan penuh/live benar-benar tercapai.
 
 ## Referensi
 
