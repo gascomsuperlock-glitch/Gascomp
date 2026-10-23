@@ -325,3 +325,9 @@ Bukti lengkap berada di [serah terima CareDirect](../../work/handoffs/handoff-ca
 ## Rilis opsi hapus CareDirect — 22 Oktober 2026
 
 Commit `4ba3d5e` dirilis melalui `release` dan Actions `39722309878` yang berhasil. Build `support` `01a161dd-6272-7066-a485-98e7d669121d` selesai pukul 11.29.06 WIB dengan commit serta waktu runtime yang cocok. Tidak ada migrasi baru atau perubahan hosting. Penghapusan laporan sintetis dan video privat diverifikasi lewat browser live serta pembacaan database/Storage; [bukti lengkap](../../work/handoffs/handoff-care-direct-complete-v1.md#tambahan-opsi-hapus--22-oktober-2026).
+
+## Penegasan target support pada 23 Oktober 2026
+
+Pemilik mengoreksi bahwa aplikasi yang dimaksud adalah kode murni dan menetapkan `support.gascompsuperlock.com` sebagai target rilis. Aplikasi tersebut sudah memakai JavaScript/TypeScript melalui Next.js. Jangan menafsirkan keberadaan WordPress pada domain induk sebagai instruksi migrasi domain induk. Branch eksperimen migrasi situs utama tidak termasuk rilis support. Konfirmasi domain sebelum memilih implementasi dan layanan yang akan diubah.
+
+Pembaruan keamanan support memakai Next.js/eslint-config-next 16.4.2 dan perbaikan transitif kompatibel; CLI shadcn ditempatkan pada devDependencies. Penanda publik `/deployment.json` untuk rilis ini berisi `support-security-20261023`; penanda harus dicocokkan dengan commit dan state build Hostinger, bukan menjadi bukti tunggal versi aktif. Audit runtime bersih tidak membuktikan keamanan total.
