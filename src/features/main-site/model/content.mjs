@@ -1,4 +1,5 @@
 import { parseFragment } from "parse5";
+import { purchaseUrl } from "./purchase.mjs";
 
 export const SOURCE_ORIGIN = "https://gascompsuperlock.com";
 const tags = new Set([
@@ -207,6 +208,9 @@ export function normalizeRecord(record, kind) {
     path,
     title,
     ...result,
+    ...(isProduct && record.type === "external"
+      ? { purchaseUrl: purchaseUrl(record.add_to_cart?.url) }
+      : {}),
     images: isProduct
       ? (record.images || [])
           .map((img) => ({

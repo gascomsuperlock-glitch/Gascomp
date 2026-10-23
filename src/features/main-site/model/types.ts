@@ -12,6 +12,7 @@ export type MainSiteRecord = {
   kind: "page" | "post" | "product";
   path: string;
   title: string;
+  purchaseUrl?: string | null;
   nodes: ContentNode[];
   forms: { fields: { name: string; type: string; required: boolean }[] }[];
   removed: Record<string, number>;

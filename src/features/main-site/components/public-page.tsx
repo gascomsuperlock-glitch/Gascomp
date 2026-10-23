@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { pageTitle } from "../model/labels";
+import { purchaseUrl } from "../model/purchase.mjs";
 import type { MainSiteRelease } from "../server/release";
 import { SafeContent } from "./safe-content";
 import { PublicChrome } from "./public-chrome";
@@ -24,6 +25,8 @@ export function PublicPage({
 }) {
   const id = language === "id";
   const record = release.records.find((item) => item.path === path);
+  const buyUrl =
+    record?.kind === "product" ? purchaseUrl(record.purchaseUrl) : null;
   const products = release.records.filter((item) => item.kind === "product");
   const posts = release.records.filter((item) => item.kind === "post");
   const categories = [
@@ -245,6 +248,15 @@ export function PublicPage({
               )}
               {record?.kind === "product" && (
                 <div className="main-actions">
+                  {buyUrl && (
+                    <a
+                      className="main-button"
+                      href={buyUrl}
+                      rel="noopener noreferrer"
+                    >
+                      {id ? "Beli di Shopee" : "Buy on Shopee"}
+                    </a>
+                  )}
                   <Link className="main-button" href="/kontak/">
                     {id ? "Tanyakan Produk Ini" : "Ask About This Product"}
                   </Link>

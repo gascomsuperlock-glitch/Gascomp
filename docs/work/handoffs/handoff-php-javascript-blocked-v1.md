@@ -17,6 +17,18 @@ Migrasikan seluruh situs utama WordPress dan plugin PHP ke JavaScript, dengan pe
 - Topologi diverifikasi ulang melalui API: situs utama memakai `public_html`; `support` dan `bantuan` sama-sama memakai `public_html/bantuan`, dengan `.htaccess` Passenger yang identik dan Node 22. `.htaccess` utama masih berisi WordPress/LiteSpeed. Daftar direktori utama benar-benar memuat `bantuan`, `GC-technology`, dan `zengxin-technology`. Operasi `hosting_deploy` menyatakan menimpa konten tanpa undo; cadangan serta pelestarian subfolder belum terbukti. Tidak dijalankan penimpaan.
 - Perubahan pengguna di AI, CareDirect, dokumentasi, dan folder `masalah` yang sudah ada dipertahankan. Commit `043b95e` berhasil dipush dan diverifikasi pada remote branch `feat/main-site-javascript-migration`. Pemilik kemudian mengotorisasi deployment dengan "Livekan sekarang"; deployment belum dijalankan karena inventaris, artefak rilis nyata, konfigurasi provider, dan mekanisme cutover yang menjaga subfolder belum lengkap. Tidak ada deployment, perubahan DNS/hosting, penerapan migrasi produksi, penghapusan PHP, atau email nyata.
 
+- Pada permintaan ulang "Live kan", pemeriksaan langsung kembali menunjukkan sesi konektor WordPress kedaluwarsa dan `.data/main-site/release.json` belum ada. Izin deployment tetap berlaku; tidak ada operasi deployment yang dikirim. Ketiadaan artefak produksi adalah pekerjaan implementasi yang belum selesai, bukan sekadar masalah login.
+
+### Inventaris terautentikasi dan checkout setelah koneksi pulih
+
+- Koneksi WordPress kini berhasil; hambatan sesi pada catatan historis di atas sudah teratasi. `list_site_tools`, `core/get-site-info`, dan `woocommerce/products-query` dijalankan. WordPress melaporkan versi 7.1.3, locale en-US, serta URL konfigurasi http; akses publik HTTPS tetap digunakan.
+- Inventaris terautentikasi berisi 50 produk, sama dengan ID pada Store API publik: 42 `external` dan 8 `simple`. Satu produk simple (7266) memiliki harga dan `is_purchasable: true`. Data inventaris lokal ada di `.data/main-site/woocommerce-inventory.json`; sumber publik terbaru di `products-current.json`.
+- Pemilik memilih mempertahankan checkout di situs dan menyamakan pembayaran/ongkir dengan sebelumnya. Keputusan permanen dicatat di spesifikasi situs utama. Jangan mengganti checkout menjadi marketplace atau formulir kontak.
+- GET `/checkout/` publik berakhir di beranda. Keranjang anonim sementara dengan satu produk 7266 menunjukkan harga Rp350.000, `needs_payment` dan `needs_shipping` true, metode `bacs`/`cod`, serta local pickup gratis tanpa alamat. Keranjang berhasil dikosongkan (HTTP 200). Tidak dibuat pesanan, draft checkout, atau pembayaran. Bukti tanpa token di `.data/main-site/anonymous-cart-capabilities.json`. Tarif semua zona, rekening bank, dan instruksi transfer belum terbaca.
+- Kemampuan WordPress tersedia hanya informasi situs/runtime, operasi produk/pesanan, dan SEO; tidak ada pembaca pengaturan pembayaran/ongkir, halaman lengkap, atau backup. Daftar folder plugin menunjukkan WooCommerce, Fluent Forms, Fonnte, Site Mailer, dan All-in-One WP Migration terpasang sebagai file; ini tidak membuktikan status aktif maupun konfigurasi.
+- Ekspor dan renderer kini mempertahankan 42 tujuan Shopee dari produk eksternal, dengan validasi host/toko/protokol dan decoding entitas URL. Snapshot asli belum ditimpa; tinjauan lama tidak dianggap berlaku otomatis untuk konten yang berubah.
+- Belum ada checkout JavaScript, artefak rilis produksi, konfigurasi Turnstile/SMTP, atau cadangan terverifikasi. API tidak menyediakan operasi backup yang ditemukan. Deployment belum dikirim; koneksi yang berhasil bukan bukti kesiapan rilis.
+
 ### Konten dan rilis lokal
 
 - Snapshot publik asli `.data/main-site/snapshot.json`: 14 halaman, 280 artikel, 50 produk, 12 formulir. Sampel artikel masih berisi perjudian/konten asing yang tidak terkait Gascomp. Snapshot tidak disetujui, tidak masuk Git, dan tidak disajikan sebagai berkas publik.
@@ -45,7 +57,7 @@ Migrasikan seluruh situs utama WordPress dan plugin PHP ke JavaScript, dengan pe
 
 ## Pekerjaan dan keputusan yang tersisa
 
-1. Pulihkan konektor WordPress (API hosting umum sudah dapat dipakai). Pemilik sudah mencoba login; jangan menyamakan login hPanel dengan keberhasilan sesi konektor. Jangan meminta kredensial dalam chat.
+1. Koneksi WordPress sudah pulih. Dapatkan pengaturan WooCommerce pembayaran/ongkir dan cadangan melalui akses admin/ekspor yang sesuai; alat terhubung saat ini tidak menyediakan pembacaan pengaturan tersebut. Jangan meminta kredensial dalam chat.
 2. Cocokkan sumber terautentikasi: halaman/draf, artikel asli versus spam, seluruh media, formulir/penerima, permalink/pengalihan, serta fitur WooCommerce yang benar-benar dipakai. Jangan menerbitkan seluruh snapshot publik secara otomatis.
 3. Selesaikan keputusan per catatan dan terjemahan konten, lalu jalankan dry run dan pemindahan media penuh. Tinjau desain dengan konten nyata; fixture browser bukan desain final yang disetujui.
 4. Konfigurasikan direktori rilis persisten, Supabase, Turnstile, SMTP/penerima, backup/retensi, dan worker setelah sumber/tujuan dikonfirmasi. Tidak ada akun/rahasia layanan yang dibuat oleh implementasi ini.
@@ -60,6 +72,8 @@ Pemilik mengotorisasi implementasi penuh dan penggunaan Ruflo pada 23 Oktober 20
 ## Verifikasi
 
 Lingkungan lokal: Node 26.8.1, Next.js 16.4.2, 23 Oktober 2026.
+
+Pemeriksaan tambahan perbaikan tautan pembelian: lint dan typecheck lulus (dua warning lama yang sama); tes penuh 336 total, 329 lulus, 7 dilewati, 0 gagal. Build mode utama dan default support lulus; `.next` akhir kembali ke mode support. Browser Chromium 390/1440 memverifikasi tautan produk, label Indonesia/Inggris, tanpa overflow, dan penolakan tujuan asing. Tidak membuka tautan pembelian eksternal.
 
 - `npm run lint`: lulus tanpa error; dua warning lama pada `masalah/gascomp-site-tools/assets/widgets.js` mengenai variabel catch tidak digunakan.
 - `npm run typecheck`: lulus.
@@ -76,7 +90,7 @@ Lingkungan lokal: Node 26.8.1, Next.js 16.4.2, 23 Oktober 2026.
 
 ## Tindakan selanjutnya
 
-Pulihkan akses inventaris WordPress terautentikasi, lalu tuntaskan review konten, konfigurasi rilis, dan cadangan/cutover yang mempertahankan seluruh subfolder. Sebelum penimpaan, laporkan temuan docroot dan `.htaccess` serta minta konfirmasi sesuai AGENTS.md; izin deploy umum sudah diberikan. Perbarui tugas Ruflo yang sama; jangan menandai completed sebelum penerimaan penuh/live benar-benar tercapai.
+Lanjutkan implementasi checkout sesuai konfigurasi lama setelah pengaturan pembayaran/ongkir diperoleh; tuntaskan review konten, konfigurasi rilis, dan cadangan/cutover yang mempertahankan seluruh subfolder. Koneksi WordPress sudah pulih, jangan meminta login ulang sebagai penghalang lama. Sebelum penimpaan, laporkan temuan docroot dan `.htaccess` serta minta konfirmasi sesuai AGENTS.md; izin deploy umum sudah diberikan. Perbarui tugas Ruflo yang sama; jangan menandai completed sebelum penerimaan penuh/live benar-benar tercapai.
 
 ## Referensi
 

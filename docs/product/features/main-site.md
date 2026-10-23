@@ -27,7 +27,7 @@ Status dan hasil pemeriksaan aktual berada di [serah terima](../../work/handoffs
 
 `GASCOMP_MAIN_SITE_ENABLED=true` digunakan pada build dan runtime situs utama yang terpisah. Nilai bawaan tetap false untuk aplikasi bantuan. Mode utama merutekan beranda serta URL WordPress ke fitur `main-site`; URL bantuan pelanggan diarahkan ke hostname support. Konfigurasi ini tidak memisahkan docroot Hostinger secara otomatis dan tidak boleh diaktifkan begitu saja pada deployment support.
 
-Implementasi publik menyediakan beranda, katalog dengan pencarian/pagination 12 item, kategori, detail produk, daftar/detail artikel, halaman informasi, sitemap, robots, serta navigasi Indonesia/Inggris. Isi warisan tetap berbahasa sumber; terjemahan lengkap belum dihasilkan otomatis. Header/footer, galeri, grid, dan formulir tidak membutuhkan Elementor/PHP. Harga, checkout, promosi, countdown, dan klaim pemasaran yang belum terverifikasi tidak ditambahkan sebagai fitur baru.
+Implementasi publik menyediakan beranda, katalog dengan pencarian/pagination 12 item, kategori, detail produk, daftar/detail artikel, halaman informasi, sitemap, robots, serta navigasi Indonesia/Inggris. Isi warisan tetap berbahasa sumber; terjemahan lengkap belum dihasilkan otomatis. Header/footer, galeri, grid, dan formulir tidak membutuhkan Elementor/PHP. Promosi, countdown, dan klaim pemasaran yang belum terverifikasi tidak ditambahkan. Checkout di situs wajib dipertahankan sesuai keputusan di bawah; implementasi katalog saja belum memenuhi penerimaan migrasi.
 
 ## Tinjauan dan media
 
@@ -50,3 +50,11 @@ Notifikasi dipisahkan dari penyimpanan formulir. Pekerja mengambil paling banyak
 Pengiriman email bersifat setidaknya sekali: kegagalan setelah SMTP menerima email tetapi sebelum acknowledgement database dapat menghasilkan duplikasi setelah lease habis. `Message-ID` stabil membantu identifikasi, bukan jaminan tepat sekali. Konfigurasi penerima dan retensi data harus direkonsiliasi dengan pemilik operasional sebelum rilis; tidak ada penghapusan kiriman lama secara otomatis.
 
 Lihat [penyiapan situs utama](../../setup/main-site.md) untuk urutan lokal dan batas produksi.
+
+## Pembelian dan checkout
+
+Dicatat pada 23 Oktober 2026, berdasarkan jawaban pemilik "Pertahankan checkout di situs" setelah inventaris terautentikasi menemukan produk 7266 masih dapat dibeli melalui keranjang WooCommerce. Produk ini tidak boleh diam-diam dialihkan menjadi formulir kontak atau tautan marketplace. Pemilik kemudian meminta metode pembayaran dan ongkir disamakan dengan sebelumnya; jangan memilih provider atau tarif pengganti tanpa sumber. Pemilik tidak menyatakan alasan tambahan.
+
+Penerimaan: pelanggan dapat menambahkan produk, meninjau jumlah/harga yang dihitung server, memilih pengiriman dan metode pembayaran yang memang dikonfigurasi, serta memperoleh pesanan tersimpan tanpa duplikasi. Metode pembayaran, ongkir, pengurangan stok, notifikasi dan penanganan pembayaran gagal harus direkonsiliasi sebelum cutover. Jangan menyatakan pesanan lunas dari status klien. Bukti saat ini baru inventaris; belum ada checkout JavaScript yang diterapkan atau transaksi uji.
+
+Sebanyak 42 produk bertipe `external` menggunakan tautan Shopee pada sumber terautentikasi. Ekspor mempertahankan `add_to_cart.url` hanya untuk produk eksternal, mendekode entitas HTML WooCommerce dan memvalidasi HTTPS, hostname, tanpa kredensial/port/fragment. Tautan panjang dibatasi pada toko `780929103`; tautan pendek `s.shopee.co.id` dari sumber tetap disimpan. Tujuan pendek akhirnya belum diverifikasi. Renderer memvalidasi kembali tujuan sebelum menampilkan tombol bilingual. Tidak ada request checkout atau penempatan pesanan saat migrasi katalog.
